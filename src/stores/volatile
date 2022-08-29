@@ -1,0 +1,37 @@
+import { defineStore } from 'pinia'
+import Utils from "../utils.mjs";
+
+const INITIAL_STATE = {
+  waiting: false,
+};
+
+export const useVolatileStore = defineStore('volatile', {
+  state: () => {
+    let s = Object.assign({}, INITIAL_STATE);
+    console.debug(`VolatileStore.state() => `, s);
+    return s;
+  },
+  getters: {
+  },
+  actions: {
+    async fetchJson(url, options) {
+      let res;
+      if (this.waiting) {
+        throw new Error("fetchJson() waiting... (request ignored)");
+      }
+      try {
+        console.log('fetchJson() url:', url);
+        this.waiting = true;
+        res = await fetch(url, options);
+        console.log('fetchJson()', res);
+        return res.ok ? await res.json() : res;
+      } catch(e) {
+        console.error("fetchJson() ERROR:", res, e);
+        res = { error: `ERROR: ${url.value} ${e.message}` };
+      } finally {
+        this.waiting = false;
+      }
+      return res;
+    },
+  },
+})

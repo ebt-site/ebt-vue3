@@ -1,0 +1,88 @@
+import { defineStore } from 'pinia'
+import Utils from "../utils.mjs";
+
+const SERVERS = [{
+  title: 's1.sc-voice.net (scv-server Linode)',
+  value: 'https://s1.sc-voice.net/scv',
+},{
+  title: 'voice.suttacentral.net (voice AWS)',
+  value: 'https://voice.suttacentral.net/scv',
+},{
+  title: 's2.sc-voice.net (voice Linode)',
+  value: 'https://s2.sc-voice.net/scv',
+}];
+
+const INITIAL_STATE = {
+  locale: 'en',
+  theme: 'dark',
+  search: undefined,
+  audioSuffix: 'mp3',
+  langs: 'pli+en',
+  sutta_uid: undefined,
+  scid: undefined,
+  serverUrl: SERVERS[0].value,
+  langTrans: 'en',
+  langRoot: 'pli',
+  maxResults: 5,
+  maxDuration: 3*60*60,
+  translator: 'sujato',
+  vnameTrans: 'Amy',
+  vnameRoot: 'Aditi',
+  isLocalStorage: false,
+  id: 1,
+};
+
+var id = 1;
+
+export const useSettingsStore = defineStore('settings', {
+  state: () => {
+    let s = Object.assign({}, INITIAL_STATE);
+    s.id = id++;
+    let savedState = localStorage.settings;
+    if (savedState) {
+      try {
+        savedState = JSON.parse(savedState);
+      } catch(e) {
+        console.error(`SettingsStore.state() corrupt localStorage`, savedState);
+        savedState = null;
+      }
+    }
+    if (savedState) {
+      Utils.assignTyped(s, savedState, INITIAL_STATE);
+    }
+    console.debug(`SettingsStore.state() => `, s);
+    return s;
+  },
+  actions: {
+    saveSettings() {
+      let saved = Utils.assignTyped({}, this, INITIAL_STATE);
+      localStorage.settings = JSON.stringify(saved);
+      this.isLocalStorage = true;
+      console.log("SettingsStore.saveSettings() localStorage.settings", 
+        localStorage.settings);
+    },
+    clear() {
+      delete localStorage.settings;
+      Utils.assignTyped(this, INITIAL_STATE);
+      console.debug(`SettingsStore.clear()`, this);
+    },
+  },
+  getters: {
+    servers: (state)=>{ 
+      let servers = SERVERS;
+      if (window.location.host.startsWith("localhost")) {
+        servers.push({
+          title: 'localhost:8080',
+          value: 'http://localhost:8080/scv',
+        });
+      }
+      return servers;
+    },
+    server: (state)=>{
+      return SERVERS.reduce((a,v) => {
+        return v.value === state.serverUrl ? v : a;
+      }, "unknown");
+    },
+  },
+
+})

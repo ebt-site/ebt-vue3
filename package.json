@@ -1,0 +1,61 @@
+{
+  "name": "ebt-vue3",
+  "version": "1.0.0",
+  "description": "SuttaCentral Voice EBT-Vue3",
+  "main": "index.js",
+  "private": false,
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@mdi/font": "5.9.55",
+    "compression": "^1.7.4",
+    "express": "^4.18.1",
+    "express-jwt": "^7.7.0",
+    "pinia": "^2.0.16",
+    "roboto-fontface": "*",
+    "serve-favicon": "^2.5.0",
+    "vue": "^3.2.37",
+    "vue-i18n": "^9.2.2",
+    "vuetify": "^3.0.0-beta.9",
+    "webfontloader": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "execa": "^6.1.0",
+    "mocha": "^10.0.0",
+    "should": "^13.2.3",
+    "supertest": "^6.2.3",
+    "vite": "^2.9.14",
+    "vite-plugin-vuetify": "^1.0.0-alpha.0",
+    "vue-cli-plugin-vuetify": "~2.5.1"
+  },
+  "scripts": {
+    "version": "scripts/version.sh",
+    "dev": "vite",
+    "serve": "vite preview",
+    "build:dist": "scripts/build-dist.sh",
+    "preview": "vite preview",
+    "vite": "vite",
+    "vite:build": "vite build",
+    "gh-pages": "scripts/gh-pages.sh",
+    "schedule-action": "scripts/schedule-action",
+    "test": "npm run test:verbose",
+    "test:test": "mocha --config test/mocha-config.json -g TESTTEST",
+    "test:verbose": "mocha --inline-diffs",
+    "test:one": "mocha --inline-diffs -g TESTTEST",
+    "test:watch": "mocha -w --inline-diffs"
+  },
+  "repository": {
+    "tag": "git"
+  },
+  "bin": {},
+  "keywords": [
+    "SuttaCentral",
+    "translation",
+    "Voice"
+  ],
+  "author": "Karl Lew",
+  "homepage": "https://github.com/ebt-site/ebt-vue3",
+  "license": "MIT"
+}
