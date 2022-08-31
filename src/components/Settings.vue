@@ -4,12 +4,12 @@
     <v-dialog v-model="dialog">
       <template v-slot:activator="{ props }">
         <v-btn v-if="settings.isLocalStorage" icon="mdi-cog" v-bind="props" 
-          :title="$t('scv.settingsTitle')"/> 
+          :title="$t('ebt.settingsTitle')"/> 
       </template>
       <v-card>
         <v-toolbar compact>
           <v-toolbar-title>
-            <div>{{$t('scv.settingsTitle')}}</div>
+            <div>{{$t('ebt.settingsTitle')}}</div>
             <div class="text-caption"><Version/></div>
           </v-toolbar-title>
           <v-spacer/>
@@ -20,7 +20,7 @@
         <v-list class="mx-auto" max-width="600">
           <v-list-item>
             <v-list-item-title>
-              {{$t('scv.server')}}
+              {{$t('ebt.server')}}
             </v-list-item-title>
             <v-list-item-subtitle>
               <v-container>
@@ -36,7 +36,7 @@
           </v-list-item>
           <v-list-item>
             <v-list-item-title>
-              {{$t('scv.theme')}} 
+              {{$t('ebt.theme')}} 
             </v-list-item-title>
             <v-list-item-subtitle>
               <v-container fluid>
@@ -50,7 +50,7 @@
           </v-list-item>
           <v-list-item>
             <v-list-item-title>
-              {{$t('scv.languages')}}
+              {{$t('ebt.languages')}}
             </v-list-item-title>
             <v-list-item-subtitle>
               <v-container fluid>
@@ -123,10 +123,10 @@ export default {
     themes: (ctx)=>{
       let { $t=(s=>s) } = ctx;
       let result = [{
-        title: $t('scv.themeDark'),
+        title: $t('ebt.themeDark'),
         value: "dark",
       },{
-        title: $t('scv.themeLight'),
+        title: $t('ebt.themeLight'),
         value: "light",
       }];
       return result;

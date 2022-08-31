@@ -3,7 +3,7 @@
     <v-main>
       <v-app-bar color="brown-darken-2" flat >
         <v-app-bar-title > 
-          EBt-Vue3
+          EBT-Vue3
           <div class="text-caption" style="margin-top:-5px"> 
             {{settings.server.title}}
           </div>

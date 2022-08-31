@@ -19,14 +19,15 @@
       this.suids = Object.keys(this.suidMap).sort(SuttaCentralId.compareLow);
       this.lang = opts.lang || "en";
       this.mj = new MerkleJson();
+      this.scvServer = opts.scvServer || "https://s1.sc-voice.net/scv";
       this.maxResults = opts.maxResults == null ? 1000 : opts.maxResults;
       if (opts.fetch == null) {
         throw new Error("BilaraWeb() fetch callback is required");
       }
       this.endpoints = Object.assign(
         {
-          playSegment: "https://s1.sc-voice.net/scv/play/segment",
-          audio: "https://s1.sc-voice.net/scv/audio",
+          playSegment: `${this.scvServer}/play/segment`,
+          audio: `${this.scvServer}/audio`,
         },
         opts.endpoints
       );

@@ -26,15 +26,21 @@
     const BOOK_OF_THE_ONES = "The Book of the Ones ";
     const UNNAMED_NUN_1ST = "An Unnamed Nun (1st) ";
     const SLEEP_SOFTLY_LITTLE_NUN = 'Sleep softly, little nun, ';
+    const SCVSERVER = `https://s1.sc-voice.net/scv`;
 
     it("default ctor", ()=>{
         should.throws(()=>new BilaraWeb());
     });
-    it("custom ctor", ()=>{
+    it("TESTTESTcustom ctor", ()=>{
         let bw = new BilaraWeb({fetch});
         should.deepEqual(Object.keys(bw.examples).sort(), [
           'comment', 'authors', 'de', 'jpn', 'en'].sort());
         should(bw.fetch).equal(fetch);
+        should(bw.scvServer).equal(SCVSERVER);
+        should.deepEqual(bw.endpoints, {
+          audio: `${SCVSERVER}/audio`,
+          playSegment: `${SCVSERVER}/play/segment`,
+        });
 
         let examples = {
             de:[],
