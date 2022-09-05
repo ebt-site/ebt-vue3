@@ -6,6 +6,7 @@ const pinia = createPinia();
 
 // Styles
 import '@mdi/font/css/materialdesignicons.css'
+import './assets/main.css'
 import 'vuetify/styles'
 
 import cs from './i18n/cs.ts';

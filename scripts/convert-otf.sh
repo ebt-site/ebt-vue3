@@ -14,7 +14,7 @@ if [ "$DESTINATION" == "" ]; then
   DESTINATION=public/fonts
 fi
 FILENAME=$(basename "${SOURCE%.otf}")
-FAMILY=`basename -s .otf $SOURCE`
+FAMILY=`basename -s .otf $SOURCE | sed -e "s/-.*//"`
 
 HELP="$SCRIPT: EXPECTED => $SCRIPT input.otf /path/to/output/"
 # we omit mime check since we use this script only locally and assume it's otf
@@ -50,18 +50,19 @@ fi
 
 EOT_PATH="$DESTINATION/$FAMILY/$FILENAME.eot"
 mkeot ${SOURCE} > ${EOT_PATH}
-echo -e "$SCRIPT: ${EOT_PATH}"
+echo -e "$SCRIPT: `ls -s ${EOT_PATH}`"
 
 TTF_PATH="$DESTINATION/$FAMILY/$FILENAME.ttf"
 eot2ttf ${EOT_PATH} ${TTF_PATH}
-echo -e "$SCRIPT: ${TTF_PATH}"
+echo -e "$SCRIPT: `ls -s ${TTF_PATH}`"
 
 WOFF_PATH="$DESTINATION/$FAMILY/$FILENAME.woff"
-sfnt2woff ${SOURCE} > ${WOFF_PATH}
-echo -e "$SCRIPT: ${WOFF_PATH}"
+sfnt2woff ${SOURCE} 
+mv "`dirname $SOURCE`/$FILENAME.woff" ${WOFF_PATH}
+echo -e "$SCRIPT: `ls -s ${WOFF_PATH}`"
 
 WOFF2_PATH="$DESTINATION/$FAMILY/$FILENAME.woff2"
 woff2_compress ${TTF_PATH} > ${WOFF2_PATH} 
-echo -e "$SCRIPT: ${WOFF2_PATH}"
+echo -e "$SCRIPT: `ls -s ${WOFF2_PATH}`"
 
 echo -e "$SCRIPT: END `date`"
