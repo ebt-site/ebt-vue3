@@ -7,7 +7,7 @@ const {
 module.exports = {
 
   BilaraWeb: require("./bilara-web"),
-  Settings: import('./settings.mjs'),
+  Settings: import('./ebt-settings.mjs'),
   SuttaCentralId,
   SuttaDuration: require('./sutta-duration'),
   Tipitaka,

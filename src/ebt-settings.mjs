@@ -1,5 +1,7 @@
 import { logger } from 'log-instance';
 
+const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
+
 const SERVERS = [{
   title: 's1.sc-voice.net (scv-server Linode)',
   value: 'https://s1.sc-voice.net/scv',
@@ -12,23 +14,41 @@ const SERVERS = [{
 }];
 
 const INITIAL_STATE = {
-  locale: 'en',
-  theme: 'dark',
-  search: undefined,
+  // from scv-server
   audioSuffix: 'mp3',
+  id: 1,
+  isLocalStorage: false,
+  langRoot: 'pli',
   langs: 'pli+en',
-  sutta_uid: undefined,
+  langTrans: 'en',
+  maxDuration: 3*60*60,
   scid: undefined,
   serverUrl: SERVERS[0].value,
-  langTrans: 'en',
-  langRoot: 'pli',
-  maxResults: 5,
-  maxDuration: 3*60*60,
+  sutta_uid: undefined,
+  theme: 'dark',
   translator: 'sujato',
-  vnameTrans: 'Amy',
+
+  // from ebt-vue
+  audio: AUDIO.OGG,
+  fullLine: false,
+  history: [],
+  iCursor: 0,
+  ips: 6,
+  lang: 'en',
+  locale: 'en',
+  maxHistory: 2000,
+  maxResults: 5,
+  refLang: 'en',
+  saveSettingsExamples: false,
+  saveSettings: false,
+  search: undefined,
+  showId: false,
+  showPali: true,
+  showReference: false,
+  showTrans: true,
   vnameRoot: 'Aditi',
-  isLocalStorage: false,
-  id: 1,
+  vnameTrans: 'Amy',
+
 };
 
 export default class EbtSettings {
@@ -268,7 +288,7 @@ export default class EbtSettings {
   }
 
   static get AUDIO() {
-    return { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
+    return AUDIO;
   }
 
 }

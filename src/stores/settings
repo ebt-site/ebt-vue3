@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import Utils from "../utils.mjs";
-import { default as Settings } from "../../src/settings.mjs";
+import { default as Settings } from "../../src/ebt-settings.mjs";
 
 var id = 1;
 

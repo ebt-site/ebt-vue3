@@ -1,7 +1,7 @@
-import { default as Settings } from "../src/settings.mjs";
+import { default as Settings } from "../src/ebt-settings.mjs";
 import should from "should";
 
-(typeof describe === 'function') && describe("settings.mjs", function () {
+(typeof describe === 'function') && describe("ebt-settings.mjs", function () {
   it("TESTTESTdefault ctor", async () => {
     var ebt = new Settings();
     should(ebt).properties({
@@ -25,24 +25,41 @@ import should from "should";
       vnameTrans: 'Amy',
 
     });
+  });
+  it("TESTTESTINITIAL_STATE", async () => {
     should.deepEqual(Settings.INITIAL_STATE, {
-      locale: 'en',
-      theme: 'dark',
-      search: undefined,
+      audio: 'ogg',
       audioSuffix: 'mp3',
-      langs: 'pli+en',
-      sutta_uid: undefined,
-      scid: undefined,
-      serverUrl: 'https://s1.sc-voice.net/scv',
-      langTrans: 'en',
-      langRoot: 'pli',
-      maxResults: 5,
-      maxDuration: 3*60*60,
-      translator: 'sujato',
-      vnameTrans: 'Amy',
-      vnameRoot: 'Aditi',
-      isLocalStorage: false,
+      fullLine: false,
+      history: [],
+      iCursor: 0,
       id: 1,
+      ips: 6,
+      isLocalStorage: false,
+      lang: 'en',
+      langRoot: 'pli',
+      langs: 'pli+en',
+      langTrans: 'en',
+      locale: 'en',
+      maxDuration: 3*60*60,
+      maxHistory: 2000,
+      maxResults: 5,
+      refLang: 'en',
+      saveSettings: false,
+      saveSettingsExamples: false,
+      showId: false,
+      showPali: true,
+      showReference: false,
+      showTrans: true,
+      scid: undefined,
+      search: undefined,
+      serverUrl: 'https://s1.sc-voice.net/scv',
+      sutta_uid: undefined,
+      theme: 'dark',
+      translator: 'sujato',
+      vnameRoot: 'Aditi',
+      vnameTrans: 'Amy',
+
     });
   });
   it("custom ctor", async () => {
