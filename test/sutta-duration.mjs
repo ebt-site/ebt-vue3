@@ -1,9 +1,8 @@
+import should from 'should';
+import axios from 'axios';
+import { default as SuttaDuration } from '../src/sutta-duration.mjs';
+
 (typeof describe === 'function') && describe("sutta-duration", function () {
-  const should = require("should");
-  const axios = require("axios");
-  const {
-    SuttaDuration,
-  } = require('../src/index');
   const fetch = async function (url, opts) {
     return {
       async json() {
@@ -21,7 +20,7 @@
     should(actual).below(expected + e);
   }
 
-  it("duration(...) measures seconds", async () => {
+  it("TESTTESTduration(...) measures seconds", async () => {
     let sd = await suttaDuration.initialize();
 
     // verify with actual durations
