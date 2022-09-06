@@ -6,10 +6,10 @@ const {
 } = require('scv-esm');
 module.exports = {
 
-    BilaraWeb: require("./bilara-web"),
-    Settings: require('./settings'),
-    SuttaCentralId,
-    SuttaDuration: require('./sutta-duration'),
-    Tipitaka,
+  BilaraWeb: require("./bilara-web"),
+  Settings: import('./settings.mjs'),
+  SuttaCentralId,
+  SuttaDuration: require('./sutta-duration'),
+  Tipitaka,
 
 "" : ""};

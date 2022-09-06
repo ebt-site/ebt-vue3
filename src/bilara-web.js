@@ -338,8 +338,8 @@
         let newSeg = Object.assign({}, seg);
         return segLang
           ? Object.assign(newSeg, {
-              [lang]: segLang.replace(reLang, highlightMatch),
-            })
+            [lang]: segLang.replace(reLang, highlightMatch),
+          })
           : newSeg;
       });
     }
@@ -514,7 +514,7 @@
           titles,
           segments,
         });
-        Object.defineProperty(sutta, "translator", 
+        Object.defineProperty(sutta, "translator",
           { value: translator }); // deprecated
         return sutta;
       } catch (e) {
