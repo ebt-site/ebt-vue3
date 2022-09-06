@@ -31,22 +31,25 @@
           <Download/>
         </v-expansion-panels>
         <v-card-text>
-          <div class="text-h6">DEBUG</div>
-          <v-btn @click="onTest">
-            Test
-          </v-btn>
-          <div style="font-family:Roboto;">
-            <div class="text-h4">Roboto</div>
-            <div >
-              Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
+          <details>
+            <summary>DEBUG</summary>
+            <v-btn @click="onTest">
+              Test
+            </v-btn>
+            <div class="text-h6"> Font Test </div>
+            <div style="font-family:Roboto;">
+              <div class="text-h4">Roboto</div>
+              <div >
+                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
+              </div>
             </div>
-          </div>
-          <div style="font-family:SourceSansPro !important;">
-            <div class="text-h4">SourceSansPro</div>
-            <div >
-              Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
+            <div style="font-family:SourceSansPro !important;">
+              <div class="text-h4">SourceSansPro</div>
+              <div >
+                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
+              </div>
             </div>
-          </div>
+          </details> <!-- Debug -->
         </v-card-text>
       </v-card>
     </v-main>
