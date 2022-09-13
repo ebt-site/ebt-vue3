@@ -49,6 +49,12 @@
                 Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
               </div>
             </div>
+            <div >
+              <div class="text-h4">DefaultFont</div>
+              <div >
+                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
+              </div>
+            </div>
           </details> <!-- Debug -->
         </v-card-text>
       </v-card>

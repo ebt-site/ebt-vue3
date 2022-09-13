@@ -3,14 +3,22 @@ import { logger } from 'log-instance';
 const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 
 const SERVERS = [{
-  title: 's1.sc-voice.net (scv-server Linode)',
+  title: 's1.sc-voice.net',
   value: 'https://s1.sc-voice.net/scv',
+  hint: 'Linode staging scv-server',
 },{
-  title: 'voice.suttacentral.net (voice AWS)',
+  title: 'voice.suttacentral.net',
   value: 'https://voice.suttacentral.net/scv',
+  hint: 'AWS production voice server',
 },{
-  title: 's2.sc-voice.net (voice Linode)',
+  title: 's2.sc-voice.net',
   value: 'https://s2.sc-voice.net/scv',
+  hint: 'Linode stating voice server',
+},{
+  title: 'localhost:8080',
+  value: 'http://localhost:8080/scv',
+  hint: 'development server',
+  dev: true,
 }];
 
 const INITIAL_STATE = {
@@ -245,12 +253,12 @@ export default class EbtSettings {
       url: '',
       i18n: 'bellNone',
       value: 0,
-    }, {
-      url: '',
-      i18n: 'bellRainforest',
-      volume: 0.1,
-      value: 1,
-      hide: true,
+    //}, {
+      //url: '',
+      //i18n: 'bellRainforest',
+      //volume: 0.1,
+      //value: 1,
+      //hide: true,
     }, {
       url: '/audio/indian-bell-flemur-sampling-plus-1.0.mp3',
       i18n: 'bellIndian',

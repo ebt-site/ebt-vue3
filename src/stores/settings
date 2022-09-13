@@ -39,17 +39,12 @@ export const useSettingsStore = defineStore('settings', {
   },
   getters: {
     servers: (state)=>{ 
-      let servers = Settings.SERVERS;
-      if (window.location.host.startsWith("localhost")) {
-        servers.push({
-          title: 'localhost:8080',
-          value: 'http://localhost:8080/scv',
-        });
-      }
+      let isDev = window.location.host.startsWith('localhost');;
+      let servers = Settings.SERVERS.filter(svr => !svr.dev || isDev);
       return servers;
     },
     server: (state)=>{
-      return Settings.SERVERS.reduce((a,v) => {
+      return state.servers.reduce((a,v) => {
         return v.value === state.serverUrl ? v : a;
       }, "unknown");
     },
