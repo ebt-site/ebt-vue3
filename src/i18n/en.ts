@@ -254,6 +254,7 @@ export default {
     "theme": "Theme",
     "themeDark": "Dark",
     "themeLight": "Light",
-    "logLevel": "Console messages"
+    "logLevel": "Console messages",
+    "languageCode": "English / EN"
   }
 }

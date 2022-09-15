@@ -256,6 +256,7 @@ export default {
     "theme": "Hintergrundfarbe",
     "themeDark": "Dunkel",
     "themeLight": "Hell",
-    "logLevel": "Console messages"
+    "logLevel": "Console messages",
+    "languageCode": "Deutsch / DE"
   }
 }

@@ -251,6 +251,7 @@ export default {
     "clickRefresh": "An application error has occurred. Click Refresh Page to continue",
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
-    "logLevel": "Console messages"
+    "logLevel": "Console messages",
+    "languageCode": "Română / RO"
   }
 }

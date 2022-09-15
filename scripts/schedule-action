@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR=`dirname $0`; 
-pushd $DIR/..
+APPDIR="$DIR/.."
+pushd $APPDIR
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 echo -e "${SCRIPT}: BEGIN `date`"
 
@@ -14,14 +15,16 @@ npm install --save-dev \
   memo-again@latest \
   scv-tts@latest
 
+$DIR/i18n-langs.cjs > $APPDIR/src/languages.mjs
+
 CMD="git status | grep 'nothing to commit' > /dev/null"
 if bash -c "$CMD"; then
   echo "$SCRIPT: Nothing to commit (OK)"
   exit 0
 fi
 
-echo -e "$SCRIPT: updated package depedencies"
-git commit -am "$SCRIPT: updated package depedencies"
+echo -e "$SCRIPT: updated package dependencies"
+git commit -am "$SCRIPT: updated package dependencies"
 VERSION=`npm version patch`
 echo -e "$SCRIPT: committing package version ${VERSION}"
 git push
