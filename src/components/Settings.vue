@@ -37,8 +37,11 @@
               {{$t('ebt.languages')}}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-select v-model="settings.locale" :items="languages" 
+              <v-select v-model="settings.locale" :items="languages.UI_LANGS" 
                 :label="$t('ebt.uiLanguage')"
+              />
+              <v-select v-model="settings.langTrans" :items="languages.VOICE_LANGS" 
+                :label="$t('ebt.transLanguage')"
               />
             </v-expansion-panel-text>
           </v-expansion-panel><!--Languages-->
@@ -146,14 +149,8 @@ const bellAudio = ref({});
 const ipsChoices = EbtSettings.IPS_CHOICES;
 const dialog = ref(false);
 const settings = useSettingsStore();
+import { default as languages } from "../languages.mjs";
 const host = ref(undefined);
-const languages = [{
-  value: 'en',
-  title: 'English', 
-},{
-  value:'de',
-  title:'German - Deutsch',
-}];
 const logLevels = [{
   title: 'Errors only',
   value: 'error',
@@ -246,7 +243,7 @@ export default {
 
 <style scoped>
 .settings-caption {
-  margin-top: -7px;
+  margin-top: -5px;
   margin-left: 3px;
 }
 </style>

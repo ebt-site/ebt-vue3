@@ -102,6 +102,6 @@ const UI_LANGS = [
 
 export default class Languages {
   static get VOICE_LANGS() { return VOICE_LANGS };
-  static get UI_LANGUAGES() { return UI_LANGS };
+  static get UI_LANGS() { return UI_LANGS };
 }
 
