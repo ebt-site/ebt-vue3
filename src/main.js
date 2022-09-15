@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
+import { logger } from 'log-instance';
+logger.logLevel = 'warn';
 
 const pinia = createPinia();
 

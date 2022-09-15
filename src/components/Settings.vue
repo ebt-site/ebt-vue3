@@ -6,7 +6,7 @@
           :title="$t('ebt.settingsTitle')"/> 
       </template>
       <v-sheet>
-        <v-toolbar dense color="primary">
+        <v-toolbar dense color="brown darken-1">
           <v-toolbar-title>
             <div>{{$t('ebt.settingsTitle')}}</div>
             <div class="text-caption settings-caption"><Version/></div>
@@ -119,6 +119,10 @@
                 :label="$t('ebt.server')"
                 :hint='serverHint()'
               />
+              <v-select v-model="refLogger.logLevel" :items="logLevels" 
+                :label="$t('ebt.logLevel')"
+                :hint="refLogger.logLevel || 'info'"
+              />
               <v-btn @click="resetDefaults" variant="outlined" >
                 Restore Defaults
               </v-btn>
@@ -134,8 +138,10 @@
 import { ref, reactive, onMounted, computed, } from 'vue';
 import { useSettingsStore } from "../stores/settings";
 import { default as EbtSettings } from "../ebt-settings.mjs";
+import { logger } from "log-instance";
 import Version from "./Version.vue";
 
+const refLogger = ref(logger);
 const bellAudio = ref({});
 const ipsChoices = EbtSettings.IPS_CHOICES;
 const dialog = ref(false);
@@ -148,6 +154,19 @@ const languages = [{
   value:'de',
   title:'German - Deutsch',
 }];
+const logLevels = [{
+  title: 'Errors only',
+  value: 'error',
+},{
+  title: 'Warnings and errors',
+  value: 'warn',
+},{
+  title: 'Verbose',
+  value: 'info',
+},{
+  title: 'Show all messages',
+  value: 'debug',
+}]
 
 function servers() {
   return settings.servers.filter(s => {
