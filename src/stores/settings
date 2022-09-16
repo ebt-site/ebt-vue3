@@ -14,14 +14,14 @@ export const useSettingsStore = defineStore('settings', {
       try {
         savedState = JSON.parse(savedState);
       } catch(e) {
-        console.error(`SettingsStore.state() corrupt localStorage`, savedState);
+        logger.error(`SettingsStore.state() corrupt localStorage`, savedState);
         savedState = null;
       }
     }
     if (savedState) {
       Utils.assignTyped(s, savedState, Settings.INITIAL_STATE);
     }
-    console.debug(`SettingsStore.state() => `, s);
+    logger.debug(`SettingsStore.state() => `, s);
     return s;
   },
   actions: {
@@ -29,14 +29,13 @@ export const useSettingsStore = defineStore('settings', {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
       localStorage.settings = JSON.stringify(saved);
       this.isLocalStorage = true;
-      console.log("DEBUG saveSettings", logger.logLevel);
       logger.info("SettingsStore.saveSettings() localStorage.settings", 
         localStorage.settings);
     },
     clear() {
       delete localStorage.settings;
       Utils.assignTyped(this, Settings.INITIAL_STATE);
-      console.debug(`SettingsStore.clear()`, this);
+      logger.debug(`SettingsStore.clear()`, this);
     },
   },
   getters: {

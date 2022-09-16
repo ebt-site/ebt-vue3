@@ -99,9 +99,19 @@ const UI_LANGS = [
     "voice": false
   }
 ];
+const REF_LANGS = [{
+    value: 'de',
+    title: 'Sabbamitta / DE',
+    voice: true,
+}, {
+    value: 'en',
+    title: 'Sujato / EN',
+    voice: true,
+}];
 
 export default class Languages {
   static get VOICE_LANGS() { return VOICE_LANGS };
   static get UI_LANGS() { return UI_LANGS };
+  static get REF_LANGS() { return REF_LANGS };
 }
 

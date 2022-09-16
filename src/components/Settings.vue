@@ -9,7 +9,6 @@
         <v-toolbar dense color="brown darken-1">
           <v-toolbar-title>
             <div>{{$t('ebt.settingsTitle')}}</div>
-            <div class="text-caption settings-caption"><Version/></div>
           </v-toolbar-title>
           <v-btn icon @click="dialog = false">
             <v-icon>mdi-close</v-icon>
@@ -22,6 +21,10 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               {{$t('ebt.general')}}
+              <v-spacer/>
+              <div class="settings-summary">
+                <Version/>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.theme" :items="themes" 
@@ -35,6 +38,11 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               {{$t('ebt.languages')}}
+              <v-spacer/>
+              <div class="settings-summary">
+                {{settings.locale.toUpperCase()}}
+                {{settings.langTrans.toUpperCase()}}
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.locale" :items="languages.UI_LANGS" 
@@ -51,8 +59,40 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               {{$t('ebt.textLayout')}}
+              <v-spacer/>
+              <div class="settings-summary">
+                <span v-if="settings.showId">#</span>
+                <span v-if="settings.showPali" class="ml-1">PLI</span>
+                <span v-if="settings.showTrans" class="ml-1">
+                  {{settings.langTrans.toUpperCase()}}
+                </span>
+                <span v-if="settings.showReference" class="ml-1">
+                  {{settings.refLang.toUpperCase()}}
+                </span>
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
+              <v-checkbox v-model="settings.showPali" density="compact"
+                :label="$t('ebt.showPaliText')"
+              />
+              <v-checkbox v-model="settings.showTrans" density="compact"
+                :label="$t('ebt.showTransText')"
+              />
+              <v-checkbox v-model="settings.showReference" density="compact"
+                :label="$t('ebt.showReference')"
+              />
+              <div v-if="settings.showReference">
+                <v-select v-model="settings.refLang" :items="languages.REF_LANGS" 
+                  :label="$t('ebt.refLanguage')"
+                />
+              </div>
+              <v-divider class="mt-2 mb-2"/>
+              <v-checkbox v-model="settings.fullLine" density="compact"
+                :label="$t('ebt.showLineByLine')"
+              />
+              <v-checkbox v-model="settings.showId" density="compact"
+                :label="$t('ebt.showTextSegmentIds')"
+              />
             </v-expansion-panel-text>
           </v-expansion-panel><!--Text Layout-->
 
@@ -179,31 +219,31 @@ function serverHint() {
 function resetDefaults() {
   settings.clear();
   dialog.value = false;
-  console.log("Settings.resetDefaults()", settings);
+  logger.info("Settings.resetDefaults()", settings);
 }
 
 function playBell(ips=settings.ips) {
   let ipsChoice = ipsChoices.filter(c=>c.value===ips)[0];
   let audio = bellAudio.value[`${ips}`];
-  console.log('playBell', bellAudio.value, ips);
+  logger.info('playBell', bellAudio.value, ips);
   if (audio) {
     let msg = `playBell(${ips}:${ipsChoice.i18n}) => ${ipsChoice.url}`;
     audio.play()
-      .then(res=>console.log(msg))
-      .catch(e=>console.log(e));
+      .then(res=>logger.info(msg))
+      .catch(e=>logger.info(e));
   } else {
-    console.warn(`playBell(${ips}) NO AUDIO:`, ipsChoice);
+    logger.warn(`playBell(${ips}) NO AUDIO:`, ipsChoice);
   }
 }
 
 function onAudioUpdated(open) {
-  //console.log(`onAudioUpdate`, open, settings.ips);
+  //logger.info(`onAudioUpdate`, open, settings.ips);
   !open && playBell();
 }
 
 onMounted(()=>{
   host.value = window.location.host;
-  console.log('Settings.mounted() settings:', settings);
+  logger.info('Settings.mounted() settings:', settings);
 });
 
 
@@ -245,5 +285,9 @@ export default {
 .settings-caption {
   margin-top: -5px;
   margin-left: 3px;
+}
+.settings-summary {
+  text-align: right;
+  font-size: smaller;
 }
 </style>
