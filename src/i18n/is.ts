@@ -252,6 +252,7 @@ export default {
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
-    "languageCode": "Íslenska / IS"
+    "languageCode": "Íslenska / IS",
+    "refLanguage": "Reference language"
   }
 }

@@ -257,6 +257,7 @@ export default {
     "themeDark": "Dunkel",
     "themeLight": "Hell",
     "logLevel": "Console messages",
-    "languageCode": "Deutsch / DE"
+    "languageCode": "Deutsch / DE",
+    "refLanguage": "Reference language"
   }
 }

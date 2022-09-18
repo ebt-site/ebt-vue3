@@ -6,3 +6,16 @@
   unicode-range: U+000-5FF;
   src: local("SourceSansPro"), url("/fonts/SourceSansPro/SourceSansPro-Regular.woff2") format("woff2"), url("/fonts/SourceSansPro/SourceSansPro-Regular.woff") format("woff");
 }
+
+:root {
+  --focus-color: rgb(206, 132, 0);
+}
+.v-field--focused {
+  outline: 2pt solid var(--focus-color);
+}
+.v-selection-control--focused {
+  outline: 2pt solid var(--focus-color);
+}
+:focus {
+  color: var(--focus-color) !important;
+}

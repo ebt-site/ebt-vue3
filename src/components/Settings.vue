@@ -6,7 +6,7 @@
           :title="$t('ebt.settingsTitle')"/> 
       </template>
       <v-sheet>
-        <v-toolbar dense color="brown darken-1">
+        <v-toolbar dense color="toolbar">
           <v-toolbar-title>
             <div>{{$t('ebt.settingsTitle')}}</div>
           </v-toolbar-title>
@@ -103,6 +103,48 @@
               {{$t('ebt.reader')}}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
+            <!--
+          <details role="menuitem"
+            @click="clickDetails('reader', $event)"
+            :open="showDetail('reader')"
+            >
+            <summary class="ebt-summary">
+              <div class="ebt-settings-title">
+                <div>{{$t('reader')}}</div>
+                <div>
+                  <span class="body-2" v-if="showPali && openDetail!=='reader'">
+                    {{vnameRoot}}</span>
+                  <span class="body-2" v-if="showTrans && openDetail!=='reader'">
+                    {{vnameTrans}}</span>
+                </div>
+              </div>
+            </summary>
+            <div class="ebt-settings-detail">
+              <div class="ebt-select-container">
+                <select id="reader-select-trans" 
+                  class="ebt-select"
+                  ref="reader-focus"
+                  v-model="vnameTrans"
+                  @click="stopPropagation($event)">
+                  <option v-for="item in langVoices(lang, 'vnameTrans')" :key="item.code" 
+                    :selected="item.name===vnameTrans"
+                    :value="item.name">{{item.label}}</option>
+                </select>
+                <label for="reader-select-trans">{{lang.toUpperCase()}}</label>
+              </div>
+              <div class="ebt-select-container">
+                <select id="reader-select-root" 
+                  class="ebt-select"
+                  v-model="vnameRoot"
+                  @click="stopPropagation($event)">
+                  <option v-for="item in langVoices('pli', 'vnameRoot')" :key="item.code" 
+                    :selected="item.name===vnameRoot"
+                    :value="item.name">{{item.label}}</option>
+                </select>
+                <label for="reader-select-root">Pali</label>
+              </div>
+            </div>
+            -->
             </v-expansion-panel-text>
           </v-expansion-panel><!--Narrator-->
 

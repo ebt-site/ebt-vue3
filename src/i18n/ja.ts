@@ -253,6 +253,7 @@ export default {
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
-    "languageCode": "日本語 / JA"
+    "languageCode": "日本語 / JA",
+    "refLanguage": "Reference language"
   }
 }

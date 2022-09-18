@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-app-bar color="brown-darken-2" flat >
+      <v-app-bar color="toolbar" flat >
         <v-app-bar-title > 
           EBT-Vue3
           <div class="text-caption" style="margin-top:-5px"> 
@@ -9,7 +9,6 @@
           </div>
         </v-app-bar-title>
         <v-spacer/>
-        <div class="text-caption">{{$i18n.locale}}</div>
         <Settings/>
       </v-app-bar>
       <v-progress-linear v-if="volatile.waiting"

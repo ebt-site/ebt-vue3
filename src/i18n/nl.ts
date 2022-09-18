@@ -252,6 +252,7 @@ export default {
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
-    "languageCode": "Nederlands / NL"
+    "languageCode": "Nederlands / NL",
+    "refLanguage": "Reference language"
   }
 }

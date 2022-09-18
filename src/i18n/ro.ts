@@ -252,6 +252,7 @@ export default {
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
-    "languageCode": "Română / RO"
+    "languageCode": "Română / RO",
+    "refLanguage": "Reference language"
   }
 }

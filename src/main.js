@@ -11,6 +11,29 @@ import '@mdi/font/css/materialdesignicons.css'
 import './assets/main.css'
 import 'vuetify/styles'
 
+import colors from 'vuetify/lib/util/colors'
+const vuetifyOpts = {
+  theme: {
+    defaultTheme: 'dark',
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          toolbar: colors.brown.darken2,
+        },
+      },
+      dark: {
+        dark: true,
+        colors: {
+          toolbar: colors.brown.darken2,
+        },
+      },
+    },
+  },
+};
+
+import { createI18n, useI18n } from 'vue-i18n';
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
 import cs from './i18n/cs.ts';
 import da from './i18n/da.ts';
 import de from './i18n/de.ts';
@@ -26,15 +49,6 @@ import pt from './i18n/pt.ts';
 import ro from './i18n/ro.ts';
 import si from './i18n/si.ts';
 import vi from './i18n/vi.ts';
-
-const vuetifyOpts = {
-  theme: {
-    defaultTheme: 'dark',
-  },
-};
-
-import { createI18n, useI18n } from 'vue-i18n';
-import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
 const i18n = new createI18n({
   legacy: false,
   locale: "en",

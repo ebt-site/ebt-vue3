@@ -251,6 +251,7 @@ export default {
     "showReference": "Show alternate reference",
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
-    "languageCode": "Čeština / CS"
+    "languageCode": "Čeština / CS",
+    "refLanguage": "Reference language"
   }
 }

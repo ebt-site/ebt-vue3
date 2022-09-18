@@ -255,6 +255,7 @@ export default {
     "themeDark": "Dark",
     "themeLight": "Light",
     "logLevel": "Console messages",
-    "languageCode": "English / EN"
+    "languageCode": "English / EN",
+    "refLanguage": "Reference language"
   }
 }
