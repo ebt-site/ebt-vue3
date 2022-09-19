@@ -103,6 +103,7 @@
               {{$t('ebt.reader')}}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
+            {{voices}}
             <!--
           <details role="menuitem"
             @click="clickDetails('reader', $event)"
@@ -291,6 +292,9 @@ onMounted(()=>{
 
 </script>
 <script>
+import * as VOICES from "../voices.json";
+
+
 export default {
   data: function() {
     return {};
@@ -298,6 +302,9 @@ export default {
   methods: {
   },
   computed: {
+    voices: (ctx)=>{
+      return JSON.stringify(VOICES.default);
+    },
     themes: (ctx)=>{
       let { $t=(s=>s) } = ctx;
       let result = [{
