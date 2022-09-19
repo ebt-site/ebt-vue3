@@ -271,7 +271,7 @@ onMounted((ctx)=>{
 
 </script><!--setup-->
 <script>
-import * as VOICES from "../voices.json";
+import * as VOICES from "../auto/voices.json";
 import { useSettingsStore } from "../stores/settings";
 
 export default {

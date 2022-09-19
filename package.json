@@ -26,6 +26,7 @@
     "@vitejs/plugin-vue": "^2.3.3",
     "esm": "^3.2.25",
     "execa": "^6.1.0",
+    "json": "^11.0.0",
     "memo-again": "^0.6.0",
     "mocha": "^10.0.0",
     "scv-tts": "^1.2.0",

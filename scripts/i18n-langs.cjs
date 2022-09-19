@@ -8,7 +8,7 @@ const I18NDIR = path.join(__dirname, '../src/i18n');
 let args = process.argv;
 let [nodePath, progPath, key, value] = args;
 let script = path.basename(progPath);
-let voices = require('../src/voices.json')
+let voices = require('../src/auto/voices.json')
   .reduce((a,v) => {
     a[v.langTrans] = true;
     return a;

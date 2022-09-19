@@ -8,7 +8,7 @@
     SuttaCentralId,
     SuttaRef,
   } = require("scv-esm");
-  const VOICES = require("./voices.json");
+  const VOICES = require("./auto/voices.json");
   const assert = require("assert");
 
   class BilaraWeb {
