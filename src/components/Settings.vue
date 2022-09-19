@@ -101,51 +101,25 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               {{$t('ebt.reader')}}
+              <v-spacer/>
+              <div class="settings-summary">
+                {{settings.vnameRoot}}
+                {{settings.vnameTrans}}
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-            {{voices}}
-            <!--
-          <details role="menuitem"
-            @click="clickDetails('reader', $event)"
-            :open="showDetail('reader')"
-            >
-            <summary class="ebt-summary">
-              <div class="ebt-settings-title">
-                <div>{{$t('reader')}}</div>
-                <div>
-                  <span class="body-2" v-if="showPali && openDetail!=='reader'">
-                    {{vnameRoot}}</span>
-                  <span class="body-2" v-if="showTrans && openDetail!=='reader'">
-                    {{vnameTrans}}</span>
-                </div>
-              </div>
-            </summary>
-            <div class="ebt-settings-detail">
-              <div class="ebt-select-container">
-                <select id="reader-select-trans" 
-                  class="ebt-select"
-                  ref="reader-focus"
-                  v-model="vnameTrans"
-                  @click="stopPropagation($event)">
-                  <option v-for="item in langVoices(lang, 'vnameTrans')" :key="item.code" 
-                    :selected="item.name===vnameTrans"
-                    :value="item.name">{{item.label}}</option>
-                </select>
-                <label for="reader-select-trans">{{lang.toUpperCase()}}</label>
-              </div>
-              <div class="ebt-select-container">
-                <select id="reader-select-root" 
-                  class="ebt-select"
-                  v-model="vnameRoot"
-                  @click="stopPropagation($event)">
-                  <option v-for="item in langVoices('pli', 'vnameRoot')" :key="item.code" 
-                    :selected="item.name===vnameRoot"
-                    :value="item.name">{{item.label}}</option>
-                </select>
-                <label for="reader-select-root">Pali</label>
-              </div>
-            </div>
-            -->
+              <v-select v-model="settings.vnameTrans" 
+                :items="langVoices(settings.langTrans, 'vnameTrans')"
+                item-title="label"
+                item-value="name"
+                :label="settings.langTrans"
+              />
+              <v-select v-model="settings.vnameRoot" 
+                :items="langVoices(settings.langRoot, 'vnameRoot')"
+                item-title="label"
+                item-value="name"
+                :label="settings.langRoot"
+              />
             </v-expansion-panel-text>
           </v-expansion-panel><!--Narrator-->
 
@@ -199,6 +173,10 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               Advanced
+              <v-spacer/>
+              <div class="settings-summary">
+                {{settings.server?.title}}
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.serverUrl" :items="servers()" 
@@ -265,6 +243,7 @@ function resetDefaults() {
   logger.info("Settings.resetDefaults()", settings);
 }
 
+
 function playBell(ips=settings.ips) {
   let ipsChoice = ipsChoices.filter(c=>c.value===ips)[0];
   let audio = bellAudio.value[`${ips}`];
@@ -284,27 +263,43 @@ function onAudioUpdated(open) {
   !open && playBell();
 }
 
-onMounted(()=>{
+onMounted((ctx)=>{
   host.value = window.location.host;
-  logger.info('Settings.mounted() settings:', settings);
+  logger.info('Settings.mounted() settings:', settings, ctx);
 });
 
 
-</script>
+</script><!--setup-->
 <script>
 import * as VOICES from "../voices.json";
-
+import { useSettingsStore } from "../stores/settings";
 
 export default {
+  setup() {
+    const settings = useSettingsStore();
+
+    return {
+      settings,
+    }
+  },
   data: function() {
     return {};
   },
   methods: {
+    langVoices(lang, vnameKey) {
+      let { settings } = this;
+      let voices = VOICES.default;
+      let vname = settings[vnameKey];
+      let langVoices = voices.filter(v=>v.langTrans===lang);
+      if (!langVoices.some(v=>v.name === vname)) {
+        this.$nextTick(()=> {
+          settings[vnameKey] = langVoices[0].name;
+        });
+      }
+      return langVoices;
+    },
   },
   computed: {
-    voices: (ctx)=>{
-      return JSON.stringify(VOICES.default);
-    },
     themes: (ctx)=>{
       let { $t=(s=>s) } = ctx;
       let result = [{

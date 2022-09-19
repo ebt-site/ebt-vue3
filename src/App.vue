@@ -4,9 +4,6 @@
       <v-app-bar color="toolbar" flat >
         <v-app-bar-title > 
           EBT-Vue3
-          <div class="text-caption" style="margin-top:-5px"> 
-            {{settings.server.title}}
-          </div>
         </v-app-bar-title>
         <v-spacer/>
         <Settings/>
