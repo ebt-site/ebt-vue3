@@ -224,7 +224,7 @@ export default {
     "showOnlyPaliText": "Zeige nur Palitext",
     "showPaliText": "Zeige Palitext",
     "showPaliTransText": "Zeige Palitext und Übersetzung",
-    "showTextSegmentIds": "SuttaCentral-Textsegmentkennungen zeigen",
+    "showTextSegmentIds": "SuttaCentral-ID zeigen",
     "showTransText": "Zeige lokale Übersetzung",
     "speakSearchText": "Suchtext vorlesen",
     "storeSettingsInCookies": "Einstellungen erlauben (werden in Webbrowser-Cookies gespeichert)",
@@ -256,8 +256,8 @@ export default {
     "theme": "Hintergrundfarbe",
     "themeDark": "Dunkel",
     "themeLight": "Hell",
-    "logLevel": "Console messages",
+    "logLevel": "Konsolen-Info",
     "languageCode": "Deutsch / DE",
-    "refLanguage": "Reference language"
+    "refLanguage": "Vergleichssprache"
   }
 }
