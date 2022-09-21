@@ -132,6 +132,10 @@
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
               {{$t('ebt.audio')}}
+              <v-spacer/>
+              <div class="settings-summary">
+                {{ipsItem.title}}
+              </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select id="ips-select" 
@@ -141,7 +145,7 @@
                 class="ebt-select caption"
                 v-model="settings.ips"
                 :label="$t('ebt.bellSound')"
-                :hint="ipsHint"
+                :hint="ipsItem.hint"
                 >
               </v-select>
               <template v-for="bell,i in ipsChoices">
@@ -351,10 +355,10 @@ export default {
       title: ctx.$t(`ebt.${ic.i18n}`),
       hint: ctx.$t(`ebt.${ic.i18n}Hint`),
     })),
-    ipsHint: (ctx) => {
+    ipsItem: (ctx) => {
       let { ipsItems, settings, } = ctx;
       let ipsItem = ipsItems.filter(item=>item.value === settings.ips)[0];
-      return ipsItem?.hint;
+      return ipsItem;
     },
   },
 }
