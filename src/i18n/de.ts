@@ -260,8 +260,8 @@ export default {
     "languageCode": "Deutsch / DE",
     "refLanguage": "Vergleichssprache",
     "clearSettings": "Clear settings",
-    "resetDefaults": "Reset to default settings",
-    "confirm": "Confirm",
-    "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?"
+    "resetDefaults": "Einstellungen zurücksetzen",
+    "confirm": "Bestätigen",
+    "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
   }
 }
