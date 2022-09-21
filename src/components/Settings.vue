@@ -179,9 +179,9 @@
               </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-select v-model="settings.serverUrl" :items="servers()" 
+              <v-select v-model="settings.serverUrl" :items="servers" 
                 :label="$t('ebt.server')"
-                :hint='serverHint()'
+                :hint='serverHint'
               />
               <v-select v-model="refLogger.logLevel" :items="logLevels" 
                 :label="$t('ebt.logLevel')"
@@ -198,94 +198,67 @@
   <!--/v-row-->
 </template>
 
-<script setup>
+<script>
 import { ref, reactive, onMounted, computed, } from 'vue';
 import { useSettingsStore } from "../stores/settings";
 import { default as EbtSettings } from "../ebt-settings.mjs";
-import { logger } from "log-instance";
-import Version from "./Version.vue";
-
-const refLogger = ref(logger);
-const bellAudio = ref({});
-const ipsChoices = EbtSettings.IPS_CHOICES;
-const dialog = ref(false);
-const settings = useSettingsStore();
 import { default as languages } from "../languages.mjs";
-const host = ref(undefined);
-const logLevels = [{
-  title: 'Errors only',
-  value: 'error',
-},{
-  title: 'Warnings and errors',
-  value: 'warn',
-},{
-  title: 'Verbose',
-  value: 'info',
-},{
-  title: 'Show all messages',
-  value: 'debug',
-}]
-
-function servers() {
-  return settings.servers.filter(s => {
-    return host.value.startsWith("localhost") || !/localhost/.test(s);
-  });
-}
-
-function serverHint() {
-  let server = settings.server;
-  return server?.hint || server?.title;
-}
-
-function resetDefaults() {
-  settings.clear();
-  dialog.value = false;
-  logger.info("Settings.resetDefaults()", settings);
-}
-
-
-function playBell(ips=settings.ips) {
-  let ipsChoice = ipsChoices.filter(c=>c.value===ips)[0];
-  let audio = bellAudio.value[`${ips}`];
-  logger.info('playBell', bellAudio.value, ips);
-  if (audio) {
-    let msg = `playBell(${ips}:${ipsChoice.i18n}) => ${ipsChoice.url}`;
-    audio.play()
-      .then(res=>logger.info(msg))
-      .catch(e=>logger.info(e));
-  } else {
-    logger.warn(`playBell(${ips}) NO AUDIO:`, ipsChoice);
-  }
-}
-
-function onAudioUpdated(open) {
-  //logger.info(`onAudioUpdate`, open, settings.ips);
-  !open && playBell();
-}
-
-onMounted((ctx)=>{
-  host.value = window.location.host;
-  logger.info('Settings.mounted() settings:', settings, ctx);
-});
-
-
-</script><!--setup-->
-<script>
+import { logger } from "log-instance";
 import * as VOICES from "../auto/voices.json";
-import { useSettingsStore } from "../stores/settings";
+import Version from "./Version.vue";
 
 export default {
   setup() {
+    const refLogger = ref(logger);
+    const bellAudio = ref({});
+    const ipsChoices = EbtSettings.IPS_CHOICES;
+    const dialog = ref(false);
     const settings = useSettingsStore();
+    const host = ref(undefined);
+    const logLevels = [{
+      title: 'Errors only',
+      value: 'error',
+    },{
+      title: 'Warnings and errors',
+      value: 'warn',
+    },{
+      title: 'Verbose',
+      value: 'info',
+    },{
+      title: 'Show all messages',
+      value: 'debug',
+    }];
+
+    console.log("Settings.setup()", settings);
 
     return {
+      bellAudio,
+      dialog,
+      host,
+      ipsChoices,
+      languages,
+      logLevels,
+      refLogger,
       settings,
     }
+  },
+  components: {
+    Version,
   },
   data: function() {
     return {};
   },
+  mounted() {
+    this.host = window.location.host;
+    console.log("Settings.mounted()", this.host);
+  },
   methods: {
+    resetDefaults() {
+      let { settings } = this;
+      settings.clear();
+      this.dialog = false;
+      logger.info("Settings.resetDefaults()", settings);
+    },
     langVoices(lang, vnameKey) {
       let { settings } = this;
       let voices = VOICES.default;
@@ -298,8 +271,40 @@ export default {
       }
       return langVoices;
     },
+    playBell(ips=this.settings.ips) {
+      let { settings, ipsChoices, bellAudio } = this;
+      let ipsChoice = ipsChoices.filter(c=>c.value===ips)[0];
+      let audio = bellAudio[`${ips}`];
+      logger.info('playBell', bellAudio, ips);
+      if (audio) {
+        let msg = `playBell(${ips}:${ipsChoice.i18n}) => ${ipsChoice.url}`;
+        audio.play()
+          .then(res=>logger.info(msg))
+          .catch(e=>logger.info(e));
+      } else {
+        logger.warn(`playBell(${ips}) NO AUDIO:`, ipsChoice);
+      }
+    },
+    onAudioUpdated(open) {
+      let { settings } = this;
+      logger.info(`onAudioUpdate`, open, settings.ips);
+      !open && this.playBell();
+    },
+
   },
   computed: {
+    servers: ctx=>{
+      let { settings, host } = ctx;
+      console.log("Settings.servers", settings, host);
+      return settings.servers.filter(s => {
+        return host.startsWith("localhost") || !/localhost/.test(s);
+      });
+    },
+    serverHint: ctx=>{
+      let { settings } = ctx;
+      let server = settings.server;
+      return server?.hint || server?.title;
+    },
     themes: (ctx)=>{
       let { $t=(s=>s) } = ctx;
       let result = [{
