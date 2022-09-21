@@ -252,6 +252,10 @@ export default {
     "referenceBy": "Reference by A_AUTHOR",
     "logLevel": "Console messages",
     "languageCode": "Čeština / CS",
-    "refLanguage": "Reference language"
+    "refLanguage": "Reference language",
+    "clearSettings": "Clear settings",
+    "resetDefaults": "Reset to default settings",
+    "confirm": "Confirm",
+    "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?"
   }
 }

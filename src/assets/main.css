@@ -11,7 +11,11 @@
   --focus-color: rgb(206, 132, 0);
   --focus-border: 2pt dashed;
 }
-.v-btn--icon:focus-within {
+.v-btn:focus-within {
+  border: var(--focus-border) var(--focus-color);
+  border-radius: 8pt;
+}
+.xv-btn--icon:focus-within {
   border: var(--focus-border) var(--focus-color);
   border-radius: 8pt;
 }

@@ -23,12 +23,16 @@
               {{$t('ebt.general')}}
               <v-spacer/>
               <div class="settings-summary">
-                <Version/>
+                {{settings.maxResults}}
               </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.theme" :items="themes" 
                 :label="$t('ebt.theme')"
+              />
+              <v-select v-model="settings.maxResults" 
+                :items="maxResultsItems"
+                :label="$t('ebt.searchResults')"
               />
             </v-expansion-panel-text>
           </v-expansion-panel><!--General-->
@@ -123,20 +127,6 @@
             </v-expansion-panel-text>
           </v-expansion-panel><!--Narrator-->
 
-          <v-expansion-panel><!--Search Results-->
-            <v-expansion-panel-title 
-              expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
-              >
-              {{$t('ebt.searchResults')}}
-            </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-list>
-                <v-list-item>
-                </v-list-item>
-              </v-list>
-            </v-expansion-panel-text>
-          </v-expansion-panel><!--Search Results-->
-
           <v-expansion-panel><!--Audio-->
             <v-expansion-panel-title 
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
@@ -175,7 +165,7 @@
               Advanced
               <v-spacer/>
               <div class="settings-summary">
-                {{settings.server?.title}}
+                <Version/>
               </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
@@ -187,9 +177,32 @@
                 :label="$t('ebt.logLevel')"
                 :hint="refLogger.logLevel || 'info'"
               />
-              <v-btn @click="resetDefaults" variant="outlined" >
-                Restore Defaults
-              </v-btn>
+              <v-dialog 
+                v-model="isClearSettings">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn class="settings-clear" 
+                    @click="isClearSettings=!isClearSettings"
+                    >
+                    {{$t('ebt.clearSettings')}}
+                  </v-btn>
+                </template>
+                <v-sheet>
+                  <v-toolbar color="red darken-2">
+                    <v-toolbar-title>
+                      {{$t('ebt.confirm')}}
+                    </v-toolbar-title>
+                    <v-spacer/>
+                    <v-btn icon @click="isClearSettings=false">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <v-card-text>
+                    <v-btn @click="resetDefaults" >
+                      {{$t('ebt.clearSettings')}}
+                    </v-btn>
+                  </v-card-text>
+                </v-sheet>
+              </v-dialog>
             </v-expansion-panel-text>
           </v-expansion-panel><!--Advanced-->
         </v-expansion-panels>
@@ -206,6 +219,19 @@ import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
 import * as VOICES from "../auto/voices.json";
 import Version from "./Version.vue";
+const maxResultsItems = [{
+  title: "5",
+  value: 5,
+},{
+  title: "10",
+  value: 10,
+},{
+  title: "25",
+  value: 25,
+},{
+  title: "50",
+  value: 50,
+}]
 
 export default {
   setup() {
@@ -215,6 +241,7 @@ export default {
     const dialog = ref(false);
     const settings = useSettingsStore();
     const host = ref(undefined);
+    const isClearSettings = ref(false);
     const logLevels = [{
       title: 'Errors only',
       value: 'error',
@@ -233,11 +260,13 @@ export default {
 
     return {
       bellAudio,
+      isClearSettings,
       dialog,
       host,
       ipsChoices,
       languages,
       logLevels,
+      maxResultsItems,
       refLogger,
       settings,
     }
@@ -258,6 +287,7 @@ export default {
       settings.clear();
       this.dialog = false;
       logger.info("Settings.resetDefaults()", settings);
+      window.location.reload();
     },
     langVoices(lang, vnameKey) {
       let { settings } = this;
@@ -331,6 +361,10 @@ export default {
 </script>
 
 <style scoped>
+.settings-clear {
+  margin-top: 4pt;
+  text-align: "center";
+}
 .settings-caption {
   margin-top: -5px;
   margin-left: 3px;

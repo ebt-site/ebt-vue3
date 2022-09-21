@@ -258,6 +258,10 @@ export default {
     "themeLight": "Hell",
     "logLevel": "Konsolen-Info",
     "languageCode": "Deutsch / DE",
-    "refLanguage": "Vergleichssprache"
+    "refLanguage": "Vergleichssprache",
+    "clearSettings": "Clear settings",
+    "resetDefaults": "Reset to default settings",
+    "confirm": "Confirm",
+    "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?"
   }
 }
