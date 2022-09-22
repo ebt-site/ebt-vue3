@@ -259,7 +259,7 @@ export default {
     "logLevel": "Konsolen-Info",
     "languageCode": "Deutsch / DE",
     "refLanguage": "Vergleichssprache",
-    "clearSettings": "Clear settings",
+    "clearSettings": "Einstellungen zurücksetzen",
     "resetDefaults": "Einstellungen zurücksetzen",
     "confirm": "Bestätigen",
     "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
