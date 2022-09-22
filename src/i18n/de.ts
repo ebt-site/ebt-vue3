@@ -261,6 +261,7 @@ export default {
     "refLanguage": "Vergleichssprache",
     "clearSettings": "Einstellungen zurücksetzen",
     "advanced": "Advanced",
+    "resetDefaults": "Einstellungen zurücksetzen",
     "confirm": "Bestätigen",
     "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
   }
