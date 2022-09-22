@@ -263,6 +263,6 @@ export default {
     "advanced": "Erweitert",
     "resetDefaults": "Einstellungen zurücksetzen",
     "confirm": "Bestätigen",
-    "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
+    "allowSettings": "Um Einstellungen und Webseitenfunktionen zu ermöglichen, müssen Cookies auf Ihrem Gerät gespeichert werden. Einstellungen erlauben?"
   }
 }
