@@ -259,8 +259,8 @@ export default {
     "logLevel": "Konsolen-Info",
     "languageCode": "Deutsch / DE",
     "refLanguage": "Vergleichssprache",
-    "clearSettings": "resetDefaults",
-    "advanced": "Advanced"
+    "clearSettings": "Einstellungen zurücksetzen",
+    "advanced": "Advanced",
     "confirm": "Bestätigen",
     "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
   }

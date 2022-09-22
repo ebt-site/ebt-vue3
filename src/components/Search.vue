@@ -8,7 +8,7 @@
         <v-row centered>
           <v-col >
             <v-text-field v-model="settings.search" 
-              clearable density="compact" variant="underlined"
+              clearable variant="underlined"
               label="pattern"
               @click:append="onSearch"
               @click:clear="onSearchCleared"
@@ -18,7 +18,7 @@
               placeholder="Enter sutta id or search text">
             </v-text-field>
             <v-text-field v-model="lang" 
-              clearable density="compact" variant="underlined"
+              clearable variant="underlined"
               label="lang" 
               @click:append="onSearch"
               @click:clear="onSearchCleared"

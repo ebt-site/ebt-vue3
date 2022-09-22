@@ -256,7 +256,6 @@ export default {
     "languageCode": "日本語 / JA",
     "refLanguage": "Reference language",
     "clearSettings": "Clear settings",
-    "resetDefaults": "Reset to default settings",
     "confirm": "Confirm",
     "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?",
     "advanced": "Advanced"

@@ -15,16 +15,17 @@
   border: var(--focus-border) var(--focus-color);
   border-radius: 8pt;
 }
-.xv-btn--icon:focus-within {
+.v-btn--icon:focus-within {
   border: var(--focus-border) var(--focus-color);
   border-radius: 8pt;
 }
 .v-expansion-panel {
   border: 2pt dashed rgb(0,0,0,0);
 }
-.v-expansion-panel:has(.v-expansion-panel-title:focus) {
+.v-expansion-panel-title:focus {
+  border: 2pt dashed blue;
   border: 2pt dashed var(--focus-color);
-  border-radius: 14pt;
+  border-radius: 0.5em;
 }
 .v-input:focus-within {
   outline: 2pt dashed var(--focus-color);

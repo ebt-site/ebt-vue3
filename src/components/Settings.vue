@@ -27,10 +27,12 @@
               </div>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-select v-model="settings.theme" :items="themes" 
+              <v-select v-model="settings.theme" :items="themes"
+                :menu-icon="selectIcon"
                 :label="$t('ebt.theme')"
               />
               <v-select v-model="settings.maxResults" 
+                :menu-icon="selectIcon"
                 :items="maxResultsItems"
                 :label="$t('ebt.searchResults')"
               />
@@ -50,9 +52,11 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.locale" :items="languages.UI_LANGS" 
+                :menu-icon="selectIcon"
                 :label="$t('ebt.uiLanguage')"
               />
               <v-select v-model="settings.langTrans" :items="languages.VOICE_LANGS" 
+                :menu-icon="selectIcon"
                 :label="$t('ebt.transLanguage')"
               />
             </v-expansion-panel-text>
@@ -87,6 +91,7 @@
               />
               <div v-if="settings.showReference">
                 <v-select v-model="settings.refLang" :items="languages.REF_LANGS" 
+                  :menu-icon="selectIcon"
                   :label="$t('ebt.refLanguage')"
                 />
               </div>
@@ -113,12 +118,14 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.vnameTrans" 
+                :menu-icon="selectIcon"
                 :items="langVoices(settings.langTrans, 'vnameTrans')"
                 item-title="label"
                 item-value="name"
                 :label="settings.langTrans"
               />
               <v-select v-model="settings.vnameRoot" 
+                :menu-icon="selectIcon"
                 :items="langVoices(settings.langRoot, 'vnameRoot')"
                 item-title="label"
                 item-value="name"
@@ -139,6 +146,7 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select id="ips-select" 
+                :menu-icon="selectIcon"
                 ref="sound-focus"
                 @update:menu="onAudioUpdated"
                 :items="ipsItems"
@@ -174,10 +182,12 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <v-select v-model="settings.serverUrl" :items="servers" 
+                :menu-icon="selectIcon"
                 :label="$t('ebt.server')"
                 :hint='serverHint'
               />
               <v-select v-model="refLogger.logLevel" :items="logLevels" 
+                :menu-icon="selectIcon"
                 :label="$t('ebt.logLevel')"
                 :hint="refLogger.logLevel || 'info'"
               />
@@ -185,23 +195,22 @@
                 v-model="isClearSettings">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn class="settings-clear" 
-                    @click="isClearSettings=!isClearSettings"
+                    @click="openClearSettings"
                     >
                     {{$t('ebt.clearSettings')}}
                   </v-btn>
                 </template>
                 <v-sheet>
-                  <v-toolbar color="red darken-2">
-                    <v-toolbar-title>
-                      {{$t('ebt.confirm')}}
-                    </v-toolbar-title>
-                    <v-spacer/>
-                    <v-btn icon @click="isClearSettings=false">
-                      <v-icon>mdi-close</v-icon>
+                  <v-toolbar >
+                    <v-toolbar-title >
+                    <v-btn v-if="isClearSettings" @click="isClearSettings=false" 
+                      >
+                      {{$t('auth.cancel')}}
                     </v-btn>
+                    </v-toolbar-title >
                   </v-toolbar>
                   <v-card-text>
-                    <v-btn @click="resetDefaults" >
+                    <v-btn @click="resetDefaults" color="red darken-2">
                       {{$t('ebt.clearSettings')}}
                     </v-btn>
                   </v-card-text>
@@ -287,6 +296,9 @@ export default {
     console.log("Settings.mounted()", this.host);
   },
   methods: {
+    openClearSettings() {
+      this.isClearSettings = !this.isClearSettings;
+    },
     resetDefaults() {
       let { settings } = this;
       settings.clear();
@@ -328,6 +340,7 @@ export default {
 
   },
   computed: {
+    selectIcon: ctx=>"mdi-arrow-down-thick",
     servers: ctx=>{
       let { settings, host } = ctx;
       console.log("Settings.servers", settings, host);

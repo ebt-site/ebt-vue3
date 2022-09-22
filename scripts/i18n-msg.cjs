@@ -27,6 +27,11 @@ if (key == null) {
       console.log(`FILE: ${fpath} => ${key}: "${ebt[key]}"`);
       let ts = 'export default ' + JSON.stringify(json.default, null, 2);
       fs.promises.writeFile(fpath, ts);
+    } else if (value === "") {
+      delete ebt[key];
+      let ts = 'export default ' + JSON.stringify(json.default, null, 2);
+      fs.promises.writeFile(fpath, ts);
+      console.log(`FILE: ${fpath} ${key}: (deleted)`);
     } else {
       let value = ebt[key] == null ? "undefined" : `"${ebt[key]}"`;
       console.log(`FILE: ${fpath} ${key}: ${value}`);
