@@ -260,7 +260,7 @@ export default {
     "languageCode": "Deutsch / DE",
     "refLanguage": "Vergleichssprache",
     "clearSettings": "Einstellungen zurücksetzen",
-    "advanced": "Advanced",
+    "advanced": "Erweitert",
     "resetDefaults": "Einstellungen zurücksetzen",
     "confirm": "Bestätigen",
     "allowSettings": "Um Einstellungen zu ermöglichen, werden Cookies auf Ihrem Gerät gespeichert. Einstellungen erlauben?"
