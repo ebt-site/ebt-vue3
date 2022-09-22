@@ -166,7 +166,7 @@
             <v-expansion-panel-title 
               expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
               >
-              Advanced
+              {{$t('ebt.advanced')}}
               <v-spacer/>
               <div class="settings-summary">
                 <Version/>
@@ -236,6 +236,7 @@ const maxResultsItems = [{
   title: "50",
   value: 50,
 }]
+
 
 export default {
   setup() {
