@@ -197,24 +197,25 @@
                   <v-btn class="settings-clear" 
                     @click="openClearSettings"
                     >
-                    {{$t('ebt.clearSettings')}}
+                    {{$t('ebt.resetSettings')}}
                   </v-btn>
                 </template>
-                <v-sheet>
-                  <v-toolbar >
-                    <v-toolbar-title >
-                    <v-btn v-if="isClearSettings" @click="isClearSettings=false" 
-                      >
+                <v-card max-width="30em" location="center">
+                  <v-card-title>
+                    <div style="border-bottom: 1pt solid red">
+                      {{$t('ebt.clearSettings')}}
+                    </div>
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-btn v-if="isClearSettings" @click="isClearSettings=false">
                       {{$t('auth.cancel')}}
                     </v-btn>
-                    </v-toolbar-title >
-                  </v-toolbar>
-                  <v-card-text>
-                    <v-btn @click="resetDefaults" color="red darken-2">
-                      {{$t('ebt.clearSettings')}}
+                    <v-spacer/>
+                    <v-btn @click="resetDefaults" color="red">
+                      {{$t('ebt.reset')}}
                     </v-btn>
-                  </v-card-text>
-                </v-sheet>
+                  </v-card-actions>
+                </v-card>
               </v-dialog>
             </v-expansion-panel-text>
           </v-expansion-panel><!--Advanced-->
@@ -340,7 +341,7 @@ export default {
 
   },
   computed: {
-    selectIcon: ctx=>"mdi-arrow-down-thick",
+    selectIcon: ctx=>"mdi-menu-open",
     servers: ctx=>{
       let { settings, host } = ctx;
       console.log("Settings.servers", settings, host);

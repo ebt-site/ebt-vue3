@@ -15,12 +15,13 @@
           {{$t('ebt.allowSettings')}}
         </div>
         <v-btn @click="allowLocalStorage" dark>
-          Allow
+          {{$t('ebt.allow')}}
         </v-btn>
       </v-alert>
       <v-card v-if="settings.isLocalStorage">
         <v-card-title> 
           REST API Endpoints
+          {{language}}
         </v-card-title>
         <v-expansion-panels variant="inset">
           <Search/>
@@ -101,7 +102,9 @@ function onTest(ctx) {
     mounted() {
       let { $vuetify, settings, $i18n, } = this;
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-      $i18n.locale = settings.locale;
+      $i18n.locale = settings.isLocalStorage
+        ? settings.locale
+        : navigator.language;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
         console.debug("App.mounted() App.mounted() subscribe =>", {mutation, state});

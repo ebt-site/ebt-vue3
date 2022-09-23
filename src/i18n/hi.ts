@@ -254,9 +254,12 @@ export default {
     "logLevel": "Console messages",
     "languageCode": "हिंदी / HI",
     "refLanguage": "Reference language",
-    "clearSettings": "Clear settings",
+    "clearSettings": "Clear all settings and reset to defaults?",
     "confirm": "Confirm",
     "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "allow": "Allow",
+    "reset": "Reset",
+    "resetSettings": "Reset settings"
   }
 }
