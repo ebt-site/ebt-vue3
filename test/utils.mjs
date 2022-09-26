@@ -2,7 +2,7 @@ import Utils from "../src/utils.mjs";
 import should from "should";
 
 typeof describe === "function" && describe("utils", function() {
-  it ("assignTyped()", ()=>{
+  it ("TESTTESTassignTyped()", ()=>{
     let initial = {
       aString: 'init-string',
       aDate: new Date(2020,2,1),
@@ -20,10 +20,10 @@ typeof describe === "function" && describe("utils", function() {
     };
     let dst = {};
     should.deepEqual(Utils.assignTyped(dst, src, initial), {
-      aString: "123",
-      aDate: srcDate,
-      aBool: false,
-      aNumber: 123,
+      aString: "123", // override initial with src
+      aDate: srcDate, // from src
+      aBool: false, // convert src type
+      aNumber: 123, // convert src type
     });
   });
 })

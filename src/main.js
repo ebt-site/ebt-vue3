@@ -12,6 +12,8 @@ import './assets/main.css'
 import 'vuetify/styles'
 
 import colors from 'vuetify/lib/util/colors'
+
+let COLOR_SAFFRON = "#ff9933";
 const vuetifyOpts = {
   theme: {
     defaultTheme: 'dark',
@@ -19,12 +21,14 @@ const vuetifyOpts = {
       light: {
         dark: false,
         colors: {
+          chip: colors.brown.darken2,
           toolbar: colors.brown.darken2,
         },
       },
       dark: {
         dark: true,
         colors: {
+          chip: COLOR_SAFFRON,
           toolbar: colors.brown.darken2,
         },
       },
@@ -80,8 +84,22 @@ const vuetify = createVuetify(vuetifyOpts);
 import { loadFonts } from './plugins/webfontloader'
 loadFonts()
 
+//import SuttaView from './components/SuttaView.vue';
+//import WikiView from './components/WikiView.vue';
+//const routes = [
+  //{ path: '/sutta', component: SuttaView },
+  //{ path: '/wiki', component: WikiView },
+//]
+
+//import * as VueRouter from "vue-router";
+//const router = VueRouter.createRouter({
+  //history: VueRouter.createWebHashHistory(),
+  //routes, // short for `routes: routes`
+//})
+
 var app = createApp(App);
 app.use(pinia);
 app.use(i18n)
 app.use(vuetify)
+//app.use(router);
 app.mount('#app')

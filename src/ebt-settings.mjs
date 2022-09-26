@@ -1,4 +1,5 @@
 import { logger } from 'log-instance';
+import { default as EbtCard } from "./ebt-card.mjs";
 
 const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 
@@ -56,6 +57,7 @@ const INITIAL_STATE = {
   showTrans: true,
   vnameRoot: 'Aditi',
   vnameTrans: 'Amy',
+  cards: [new EbtCard()],
 
 };
 

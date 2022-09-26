@@ -266,6 +266,8 @@ export default {
     "allowSettings": "Um Einstellungen und Webseitenfunktionen zu ermöglichen, müssen Cookies auf Ihrem Gerät gespeichert werden. Einstellungen erlauben?",
     "allow": "Erlauben",
     "reset": "Reset",
-    "resetSettings": "Einstellungen zurücksetzen"
+    "resetSettings": "Einstellungen zurücksetzen",
+    "wikiHome": "Welcome",
+    "content-search": "Search"
   }
 }

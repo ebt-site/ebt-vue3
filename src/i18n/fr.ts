@@ -258,6 +258,9 @@ export default {
     "advanced": "Advanced",
     "allow": "Allow",
     "reset": "Reset",
-    "resetSettings": "Reset settings"
+    "resetSettings": "Reset settings",
+    "wikiHome": "Welcome",
+    "content-sutta": "Sutta",
+    "content-search": "Search"
   }
 }

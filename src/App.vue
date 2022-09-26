@@ -6,6 +6,9 @@
           EBT-Vue3
         </v-app-bar-title>
         <v-spacer/>
+        <v-btn icon @click="settings.addCard()">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <Settings/>
       </v-app-bar>
       <v-progress-linear v-if="volatile.waiting"
@@ -18,80 +21,41 @@
           {{$t('ebt.allow')}}
         </v-btn>
       </v-alert>
-      <v-card v-if="settings.isLocalStorage">
-        <v-card-title> 
-          REST API Endpoints
-          {{language}}
-        </v-card-title>
-        <v-expansion-panels variant="inset">
-          <Search/>
-          <PlaySegment/>
-          <Download/>
-        </v-expansion-panels>
-        <v-card-text>
-          <details>
-            <summary>DEBUG</summary>
-            <v-btn @click="onTest">
-              Test
-            </v-btn>
-            <div class="text-h6"> Font Test </div>
-            <div style="font-family:Roboto;">
-              <div class="text-h4">Roboto</div>
-              <div >
-                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
-              </div>
-            </div>
-            <div style="font-family:SourceSansPro !important;">
-              <div class="text-h4">SourceSansPro</div>
-              <div >
-                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
-              </div>
-            </div>
-            <div >
-              <div class="text-h4">DefaultFont</div>
-              <div >
-                Karonti kho, vāseṭṭha, sakyā raññe pasenadimhi kosale nipaccakāraṁ abhivādanaṁ paccuṭṭhānaṁ añjalikammaṁ sāmīcikammaṁ.
-              </div>
-            </div>
-          </details> <!-- Debug -->
-        </v-card-text>
-      </v-card>
+
+      <v-sheet v-if="settings.isLocalStorage">
+        <ebt-chips/>
+        <ebt-cards/>
+      </v-sheet>
+
     </v-main>
   </v-app>
 </template>
 
-<script setup>
-//import AwsCreds from './components/AwsCreds.vue'
-//import Authenticated from './components/Authenticated.vue'
-import Settings from './components/Settings.vue'
-import { useSettingsStore } from './stores/settings'
-import { useVolatileStore } from './stores/volatile'
-import Search from './components/Search.vue'
-import PlaySegment from './components/PlaySegment.vue'
-import Download from './components/Download.vue'
-import { onMounted, ref } from 'vue'
-import * as vue from 'vue'
-import { useLocale } from "vuetify"
-import { en, de } from 'vuetify/locale'
-
-const showMenu = ref(false);
-
-function onMenu(value) {
-  showMenu.value = !showMenu.value;
-  console.log('App.onMenu()', value, showMenu.value);
-}
-function onTest(ctx) {
-  alert("test");
-}
-
-</script>
 <script>
+  import EbtCards from './components/EbtCards.vue';
+  import EbtChips from './components/EbtChips.vue';
+  import Settings from './components/Settings.vue';
+  import { useSettingsStore } from './stores/settings';
+  import { useVolatileStore } from './stores/volatile';
+  import { ref } from "vue";
+
   export default {
+    setup() {
+      const tabs = ref([]);
+      return {
+        tabs,
+      }
+    },
     data: ()=>({
       settings: useSettingsStore(),
       volatile: useVolatileStore(),
       unsubscribe: undefined,
     }),
+    components: {
+      EbtCards,
+      EbtChips,
+      Settings,
+    },
     methods: {
       allowLocalStorage() {
         let { settings } = this;
@@ -116,3 +80,6 @@ function onTest(ctx) {
     },
   }
 </script>
+<style scoped>
+</style>
+

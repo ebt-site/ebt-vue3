@@ -1,4 +1,5 @@
 import { default as Settings } from "../src/ebt-settings.mjs";
+import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
@@ -27,7 +28,7 @@ import should from "should";
     });
   });
   it("TESTTESTINITIAL_STATE", async () => {
-    should.deepEqual(Settings.INITIAL_STATE, {
+    should(Settings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
       fullLine: false,
@@ -61,6 +62,10 @@ import should from "should";
       vnameTrans: 'Amy',
 
     });
+    let cards = Settings.INITIAL_STATE.cards;
+    should(cards instanceof Array);
+    should(cards.length).equal(1);
+    should(cards[0]).instanceOf(EbtCard);
   });
   it("custom ctor", async () => {
     let dates = [

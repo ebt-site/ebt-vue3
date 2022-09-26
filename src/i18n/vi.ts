@@ -260,6 +260,12 @@ export default {
     "advanced": "Advanced",
     "allow": "Allow",
     "reset": "Reset",
-    "resetSettings": "Reset settings"
+    "resetSettings": "Reset settings",
+    "addCard": "Add Card",
+    "contentWiki": "Wiki",
+    "contentSutta": "Sutta",
+    "content-wiki": "Wiki",
+    "content-sutta": "Sutta",
+    "content-search": "Search"
   }
 }

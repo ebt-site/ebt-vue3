@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { logger } from 'log-instance'
 import Utils from "../utils.mjs";
 import { default as Settings } from "../../src/ebt-settings.mjs";
+import { default as EbtCard } from "../../src/ebt-card.mjs";
 
 var id = 1;
 
@@ -13,13 +14,22 @@ export const useSettingsStore = defineStore('settings', {
     if (savedState) {
       try {
         savedState = JSON.parse(savedState);
+        let { cards } = savedState;
+        if (cards == null) {
+          cards = savedState.cards = [{}];
+        }
+        cards.forEach((card,i) => {
+          cards[i] = new EbtCard(card);
+        });
       } catch(e) {
-        logger.error(`SettingsStore.state() corrupt localStorage`, savedState);
+        logger.error(`SettingsStore.state() corrupt localStorage`, 
+          savedState, e.message);
         savedState = null;
       }
     }
     if (savedState) {
       Utils.assignTyped(s, savedState, Settings.INITIAL_STATE);
+      s.cards = savedState.cards;
     }
     logger.debug(`SettingsStore.state() => `, s);
     return s;
@@ -27,10 +37,16 @@ export const useSettingsStore = defineStore('settings', {
   actions: {
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
-      localStorage.settings = JSON.stringify(saved);
+      saved.cards = this.cards;
+      let json = JSON.stringify(saved);
+      localStorage.settings = json;
+      console.log('saveSettings', json);
       this.isLocalStorage = true;
       logger.info("SettingsStore.saveSettings() localStorage.settings", 
         localStorage.settings);
+    },
+    addCard() {
+      this.cards.push(new EbtCard());
     },
     clear() {
       delete localStorage.settings;
