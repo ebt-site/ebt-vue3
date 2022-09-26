@@ -7,8 +7,8 @@ import should from "should";
     let card2 = new EbtCard();
     let defaultProps = {
       context: "wiki",
-      location: "",
-      isOpen: false,
+      location: "welcome",
+      isOpen: true,
     }
     should(card1.id.length).equal(36);
     should(card1).properties(defaultProps);
