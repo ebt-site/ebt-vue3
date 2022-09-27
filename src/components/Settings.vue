@@ -193,11 +193,19 @@
               :label="$t('ebt.logLevel')"
               :hint="refLogger.logLevel || 'info'"
             />
+            <v-card>
+              <v-card-text>
+              <a :href="githubUrl" target="_blank">
+                See Github source
+              </a>
+              </v-card-text>
+            </v-card>
             <v-dialog 
               v-model="isClearSettings">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn class="settings-clear" 
                   @click="openClearSettings"
+                  variant="outlined"
                   >
                   {{$t('ebt.resetSettings')}}
                 </v-btn>
@@ -234,6 +242,7 @@ import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
 import * as VOICES from "../auto/voices.json";
 import Version from "./Version.vue";
+import * as EBT_REPO from "../../ebt-repo.json";
 const maxResultsItems = [{
   title: "5",
   value: 5,
@@ -342,6 +351,10 @@ export default {
 
   },
   computed: {
+    githubUrl: ctx=>{
+      let { repository, account } = EBT_REPO;
+      return `https://github.com/${account}/${repository}`;
+    },
     selectIcon: ctx=>"mdi-menu-open",
     servers: ctx=>{
       let { settings, host } = ctx;
