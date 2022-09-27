@@ -270,6 +270,7 @@ export default {
     "reset": "Zurücksetzen",
     "resetSettings": "Einstellungen zurücksetzen",
     "showGdrp": "Show GDRP notice",
-    "searchHome": "Search"
+    "searchHome": "Search",
+    "showGithub": "Show Github source"
   }
 }

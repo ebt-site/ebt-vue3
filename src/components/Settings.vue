@@ -196,7 +196,7 @@
             <v-card>
               <v-card-text>
               <a :href="githubUrl" target="_blank">
-                See Github source
+                {{$t('ebt.showGithub')}}
               </a>
               </v-card-text>
             </v-card>

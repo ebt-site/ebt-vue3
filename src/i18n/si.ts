@@ -266,6 +266,7 @@ export default {
     "content-search": "Search",
     "ok": "OK",
     "showGdrp": "Show GDRP notice",
-    "searchHome": "Search"
+    "searchHome": "Search",
+    "showGithub": "Show Github source"
   }
 }

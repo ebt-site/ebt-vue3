@@ -267,6 +267,7 @@ export default {
     "content-sutta": "Sutta",
     "content-search": "Search",
     "ok": "OK",
-    "searchHome": "Search"
+    "searchHome": "Search",
+    "showGithub": "Show Github source"
   }
 }
