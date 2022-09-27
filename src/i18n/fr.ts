@@ -261,6 +261,8 @@ export default {
     "resetSettings": "Reset settings",
     "wikiHome": "Welcome",
     "content-sutta": "Sutta",
-    "content-search": "Search"
+    "content-search": "Search",
+    "ok": "OK",
+    "searchHome": "Search"
   }
 }

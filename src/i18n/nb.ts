@@ -263,6 +263,8 @@ export default {
     "resetSettings": "Reset settings",
     "addCard": "Add Card",
     "content-wiki": "Wiki",
-    "content-search": "Search"
+    "content-search": "Search",
+    "showGdrp": "Show GDRP notice",
+    "searchHome": "Search"
   }
 }

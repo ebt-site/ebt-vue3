@@ -6,7 +6,7 @@ const CONTEXT_SUTTA = "sutta";
 const CONTEXT_WIKI = "wiki";
 const CONTEXTS = {
   [CONTEXT_SEARCH]: {
-    icon: "mdi-magnify",
+    icon: "mdi-cloud-search-outline",
   },
   [CONTEXT_WIKI]: {
     icon: "mdi-wikipedia",
@@ -37,7 +37,7 @@ export default class EbtCard {
     return CONTEXTS[this.context]?.icon || "mdi-alert-icon";
   }
 
-  chipTitle($t=((k)=k)) {
+  chipTitle($t=((k)=>k)) {
     let { location, context } = this;
     if (!!location ) {
       return location;

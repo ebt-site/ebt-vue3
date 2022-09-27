@@ -264,6 +264,8 @@ export default {
     "wikiHome": "Welcome",
     "contentWiki": "Wiki",
     "content-wiki": "Wiki",
-    "content-search": "Search"
+    "content-search": "Search",
+    "showGdrp": "Show GDRP notice",
+    "searchHome": "Search"
   }
 }

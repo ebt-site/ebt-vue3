@@ -36,7 +36,7 @@ import should from "should";
       iCursor: 0,
       id: 1,
       ips: 6,
-      isLocalStorage: false,
+      showGdrp: true,
       lang: 'en',
       langRoot: 'pli',
       langs: 'pli+en',

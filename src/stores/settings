@@ -40,10 +40,12 @@ export const useSettingsStore = defineStore('settings', {
       saved.cards = this.cards;
       let json = JSON.stringify(saved);
       localStorage.settings = json;
-      console.log('saveSettings', json);
-      this.isLocalStorage = true;
+      logger.debug('saveSettings', json);
       logger.info("SettingsStore.saveSettings() localStorage.settings", 
         localStorage.settings);
+    },
+    removeCard(card) {
+      this.cards = this.cards.filter(c => c !== card);
     },
     addCard() {
       this.cards.push(new EbtCard());

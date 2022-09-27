@@ -265,6 +265,8 @@ export default {
     "contentSutta": "Sutta",
     "content-wiki": "Wiki",
     "content-sutta": "Sutta",
-    "content-search": "Search"
+    "content-search": "Search",
+    "ok": "OK",
+    "searchHome": "Search"
   }
 }

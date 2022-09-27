@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width=600>
     <template v-slot:activator="{ props }">
-      <v-btn v-if="settings.isLocalStorage" icon="mdi-cog" v-bind="props" 
+      <v-btn icon="mdi-cog" v-bind="props" 
         :title="$t('ebt.settingsTitle')"/> 
     </template>
     <v-sheet>
@@ -35,6 +35,9 @@
               :items="maxResultsItems"
               :label="$t('ebt.searchResults')"
             />
+            <v-checkbox v-model="settings.showGdrp" density="compact"
+              :label="$t('ebt.showGdrp')">
+            </v-checkbox>
           </v-expansion-panel-text>
         </v-expansion-panel><!--General-->
 

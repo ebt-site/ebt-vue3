@@ -10,21 +10,33 @@
           <v-icon>mdi-plus</v-icon>
         </v-btn>
         <Settings/>
+        <template v-slot:extension>
+          <ebt-chips/>
+        </template>
       </v-app-bar>
       <v-progress-linear v-if="volatile.waiting"
         indeterminate color="secondary" class="mb-0"/>
-      <v-alert v-if="!settings.isLocalStorage" type="info">
+      <!--v-alert v-if="!settings.isLocalStorage" type="info">
         <div>
           {{$t('ebt.allowSettings')}}
         </div>
         <v-btn @click="allowLocalStorage" dark>
           {{$t('ebt.allow')}}
         </v-btn>
-      </v-alert>
+      </v-alert-->
 
-      <v-sheet v-if="settings.isLocalStorage">
-        <ebt-chips/>
+      <v-sheet>
         <ebt-cards/>
+      </v-sheet>
+
+      <v-sheet class="gdrp" v-if="settings.showGdrp">
+        <v-chip 
+          color="chip"
+          size="small"
+          append-icon="mdi-close-circle"
+          @click="clickGdrp">
+          {{$t('ebt.allowSettings')}}
+        </v-chip>
       </v-sheet>
 
     </v-main>
@@ -62,24 +74,32 @@
         settings.saveSettings();
         console.log("allowLocalStorage()", settings);
       },
+      clickGdrp(evt) {
+        let { settings } = this;
+        console.log('clickGdrp', evt);
+        settings.showGdrp = false;
+        evt.preventDefault();
+      },
     },
     mounted() {
       let { $vuetify, settings, $i18n, } = this;
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-      $i18n.locale = settings.isLocalStorage
-        ? settings.locale
-        : navigator.language;
+      $i18n.locale = settings.locale;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
         console.debug("App.mounted() App.mounted() subscribe =>", {mutation, state});
-        if (settings.isLocalStorage) {
-          settings.saveSettings();
-          $i18n.locale = settings.locale;
-        }
+        settings.saveSettings();
+        $i18n.locale = settings.locale;
       });
     },
   }
 </script>
 <style scoped>
+.gdrp {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  opacity: 1;
+}
 </style>
 

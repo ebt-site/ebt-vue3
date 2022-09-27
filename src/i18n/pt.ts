@@ -266,6 +266,8 @@ export default {
     "contentWiki": "Wiki",
     "content-wiki": "Wiki",
     "content-sutta": "Sutta",
-    "content-search": "Search"
+    "content-search": "Search",
+    "showGdrp": "Show GDRP notice",
+    "searchHome": "Search"
   }
 }

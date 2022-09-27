@@ -268,6 +268,8 @@ export default {
     "wikiHome": "Welcome",
     "content-search": "Search",
     "reset": "Zurücksetzen",
-    "resetSettings": "Einstellungen zurücksetzen"
+    "resetSettings": "Einstellungen zurücksetzen",
+    "showGdrp": "Show GDRP notice",
+    "searchHome": "Search"
   }
 }
