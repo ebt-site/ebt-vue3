@@ -254,7 +254,7 @@ export default {
     "refLanguage": "Reference language",
     "clearSettings": "Clear all settings and reset to defaults?",
     "confirm": "Confirm",
-    "allowSettings": "This site requires localStorage and cookies for settings and performance. Enable settings?",
+    "allowSettings": "This site saves settings in local storage only",
     "advanced": "Advanced",
     "allow": "Allow",
     "reset": "Reset",
