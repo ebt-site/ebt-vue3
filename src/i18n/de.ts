@@ -265,12 +265,12 @@ export default {
     "confirm": "Bestätigen",
     "allowSettings": "Ihre Einstellungen werden nur in Ihrem Browser gespeichert.",
     "allow": "Erlauben",
-    "wikiHome": "Welcome",
-    "content-search": "Search",
+    "wikiHome": "Startseite",
+    "content-search": "Suche",
     "reset": "Zurücksetzen",
     "resetSettings": "Einstellungen zurücksetzen",
-    "showGdrp": "Show GDRP notice",
-    "searchHome": "Search",
-    "showGithub": "Show Github source"
+    "showGdrp": "DSGVO-Info zeigen",
+    "searchHome": "Suche",
+    "showGithub": "Zum GitHub-Quellcode"
   }
 }
