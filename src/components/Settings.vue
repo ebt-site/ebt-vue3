@@ -35,8 +35,8 @@
               :items="maxResultsItems"
               :label="$t('ebt.searchResults')"
             />
-            <v-checkbox v-model="settings.showGdrp" density="compact"
-              :label="$t('ebt.showGdrp')">
+            <v-checkbox v-model="settings.showGdpr" density="compact"
+              :label="$t('ebt.showGdpr')">
             </v-checkbox>
           </v-expansion-panel-text>
         </v-expansion-panel><!--General-->

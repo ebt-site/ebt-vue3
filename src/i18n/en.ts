@@ -269,7 +269,7 @@ export default {
     "content-wiki": "Wiki",
     "content-sutta": "Sutta",
     "content-search": "Search",
-    "showGdrp": "Show GDRP notice",
+    "showGdpr": "Show GDPR notice",
     "searchHome": "Search",
     "showGithub": "Show Github source"
   }

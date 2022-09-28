@@ -269,7 +269,7 @@ export default {
     "content-search": "Suche",
     "reset": "Zurücksetzen",
     "resetSettings": "Einstellungen zurücksetzen",
-    "showGdrp": "DSGVO-Info zeigen",
+    "showGdpr": "DSGVO-Info zeigen",
     "searchHome": "Suche",
     "showGithub": "Zum GitHub-Quellcode"
   }

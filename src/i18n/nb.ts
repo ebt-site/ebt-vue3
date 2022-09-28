@@ -264,7 +264,7 @@ export default {
     "addCard": "Add Card",
     "content-wiki": "Wiki",
     "content-search": "Search",
-    "showGdrp": "Show GDRP notice",
+    "showGdpr": "Show GDPR notice",
     "searchHome": "Search",
     "showGithub": "Show Github source"
   }

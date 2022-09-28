@@ -267,7 +267,7 @@ export default {
     "content-sutta": "Sutta",
     "content-search": "Search",
     "ok": "OK",
-    "showGdrp": "Show GDRP notice",
+    "showGdpr": "Show GDPR notice",
     "searchHome": "Search",
     "showGithub": "Show Github source"
   }

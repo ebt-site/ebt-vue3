@@ -4,15 +4,17 @@
       <template v-if="card.isOpen">
         <v-card variant="outlined" class="ebt-card">
           <template v-slot:title>
-            <div class="text-caption">{{$t(`ebt.content-${card.context}`)}}</div>
-            <div>{{card.chipTitle($t)}}</div>
+            <v-icon :icon="card.icon"/>
+            {{card.chipTitle($t)}}
           </template>
           <template v-slot:append>
             <v-btn icon="mdi-close" @click="closeCard(card)"
             />
           </template>
           <v-card-text>
-            <div class="debug">
+            <search-view card="card" v-if="card.context===CONTEXT_SEARCH"/>
+
+            <div class="debug" v-if="card.context!==CONTEXT_SEARCH">
               <div class="text-subtitle-1">Debug Stuff (Ignore)</div>
               <v-text-field v-model="card.location"
                 label="$t('ebt.location')"
@@ -44,17 +46,21 @@
 </template>
 
 <script>
+  import { default as SearchView } from './SearchView.vue';
+  import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings';
   import { ref } from "vue";
 
   export default {
     setup() {
       const settings = useSettingsStore();
+
       return {
         settings,
       }
     },
     components: {
+      SearchView,
     },
     methods: {
       closeCard: (card) => {
@@ -64,16 +70,20 @@
     mounted() {
     },
     computed: {
+      CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
+      CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
+      CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
+        let { $t } = ctx;
         return [{
-          title: "Sutta",
-          value: "sutta",
+          title: $t('ebt.context-sutta'),
+          value: EbtCard.CONTEXT_SUTTA,
         },{
-          title: "Search",
-          value: "search",
+          title: $t('ebt.context-search'),
+          value: EbtCard.CONTEXT_SEARCH,
         },{
-          title: "Wiki",
-          value: "wiki",
+          title: $t('ebt.context-wiki'),
+          value: EbtCard.CONTEXT_WIKI,
         }];
       },
     },

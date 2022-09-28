@@ -33,6 +33,10 @@ export default class EbtCard {
     });
   }
 
+  static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
+  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
+  static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
+
   get icon() {
     return CONTEXTS[this.context]?.icon || "mdi-alert-icon";
   }

@@ -29,7 +29,7 @@
         <ebt-cards/>
       </v-sheet>
 
-      <v-sheet class="gdrp" v-if="settings.showGdrp">
+      <v-sheet class="gdrp" v-if="settings.showGdpr">
         <v-chip 
           color="chip"
           size="small"
@@ -77,7 +77,7 @@
       clickGdrp(evt) {
         let { settings } = this;
         console.log('clickGdrp', evt);
-        settings.showGdrp = false;
+        settings.showGdpr = false;
         evt.preventDefault();
       },
     },

@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   // from scv-server
   audioSuffix: 'mp3',
   id: 1,
-  showGdrp: true,
+  showGdpr: true,
   langRoot: 'pli',
   langs: 'pli+en',
   langTrans: 'en',

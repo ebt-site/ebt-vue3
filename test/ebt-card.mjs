@@ -16,6 +16,9 @@ import should from "should";
     should(card2.id).not.equal(card1.id);
     should(card2).properties(defaultProps);
   });
+  it("TESTTESTconstants", ()=>{
+    should(EbtCard.CONTEXT_SEARCH).equal('search');
+  });
   it("TESTTESTcustom ctor", async () => {
     let id = 'test-id';
     let context = 'test-context';
