@@ -270,6 +270,7 @@ export default {
     "content-search": "Search",
     "ok": "OK",
     "searchHome": "Search",
-    "showGithub": "Show Github source"
+    "showGithub": "Show Github source",
+    "pageNotFound": "Page Not Found"
   }
 }

@@ -20,10 +20,17 @@ export default class EbtCard {
   constructor(opts = {}) {
     let {
       id = uuidv4(),
-      context = CONTEXT_WIKI,
-      location = "welcome",
+      context,
+      location=[],
       isOpen = true,
     } = opts;
+
+    if (typeof location === 'string') {
+      location = [location];
+    }
+    if (!(location instanceof Array)) {
+      throw new Error('Expected location array');
+    }
 
     Object.assign(this, {
       id,
@@ -44,7 +51,7 @@ export default class EbtCard {
   chipTitle($t=((k)=>k)) {
     let { location, context } = this;
     if (!!location ) {
-      return location;
+      return location.join('/');
     }
     if (context === CONTEXT_SEARCH) {
       return $t('ebt.searchHome');
@@ -56,6 +63,38 @@ export default class EbtCard {
       return $t('ebt.suttaHome');
     }
     return $t(`context:${context}?`);
+  }
+
+  matchPath(path='') {
+    let rexEnd = new RegExp("/*$");
+    path = path.replace(rexEnd, '').toLowerCase();
+    let [ empty, context, ...location ] = path.split('/');
+    context = context && context.toLowerCase();
+    location = location ? location.map(loc => loc && loc.toLowerCase()) : [];
+    let cardLocation = this.location instanceof Array 
+      ? this.location
+      : (this.location == null ? [] : [this.location]);
+    if (context !== this.context) {
+      if (context == null || this.context == null) {
+        //console.log(`matchPath context ${context} != ${this.context}`);
+        return false;
+      }
+      if (context.toLowerCase() !== this.context.toLowerCase()) {
+        //console.log(`matchPath context ${context} != ${this.context}`);
+        return false;
+      }
+    }
+    if (location.length !== cardLocation.length) {
+      //console.log(`matchPath location ${location} != ${cardLocation}`);
+      return false;
+    }
+    let match = location.reduce((a,v,i) => {
+      let match = a && (v.toLowerCase() === cardLocation[i].toLowerCase());
+      a && !match && console.log(`matchPath location[${i}] ${location[i]} != ${cardLocation[i]}`);
+      return a;
+    }, true);
+
+    return match;
   }
 
 }

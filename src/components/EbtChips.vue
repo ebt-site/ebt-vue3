@@ -79,6 +79,7 @@
     display: flex;
     flex-direction: column;
     min-height: 32px;
+    margin-left: 1.0rem;
   }
   .chip-close {
     margin-right: -0.4em;

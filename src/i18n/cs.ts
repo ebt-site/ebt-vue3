@@ -268,6 +268,7 @@ export default {
     "ok": "OK",
     "showGdpr": "Show GDPR notice",
     "searchHome": "Search",
-    "showGithub": "Show Github source"
+    "showGithub": "Show Github source",
+    "pageNotFound": "Page Not Found"
   }
 }

@@ -271,6 +271,7 @@ export default {
     "resetSettings": "Einstellungen zurücksetzen",
     "showGdpr": "DSGVO-Info zeigen",
     "searchHome": "Suche",
-    "showGithub": "Zum GitHub-Quellcode"
+    "showGithub": "Zum GitHub-Quellcode",
+    "pageNotFound": "Page Not Found"
   }
 }

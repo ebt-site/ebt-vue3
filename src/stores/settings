@@ -50,6 +50,11 @@ export const useSettingsStore = defineStore('settings', {
     addCard() {
       this.cards.push(new EbtCard());
     },
+    cardOfPath(path) {
+      let { cards } = this;
+      let [ empty, context, ...location ]  = path.split('/');
+      console.log("cardOfPath", { context, location });
+    },
     clear() {
       delete localStorage.settings;
       Utils.assignTyped(this, Settings.INITIAL_STATE);

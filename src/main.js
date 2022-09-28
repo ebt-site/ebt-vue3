@@ -84,22 +84,23 @@ const vuetify = createVuetify(vuetifyOpts);
 import { loadFonts } from './plugins/webfontloader'
 loadFonts()
 
-//import SuttaView from './components/SuttaView.vue';
-//import WikiView from './components/WikiView.vue';
-//const routes = [
-  //{ path: '/sutta', component: SuttaView },
-  //{ path: '/wiki', component: WikiView },
-//]
-
-//import * as VueRouter from "vue-router";
-//const router = VueRouter.createRouter({
-  //history: VueRouter.createWebHashHistory(),
-  //routes, // short for `routes: routes`
-//})
+import NotFound from './components/NotFound.vue';
+import EbtCards from './components/EbtCards.vue';
+const routes = [
+  { path: '/', component:EbtCards },
+  { path: '/:context', component:EbtCards },
+  { path: '/:context/:location(.*)*', component:EbtCards },
+  { path: '/:bad_path(.*)*', component:NotFound },
+]
+import * as VueRouter from "vue-router";
+const router = VueRouter.createRouter({
+  history: VueRouter.createWebHashHistory(),
+  routes, 
+})
 
 var app = createApp(App);
 app.use(pinia);
 app.use(i18n)
 app.use(vuetify)
-//app.use(router);
+app.use(router);
 app.mount('#app')

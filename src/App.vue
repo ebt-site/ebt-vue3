@@ -16,17 +16,11 @@
       </v-app-bar>
       <v-progress-linear v-if="volatile.waiting"
         indeterminate color="secondary" class="mb-0"/>
-      <!--v-alert v-if="!settings.isLocalStorage" type="info">
-        <div>
-          {{$t('ebt.allowSettings')}}
-        </div>
-        <v-btn @click="allowLocalStorage" dark>
-          {{$t('ebt.allow')}}
-        </v-btn>
-      </v-alert-->
 
       <v-sheet>
-        <ebt-cards/>
+        <div>
+          <router-view />
+        </div>
       </v-sheet>
 
       <v-sheet class="gdrp" v-if="settings.showGdpr">
