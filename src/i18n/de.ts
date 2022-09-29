@@ -221,15 +221,15 @@ export default {
     "languages": "Sprachen",
     "loadingSutta": "A_SUTTA wird geladen...",
     "logLevel": "Konsolen-Info",
-    "no-location-home": "Home",
-    "no-location-search": "Search...",
+    "no-location-home": "StartSeite",
+    "no-location-search": "Suche...",
     "no-location-sutta": "Sutta...",
     "no-location-wiki": "Welcome",
     "noBell": "Sutta ohne Gong abspielen",
     "noHTML5": "HTML5-Audio wird von Ihrem Browser nicht unterstützt. Versuchen Sie Chrome oder Firefox",
     "noTranslationAvailable": "(keine Übersetzung verfügbar)",
     "notFound": "„A_PATTERN“ nicht gefunden. Versuchen Sie es auf Voice.suttacentral.net",
-    "pageNotFound": "Page Not Found",
+    "pageNotFound": "Seite nicht gefunden"
     "pinned": "Gepinnt A_DATE",
     "playAll": "Alle wiedergeben",
     "playSection": "Abschnitt A_SECTION wiedergeben",
@@ -275,7 +275,6 @@ export default {
     "viewDocument": "Zum Dokument",
     "viewEditGithub": "Seite auf Github ansehen/bearbeiten",
     "weeks": "A_WEEKS Wochen",
-    "wikiAria": "Home@Deutsch.md",
-    "wikiHome": "Startseite"
+    "wikiAria": "Home@Deutsch.md"
   }
 }
