@@ -115,12 +115,16 @@
         let link = `/${context}/${location}`;
         return link;
       },
+      CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
       CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
       CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
         let { $t } = ctx;
         return [{
+          title: $t('ebt.context-home'),
+          value: EbtCard.CONTEXT_HOME,
+        },{
           title: $t('ebt.context-sutta'),
           value: EbtCard.CONTEXT_SUTTA,
         },{

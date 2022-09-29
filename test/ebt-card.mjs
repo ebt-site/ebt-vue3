@@ -6,7 +6,7 @@ import should from "should";
     let card1 = new EbtCard();
     let card2 = new EbtCard();
     let defaultProps = {
-      context: undefined,
+      context: EbtCard.CONTEXT_HOME,
       location: [],
       isOpen: true,
     }
@@ -30,7 +30,7 @@ import should from "should";
   });
   it("TESTTESTicon", async() => {
     let card = new EbtCard();
-    should(card.icon).equal("mdi-alert-icon");
+    should(card.icon).equal("mdi-home-outline");
     let cardWiki = new EbtCard({ context: "wiki"});
     should(cardWiki.icon).equal("mdi-wikipedia");
   });
@@ -41,22 +41,29 @@ import should from "should";
     should(card2).properties(card1);
   });
   it("TESTTESTmatchPath", async() => {
-    let card0 = new EbtCard({ context: undefined });
-    let card1 = new EbtCard({
-      context: "search",
-    });
-    let card2 = new EbtCard({
-      context: "SEARCH",
-      location: "DN33",
+    let card0 = new EbtCard({ context: "" });
+    let card1 = new EbtCard({ context: "search", });
+    let card2 = new EbtCard({ context: "SEARCH", location: "DN33", });
+
+    let noPaths = [
+      "/search/nothing",
+      "/wiki",
+      "search",
+      "search/a",
+    ];
+    noPaths.forEach(path=>{
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(false);
     });
 
     let card0Paths = [
       "/",
     ];
     card0Paths.forEach(path => {
-      should(card0.matchPath(path)).equal(true, path);
-      should(card1.matchPath(path)).equal(false, path);
-      should(card2.matchPath(path)).equal(false, path);
+      should(card0.matchPath(path)).equal(true);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(false);
     });
 
     let card1Paths = [
@@ -66,9 +73,9 @@ import should from "should";
       "/SEARCH//",
     ];
     card1Paths.forEach(path=>{
-      should(card0.matchPath(path)).equal(false, path);
-      should(card1.matchPath(path)).equal(true, path);
-      should(card2.matchPath(path)).equal(false, path);
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(true);
+      should(card2.matchPath(path)).equal(false);
     });
 
     let card2Paths = [
@@ -78,10 +85,11 @@ import should from "should";
       "/SEARCH/DN33/",
     ];
     card2Paths.forEach(path=>{
-      should(card0.matchPath(path)).equal(false, path);
-      should(card1.matchPath(path)).equal(false, path);
-      should(card2.matchPath(path)).equal(true, path);
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(true);
     });
+
   });
 });
 

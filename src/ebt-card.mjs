@@ -1,10 +1,14 @@
 import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
 
+const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
 const CONTEXT_WIKI = "wiki";
 const CONTEXTS = {
+  [CONTEXT_HOME]: {
+    icon: "mdi-home-outline",
+  },
   [CONTEXT_SEARCH]: {
     icon: "mdi-cloud-search-outline",
   },
@@ -25,6 +29,10 @@ export default class EbtCard {
       isOpen = true,
     } = opts;
 
+    if (context == null || context === '') {
+      context = CONTEXT_HOME;
+    }
+
     if (typeof location === 'string') {
       location = [location];
     }
@@ -40,6 +48,7 @@ export default class EbtCard {
     });
   }
 
+  static get CONTEXT_HOME() { return CONTEXT_HOME; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
@@ -52,6 +61,9 @@ export default class EbtCard {
     let { location, context } = this;
     if (!!location ) {
       return location.join('/');
+    }
+    if (context === CONTEXT_HOME) {
+      return $t('ebt.home');
     }
     if (context === CONTEXT_SEARCH) {
       return $t('ebt.searchHome');
@@ -66,34 +78,45 @@ export default class EbtCard {
   }
 
   matchPath(path='') {
-    let rexEnd = new RegExp("/*$");
-    path = path.replace(rexEnd, '').toLowerCase();
-    let [ empty, context, ...location ] = path.split('/');
-    context = context && context.toLowerCase();
+    path = path.toLowerCase();
+    let [ tbd, context, ...location ] = path.split('/');
+    while (location.length && location[location.length-1] === '') {
+      location.pop();
+    }
+    context = context && context.toLowerCase() || CONTEXT_HOME;
     location = location ? location.map(loc => loc && loc.toLowerCase()) : [];
+    let dbg = 0;
     let cardLocation = this.location instanceof Array 
       ? this.location
       : (this.location == null ? [] : [this.location]);
+    if (tbd !== '') {
+      dbg && console.log(`matchPath(${path}) invalid path`, {tbd});
+      return false;
+    }
     if (context !== this.context) {
       if (context == null || this.context == null) {
-        //console.log(`matchPath context ${context} != ${this.context}`);
+        dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
         return false;
       }
       if (context.toLowerCase() !== this.context.toLowerCase()) {
-        //console.log(`matchPath context ${context} != ${this.context}`);
+        dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
         return false;
       }
     }
     if (location.length !== cardLocation.length) {
-      //console.log(`matchPath location ${location} != ${cardLocation}`);
+      dbg && console.log(`matchPath(${path}) location ${location} != ${cardLocation}`);
       return false;
     }
     let match = location.reduce((a,v,i) => {
       let match = a && (v.toLowerCase() === cardLocation[i].toLowerCase());
-      a && !match && console.log(`matchPath location[${i}] ${location[i]} != ${cardLocation[i]}`);
-      return a;
+      if (dbg && !match) {
+        console.log(`matchPath(${path}) location[${i}]`,
+          `${location[i]} != ${cardLocation[i]}`);
+      }
+      return match;
     }, true);
 
+    dbg && console.log(`matchPath(${path}) ${match}`, {context, location});
     return match;
   }
 

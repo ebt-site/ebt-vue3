@@ -266,6 +266,7 @@ export default {
     "resetSettings": "Reset settings",
     "wikiHome": "Welcome",
     "addCard": "Add Card",
+    "context-home": "Home",
     "content-wiki": "Wiki",
     "content-sutta": "Sutta",
     "content-search": "Search",

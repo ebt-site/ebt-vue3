@@ -25,6 +25,8 @@ if (key == null) {
     if (value) {
       ebt[key] = value;
       console.log(`FILE: ${fpath} => ${key}: "${ebt[key]}"`);
+      let sortedJson = Object.keys(json.default).reduce((a,v,i)=>{
+      }, {});
       let ts = 'export default ' + JSON.stringify(json.default, null, 2);
       fs.promises.writeFile(fpath, ts);
     } else if (value === "") {

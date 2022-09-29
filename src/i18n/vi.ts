@@ -270,6 +270,7 @@ export default {
     "ok": "OK",
     "searchHome": "Search",
     "showGithub": "Show Github source",
-    "pageNotFound": "Page Not Found"
+    "pageNotFound": "Page Not Found",
+    "context-home": "Home"
   }
 }

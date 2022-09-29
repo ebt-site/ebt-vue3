@@ -19,14 +19,15 @@
       }
     },
     mounted() {
-      let { $route }  = this;
+      let { settings, $route }  = this;
       let { params, fullPath }  = $route;
-      let { context, location } = params || {};
-      console.log(`EbtCards.mounted()`, {context, location, fullPath});
+      let card = settings.pathToCard(fullPath);
+      console.log(`EbtCards.mounted()`, card);
     },
     watch:{
       $route (to, from){
-        console.log("EbtCards.watch.$route", {to, from});
+        let card = settings.pathToCard(to);
+        console.log(`EbtCards.watch.$route()`, card);
       }
     }, 
     components: {

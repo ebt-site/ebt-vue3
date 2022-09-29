@@ -272,6 +272,7 @@ export default {
     "showGdpr": "DSGVO-Info zeigen",
     "searchHome": "Suche",
     "showGithub": "Zum GitHub-Quellcode",
-    "pageNotFound": "Page Not Found"
+    "pageNotFound": "Page Not Found",
+    "context-home": "Home"
   }
 }
