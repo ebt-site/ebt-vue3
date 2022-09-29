@@ -1,6 +1,6 @@
 <template>
   <div class="chip-container">
-    <v-chip-group v-model="opened">
+    <v-chip-group v-model="opened" column>
       <div v-for="card in settings.cards" :key="card.id">
         <v-chip variant="outlined" 
           ref="chip-close"
@@ -10,9 +10,9 @@
           :rounded="card.isOpen ? 0 : 1"
           color="chip"
         >
-          <span class="mr-2">{{card.chipTitle($t)}}</span>
+          <div class="chip-title mr-2">{{card.chipTitle($t)}}</div>
           <v-icon icon="mdi-close-circle chip-close"
-            v-if="settings.cards.length > 1"
+            v-if="!card.isOpen && settings.cards.length > 1"
             size="small"
             @click="clickChipClose(card, settings)"
           />
@@ -83,5 +83,11 @@
   }
   .chip-close {
     margin-right: -0.4em;
+  }
+  .chip-title {
+    display: inline-block;
+    overflow: hidden;
+    max-width:5em;
+    text-overflow: ellipsis;
   }
 </style>

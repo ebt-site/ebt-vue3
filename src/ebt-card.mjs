@@ -10,7 +10,7 @@ const CONTEXTS = {
     icon: "mdi-home-outline",
   },
   [CONTEXT_SEARCH]: {
-    icon: "mdi-cloud-search-outline",
+    icon: "mdi-file-search-outline",
   },
   [CONTEXT_WIKI]: {
     icon: "mdi-wikipedia",
