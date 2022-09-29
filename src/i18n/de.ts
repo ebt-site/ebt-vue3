@@ -229,7 +229,7 @@ export default {
     "noHTML5": "HTML5-Audio wird von Ihrem Browser nicht unterstützt. Versuchen Sie Chrome oder Firefox",
     "noTranslationAvailable": "(keine Übersetzung verfügbar)",
     "notFound": "„A_PATTERN“ nicht gefunden. Versuchen Sie es auf Voice.suttacentral.net",
-    "pageNotFound": "Seite nicht gefunden"
+    "pageNotFound": "Seite nicht gefunden",
     "pinned": "Gepinnt A_DATE",
     "playAll": "Alle wiedergeben",
     "playSection": "Abschnitt A_SECTION wiedergeben",
