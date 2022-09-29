@@ -7,6 +7,7 @@
 </template>
 
 <script>
+  import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { useSettingsStore } from '../stores/settings';
 
@@ -21,13 +22,18 @@
     mounted() {
       let { settings, $route }  = this;
       let { params, fullPath }  = $route;
-      let card = settings.pathToCard(fullPath);
+      let { cards } = settings;
+      let card = EbtCard.pathToCard(fullPath, cards, 
+        (opts) => settings.addCard(opts));
       console.log(`EbtCards.mounted()`, card);
     },
     watch:{
       $route (to, from){
-        let card = settings.pathToCard(to);
-        console.log(`EbtCards.watch.$route()`, card);
+        let { settings, $route }  = this;
+        let { cards } = settings;
+        console.log(`EbtCards.watch.$route()`, {$route, to, });
+        let card = EbtCard.pathToCard(to.fullPath, cards, 
+          (opts) => settings.addCard(opts));
       }
     }, 
     components: {

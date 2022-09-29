@@ -43,7 +43,7 @@ import should from "should";
   it("TESTTESTmatchPath", async() => {
     let card0 = new EbtCard({ context: "" });
     let card1 = new EbtCard({ context: "search", });
-    let card2 = new EbtCard({ context: "SEARCH", location: "DN33", });
+    let card2 = new EbtCard({ context: "SEARCH", location: "root of suffering", });
 
     let noPaths = [
       "/search/nothing",
@@ -79,17 +79,43 @@ import should from "should";
     });
 
     let card2Paths = [
-      "/search/dn33",
-      "/SEARCH/dn33/",
-      "/SEARCH/DN33",
-      "/SEARCH/DN33/",
+      "/search/root%20of%20suffering",
+      "/SEARCH/root%20of%20suffering/",
+      "/SEARCH/root%20of%20suffering",
+      "/SEARCH/root%20of%20suffering/",
     ];
     card2Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
       should(card1.matchPath(path)).equal(false);
       should(card2.matchPath(path)).equal(true);
     });
+  });
+  it("TESTTESTpathToCard()", ()=>{
+    let cards = [];
+    let nAdd = 0;
+    let addCard = (opts) => {
+      let card = new EbtCard(opts);
+      //console.log(`added card`, card);
+      cards.push(card);
+      nAdd++
+      return card;
+    }
+    let cardHome = EbtCard.pathToCard('/', cards, addCard);
+    should.deepEqual(cards, [cardHome]);
+    let cardHome2 = EbtCard.pathToCard('/', cards, addCard);
+    should.deepEqual(cards, [cardHome]);
 
+    let cardSearch = EbtCard.pathToCard('/search', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch]);
+    let cardSearch2 = EbtCard.pathToCard('/search', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch]);
+
+    let cardSearchAB = EbtCard.pathToCard('/search/a%20b', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB]);
+    let cardSearchAB2 = EbtCard.pathToCard('/search/a%20b', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB]);
+
+    should(nAdd).equal(3);
   });
 });
 

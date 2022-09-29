@@ -53,28 +53,34 @@ export default class EbtCard {
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
 
+  static pathToCard(path='/', cards=[], addCard) {
+    let [ tbd, context, ...location ] = path.split('/');
+    location = location.map(loc => decodeURIComponent(loc));
+    let card = cards.find(card => card.matchPath(path));
+    if (card == null) {
+      if (!addCard) {
+        throw new Error("addCard is required");
+      }
+      card = addCard({context, location});
+      //console.log(`pathToCard ${path} (NEW)`, {card, context, location});
+    } else {
+      //console.log(`pathToCard ${path} (EXISTING))`, card);
+    } 
+    card && (card.isOpen = true);
+
+    return card;
+  }
+
   get icon() {
     return CONTEXTS[this.context]?.icon || "mdi-alert-icon";
   }
 
   chipTitle($t=((k)=>k)) {
     let { location, context } = this;
-    if (!!location ) {
+    if (location.length) {
       return location.join('/');
     }
-    if (context === CONTEXT_HOME) {
-      return $t('ebt.home');
-    }
-    if (context === CONTEXT_SEARCH) {
-      return $t('ebt.searchHome');
-    }
-    if (context === CONTEXT_WIKI) {
-      return $t('ebt.wikiHome');
-    }
-    if (context === CONTEXT_SUTTA) {
-      return $t('ebt.suttaHome');
-    }
-    return $t(`context:${context}?`);
+    return $t(`ebt.no-location-${context}`);
   }
 
   matchPath(path='') {
@@ -108,7 +114,8 @@ export default class EbtCard {
       return false;
     }
     let match = location.reduce((a,v,i) => {
-      let match = a && (v.toLowerCase() === cardLocation[i].toLowerCase());
+      let vDecoded = decodeURIComponent(v.toLowerCase());
+      let match = a && (vDecoded === cardLocation[i].toLowerCase());
       if (dbg && !match) {
         console.log(`matchPath(${path}) location[${i}]`,
           `${location[i]} != ${cardLocation[i]}`);

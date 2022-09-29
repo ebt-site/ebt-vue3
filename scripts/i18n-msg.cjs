@@ -20,18 +20,23 @@ if (key == null) {
   let files = await fs.promises.readdir(I18NDIR);
   for (f of files) {
     let fpath = path.join(I18NDIR, f);
-    let json = await tsImport.load(fpath)
-    let { ebt }  = json.default;
+    let srcJson = await tsImport.load(fpath)
+    let dstJson = srcJson.default;
+    let { ebt }  = dstJson;
     if (value) {
       ebt[key] = value;
       console.log(`FILE: ${fpath} => ${key}: "${ebt[key]}"`);
-      let sortedJson = Object.keys(json.default).reduce((a,v,i)=>{
+      let ebtKeys = Object.keys(ebt).sort();
+      let ebtSorted = ebtKeys.reduce((a,key,i)=>{
+        a[key] = ebt[key];
+        return a;
       }, {});
-      let ts = 'export default ' + JSON.stringify(json.default, null, 2);
+      dstJson.ebt = ebtSorted;
+      let ts = 'export default ' + JSON.stringify(dstJson, null, 2);
       fs.promises.writeFile(fpath, ts);
     } else if (value === "") {
       delete ebt[key];
-      let ts = 'export default ' + JSON.stringify(json.default, null, 2);
+      let ts = 'export default ' + JSON.stringify(dstJson, null, 2);
       fs.promises.writeFile(fpath, ts);
       console.log(`FILE: ${fpath} ${key}: (deleted)`);
     } else {

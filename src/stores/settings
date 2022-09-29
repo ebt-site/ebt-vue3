@@ -48,19 +48,8 @@ export const useSettingsStore = defineStore('settings', {
       this.cards = this.cards.filter(c => c !== card);
     },
     addCard(opts) {
-      this.cards.push(new EbtCard(opts));
-    },
-    pathToCard(path) {
-      let { cards } = this;
-      let [ tbd, context, ...location ]  = path.split('/');
-      let card = cards.find(card => card.matchPath(path));
-      if (card == null) {
-        card = this.addCard({context, location});
-        console.log(`pathToCard ${path} (NEW)`, card);
-      } else {
-        console.log(`pathToCard ${path} (EXISTING))`, card);
-      } 
-
+      let card = new EbtCard(opts);
+      this.cards.push(card);
       return card;
     },
     clear() {

@@ -33,7 +33,7 @@ Authenticated
             {{ "TODO:$vuetify.lang.t('$vuetify.auth.contentUpdaterTab')" }}
         </v-tab>
         <v-tab-item v-if="isAdmin">
-            <!--content-updater/-->
+            <!--context-updater/-->
         </v-tab-item>
         <v-tab v-if="isAdmin"> 
             {{ "TODO:$vuetify.lang.t('$vuetify.auth.logs')" }}
@@ -56,7 +56,7 @@ Authenticated
 /* eslint no-console: 0*/
 //TODO: import AdminUsers from "./admin-users";
 //TODO: import Vsm from "./vsm";
-//TODO: import ContentUpdater from './content-updater';
+//TODO: import ContentUpdater from './context-updater';
 //TODO: import Logs from "./logs";
 //TODO: import Sounds from "./sounds";
 //TODO: import Caches from "./caches";
