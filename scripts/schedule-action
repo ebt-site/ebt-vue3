@@ -12,8 +12,7 @@ echo -e "${SCRIPT}: updating dependencies..."
 npm install --save \
   vuetify@next
 npm install --save-dev \
-  memo-again@latest \
-  scv-tts@latest
+  memo-again@latest 
 
 $DIR/i18n-langs.cjs > $APPDIR/src/languages.mjs
 $DIR/get-voices.sh
