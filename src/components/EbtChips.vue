@@ -1,20 +1,23 @@
 <template>
   <div class="chip-container">
-    <v-chip-group v-model="opened" column>
+    <v-chip-group v-model="filteredChips" column>
       <div v-for="card in settings.cards" :key="card.id">
-        <v-chip variant="outlined" 
-          ref="chip-close"
+        <v-chip 
           :prepend-icon="card.icon"
-          @click="clickChip(card.id, settings.cards)"
+          @click="onClick(card.id, settings.cards)"
           draggable
+          @dragstart="startDrag($event, card)"
+          @drop="onDrop($event, card, settings)"
+          @dragover.prevent
+          @dragenter.prevent
           :rounded="card.isOpen ? 0 : 1"
-          color="chip"
+          :class="card.isOpen ? 'chip-open' : 'chip-closed'"
         >
           <div class="chip-title mr-2">{{card.chipTitle($t)}}</div>
           <v-icon icon="mdi-close-circle chip-close"
             v-if="!card.isOpen && settings.cards.length > 1"
             size="small"
-            @click="clickChipClose(card, settings)"
+            @click="onClose(card, settings)"
           />
         </v-chip>
       </div>
@@ -25,48 +28,62 @@
 <script>
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings';
+  import { useVolatileStore } from '../stores/volatile';
   import { ref, nextTick } from "vue";
 
   export default {
     setup() {
       const settings = useSettingsStore();
+      const volatile = useVolatileStore();
 
       return {
         settings,
+        volatile,
       }
     },
     methods: {
+      startDrag(evt, card) {
+        evt.dataTransfer.dropEffect = 'move'
+        evt.dataTransfer.effectAllowed = 'move'
+        evt.dataTransfer.setData('srcCardId', card.id)
+      },
+      onDrop(evt, dstCard, settings) {
+        let { cards } = settings;
+        const srcCardId = evt.dataTransfer.getData('srcCardId')
+        const srcIndex = cards.findIndex(elt => elt.id === srcCardId);
+        const dstIndex = cards.findIndex(elt => elt === dstCard);
+        settings.moveCard(srcIndex, dstIndex);
+      },
       updateActive: (evt) => {
         console.log(`updateActive`, evt);
       },
-      clickChip: (id, cards) => {
-        nextTick(()=>{
-          let card = cards.find(c=>c.id === id);
-          if (card) {
-            console.debug(`clickChip toggling card ${id}`);
-            card.isOpen = !card.isOpen;
-          } else {
-            console.debug(`clickChip toggling card ${id} (IGNORED)`);
-          }
+      onClick: async (id, cards) => {
+        const volatile = await useVolatileStore();
+        let card = cards.find(c=>c.id === id);
+        card && nextTick(()=>{ // wait for card to show
+          console.debug(`onClick toggling card ${id}`);
+          card.isOpen = !card.isOpen;
+          card.isOpen && nextTick(()=>{ // wait for Vue to settle
+            let topAnchor = document.getElementById(card.topAnchor);
+            let titleAnchor = document.getElementById(card.titleAnchor);
+            topAnchor && topAnchor.scrollIntoView({
+              block: "start",
+              behavior: "smooth",
+            });
+          });
         });
       },
-      clickChipClose: (card, settings) => {
+      onClose: (card, settings) => {
         let { cards } = settings;
-        console.debug(`clickChipClose removing card ${card.id}`);
+        console.debug(`onClose removing card ${card.id}`);
         nextTick(() => settings.removeCard(card));
       },
     },
     computed: {
-      opened: {
+      filteredChips: {
         get: (ctx)=>{
-          let { settings } = ctx;
-          return settings.cards.reduce((a,v,i) => {
-            if (v.isOpen) {
-              a.push(i);
-            }
-            return a;
-          }, []);
-          },
+          return [];
+        },
         set: (value)=>{ 
           // do nothing
         },
@@ -89,5 +106,10 @@
     overflow: hidden;
     max-width:5em;
     text-overflow: ellipsis;
+  }
+  .chip-open {
+    border-bottom: 2pt solid #ff9933;
+  }
+  .chip-closed {
   }
 </style>

@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <div class="card-link"><a :name="cardLink"/></div>
-    <v-card variant="outlined" class="ebt-card">
+  <v-sheet>
+    <div :id="card.topAnchor" class="card-top-anchor">
+      <a :name="card.anchor"></a>
+    </div>
+    <div :id="card.titleAnchor" class="card-title-anchor">
+        <a :name="card.titleAnchor"></a>
+    </div>
+    <v-card variant="outlined" v-if="card.isOpen" class="ebt-card">
       <template v-slot:title>
         <v-icon :icon="card.icon"/>
         {{card.chipTitle($t)}}
@@ -63,13 +68,14 @@
         </v-card>
       </div>
     </v-card>
-  </div>
+  </v-sheet>
 </template>
 
 <script>
   import { default as SearchView } from './SearchView.vue';
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings';
+  import { useVolatileStore } from '../stores/volatile';
   import { ref } from "vue";
 
   export default {
@@ -80,11 +86,13 @@
     },
     setup() {
       const settings = useSettingsStore();
+      const volatile = useVolatileStore();
       const showDebug = ref(false);
 
       return {
         settings,
         showDebug,
+        volatile,
       }
     },
     components: {
@@ -109,6 +117,10 @@
         "#/sutta/DN33",
         "#/search/root%20of%20suffering",
       ],
+      topAnchor: (ctx) => {
+        let {card} = ctx;
+        return `${card.id}-top`;
+      },
       cardLink: (ctx) => {
         let { card } = ctx;
         let { context, location } = card;
@@ -157,9 +169,12 @@
   td {
     padding-left: 0.5em;
   }
-  .card-link {
+  .card-top-anchor {
     position: relative;
     top: -7.0em;
+  }
+  .card-title-anchor {
+    position: relative;
   }
   .debug-icon {
     color: cyan;
@@ -177,6 +192,7 @@
   }
   .ebt-card {
     max-width: 40em;
+    margin: 1pt;
   }
   .debug {
     color: cyan;

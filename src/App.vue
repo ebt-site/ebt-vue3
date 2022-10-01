@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main >
       <v-app-bar color="toolbar" flat >
         <v-app-bar-title > 
           EBT-Vue3

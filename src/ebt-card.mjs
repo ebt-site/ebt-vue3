@@ -75,6 +75,24 @@ export default class EbtCard {
     return CONTEXTS[this.context]?.icon || "mdi-alert-icon";
   }
 
+  get topAnchor() {
+    let { id } = this;
+    return `${id}-top`;
+  }
+
+  get titleAnchor() {
+    let { id } = this;
+    return `${id}-title`;
+  }
+
+  get anchor() {
+    let { context, location } = this;
+    context = encodeURIComponent(context);
+    location = location.map(loc => encodeURIComponent(location)).join('/');
+    let link = `/${context}/${location}`;
+    return link;
+  }
+
   chipTitle($t=((k)=>k)) {
     let { location, context } = this;
     if (location.length) {

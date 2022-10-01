@@ -52,6 +52,12 @@ export const useSettingsStore = defineStore('settings', {
       this.cards.push(card);
       return card;
     },
+    moveCard(srcIndex, dstIndex) {
+      let { cards } = this;
+      let srcCard = cards[srcIndex];
+      cards.splice(srcIndex, 1);
+      cards.splice(dstIndex, 0, srcCard);
+    },
     clear() {
       delete localStorage.settings;
       Utils.assignTyped(this, Settings.INITIAL_STATE);

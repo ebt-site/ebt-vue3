@@ -1,9 +1,9 @@
 <template>
-  <div class="ebt-cards">
+  <v-sheet color="background" class="ebt-cards" >
     <div v-for="card in settings.cards">
-      <ebt-card-vue v-if="card.isOpen" :card="card" />
+      <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
-  </div>
+  </v-sheet>
 </template>
 
 <script>
