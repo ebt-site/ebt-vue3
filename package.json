@@ -44,6 +44,7 @@
     "dev": "vite",
     "serve": "vite preview",
     "build:dist": "scripts/build-dist.sh",
+    "build:docker": "scripts/build-docker.sh",
     "preview": "vite preview",
     "vite": "vite",
     "vite:build": "vite build",
