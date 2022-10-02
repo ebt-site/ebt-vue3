@@ -221,7 +221,7 @@ export default {
     "languages": "Sprachen",
     "loadingSutta": "A_SUTTA wird geladen...",
     "logLevel": "Konsolen-Info",
-    "no-location-home": "StartSeite",
+    "no-location-home": "Startseite",
     "no-location-search": "Suche...",
     "no-location-sutta": "Sutta...",
     "no-location-wiki": "Welcome",
