@@ -6,19 +6,19 @@ const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 const SERVERS = [{
   title: 's1.sc-voice.net',
   value: 'https://s1.sc-voice.net/scv',
-  hint: 'Linode staging scv-server',
+  hint: 'ScvServer (Linode staging)',
 },{
   title: 'voice.suttacentral.net',
   value: 'https://voice.suttacentral.net/scv',
-  hint: 'AWS production voice server',
+  hint: 'Voice server (AWS production)',
 },{
   title: 's2.sc-voice.net',
   value: 'https://s2.sc-voice.net/scv',
-  hint: 'Linode stating voice server',
+  hint: 'Voice server (Linode staging)',
 },{
   title: 'localhost:8080',
   value: 'http://localhost:8080/scv',
-  hint: 'development server',
+  hint: 'ScvServer (localhost development)',
   dev: true,
 }];
 
