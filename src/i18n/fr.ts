@@ -159,7 +159,7 @@ export default {
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",
-    "allowSettingsLink": "Privacy:",
+    "allowSettingsLink": "(more...)",
     "and": "et",
     "applicationError": "Application Error",
     "ariaAbout": "A propos de Voice",

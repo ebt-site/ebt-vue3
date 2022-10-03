@@ -162,7 +162,7 @@ export default {
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",
-    "allowSettingsLink": "Privacy:",
+    "allowSettingsLink": "(more...)",
     "and": "と",
     "applicationError": "Application Error",
     "ariaAbout": "ボイスについて",

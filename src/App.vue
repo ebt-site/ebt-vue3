@@ -3,9 +3,19 @@
     <v-main >
       <v-app-bar color="toolbar" flat >
         <v-app-bar-title > 
-          EBT-Vue3
+          <div class="ebt-title">
+            <a href="/#/">
+              <img src="/img/favicon.png"
+                class="ebt-nav-img"
+              />
+            </a>
+            <div>EBT-Vue3</div>
+        </div>
         </v-app-bar-title>
         <v-spacer/>
+        <v-btn icon href="/#/search">
+          <v-icon icon="mdi-magnify"/>
+        </v-btn>
         <Settings/>
         <template v-slot:extension>
           <ebt-chips/>
@@ -21,8 +31,8 @@
       </v-sheet>
 
       <v-sheet class="gdrp" v-if="settings.showGdpr">
-        <a href="#/wiki/privacy">{{$t('ebt.allowSettingsLink')}}</a>
         {{$t('ebt.allowSettings')}}
+        <a href="#/wiki/privacy">{{$t('ebt.allowSettingsLink')}}</a>
         <v-icon icon="mdi-close-circle" 
           class="ml-2"
           @click="clickGdrp"/>
@@ -94,6 +104,18 @@
   border-top: 1pt solid rgb(var(--v-theme-chip));
   border-left: 1pt solid rgb(var(--v-theme-chip));
   border-radius: 3pt;
+}
+.v-toolbar-title {
+  margin-left: 0px;
+}
+.ebt-nav-img {
+  display: relative;
+  height: 56px;
+}
+.ebt-title {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
 }
 </style>
 

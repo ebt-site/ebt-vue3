@@ -161,7 +161,7 @@ export default {
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",
-    "allowSettingsLink": "Privacy:",
+    "allowSettingsLink": "(more...)",
     "and": "और",
     "applicationError": "Application Error",
     "ariaAbout": "आवाज़ के बारे में",
