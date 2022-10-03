@@ -23,7 +23,12 @@ if (key == null) {
     let srcJson = await tsImport.load(fpath)
     let dstJson = srcJson.default;
     let { ebt }  = dstJson;
-    if (value) {
+    if (value === "DELETE") {
+      delete ebt[key];
+      let ts = 'export default ' + JSON.stringify(dstJson, null, 2);
+      fs.promises.writeFile(fpath, ts);
+      console.log(`FILE: ${fpath} ${key}: (deleted)`);
+    } else if (value != null) {
       ebt[key] = value;
       console.log(`FILE: ${fpath} => ${key}: "${ebt[key]}"`);
       let ebtKeys = Object.keys(ebt).sort();
@@ -34,11 +39,6 @@ if (key == null) {
       dstJson.ebt = ebtSorted;
       let ts = 'export default ' + JSON.stringify(dstJson, null, 2);
       fs.promises.writeFile(fpath, ts);
-    } else if (value === "") {
-      delete ebt[key];
-      let ts = 'export default ' + JSON.stringify(dstJson, null, 2);
-      fs.promises.writeFile(fpath, ts);
-      console.log(`FILE: ${fpath} ${key}: (deleted)`);
     } else {
       let value = ebt[key] == null ? "undefined" : `"${ebt[key]}"`;
       console.log(`FILE: ${fpath} ${key}: ${value}`);

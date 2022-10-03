@@ -54,7 +54,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    min-height: 40em;
+    min-height: 50em;
   }
   .ebt-cards1 {
     background-color: rgb(var(--v-theme-surface)) !important;

@@ -1,12 +1,12 @@
 <template>
-  <v-sheet>
+  <v-sheet v-if="card.isOpen">
     <div :id="card.topAnchor" class="card-top-anchor">
       <a :name="card.anchor"></a>
     </div>
     <div :id="card.titleAnchor" class="card-title-anchor">
         <a :name="card.titleAnchor"></a>
     </div>
-    <v-card v-if="card.isOpen" :variant="cardVariant" >
+    <v-card :variant="cardVariant" >
       <template v-slot:title>
         <v-icon :icon="card.icon"/>
         {{card.chipTitle($t)}}
@@ -102,17 +102,6 @@
     mounted() {
     },
     computed: {
-      testLinks: (ctx) => [
-        "#/",
-        "#/wiki",
-        "#/sutta",
-        "#/search",
-        "#/search/DN33",
-        "#/wiki/welcome",
-        "#/wiki/about",
-        "#/sutta/DN33",
-        "#/search/root%20of%20suffering",
-      ],
       cardVariant: (ctx) => {
         let { settings } = ctx;
         return settings.cardsOpen === 1 ? "flat" : "outlined";

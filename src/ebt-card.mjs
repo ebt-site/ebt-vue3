@@ -7,7 +7,7 @@ const CONTEXT_SUTTA = "sutta";
 const CONTEXT_WIKI = "wiki";
 const CONTEXTS = {
   [CONTEXT_HOME]: {
-    icon: "mdi-home-outline",
+    icon: "mdi-home",
   },
   [CONTEXT_SEARCH]: {
     icon: "mdi-file-search-outline",

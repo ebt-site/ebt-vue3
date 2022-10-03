@@ -6,9 +6,6 @@
           EBT-Vue3
         </v-app-bar-title>
         <v-spacer/>
-        <v-btn icon @click="settings.addCard()">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
         <Settings/>
         <template v-slot:extension>
           <ebt-chips/>

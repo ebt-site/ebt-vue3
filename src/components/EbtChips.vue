@@ -11,12 +11,13 @@
           @dragover.prevent
           @dragenter.prevent
           :rounded="card.isOpen ? 0 : 1"
-          :class="card.isOpen ? 'chip-open' : 'chip-closed'"
+          :class="chipClass(card)"
         >
-          <div class="chip-title mr-2">{{card.chipTitle($t)}}</div>
+          <div class="chip-title">{{card.chipTitle($t)}}</div>
           <v-icon icon="mdi-close-circle chip-close"
-            v-if="!card.isOpen && settings.cards.length > 1"
+            v-if="closable(card, settings)"
             size="small"
+            class="ml-2"
             @click="onClose(card, settings)"
           />
         </v-chip>
@@ -78,6 +79,18 @@
         console.debug(`onClose removing card ${card.id}`);
         nextTick(() => settings.removeCard(card));
       },
+      closable: (card, settings) => {
+        return settings.cards.length > 1
+          ? !card.isOpen && card.context !== EbtCard.CONTEXT_HOME
+          : false;
+      },
+      chipClass: (card) => {
+        let chipClass = [];
+
+        card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
+        chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
+        return chipClass.join(' ');
+      },
     },
     computed: {
       filteredChips: {
@@ -111,5 +124,8 @@
     border-bottom: 2pt solid #ff9933;
   }
   .chip-closed {
+  }
+  .chip-home {
+    padding-right: 6pt;
   }
 </style>

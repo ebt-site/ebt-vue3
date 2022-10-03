@@ -159,7 +159,7 @@ export default {
     "aboutTitle": "Despre Voice",
     "advanced": "Advanced",
     "allow": "Allow",
-    "allowSettings": "This site saves settings in local storage",
+    "allowSettings": "Do not collect or share my data",
     "allowSettingsLink": "Privacy:",
     "and": "și",
     "applicationError": "Application Error",

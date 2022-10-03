@@ -159,7 +159,7 @@ export default {
     "addCard": "Add Card",
     "advanced": "Advanced",
     "allow": "Allow",
-    "allowSettings": "This site saves settings in local storage",
+    "allowSettings": "Do not collect or share my data",
     "allowSettingsLink": "Privacy:",
     "and": "og",
     "applicationError": "Application Error",
