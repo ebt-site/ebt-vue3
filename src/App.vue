@@ -13,7 +13,7 @@
         </div>
         </v-app-bar-title>
         <v-spacer/>
-        <v-btn icon href="/#/search">
+        <v-btn icon href="#/search">
           <v-icon icon="mdi-magnify"/>
         </v-btn>
         <Settings/>
