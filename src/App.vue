@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <v-main >
-      <v-app-bar color="toolbar" flat >
+      <v-app-bar color="toolbar" flat extension-height=40 class="nav-bar">
         <v-app-bar-title > 
           <div class="ebt-title">
             <a href="/#/">
-              <img src="/img/favicon.png"
+              <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
                 class="ebt-nav-img"
               />
             </a>
@@ -107,15 +107,29 @@
 }
 .v-toolbar-title {
   margin-left: 0px;
+  min-width: 14em;
 }
 .ebt-nav-img {
   display: relative;
   height: 56px;
+  margin-right: 5px;
+  border: 1pt solid rgb(0,0,0);
+  border-radius: 5px;
 }
 .ebt-title {
   display: flex;
   align-items: center;
-  margin-left: 5px;
+}
+.ebt-title:focus-within a {
+  border: none !important;
+  outline: none;
+}
+.ebt-title:focus-within img {
+  font-size: 1.5rem !important;
+  border: 1pt dashed rgb(var(--v-theme-chip));
+}
+.nav-bar {
+  background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
 }
 </style>
 
