@@ -6,7 +6,7 @@
     <div :id="card.titleAnchor" class="card-title-anchor">
         <a :name="card.titleAnchor"></a>
     </div>
-    <v-card :variant="cardVariant" v-if="card.isOpen" class="ebt-card">
+    <v-card v-if="card.isOpen" :variant="cardVariant" >
       <template v-slot:title>
         <v-icon :icon="card.icon"/>
         {{card.chipTitle($t)}}
@@ -16,20 +16,10 @@
         />
       </template>
       <v-card-text>
+        <home-view card="card" v-if="card.context===CONTEXT_HOME"/>
         <search-view card="card" v-if="card.context===CONTEXT_SEARCH"/>
-
-        <div class="debug" v-if="card.context!==CONTEXT_SEARCH">
-          <div class="text-subtitle-1">Debug Stuff (Ignore)</div>
-          <template v-for="link in testLinks">
-            <div>
-              <a :href="`${link}`">{{link}}</a>
-            </div>
-          </template>
-          <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
-          <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
-          <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
-          <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
-        </div><!--debug-->
+        <sutta-view card="card" v-if="card.context===CONTEXT_SUTTA"/>
+        <wiki-view card="card" v-if="card.context===CONTEXT_WIKI"/>
       </v-card-text>
       <div class="debug-footer" >
         <div class="debug-icon" @click="showDebug= !showDebug">
@@ -72,7 +62,10 @@
 </template>
 
 <script>
+  import { default as HomeView } from './HomeView.vue';
   import { default as SearchView } from './SearchView.vue';
+  import { default as WikiView } from './WikiView.vue';
+  import { default as SuttaView } from './SuttaView.vue';
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
@@ -96,7 +89,10 @@
       }
     },
     components: {
+      HomeView,
       SearchView,
+      SuttaView,
+      WikiView,
     },
     methods: {
       closeCard: (card) => {
@@ -195,7 +191,7 @@
     font-size: smaller;
   }
   .ebt-card {
-    max-width: 40em;
+    margin: 1pt;
     margin: 1pt;
   }
   .debug {

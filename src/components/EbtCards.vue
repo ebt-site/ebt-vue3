@@ -1,5 +1,5 @@
 <template>
-  <v-sheet color="background" class="ebt-cards" >
+  <v-sheet color="background" :class="cardsClass" >
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
@@ -27,6 +27,14 @@
         (opts) => settings.addCard(opts));
       console.log(`EbtCards.mounted()`, card);
     },
+    computed: {
+      cardsClass: (ctx) => {
+        let { settings } = ctx;
+        return settings.cardsOpen === 1 
+          ? "ebt-cards ebt-cards1" 
+          : "ebt-cards";
+      },
+    },
     watch:{
       $route (to, from){
         let { settings, $route }  = this;
@@ -46,5 +54,9 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+    min-height: 40em;
+  }
+  .ebt-cards1 {
+    background-color: rgb(var(--v-theme-surface)) !important;
   }
 </style>

@@ -161,6 +161,7 @@ export default {
     "advanced": "Erweitert",
     "allow": "Erlauben",
     "allowSettings": "Ihre Einstellungen werden nur in Ihrem Browser gespeichert. Weitere Informationen zum Datenschutz [hier](/wiki/Impressum)",
+    "allowSettingsLink": "Privacy:",
     "and": "und",
     "applicationError": "Fehler in der Web-Anwendung",
     "ariaAbout": "Über Voice",

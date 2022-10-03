@@ -24,13 +24,11 @@
       </v-sheet>
 
       <v-sheet class="gdrp" v-if="settings.showGdpr">
-        <v-chip 
-          color="chip"
-          size="small"
-          append-icon="mdi-close-circle"
-          @click="clickGdrp">
-          {{$t('ebt.allowSettings')}}
-        </v-chip>
+        <a href="#/wiki/privacy">{{$t('ebt.allowSettingsLink')}}</a>
+        {{$t('ebt.allowSettings')}}
+        <v-icon icon="mdi-close-circle" 
+          class="ml-2"
+          @click="clickGdrp"/>
       </v-sheet>
 
     </v-main>
@@ -91,9 +89,14 @@
 <style scoped>
 .gdrp {
   position: fixed;
+  color: rgb(var(--v-theme-chip));
   bottom: 0;
   right: 0;
   opacity: 1;
+  padding: 2pt;
+  border-top: 1pt solid rgb(var(--v-theme-chip));
+  border-left: 1pt solid rgb(var(--v-theme-chip));
+  border-radius: 3pt;
 }
 </style>
 
