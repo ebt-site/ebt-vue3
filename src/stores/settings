@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { logger } from 'log-instance'
+import { defineStore } from 'pinia';
+import { logger } from 'log-instance';
 import Utils from "../utils.mjs";
 import { default as Settings } from "../../src/ebt-settings.mjs";
 import { default as EbtCard } from "../../src/ebt-card.mjs";
@@ -65,6 +65,10 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   getters: {
+    cardsOpen: (state)=>{
+      let { cards } = state;
+      return cards.reduce((a,v)=> (v.isOpen ? a+1: a), 0);
+    },
     servers: (state)=>{ 
       let isDev = window.location.host.startsWith('localhost');;
       let servers = Settings.SERVERS.filter(svr => !svr.dev || isDev);

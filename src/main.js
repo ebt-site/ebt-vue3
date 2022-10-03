@@ -25,6 +25,7 @@ const vuetifyOpts = {
           surface:"#ffffff",
           chip: colors.brown.darken2,
           toolbar: colors.brown.darken2,
+          placeholder: "#600060",
         },
       },
       dark: {
@@ -34,6 +35,7 @@ const vuetifyOpts = {
           surface: "#000000",
           chip: COLOR_SAFFRON,
           toolbar: colors.brown.darken2,
+          placeholder: "#00FFFF",
         },
       },
     },

@@ -6,7 +6,7 @@
     <div :id="card.titleAnchor" class="card-title-anchor">
         <a :name="card.titleAnchor"></a>
     </div>
-    <v-card variant="outlined" v-if="card.isOpen" class="ebt-card">
+    <v-card :variant="cardVariant" v-if="card.isOpen" class="ebt-card">
       <template v-slot:title>
         <v-icon :icon="card.icon"/>
         {{card.chipTitle($t)}}
@@ -35,7 +35,7 @@
         <div class="debug-icon" @click="showDebug= !showDebug">
           <v-icon icon="mdi-hammer-wrench" size="x-small" class="debug" />
         </div>
-        <v-card v-if="showDebug" class="debug">
+        <v-card v-if="showDebug" class="debug" >
           <v-select v-model="card.context" :items="contexts"
             :label="'Context'"
             >
@@ -117,6 +117,10 @@
         "#/sutta/DN33",
         "#/search/root%20of%20suffering",
       ],
+      cardVariant: (ctx) => {
+        let { settings } = ctx;
+        return settings.cardsOpen === 1 ? "flat" : "outlined";
+      },
       topAnchor: (ctx) => {
         let {card} = ctx;
         return `${card.id}-top`;
@@ -195,7 +199,7 @@
     margin: 1pt;
   }
   .debug {
-    color: cyan;
+    color: rgb(var(--v-theme-placeholder));
   }
 </style>
 

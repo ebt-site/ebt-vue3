@@ -45,6 +45,6 @@
   .ebt-cards {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space between;
+    justify-content: center;
   }
 </style>
