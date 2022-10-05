@@ -30,7 +30,7 @@ import should from "should";
   });
   it("TESTTESTicon", async() => {
     let card = new EbtCard();
-    should(card.icon).equal("mdi-home-outline");
+    should(card.icon).equal("mdi-home");
     let cardWiki = new EbtCard({ context: "wiki"});
     should(cardWiki.icon).equal("mdi-wikipedia");
   });
