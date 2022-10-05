@@ -10,24 +10,12 @@
       hint="Required"
       placeholder="Enter sutta id or search text">
     </v-text-field>
-    <v-text-field v-model="lang" 
-      clearable variant="underlined"
-      label="lang" 
-      @click:append="onSearch"
-      @click:clear="onSearchCleared($event, card)"
-      @keypress="onSearchKey($event, card)"
-      hint="Optional"
-      placeholder="Enter two-letter ISO language code">
-    </v-text-field>
-    <template v-for="mld in results?.mlDocs">
-      <div >
-        <a :href="`#/sutta/${mld.sutta_uid}`">{{mld.sutta_uid}}</a>
-      </div>
-    </template>
+    <search-results :results="results"/>
   </v-sheet>
 </template>
 
 <script>
+  import { default as SearchResults } from "./SearchResults.vue";
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
   import { ref } from "vue";
@@ -49,11 +37,11 @@
     data: () => {
       return {
         results: undefined,
-        lang: undefined,
         search: '',
       }
     },
     components: {
+      SearchResults,
     },
     methods: {
       async onSearch(evt) {
@@ -103,7 +91,10 @@
           'search',
           encodeURIComponent(pattern),
         ].join('/');
-        return langTrans ? `${url}/${langTrans}` : url;
+        let lang = pattern.split('/')[1];
+        return lang == null 
+          ? `${url}/${langTrans}`
+          : `${url}/${lang}`;
       },
     },
   }
