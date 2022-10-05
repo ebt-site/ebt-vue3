@@ -1,5 +1,5 @@
 <template>
-  <v-sheet>
+  <v-sheet class="results">
     <v-text-field v-model="search" 
       clearable variant="underlined"
       label="pattern"
@@ -101,4 +101,7 @@
 </script>
 
 <style scoped>
+.results {
+  max-width: 40rem;
+}
 </style>

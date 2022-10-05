@@ -31,3 +31,16 @@
   outline: 2pt dashed var(--focus-color);
   outline-offset: 2pt;
 }
+a {
+  color: rgb(var(--v-theme-on-surface));
+  text-decoration: none;
+  font-weight: 500;
+}
+a:hover {
+  color: rgb(var(--v-theme-link));
+  text-decoration: underline;
+}
+a:focus {
+  color: rgb(var(--v-theme-link));
+  outline: 2pt dashed rgba(var(--v-theme-link),0.5);
+}

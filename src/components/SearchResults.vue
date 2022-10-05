@@ -2,23 +2,34 @@
   <v-expansion-panels v-model="panels" class="mt-2" 
   >
     <template v-for="(mld,i) in results?.mlDocs" >
-      <v-expansion-panel :value="i">
+      <v-expansion-panel :value="i" class="result-expansion">
         <v-expansion-panel-title
           expand-icon="mdi-dots-vertical"
           collapse-icon="mdi-dots-horizontal"
           :aria-label="mld.sutta_uid"
         >
-          <v-row no-gutter>
-            <v-col cols=8>
-              {{i+1}}.&nbsp;<a :href="`#/sutta/${href(mld)}`">{{suttaRef(mld)}}</a>
-            </v-col>
-            <v-col cols=4>
-              {{mldDuration(mld)}} score{{score(mld)}}
-            </v-col>
-          </v-row>
+          <div class="result-title">
+            <div class="result-title-main">
+              <div class="result-title-body">
+                {{i+1}}.&nbsp;
+                {{results.results[i].suttaplex.acronym}}
+              </div> <!-- result-title-body -->
+              <div class="result-title-stats">
+                {{mldDuration(mld).display}}
+              </div> <!-- result-title-stats -->
+            </div> <!-- result-title-main -->
+            <div class="result-subtitle">
+              <p class="text-center">{{results.results[i].title}}</p>
+            </div><!-- result-subtitle -->
+          </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          <div>
+            <a :href="`#/sutta/${href(mld)}`">
+              {{results.results[i].suttaplex.acronym}}
+            </a>
+            {{results.results[i].suttaplex.blurb}}
+          </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </template>
@@ -48,7 +59,7 @@
     data: () => {
       return {
         panels: [],
-        suttaduration: undefind,
+        suttaduration: undefined,
       }
     },
     components: {
@@ -57,15 +68,48 @@
       this.suttaDuration = await new SuttaDuration({fetch}).initialize();
     },
     methods: {
+      durationDisplay(totalSeconds) {
+        let { $t } = this;
+        totalSeconds = Math.round(totalSeconds);
+        var seconds = totalSeconds;
+        var hours = Math.trunc(seconds / 3600);
+        seconds -= hours * 3600;
+        var minutes = Math.trunc(seconds / 60);
+        seconds -= minutes * 60;
+        if (hours) {
+            var tDisplay = $t('ebt.HHMM');
+            var tAria = $t('ebt.ariaHHMM');
+        } else if (minutes) {
+            var tDisplay = $t('ebt.MMSS');
+            var tAria = $t('ebt.ariaMMSS');
+        } else {
+            var tDisplay = $t('ebt.seconds');
+            var tAria = $t('ebt.ariaSeconds');
+        }
+        var display = tDisplay
+            .replace(/A_HOURS/, hours)
+            .replace(/A_MINUTES/, minutes)
+            .replace(/A_SECONDS/, seconds);
+        var aria = tAria
+            .replace(/A_HOURS/, hours)
+            .replace(/A_MINUTES/, minutes)
+            .replace(/A_SECONDS/, seconds);
+
+        return {
+            totalSeconds,
+            hours,
+            minutes,
+            seconds,
+            display,
+            aria,
+        }
+      },
       mldDuration(mld) {
         let { suttaDuration:sd } = this;
         let { sutta_uid, } = mld;
         return sd
           ? this.durationDisplay(sd.duration(mld.sutta_uid))
           : 0;
-      },
-      score(mld) {
-        return mld.count;
       },
       suttaRef(mld) {
         return `${mld.sutta_uid}/${mld.lang}/${mld.author_uid}`;
@@ -81,4 +125,34 @@
 </script>
 
 <style scoped>
+.result-title {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: baseline;
+}
+.result-title-main {
+  display: flex;
+  flex-flow: row nowrap;
+  min-width: 16rem;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+.result-subtitle {
+  margin-left: 1rem;
+  margin-bottom: 0.3rem;
+  display: flex;
+  font-size: small;
+  font-style: italic;
+  flex-flow: col nowrap;
+  min-width: 16rem;
+}
+.result-title-body {
+}
+.result-title-stats {
+}
+.result-expansion {
+  border-left: 3pt solid rgb(var(--v-theme-expansion));
+  border-radius: 1rem;
+  margin-top: 2pt;
+}
 </style>
