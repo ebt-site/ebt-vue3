@@ -16,10 +16,10 @@
         />
       </template>
       <v-card-text>
-        <home-view card="card" v-if="card.context===CONTEXT_HOME"/>
-        <search-view card="card" v-if="card.context===CONTEXT_SEARCH"/>
-        <sutta-view card="card" v-if="card.context===CONTEXT_SUTTA"/>
-        <wiki-view card="card" v-if="card.context===CONTEXT_WIKI"/>
+        <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
+        <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
+        <sutta-view :card="card" v-if="card.context===CONTEXT_SUTTA"/>
+        <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
       </v-card-text>
       <div class="debug-footer" >
         <div class="debug-icon" @click="showDebug= !showDebug">

@@ -62,9 +62,9 @@ export default class EbtCard {
         throw new Error("addCard is required");
       }
       card = addCard({context, location});
-      //console.log(`pathToCard ${path} (NEW)`, {card, context, location});
+      console.log(`pathToCard ${path} (NEW)`, {card, context, location});
     } else {
-      //console.log(`pathToCard ${path} (EXISTING))`, card);
+      console.log(`pathToCard ${path} (EXISTING))`, card);
     } 
     card && (card.isOpen = true);
 
