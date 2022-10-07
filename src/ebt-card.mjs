@@ -27,11 +27,14 @@ export default class EbtCard {
       context,
       location=[],
       isOpen = true,
+      data = undefined,
+      langTrans, // factory prop
     } = opts;
 
     if (context == null || context === '') {
       context = CONTEXT_HOME;
     }
+    context = context.toLowerCase();
 
     if (typeof location === 'string') {
       location = [location];
@@ -39,11 +42,20 @@ export default class EbtCard {
     if (!(location instanceof Array)) {
       throw new Error('Expected location array');
     }
+    if (context === CONTEXT_SEARCH) {
+      if (location[0] == null) {
+        location[0] = '';
+      }
+      if (location.length === 1) {
+        langTrans && location.push(langTrans);
+      }
+    }
 
     Object.assign(this, {
       id,
       location,
       context,
+      data,
       isOpen,
     });
   }
@@ -62,9 +74,9 @@ export default class EbtCard {
         throw new Error("addCard is required");
       }
       card = addCard({context, location});
-      console.log(`pathToCard ${path} (NEW)`, {card, context, location});
+      logger.info(`pathToCard ${path} (NEW)`, {card, context, location});
     } else {
-      console.log(`pathToCard ${path} (EXISTING))`, card);
+      logger.info(`pathToCard ${path} (EXISTING))`, card);
     } 
     card && (card.isOpen = true);
 
@@ -96,6 +108,9 @@ export default class EbtCard {
   chipTitle($t=((k)=>k)) {
     let { location, context } = this;
     if (location.length) {
+      if (context === CONTEXT_SEARCH) {
+        return location[0];
+      }
       return location.join('/');
     }
     return $t(`ebt.no-location-${context}`);
@@ -108,13 +123,15 @@ export default class EbtCard {
       location.pop();
     }
     context = context && context.toLowerCase() || CONTEXT_HOME;
-    location = location ? location.map(loc => loc && loc.toLowerCase()) : [];
+    location = location 
+      ? location.map(loc => loc && decodeURIComponent(loc.toLowerCase())) 
+      : [];
     let dbg = 0;
     let cardLocation = this.location instanceof Array 
       ? this.location
       : (this.location == null ? [] : [this.location]);
     if (tbd !== '') {
-      dbg && console.log(`matchPath(${path}) invalid path`, {tbd});
+      dbg && console.log(`matchPath(${path}) expected initial "/"`, {tbd});
       return false;
     }
     if (context !== this.context) {
@@ -128,7 +145,19 @@ export default class EbtCard {
       }
     }
     if (location.length !== cardLocation.length) {
-      dbg && console.log(`matchPath(${path}) location ${location} != ${cardLocation}`);
+      if (context === CONTEXT_SEARCH) {
+        if (location.length === 0) {
+          location.push('');
+        }
+        if (cardLocation[0] === location[0] && location.length<2) {
+          return true; // empty search path without langTrans
+        }
+      }
+      dbg && console.log([
+        `matchPath(${path})`,
+        `location:${JSON.stringify(location)}`,
+        `!=`,
+        `cardLocation:${JSON.stringify(cardLocation)}`].join(' '));
       return false;
     }
     let match = location.reduce((a,v,i) => {

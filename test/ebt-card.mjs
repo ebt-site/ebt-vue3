@@ -1,5 +1,8 @@
 import { default as EbtCard } from "../src/ebt-card.mjs";
+import { logger } from "log-instance";
 import should from "should";
+
+logger.logLevel = 'warn';
 
 (typeof describe === 'function') && describe("ebt-card.mjs", function () {
   it("TESTTESTdefault ctor", async () => {
@@ -9,6 +12,7 @@ import should from "should";
       context: EbtCard.CONTEXT_HOME,
       location: [],
       isOpen: true,
+      data: undefined,
     }
     should(card1.id.length).equal(36);
     should(card1).properties(defaultProps);
@@ -21,10 +25,12 @@ import should from "should";
   });
   it("TESTTESTcustom ctor", async () => {
     let id = 'test-id';
-    let context = 'test-context';
+    let context = 'search';
     let location = 'test-location';
-    let card1 = new EbtCard({id, context, location});
-    should(card1).properties({id, context, location: [location]});
+    let data = "test-data";
+    let langTrans = "test-lang";
+    let card1 = new EbtCard({id, context, location, data, langTrans});
+    should(card1).properties({id, context, location: [location,langTrans], data});
     let card2 = new EbtCard(Object.assign({}, card1));
     should(card2).properties(card1);
   });
@@ -40,16 +46,15 @@ import should from "should";
     let card2 = new EbtCard(JSON.parse(json));
     should(card2).properties(card1);
   });
-  it("TESTTESTmatchPath", async() => {
+  it("matchPath() wiki context", async() => {
     let card0 = new EbtCard({ context: "" });
-    let card1 = new EbtCard({ context: "search", });
-    let card2 = new EbtCard({ context: "SEARCH", location: "root of suffering", });
+    let card1 = new EbtCard({ context: "wiki", });
+    let card2 = new EbtCard({ context: "wiki", location:["a","b c"], });
 
     let noPaths = [
-      "/search/nothing",
-      "/wiki",
-      "search",
-      "search/a",
+      "/search/a",
+      "/wiki/a",
+      "/wiki/a/c",
     ];
     noPaths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -67,10 +72,11 @@ import should from "should";
     });
 
     let card1Paths = [
-      "/search",
-      "/SEARCH",
-      "/SEARCH/",
-      "/SEARCH//",
+      "/wiki",
+      "/wiki/",
+      "/WIKI",
+      "/WIKI/",
+      "/WIKI//",
     ];
     card1Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -79,10 +85,10 @@ import should from "should";
     });
 
     let card2Paths = [
-      "/search/root%20of%20suffering",
-      "/SEARCH/root%20of%20suffering/",
-      "/SEARCH/root%20of%20suffering",
-      "/SEARCH/root%20of%20suffering/",
+      "/wiki/a/b%20c",
+      "/wiki/a/b%20c/",
+      "/WIKI/A/B%20C",
+      "/WIKI/A/B%20C/",
     ];
     card2Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -90,12 +96,65 @@ import should from "should";
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard()", ()=>{
+  it("matchPath() search context", async() => {
+    let langTrans = 'test-lang';
+    let card0 = new EbtCard({ context: "" , langTrans});
+    let card1 = new EbtCard({ context: "search", langTrans});
+    let card2 = new EbtCard({ context: "SEARCH", location: ["a b"], langTrans});
+
+      let path = `/search/a%20b/${langTrans}`;
+      should(card2.matchPath(path)).equal(true);
+
+    let noPaths = [
+      "/search/nothing",
+      "/wiki",
+      "search",
+      "search/a",
+      `search/x/${langTrans}`,
+    ];
+    noPaths.forEach(path=>{
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(false);
+    });
+
+    let card0Paths = [
+      "/",
+    ];
+    card0Paths.forEach(path => {
+      should(card0.matchPath(path)).equal(true);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(false);
+    });
+
+    let card1Paths = [
+      `/search//${langTrans}`,
+    ];
+    card1Paths.forEach(path=>{
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(true);
+      should(card2.matchPath(path)).equal(false);
+    });
+
+    let card2Paths = [
+      `/search/a%20b/${langTrans}`,
+      //`/search/a%20b/${langTrans}/`,
+      //`/SEARCH/A%20B/${langTrans.toUpperCase()}`,
+      //`/SEARCH/A%20B/${langTrans.toUpperCase()}/`,
+    ];
+    card2Paths.forEach(path=>{
+      should(card0.matchPath(path)).equal(false);
+      should(card1.matchPath(path)).equal(false);
+      should(card2.matchPath(path)).equal(true);
+    });
+  });
+  it("TESTTESTpathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
+    let langTrans = "test-lang";
     let addCard = (opts) => {
-      let card = new EbtCard(opts);
-      //console.log(`added card`, card);
+      let card = new EbtCard(Object.assign({langTrans},opts));
+      //console.trace(`added card`, card);
       cards.push(card);
       nAdd++
       return card;
@@ -115,7 +174,14 @@ import should from "should";
     let cardSearchAB2 = EbtCard.pathToCard('/search/a%20b', cards, addCard);
     should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB]);
 
-    should(nAdd).equal(3);
+    let cardSearchABC = EbtCard.pathToCard('/search/a%20b/c', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB, cardSearchABC]);
+    let cardSearchAB3 = EbtCard.pathToCard('/search/a%20b/c', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB, cardSearchABC]);
+    let cardSearchABC2 = EbtCard.pathToCard('/search/a%20b/c', cards, addCard);
+    should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB, cardSearchABC]);
+
+    should(nAdd).equal(4);
   });
 });
 

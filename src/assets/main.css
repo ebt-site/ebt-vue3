@@ -23,7 +23,6 @@
   border: 2pt dashed rgb(0,0,0,0);
 }
 .v-expansion-panel-title:focus {
-  border: 2pt dashed blue;
   border: 2pt dashed var(--focus-color);
   border-radius: 0.5em;
 }

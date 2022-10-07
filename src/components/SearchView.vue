@@ -18,7 +18,7 @@
   import { default as SearchResults } from "./SearchResults.vue";
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
-  import { ref } from "vue";
+  import { ref, nextTick } from "vue";
 
   export default {
     props: {
@@ -49,13 +49,16 @@
         let res;
         try {
           console.log('onSearch() url:', url);
-          card.location = [search];
+          card.location[0] = search;
           this.results = undefined;
           volatile.waiting = true;
           res = await fetch(url);
           this.results = res.ok
             ? await res.json()
             : res;
+          //nextTick(()=>{
+          window.location.hash = this.hash;
+          //});
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url.value} ${e.message}`;
@@ -82,6 +85,17 @@
       this.search = card.location[0];
     },
     computed: {
+      hash: (ctx) => {
+        let { search, settings, card } = ctx;
+        let { langTrans } = settings;
+        let pattern = search && search.toLowerCase().trim();
+        let hash = [
+          '#/search',
+          encodeURIComponent(pattern),
+          card.location[1],
+        ].join('/');
+        return hash;
+      },
       url: (ctx) => {
         let { search, settings, card } = ctx;
         let { langTrans } = settings;

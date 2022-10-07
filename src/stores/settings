@@ -48,7 +48,10 @@ export const useSettingsStore = defineStore('settings', {
       this.cards = this.cards.filter(c => c !== card);
     },
     addCard(opts) {
-      let card = new EbtCard(opts);
+      let { cards, langTrans } = this;
+      let { context, location } = opts;
+      console.log("addCard", {context, location, langTrans});
+      let card = new EbtCard(Object.assign({langTrans}, opts));
       this.cards.push(card);
       return card;
     },

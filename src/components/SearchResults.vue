@@ -10,8 +10,8 @@
         >
           <div class="result-title">
             <div class="result-title-main">
+              <div class="result-title-number">{{i+1}}</div>
               <div class="result-title-body">
-                {{i+1}}.&nbsp;
                 {{results.results[i].suttaplex.acronym}}
               </div> <!-- result-title-body -->
               <div class="result-title-stats">
@@ -136,14 +136,14 @@
   min-width: 16rem;
   justify-content: space-between;
   margin-bottom: 0.3rem;
+  margin-left: 0.5rem;
 }
 .result-subtitle {
-  margin-left: 1rem;
+  margin-left: 0.4rem;
   margin-bottom: 0.3rem;
   display: flex;
   font-size: small;
   font-style: italic;
-  flex-flow: col nowrap;
   min-width: 16rem;
 }
 .result-title-body {
@@ -152,7 +152,12 @@
 }
 .result-expansion {
   border-left: 3pt solid rgb(var(--v-theme-expansion));
-  border-radius: 1rem;
   margin-top: 2pt;
+}
+.result-title-number {
+  position: absolute;
+  font-size: x-large;
+  top: 0.55em;
+  left: 0.2rem;
 }
 </style>
