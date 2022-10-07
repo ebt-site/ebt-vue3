@@ -18,6 +18,7 @@
   import { default as SearchResults } from "./SearchResults.vue";
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
+  import { logger } from "log-instance";
   import { ref, nextTick } from "vue";
 
   export default {
@@ -48,7 +49,7 @@
         let { volatile, url, search, card, } = this;
         let res;
         try {
-          console.log('onSearch() url:', url);
+          logger.info('onSearch()', {url, volatile});
           card.location[0] = search;
           this.results = undefined;
           volatile.waiting = true;
@@ -56,9 +57,13 @@
           this.results = res.ok
             ? await res.json()
             : res;
-          //nextTick(()=>{
           window.location.hash = this.hash;
-          //});
+          let { mlDocs=[] } = this.results;
+          mlDocs.forEach((mld,i)=>{
+            let { sutta_uid, lang, author_uid } = mld || {};
+            let suttaRef = `${sutta_uid}/${lang}/${author_uid}`;
+            volatile.suttas[suttaRef] = mld;
+          });
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url.value} ${e.message}`;

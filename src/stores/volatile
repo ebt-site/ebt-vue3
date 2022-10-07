@@ -3,6 +3,7 @@ import Utils from "../utils.mjs";
 
 const INITIAL_STATE = {
   waiting: false,
+  suttas: {},
 };
 
 export const useVolatileStore = defineStore('volatile', {
