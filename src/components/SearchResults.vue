@@ -1,34 +1,34 @@
 <template>
   <v-expansion-panels v-model="panels" class="mt-2" 
   >
-    <template v-for="(mld,i) in results?.mlDocs" >
+    <template v-for="(sutta,i) in matchedSuttas" >
       <v-expansion-panel :value="i" class="result-expansion">
         <v-expansion-panel-title
           expand-icon="mdi-dots-vertical"
           collapse-icon="mdi-dots-horizontal"
-          :aria-label="mld.sutta_uid"
+          :aria-label="sutta.uid"
         >
           <div class="result-title">
             <div class="result-title-main">
               <div class="result-title-number">{{i+1}}</div>
               <div class="result-title-body">
-                {{results.results[i].suttaplex.acronym}}
+                {{card.data[i].suttaplex.acronym}}
               </div> <!-- result-title-body -->
               <div class="result-title-stats">
-                {{mldDuration(mld).display}}
+                {{suttaDuration(sutta.uid).display}}
               </div> <!-- result-title-stats -->
             </div> <!-- result-title-main -->
             <div class="result-subtitle">
-              <p class="text-center">{{results.results[i].title}}</p>
+              <p class="text-center">{{card.data[i].title}}</p>
             </div><!-- result-subtitle -->
           </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div>
-            <a :href="`#/sutta/${href(mld)}`">
-              {{results.results[i].suttaplex.acronym}}
+            <a :href="`#/sutta/${href(card.data[i])}`">
+              {{card.data[i].suttaplex.acronym}}
             </a>
-            {{results.results[i].suttaplex.blurb}}
+            {{card.data[i].suttaplex.blurb}}
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -39,11 +39,15 @@
 <script>
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
-  import { default as SuttaDuration } from '../sutta-duration.mjs';
+  import { SuttaRef } from 'scv-esm';
   import { ref } from "vue";
 
   export default {
     props: {
+      card: {
+        type: Object,
+        required: true,
+      },
       results: {
         type: Object,
       },
@@ -59,13 +63,11 @@
     data: () => {
       return {
         panels: [],
-        suttaduration: undefined,
       }
     },
     components: {
     },
     async mounted() {
-      this.suttaDuration = await new SuttaDuration({fetch}).initialize();
     },
     methods: {
       durationDisplay(totalSeconds) {
@@ -104,22 +106,23 @@
             aria,
         }
       },
-      mldDuration(mld) {
-        let { suttaDuration:sd } = this;
-        let { sutta_uid, } = mld;
+      suttaDuration(sutta_uid) {
+        let { volatile, } = this;
+        let { suttaDuration:sd } = volatile;
         return sd
-          ? this.durationDisplay(sd.duration(mld.sutta_uid))
+          ? this.durationDisplay(sd.duration(sutta_uid))
           : 0;
       },
-      suttaRef(mld) {
-        return `${mld.sutta_uid}/${mld.lang}/${mld.author_uid}`;
-      },
-      href(mld) {
-        let suttaRef = this.suttaRef(mld);
-        return `#/sutta/${suttaRef}`;
+      href(result) {
+        let { uid:sutta_uid, lang, author_uid:author, } = result;
+        let suttaRef = new SuttaRef({sutta_uid, lang, author});
+        return `#/sutta/${suttaRef.toString()}`;
       },
     },
     computed: {
+      matchedSuttas(ctx) {
+        return ctx.card.data;
+      },
     },
   }
 </script>
@@ -159,5 +162,6 @@
   font-size: x-large;
   top: 0.55em;
   left: 0.2rem;
+  opacity: 0.4;
 }
 </style>

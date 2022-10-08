@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia'
+import { SuttaRef } from "scv-esm";
+import { default as SuttaDuration } from '../sutta-duration.mjs';
+import { logger } from "log-instance";
 import Utils from "../utils.mjs";
 
+const suttas = new Map();
+const suttaDuration = await new SuttaDuration({fetch}).initialize();
 const INITIAL_STATE = {
   waiting: false,
-  suttas: {},
+  suttas,
+  suttaDuration,
 };
 
 export const useVolatileStore = defineStore('volatile', {
@@ -15,6 +21,11 @@ export const useVolatileStore = defineStore('volatile', {
   getters: {
   },
   actions: {
+    addMlDoc(mld) {
+      let { sutta_uid, lang, author_uid:author } = mld || {};
+      let suttaRef = new SuttaRef({sutta_uid, lang, author});
+      suttas[suttaRef.toString()] = mld;
+    },
     async fetchJson(url, options) {
       let res;
       if (this.waiting) {

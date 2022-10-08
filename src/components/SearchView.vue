@@ -10,7 +10,7 @@
       hint="Required"
       placeholder="Enter sutta id or search text">
     </v-text-field>
-    <search-results :results="results"/>
+    <search-results :card="card" :results="results"/>
   </v-sheet>
 </template>
 
@@ -59,11 +59,8 @@
             : res;
           window.location.hash = this.hash;
           let { mlDocs=[] } = this.results;
-          mlDocs.forEach((mld,i)=>{
-            let { sutta_uid, lang, author_uid } = mld || {};
-            let suttaRef = `${sutta_uid}/${lang}/${author_uid}`;
-            volatile.suttas[suttaRef] = mld;
-          });
+          card.data = this.results.results;
+          mlDocs.forEach(mld=>volatile.addMlDoc(mld));
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url.value} ${e.message}`;

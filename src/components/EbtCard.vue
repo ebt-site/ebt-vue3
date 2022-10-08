@@ -187,5 +187,8 @@
   .debug {
     color: rgb(var(--v-theme-placeholder));
   }
+  .v-card-text {
+    min-width: 20em;
+  }
 </style>
 
