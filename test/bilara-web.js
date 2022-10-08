@@ -124,7 +124,7 @@
     should(BilaraWeb.encodeHash({ sutta_uid, segnum }))
       .equal('#mn1:1.2');
   });
-  it("isExample", async () => {
+  it("TESTTESTisExample", async () => {
     var bw = new BilaraWeb({
       fetch,
       lang: 'en', // English default
@@ -133,7 +133,7 @@
     should(bw.isExample('ROOT OF SUFFERING')).equal('en');
     should(bw.isExample('root suffering')).equal(undefined);
     should(bw.isExample('Wurzel des Leidens')).equal('de');
-    should(bw.isExample('fühlt.* es losgelöst', 'de')).equal('de');
+    should(bw.isExample('losgelöst', 'de')).equal('de');
     should(bw.isExample('Wurzel des Leidens', 'de')).equal('de');
     should(bw.isExample('wurzel des leidens', 'de')).equal('de');
 

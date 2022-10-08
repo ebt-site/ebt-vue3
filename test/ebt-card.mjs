@@ -5,7 +5,7 @@ import should from "should";
 logger.logLevel = 'warn';
 
 (typeof describe === 'function') && describe("ebt-card.mjs", function () {
-  it("TESTTESTdefault ctor", async () => {
+  it("default ctor", async () => {
     let card1 = new EbtCard();
     let card2 = new EbtCard();
     let defaultProps = {
@@ -20,10 +20,10 @@ logger.logLevel = 'warn';
     should(card2.id).not.equal(card1.id);
     should(card2).properties(defaultProps);
   });
-  it("TESTTESTconstants", ()=>{
+  it("constants", ()=>{
     should(EbtCard.CONTEXT_SEARCH).equal('search');
   });
-  it("TESTTESTcustom ctor", async () => {
+  it("custom ctor", async () => {
     let id = 'test-id';
     let context = 'search';
     let location = 'test-location';
@@ -34,13 +34,13 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(Object.assign({}, card1));
     should(card2).properties(card1);
   });
-  it("TESTTESTicon", async() => {
+  it("icon", async() => {
     let card = new EbtCard();
     should(card.icon).equal("mdi-home");
     let cardWiki = new EbtCard({ context: "wiki"});
     should(cardWiki.icon).equal("mdi-wikipedia");
   });
-  it("TESTTESTstringify", async() => {
+  it("stringify", async() => {
     let card1 = new EbtCard();
     let json = JSON.stringify(card1);
     let card2 = new EbtCard(JSON.parse(json));
@@ -148,7 +148,7 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard() search", ()=>{
+  it("pathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
     let langTrans = "test-lang";

@@ -20,7 +20,7 @@ import { default as SuttaDuration } from '../src/sutta-duration.mjs';
     should(actual).below(expected + e);
   }
 
-  it("TESTTESTduration(...) measures seconds", async () => {
+  it("duration(...) measures seconds", async () => {
     let sd = await suttaDuration.initialize();
 
     // verify with actual durations

@@ -3,7 +3,7 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("TESTTESTdefault ctor", async () => {
+  it("default ctor", async () => {
     var ebt = new Settings();
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
@@ -27,7 +27,7 @@ import should from "should";
 
     });
   });
-  it("TESTTESTINITIAL_STATE", async () => {
+  it("INITIAL_STATE", async () => {
     should(Settings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
