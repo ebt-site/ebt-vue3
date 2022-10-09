@@ -1,15 +1,12 @@
 import { defineStore } from 'pinia'
 import { SuttaRef } from "scv-esm";
-import { default as SuttaDuration } from '../sutta-duration.mjs';
 import { logger } from "log-instance";
 import Utils from "../utils.mjs";
 
 const suttas = new Map();
-const suttaDuration = await new SuttaDuration({fetch}).initialize();
 const INITIAL_STATE = {
   waiting: false,
   suttas,
-  suttaDuration,
 };
 
 export const useVolatileStore = defineStore('volatile', {

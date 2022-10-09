@@ -15,7 +15,7 @@
                 {{card.data[i].suttaplex.acronym}}
               </div> <!-- result-title-body -->
               <div class="result-title-stats">
-                {{suttaDuration(sutta.uid).display}}
+                {{suttaDuration(sutta)}}
               </div> <!-- result-title-stats -->
             </div> <!-- result-title-main -->
             <div class="result-subtitle">
@@ -106,12 +106,8 @@
             aria,
         }
       },
-      suttaDuration(sutta_uid) {
-        let { volatile, } = this;
-        let { suttaDuration:sd } = volatile;
-        return sd
-          ? this.durationDisplay(sd.duration(sutta_uid))
-          : 0;
+      suttaDuration(sutta) {
+        return this.durationDisplay(sutta.stats.seconds).display;
       },
       href(result) {
         let { uid:sutta_uid, lang, author_uid:author, } = result;
