@@ -25,10 +25,10 @@
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div>
-            <a :href="`#/sutta/${href(card.data[i])}`">
-              {{card.data[i].suttaplex.acronym}}
-            </a>
             {{card.data[i].suttaplex.blurb}}
+            <a :href="`#/sutta/${href(card.data[i])}`">
+              <v-icon icon="mdi-open-in-new"/>
+            </a>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -112,7 +112,7 @@
       href(result) {
         let { uid:sutta_uid, lang, author_uid:author, } = result;
         let suttaRef = new SuttaRef({sutta_uid, lang, author});
-        return `#/sutta/${suttaRef.toString()}`;
+        return `${suttaRef.toString()}`;
       },
     },
     computed: {

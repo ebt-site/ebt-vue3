@@ -14,7 +14,8 @@ export const useSettingsStore = defineStore('settings', {
     if (savedState) {
       try {
         savedState = JSON.parse(savedState);
-        let { cards } = savedState;
+        let { cards, logLevel } = savedState;
+        logger.logLevel = logLevel;
         if (cards == null) {
           cards = savedState.cards = [{}];
         }
@@ -38,10 +39,10 @@ export const useSettingsStore = defineStore('settings', {
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
       saved.cards = this.cards;
+      logger.logLevel = saved.logLevel;
       let json = JSON.stringify(saved);
       localStorage.settings = json;
-      logger.debug('saveSettings', json);
-      logger.info("SettingsStore.saveSettings() localStorage.settings", 
+      logger.debug("SettingsStore.saveSettings() localStorage.settings", 
         localStorage.settings);
     },
     removeCard(card) {
@@ -50,7 +51,7 @@ export const useSettingsStore = defineStore('settings', {
     addCard(opts) {
       let { cards, langTrans } = this;
       let { context, location } = opts;
-      console.log("addCard", {context, location, langTrans});
+      logger.info("addCard", {context, location, langTrans});
       let card = new EbtCard(Object.assign({langTrans}, opts));
       this.cards.push(card);
       return card;
@@ -65,6 +66,17 @@ export const useSettingsStore = defineStore('settings', {
       delete localStorage.settings;
       Utils.assignTyped(this, Settings.INITIAL_STATE);
       logger.debug(`SettingsStore.clear()`, this);
+    },
+    suttaRefUrl(suttaRef) {
+      let search = encodeURIComponent(suttaRef.toString());
+      let { serverUrl } = this;
+      return [ serverUrl, 'search', search, ].join('/');
+    },
+    async fetchSutta(suttaRef) {
+      let url = this.suttaRefUrl(suttaRef);
+      logger.info("volatile.fetchSutta()", {suttaRef, url});
+      let sutta;
+      return sutta;
     },
   },
   getters: {

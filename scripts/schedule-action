@@ -10,6 +10,7 @@ set -e
 git pull
 echo -e "${SCRIPT}: updating dependencies..."
 npm install --save \
+  log-instance \
   merkle-json \
   vuetify@next
 npm install --save-dev \

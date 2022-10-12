@@ -8,7 +8,7 @@
     </div>
     <v-card :variant="cardVariant" >
       <template v-slot:title>
-        <v-icon :icon="card.icon"/>
+        <v-icon :icon="card.icon" class="card-icon"/>
         {{card.chipTitle($t)}}
       </template>
       <template v-slot:append>
@@ -21,7 +21,7 @@
         <sutta-view :card="card" v-if="card.context===CONTEXT_SUTTA"/>
         <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
       </v-card-text>
-      <div class="debug-footer" >
+      <div class="debug-footer" v-if="showDev" >
         <div class="debug-icon" @click="showDebug= !showDebug">
           <v-icon icon="mdi-hammer-wrench" size="x-small" class="debug" />
         </div>
@@ -41,8 +41,9 @@
               <tr> <th>isOpen</th> <td>{{card.isOpen}}</td> </tr>
               <tr> <th>chipTitle</th> <td>{{card.chipTitle($t)}}</td> </tr>
               <tr> <th>icon</th> <td>{{card.icon}}</td> </tr>
-              <tr> <th>location</th> <td>{{card.location}}</td> </tr>
               <tr> <th>context</th> <td>{{card.context}}</td> </tr>
+              <tr> <th>location</th> <td>{{card.location}}</td> </tr>
+              <tr> <th>data</th> <td>{{card.data}}</td> </tr>
               <tr> <th>route</th> <td>{{Object.keys($route)}}</td> </tr>
               <tr> <th>route.fullPath</th> <td>{{$route.fullPath}}</td> </tr>
               <tr> <th>route.params</th> <td>{{$route.params}}</td> </tr>
@@ -103,6 +104,11 @@
     mounted() {
     },
     computed: {
+      showDev(ctx) {
+        let logLevel = ctx.settings.logLevel;
+
+        return logLevel === 'info' || logLevel === 'debug';
+      },
       cardVariant: (ctx) => {
         let { settings } = ctx;
         return settings.cardsOpen === 1 ? "flat" : "outlined";
@@ -166,6 +172,9 @@
   .card-title-anchor {
     position: relative;
   }
+  .card-icon {
+    opacity: 0.5;
+  }
   .debug-icon {
     color: cyan;
     font-size: smaller;
@@ -179,6 +188,9 @@
   }
   .debug-footer {
     font-size: smaller;
+  }
+  th {
+    vertical-align: top;
   }
   .ebt-card {
     margin: 1pt;

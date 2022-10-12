@@ -188,10 +188,10 @@
               :label="$t('ebt.server')"
               :hint='serverHint'
             />
-            <v-select v-model="refLogger.logLevel" :items="logLevels" 
+            <v-select v-model="settings.logLevel" :items="logLevels" 
               :menu-icon="selectIcon"
               :label="$t('ebt.logLevel')"
-              :hint="refLogger.logLevel || 'info'"
+              :hint="settings.logLevel || 'info'"
             />
             <v-card>
               <v-card-text>
@@ -274,14 +274,14 @@ export default {
       title: 'Warnings and errors',
       value: 'warn',
     },{
-      title: 'Verbose',
+      title: 'Development information',
       value: 'info',
     },{
       title: 'Show all messages',
       value: 'debug',
     }];
 
-    console.log("Settings.setup()", settings);
+    logger.debug("Settings.setup()", settings);
 
     return {
       bellAudio,
@@ -304,7 +304,7 @@ export default {
   },
   mounted() {
     this.host = window.location.host;
-    console.log("Settings.mounted()", this.host);
+    logger.debug("Settings.mounted()", this.host);
   },
   methods: {
     openClearSettings() {
@@ -358,7 +358,7 @@ export default {
     selectIcon: ctx=>"mdi-menu-open",
     servers: ctx=>{
       let { settings, host } = ctx;
-      console.log("Settings.servers", settings, host);
+      logger.debug("Settings.servers", settings, host);
       return settings.servers.filter(s => {
         return host.startsWith("localhost") || !/localhost/.test(s);
       });

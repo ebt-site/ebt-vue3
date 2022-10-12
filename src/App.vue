@@ -48,6 +48,7 @@
   import Settings from './components/Settings.vue';
   import { useSettingsStore } from './stores/settings';
   import { useVolatileStore } from './stores/volatile';
+  import { logger } from "log-instance";
   import { ref } from "vue";
 
   export default {
@@ -71,11 +72,11 @@
       allowLocalStorage() {
         let { settings } = this;
         settings.saveSettings();
-        console.log("allowLocalStorage()", settings);
+        logger.debug("allowLocalStorage()", settings);
       },
       clickGdrp(evt) {
         let { settings } = this;
-        console.log('clickGdrp', evt);
+        logger.debug('clickGdrp', evt);
         settings.showGdpr = false;
         evt.preventDefault();
       },
@@ -86,7 +87,7 @@
       $i18n.locale = settings.locale;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-        console.debug("App.mounted() App.mounted() subscribe =>", {mutation, state});
+        logger.debug("App.mounted() App.mounted() subscribe =>", {mutation, state});
         settings.saveSettings();
         $i18n.locale = settings.locale;
       });

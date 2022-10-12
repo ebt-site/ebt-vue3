@@ -63,15 +63,20 @@
         let card = cards.find(c=>c.id === id);
         card && nextTick(()=>{ // wait for card to show
           console.debug(`onClick toggling card ${id}`);
-          card.isOpen = !card.isOpen;
-          card.isOpen && nextTick(()=>{ // wait for Vue to settle
-            let topAnchor = document.getElementById(card.topAnchor);
-            let titleAnchor = document.getElementById(card.titleAnchor);
-            topAnchor && topAnchor.scrollIntoView({
-              block: "start",
-              behavior: "smooth",
+          if ((card.isOpen = !card.isOpen)) {
+            nextTick(()=>{ // wait for Vue to settle
+              let topAnchor = document.getElementById(card.topAnchor);
+              let titleAnchor = document.getElementById(card.titleAnchor);
+              topAnchor && topAnchor.scrollIntoView({
+                block: "start",
+                behavior: "smooth",
+              });
             });
-          });
+          } else {
+            let card = cards.find(card => card.isOpen);
+            let anchor = card ? card.anchor : "/";
+            window.location.hash = `#${anchor}`;
+          }
         });
       },
       onClose: (card, settings) => {

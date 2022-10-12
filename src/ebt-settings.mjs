@@ -30,6 +30,7 @@ const INITIAL_STATE = {
   langRoot: 'pli',
   langs: 'pli+en',
   langTrans: 'en',
+  logLevel: 'warn',
   maxDuration: 3*60*60,
   scid: undefined,
   serverUrl: SERVERS[0].value,

@@ -12,7 +12,7 @@ const INITIAL_STATE = {
 export const useVolatileStore = defineStore('volatile', {
   state: () => {
     let s = Object.assign({}, INITIAL_STATE);
-    console.debug(`VolatileStore.state() => `, s);
+    logger.debug(`VolatileStore.state() => `, s);
     return s;
   },
   getters: {
@@ -20,8 +20,15 @@ export const useVolatileStore = defineStore('volatile', {
   actions: {
     addMlDoc(mld) {
       let { sutta_uid, lang, author_uid:author } = mld || {};
-      let suttaRef = new SuttaRef({sutta_uid, lang, author});
-      suttas[suttaRef.toString()] = mld;
+      let suttaRef = SuttaRef.create({sutta_uid, lang, author});
+      let key = suttaRef.toString();
+      logger.info("Settings.addMlDoc", {key, mld});
+      suttas[key] = mld;
+    },
+    mlDocFromSuttaRef(suttaRefArg) {
+      let suttaRef = SuttaRef.create(suttaRefArg);
+      let key = suttaRef.toString();
+      return suttas[key];
     },
     async fetchJson(url, options) {
       let res;
@@ -29,13 +36,13 @@ export const useVolatileStore = defineStore('volatile', {
         throw new Error("fetchJson() waiting... (request ignored)");
       }
       try {
-        console.log('fetchJson() url:', url);
+        logger.info('fetchJson() url:', url);
         this.waiting = true;
         res = await fetch(url, options);
-        console.log('fetchJson()', res);
+        logger.debug('fetchJson()', res);
         return res.ok ? await res.json() : res;
       } catch(e) {
-        console.error("fetchJson() ERROR:", res, e);
+        logger.error("fetchJson() ERROR:", res, e);
         res = { error: `ERROR: ${url.value} ${e.message}` };
       } finally {
         this.waiting = false;
