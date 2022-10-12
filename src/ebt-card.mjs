@@ -100,8 +100,10 @@ export default class EbtCard {
   get anchor() {
     let { context, location } = this;
     context = encodeURIComponent(context);
-    location = location.map(loc => encodeURIComponent(location)).join('/');
-    let link = `/${context}/${location}`;
+    let link = location.reduce((a,loc) => {
+      let uriPart = encodeURIComponent(loc);
+      return `${a}/${uriPart}`;
+    }, `/${context}`);
     return link;
   }
 

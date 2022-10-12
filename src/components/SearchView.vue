@@ -58,7 +58,6 @@
             ? await res.json()
             : res;
           window.location.hash = `#${card.anchor}`;
-          //window.location.hash = this.hash;
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));
@@ -88,16 +87,6 @@
       this.search = card.location[0];
     },
     computed: {
-      hash: (ctx) => {
-        let { search, card } = ctx;
-        let pattern = search && search.toLowerCase().trim();
-        let hash = [
-          '#/search',
-          encodeURIComponent(pattern),
-          card.location[1],
-        ].join('/');
-        return hash;
-      },
       url: (ctx) => {
         let { search, settings, card } = ctx;
         let { langTrans } = settings;

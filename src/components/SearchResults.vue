@@ -24,11 +24,12 @@
           </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <div>
-            {{card.data[i].suttaplex.blurb}}
-            <a :href="`#/sutta/${href(card.data[i])}`">
+          <div class="result-blurb">{{sutta.suttaplex.blurb}}</div>
+          <div class="result-quote">
+            <a :href="`#/sutta/${href(card.data[i])}`" class="pr-1">
               <v-icon icon="mdi-open-in-new"/>
             </a>
+            <span v-html="sutta.quote[sutta.lang]" />
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -159,5 +160,13 @@
   top: 0.55em;
   left: 0.2rem;
   opacity: 0.4;
+}
+.result-blurb {
+  font-style: italic;
+  padding-bottom: 0.2em;
+}
+.result-quote {
+  display: inline-block;
+  margin-left: 0.3em;
 }
 </style>

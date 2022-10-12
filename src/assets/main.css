@@ -43,3 +43,7 @@ a:focus {
   color: rgb(var(--v-theme-link));
   outline: 2pt dashed rgba(var(--v-theme-link),0.5);
 }
+.scv-matched {
+  color: rgb(var(--v-theme-matched));
+  font-weight: 600;
+}
