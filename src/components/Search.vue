@@ -9,12 +9,12 @@
           <v-col >
             <v-text-field v-model="settings.search" 
               clearable variant="underlined"
-              label="pattern"
+              :label="$t('ebt.search')"
               @click:append="onSearch"
               @click:clear="onSearchCleared"
               @keypress="onSearchKey"
               :append-icon="settings.search ? 'mdi-magnify' : ''"
-              hint="Required"
+              :hint="$t('ebt.required')""
               placeholder="Enter sutta id or search text">
             </v-text-field>
             <v-text-field v-model="lang" 

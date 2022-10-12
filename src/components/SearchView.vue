@@ -2,13 +2,13 @@
   <v-sheet class="results">
     <v-text-field v-model="search" 
       clearable variant="underlined"
-      label="pattern"
+      :label="$t('ebt.search')"
       @click:append="onSearch"
       @click:clear="onSearchCleared($event, card)"
       @keypress="onSearchKey($event, card, search)"
       :append-icon="search ? 'mdi-magnify' : ''"
-      hint="Required"
-      placeholder="Enter sutta id or search text">
+      :hint="$t('auth.required')"
+      :placeholder="$t('ebt.searchPrompt')">
     </v-text-field>
     <search-results :card="card" :results="results"/>
   </v-sheet>
@@ -57,7 +57,8 @@
           this.results = res.ok
             ? await res.json()
             : res;
-          window.location.hash = this.hash;
+          window.location.hash = `#${card.anchor}`;
+          //window.location.hash = this.hash;
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));
@@ -88,8 +89,7 @@
     },
     computed: {
       hash: (ctx) => {
-        let { search, settings, card } = ctx;
-        let { langTrans } = settings;
+        let { search, card } = ctx;
         let pattern = search && search.toLowerCase().trim();
         let hash = [
           '#/search',

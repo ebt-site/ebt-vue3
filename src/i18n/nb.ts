@@ -247,6 +247,7 @@ export default {
     "returnSearchResults": "A_COUNT søkeresultater",
     "rootLanguage": "Rotspråk",
     "search": "Søk",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Søkeresultater",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Innstillinger",

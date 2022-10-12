@@ -251,6 +251,7 @@ export default {
     "returnSearchResults": "A_COUNT zoekresultaten geretourneerd",
     "rootLanguage": "Hoofdtaal",
     "search": "Zoek",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Zoekresultaten",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Instellingen",

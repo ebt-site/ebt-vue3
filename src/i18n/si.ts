@@ -247,6 +247,7 @@ export default {
     "returnSearchResults": "A_COUNT ක් සෙවුම් ප්‍රතිඵල ලැබුණි",
     "rootLanguage": "මූල භාෂාව",
     "search": "සොයන්න",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "සෙවුම් ප්‍රතිඵල",
     "seconds": "තA_SECONDS",
     "settingsTitle": "සැකසීම්",

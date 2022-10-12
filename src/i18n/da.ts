@@ -248,6 +248,7 @@ export default {
     "returnSearchResults": "Din søgning gav A_COUNT resultater",
     "rootLanguage": "Stamsprog",
     "search": "Søgning",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Søgeresultater",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Indstillinger",

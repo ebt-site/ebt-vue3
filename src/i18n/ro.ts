@@ -247,6 +247,7 @@ export default {
     "returnSearchResults": "Căutarea a găsit A_COUNT rezultate",
     "rootLanguage": "Limbă de bază",
     "search": "Căutare",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Rezultate",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Setări",

@@ -249,6 +249,7 @@ export default {
     "returnSearchResults": "A_COUNT zwrócone wyniki wyszukiwania",
     "rootLanguage": "Język podstawowy",
     "search": "Wyszukuj",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Wyniki wyszukiwania",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Ustawienia",

@@ -249,6 +249,7 @@ export default {
     "returnSearchResults": "検索結果： A_COUNT 件",
     "rootLanguage": "ルート言語",
     "search": "検索",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "検索結果",
     "seconds": "A_SECONDSs",
     "settingsTitle": "設定",

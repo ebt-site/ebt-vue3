@@ -247,6 +247,7 @@ export default {
     "returnSearchResults": "A_COUNT Suchergebnisse anzeigen",
     "rootLanguage": "Quellsprache",
     "search": "Suche",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Suchergebnisse",
     "seconds": "A_SECONDS s",
     "server": "Server",

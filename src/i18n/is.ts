@@ -250,6 +250,7 @@ export default {
     "returnSearchResults": "A_COUNT Leitarniðurstöður sem fengust",
     "rootLanguage": "Rótarmál",
     "search": "Leita",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Leitarniðurstöður",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Stillingar",

@@ -248,6 +248,7 @@ export default {
     "returnSearchResults": "zobrazeno A_COUNT výsledků hledání",
     "rootLanguage": "Základní jazyk",
     "search": "Hledat",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Výsledky hledání",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Nastavení",

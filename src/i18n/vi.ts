@@ -250,6 +250,7 @@ export default {
     "returnSearchResults": "tìm thấy A_COUNT kết quả",
     "rootLanguage": "Ngôn ngữ gốc",
     "search": "Tìm kiếm",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "Kết quả tìm kiếm",
     "seconds": "A_SECONDSs",
     "settingsTitle": "Thiết lập",

@@ -53,8 +53,13 @@
       let { segments, settings, volatile, card, } = this;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
-      let suttaRef = SuttaRef.create({sutta_uid, lang, author}).toString();
-      this.suttaRef = suttaRef;
+      let ref = {sutta_uid, lang, author}
+      let refInst = SuttaRef.create(ref);
+      if (refInst == null) {
+        alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
+        return;
+      }
+      let suttaRef = this.suttaRef = refInst.toString();
       let mlDoc;
       if (data) {
         this.bindMlDoc(data);

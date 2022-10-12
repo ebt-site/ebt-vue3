@@ -248,6 +248,7 @@ export default {
     "returnSearchResults": "A_COUNT ख़ोज परिणाम आए",
     "rootLanguage": "मूल भाषा",
     "search": "खोजे",
+    "searchPrompt": "Enter sutta id or search text",
     "searchResults": "परिणाम खोजे",
     "seconds": "A_SECONDSसे",
     "settingsTitle": "सेटिंग्स",
