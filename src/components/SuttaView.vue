@@ -1,20 +1,25 @@
 <template>
-  <v-sheet class="sutta">
+  <v-sheet :class="suttaClass">
     <div>
-      <h3>{{suttaRef}}</h3>
+      <div v-if="settings.development">
+      {{nCols}}
+      {{suttaClass}}
+      </div>
       <div class="sutta-title">
         <div v-for="t in title"> {{t}} </div>
       </div> <!-- sutta-title -->
       <template v-for="seg in segments">
-        <div :class="segClass(seg)">
-          <div class="seg-id">
-            {{seg.scid}}
+        <div :class="segMatchedClass(seg)">
+          <div class="seg-id" v-if="settings.showId"> 
+            {{seg.scid}} 
           </div>
-          <div class="seg-pli">
-            {{seg.pli}}
-          </div>
-          <div class="seg-trans">
-            {{seg[langTrans]}}
+          <div class="seg-text">
+            <div :class="langClass('root')" 
+              v-if="settings.showPali"
+              v-html="seg.pli" />
+            <div :class="langClass('trans')" 
+              v-if="settings.showTrans"
+              v-html="seg[langTrans]" />
           </div>
         </div>
       </template>
@@ -80,6 +85,10 @@
       }
     },
     methods: {
+      langClass(langType) {
+        let { nCols } = this;
+        return `seg-${langType} seg-lang-${nCols}-col`;
+      },
       bindMlDoc(mlDoc) {
         let { card } = this;
         let { segMap } = mlDoc;
@@ -87,13 +96,31 @@
         this.segments = Object.keys(segMap).map(segId=>segMap[segId]);
         let nSegments = this.segments.length;
         let { sutta_uid, lang, author_uid } = mlDoc;
-        logger.info("SuttaView.bindMlDoc()", { sutta_uid, lang, author_uid, nSegments});
+        logger.info("SuttaView.bindMlDoc()", 
+          { sutta_uid, lang, author_uid, nSegments});
       },
-      segClass(seg) {
-        return seg.matched ? "seg seg-matched" : "seg";
+      segMatchedClass(seg) {
+        return seg.matched ? "seg-match seg-matched" : "seg-match";
       },
     },
     computed: {
+      suttaClass(ctx) {
+        let { nCols, volatile } = ctx;
+        let { layout } = volatile;
+        switch (nCols) {
+          case 2: return "sutta-2-col";
+          default: return "sutta-1-col";
+        }
+      },
+      nCols(ctx) {
+        let { settings } = ctx;
+        let nCols = 0;
+        settings.showPali && nCols++;
+        settings.showReference && nCols++;
+        settings.showTrans && nCols++;
+        settings.fullLine && (nCols = 1);
+        return nCols;
+      },
       langTrans(ctx) {
         let { settings, card } = ctx;
         let { location } = card;
@@ -113,20 +140,18 @@
 </script>
 
 <style scoped>
-.seg {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  border-left: 2pt solid rgba(0,0,0,0);
-  padding-left: 5pt;
-}
-.seg-matched {
-  border-left-color: rgb(var(--v-theme-chip));
-}
 .sutta {
-  max-width: 40em;
   margin-left: auto;
   margin-right: auto;
+}
+.sutta-1-col {
+  max-width: 40em;
+}
+.sutta-2-col {
+  max-width: 60em;
+}
+.sutta-3-col {
+  max-width: 80em;
 }
 .sutta-title {
   display: flex;
@@ -134,6 +159,42 @@
   align-items: center;
   font-size: larger;
   font-weight: 600;
+}
+.seg-match {
+  border-left: 2pt solid rgba(0,0,0,0);
+  padding-left: 0.3em;
+}
+.seg-matched {
+  border-left-color: rgb(var(--v-theme-chip));
+}
+.seg-id {
+  font-size: x-small;
+}
+.seg-text {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+}
+.seg-root {
+  font-style: italic;
+}
+.seg-trans {
+}
+.seg-lang-1-col {
+  min-width: 310px;
+  max-width: 40em;
+  margin-right: 0.3em;
+  margin-bottom: 0.3em;
+}
+.seg-lang-2-col {
+  width: 250px;
+  margin-right: 0.3em;
+  margin-bottom: 0.3em;
+}
+.seg-lang-3-col {
+  width: 200px;
+  margin-right: 0.3em;
+  margin-bottom: 0.3em;
 }
 </style>
 

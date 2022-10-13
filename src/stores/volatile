@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia'
 import { SuttaRef } from "scv-esm";
 import { logger } from "log-instance";
+import { ref } from "vue";
 import Utils from "../utils.mjs";
 
 const suttas = new Map();
+const layout = ref();
 const INITIAL_STATE = {
   waiting: false,
   suttas,
+  layout,
 };
 
 export const useVolatileStore = defineStore('volatile', {
@@ -16,6 +19,21 @@ export const useVolatileStore = defineStore('volatile', {
     return s;
   },
   getters: {
+    layout() {
+      let root = document.documentElement;
+      let onresize = ()=>{
+        layout.value = {
+          w: root.clientWidth,
+          h: root.clientHeight,
+        }
+        console.log("onresize", layout);
+      }
+      if (layout.value == null) {
+        document.defaultView.onresize = onresize;
+        onresize();
+      }
+      return layout;
+    },
   },
   actions: {
     addMlDoc(mld) {
