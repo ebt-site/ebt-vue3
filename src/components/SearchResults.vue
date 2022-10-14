@@ -24,7 +24,7 @@
           </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <div class="result-blurb">{{sutta.suttaplex.blurb}}</div>
+          <div class="result-blurb">{{sutta.blurb || sutta.suttaplex.blurb}}</div>
           <div class="result-quote">
             <a :href="`#/sutta/${href(card.data[i])}`" class="pr-1">
               <v-icon icon="mdi-open-in-new"/>
