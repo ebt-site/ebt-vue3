@@ -1,9 +1,10 @@
 <template>
   <v-sheet :class="suttaClass">
     <div>
-      <div v-if="settings.development">
-      {{nCols}}
-      {{suttaClass}}
+      <div v-if="settings.development" class="debug">
+        {{volatile.layout}}
+        {{suttaClass}}
+        {{langClass('trans')}}
       </div>
       <div class="sutta-title">
         <div v-for="t in title"> {{t}} </div>
@@ -20,6 +21,9 @@
             <div :class="langClass('trans')" 
               v-if="settings.showTrans"
               v-html="seg[langTrans]" />
+            <div :class="langClass('ref')" 
+              v-if="settings.showReference"
+              v-html="seg[settings.refLang]" />
           </div>
         </div>
       </template>
@@ -77,17 +81,33 @@
           let url = settings.suttaRefUrl(suttaRef);
           let promise = volatile.fetchJson(url);
           promise.then(json=>{
-            mlDoc = json.mlDocs[0];
-            volatile.addMlDoc(mlDoc);
-            this.bindMlDoc(mlDoc);
+            let {mlDocs=[]} = json;
+            if (mlDocs.length) {
+              mlDoc = mlDocs[0];
+              volatile.addMlDoc(mlDoc);
+              this.bindMlDoc(mlDoc);
+            } else {
+              console.log("DEBUG", {url, json});
+            }
           });
         }
       }
     },
     methods: {
       langClass(langType) {
-        let { nCols } = this;
-        return `seg-${langType} seg-lang-${nCols}-col`;
+        let { volatile, nCols } = this;
+        let { layout } = volatile;
+        let w = layout.value.w;
+        let colw = "lg";
+        switch (nCols) {
+          case 3:
+            colw = w < 1132 ? "sm" : "lg";
+            break;
+          default:
+            colw = "lg";
+            break;
+        }
+        return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       bindMlDoc(mlDoc) {
         let { card } = this;
@@ -106,19 +126,29 @@
     computed: {
       suttaClass(ctx) {
         let { nCols, volatile } = ctx;
-        let { layout } = volatile;
         switch (nCols) {
-          case 2: return "sutta-2-col";
-          default: return "sutta-1-col";
+          case 3: return "sutta-3col";
+          case 2: return "sutta-2col";
+          default: return "sutta-1col";
         }
       },
       nCols(ctx) {
-        let { settings } = ctx;
+        let { volatile, settings } = ctx;
+        let { layout } = volatile;
+        let w = layout.value.w;
         let nCols = 0;
         settings.showPali && nCols++;
         settings.showReference && nCols++;
         settings.showTrans && nCols++;
         settings.fullLine && (nCols = 1);
+        switch (nCols) {
+          case 3: 
+            nCols = w < 820 ? 1 : nCols;
+            break;
+          case 2: 
+            nCols = w < 566 ? 1 : nCols;
+            break;
+        }
         return nCols;
       },
       langTrans(ctx) {
@@ -144,57 +174,71 @@
   margin-left: auto;
   margin-right: auto;
 }
-.sutta-1-col {
+.sutta-1col {
   max-width: 40em;
 }
-.sutta-2-col {
+.sutta-2col {
   max-width: 60em;
 }
-.sutta-3-col {
-  max-width: 80em;
+.sutta-3col {
+  max-width: 100em;
 }
 .sutta-title {
   display: flex;
   flex-flow: column;
   align-items: center;
+  font-family: var(--ebt-sc-sans-font);
   font-size: larger;
   font-weight: 600;
 }
 .seg-match {
   border-left: 2pt solid rgba(0,0,0,0);
-  padding-left: 0.3em;
 }
 .seg-matched {
   border-left-color: rgb(var(--v-theme-chip));
 }
 .seg-id {
   font-size: x-small;
+  margin-left: 10px;
 }
 .seg-text {
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
 }
+.seg-lang {
+  margin-bottom: 0.3em;
+  margin-left: 10px;
+}
 .seg-root {
   font-style: italic;
+  font-family: var(--ebt-sc-sans-font);
 }
 .seg-trans {
+  font-family: var(--ebt-sc-sans-font);
 }
-.seg-lang-1-col {
+.seg-ref {
+  font-family: var(--ebt-sc-serif-font);
+}
+.seg-lang-1col-sm {
   min-width: 310px;
   max-width: 40em;
-  margin-right: 0.3em;
-  margin-bottom: 0.3em;
 }
-.seg-lang-2-col {
-  width: 250px;
-  margin-right: 0.3em;
-  margin-bottom: 0.3em;
+.seg-lang-1col-lg {
+  min-width: 310px;
+  max-width: 40em;
 }
-.seg-lang-3-col {
-  width: 200px;
-  margin-right: 0.3em;
-  margin-bottom: 0.3em;
+.seg-lang-2col-sm {
+  width: 300px;
+}
+.seg-lang-2col-lg {
+  width: 300px;
+}
+.seg-lang-3col-sm {
+  width: 210px;
+}
+.seg-lang-3col-lg {
+  width: 350px;
 }
 </style>
 

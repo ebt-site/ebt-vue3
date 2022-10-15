@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-main >
-      <v-app-bar color="toolbar" flat extension-height=40 class="nav-bar">
+      <v-app-bar color="toolbar" flat extension-height=40 class="nav-bar"
+        hide-on-scroll-doesnt-work
+      >
         <v-app-bar-title > 
           <div class="ebt-title">
             <a href="/#/">

@@ -10,6 +10,8 @@
 :root {
   --focus-color: rgb(206, 132, 0);
   --focus-border: 2pt dashed;
+  --ebt-sc-sans-font: "Skolar Sans PE", "Noto Sans", sans-serif;
+  --ebt-sc-serif-font: "Skolar PE", "Noto Serif", "Skolar Sans PE", "Noto Sans", serif;
 }
 .v-btn:focus-within {
   border: var(--focus-border) var(--focus-color);
@@ -46,4 +48,7 @@ a:focus {
 .scv-matched {
   color: rgb(var(--v-theme-matched));
   font-weight: 600;
+}
+.debug {
+  color: aqua;
 }

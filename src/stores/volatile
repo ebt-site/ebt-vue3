@@ -26,7 +26,6 @@ export const useVolatileStore = defineStore('volatile', {
           w: root.clientWidth,
           h: root.clientHeight,
         }
-        console.log("onresize", layout);
       }
       if (layout.value == null) {
         document.defaultView.onresize = onresize;
