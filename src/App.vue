@@ -1,27 +1,34 @@
 <template>
   <v-app>
     <v-main >
-      <v-app-bar color="toolbar" flat extension-height=40 class="nav-bar"
-        hide-on-scroll-doesnt-work
+      <v-app-bar color="toolbar" flat 
+        :extension-height="collapsed ? 0 : 40"
+        class="nav-bar"
+        :collapse="collapsed"
       >
-        <v-app-bar-title > 
-          <div class="ebt-title">
-            <a href="/#/">
+        <template v-if="collapsed">
+          <v-btn icon @click="collapsed = false">
+            <v-icon icon="mdi-arrow-expand-right" />
+          </v-btn>
+        </template> <!-- collapsed -->
+        <template v-if="!collapsed">
+          <v-app-bar-title > 
+            <div class="ebt-title" @click="collapsed=true">
               <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
                 class="ebt-nav-img"
               />
-            </a>
-            <div>EBT-Vue3</div>
-        </div>
-        </v-app-bar-title>
-        <v-spacer/>
-        <v-btn icon href="#/search">
-          <v-icon icon="mdi-magnify"/>
-        </v-btn>
-        <Settings/>
-        <template v-slot:extension>
-          <ebt-chips/>
+              <div>EBT-Vue3</div>
+            </div>
+          </v-app-bar-title>
+          <v-spacer/>
+          <v-btn icon href="#/search">
+            <v-icon icon="mdi-magnify"/>
+          </v-btn>
+          <Settings />
         </template>
+        <template v-if="!collapsed" v-slot:extension>
+          <ebt-chips />
+        </template> <!-- !collapsed -->
       </v-app-bar>
       <v-progress-linear v-if="volatile.waiting"
         indeterminate color="secondary" class="mb-0"/>
@@ -64,6 +71,7 @@
       settings: useSettingsStore(),
       volatile: useVolatileStore(),
       unsubscribe: undefined,
+      collapsed: false,
     }),
     components: {
       EbtCards,
@@ -115,6 +123,7 @@
 .ebt-nav-img {
   display: relative;
   height: 56px;
+  cursor: pointer;
   margin-right: 5px;
   border: 1pt solid rgb(0,0,0);
   border-radius: 5px;
