@@ -37,6 +37,7 @@ const INITIAL_STATE = {
   sutta_uid: undefined,
   theme: 'dark',
   translator: 'sujato',
+  searchMode: 'text',
 
   // from ebt-vue
   audio: AUDIO.OGG,

@@ -37,13 +37,17 @@
           </v-card-text>
           <table>
             <tbody>
+              <tr> 
+                <th>layout</th> 
+                <td>{{JSON.stringify(volatile.layout.value)}}</td> 
+              </tr>
               <tr> <th>id</th> <td>{{card.id}}</td> </tr>
               <tr> <th>isOpen</th> <td>{{card.isOpen}}</td> </tr>
               <tr> <th>chipTitle</th> <td>{{card.chipTitle($t)}}</td> </tr>
               <tr> <th>icon</th> <td>{{card.icon}}</td> </tr>
               <tr> <th>context</th> <td>{{card.context}}</td> </tr>
               <tr> <th>location</th> <td>{{card.location}}</td> </tr>
-              <tr> <th>data</th> <td>{{card.data}}</td> </tr>
+              <tr> <th>data</th> <td>{{card.data ? "yes" : "no"}}</td> </tr>
               <tr> <th>route</th> <td>{{Object.keys($route)}}</td> </tr>
               <tr> <th>route.fullPath</th> <td>{{$route.fullPath}}</td> </tr>
               <tr> <th>route.params</th> <td>{{$route.params}}</td> </tr>

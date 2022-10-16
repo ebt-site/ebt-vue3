@@ -18,8 +18,7 @@
                 {{suttaDuration(sutta)}}
               </div> <!-- result-title-stats -->
             </div> <!-- result-title-main -->
-            <div class="result-subtitle">
-              <p class="text-center">{{card.data[i].title}}</p>
+            <div class="result-subtitle" v-html="card.data[i].title">
             </div><!-- result-subtitle -->
           </div> <!-- result-title -->
         </v-expansion-panel-title>
@@ -129,6 +128,7 @@
   display: flex;
   flex-flow: row wrap;
   align-items: baseline;
+  justify-content: space-between;
 }
 .result-title-main {
   display: flex;
@@ -139,12 +139,12 @@
   margin-left: 0.5rem;
 }
 .result-subtitle {
-  margin-left: 0.4rem;
+  margin-left: 1rem;
   margin-bottom: 0.3rem;
-  display: flex;
+  text-align: right;
   font-size: small;
   font-style: italic;
-  min-width: 16rem;
+  width: 280px;
 }
 .result-title-body {
 }
