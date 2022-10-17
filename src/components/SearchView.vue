@@ -82,9 +82,7 @@
         let iExample = Math.trunc(Math.random() * langEx.length);
         let eg = langEx[iExample];
         this.search = eg;
-        this.$nextTick(()=>{
-          that.onSearch();
-        });
+        this.onSearch();
         logger.info('onInspireMe', eg);
       },
       searchFilter(item, queryText, itemText) {
@@ -216,6 +214,7 @@
 }
 .ebt-search {
   min-width: 350px;
+  max-width: 50em;
 }
 .ebt-results-new {
 }
