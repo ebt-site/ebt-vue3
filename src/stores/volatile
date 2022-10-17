@@ -39,7 +39,7 @@ export const useVolatileStore = defineStore('volatile', {
       let { sutta_uid, lang, author_uid:author } = mld || {};
       let suttaRef = SuttaRef.create({sutta_uid, lang, author});
       let key = suttaRef.toString();
-      logger.info("Settings.addMlDoc", {key, mld});
+      logger.info("volatile.addMlDoc", {key, mld});
       suttas[key] = mld;
     },
     mlDocFromSuttaRef(suttaRefArg) {

@@ -37,7 +37,6 @@ const INITIAL_STATE = {
   sutta_uid: undefined,
   theme: 'dark',
   translator: 'sujato',
-  searchMode: 'text',
 
   // from ebt-vue
   audio: AUDIO.OGG,
@@ -52,7 +51,6 @@ const INITIAL_STATE = {
   refLang: 'en',
   saveSettingsExamples: false,
   saveSettings: false,
-  search: undefined,
   showId: false,
   showPali: true,
   showReference: false,
@@ -78,7 +76,6 @@ export default class EbtSettings {
       refLang = 'en',
       saveSettingsExamples = false,
       saveSettings = false,
-      search = null,
       showId = false,
       showPali = true,
       showTrans = true,
@@ -114,7 +111,6 @@ export default class EbtSettings {
       this.refLang = refLang;
     this.saveSettingsExamples = saveSettingsExamples;
     this.saveSettings = saveSettings;
-    this.search = search;
     this.showId = showId;
     this.showPali = showPali;
     this.showReference = showReference;

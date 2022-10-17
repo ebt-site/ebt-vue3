@@ -1,17 +1,8 @@
 <template>
-  <v-sheet class="results">
+  <v-sheet class="ebt-search">
     <v-card>
       <v-card-text>
-        <v-radio-group v-model="settings.searchMode" 
-          :inline="layout.w > 600"
-          :label="$t('ebt.search')">
-          <v-radio :label="$t('ebt.examples')" value="examples" 
-          />
-          <v-radio :label="$t('ebt.text')" value="text" 
-            :value-comparator="(a,b) => a !== 'examples'"
-          />
-        </v-radio-group>
-        <v-autocomplete v-if="settings.searchMode==='examples'"
+        <v-autocomplete 
           v-model="search" 
           :append-icon="search ? 'mdi-magnify' : ''"
           clearable
@@ -22,25 +13,33 @@
           @keyup.enter="onEnter($event)"
           :filter="searchFilter"
           :items="searchItems"
-          :label="$t('ebt.examples')"
+          :label="$t('ebt.search')"
           :placeholder="$t('ebt.searchPrompt')"
           variant="underlined"
         />
+        <div class="inspire" v-if="hasExamples">
+          <v-btn variant=tonal @click="onInspireMe">
+            {{$t('ebt.inspireMe')}}
+          </v-btn>
+        </div>
+        <!--
         <v-text-field v-if="settings.searchMode!=='examples'"
           v-model="search" 
           :append-icon="search ? 'mdi-magnify' : ''"
           clearable 
           @click:append="onSearch"
           @click:clear="onSearchCleared($event, card)"
-          @keydpress="onSearchKey($event)"
+          @keypress="onSearchKey($event)"
           :hint="$t('auth.required')"
           :label="$t('ebt.text')"
           :placeholder="$t('ebt.searchPrompt')"
           variant="underlined"
         />
+        -->
       </v-card-text>
     </v-card>
-    <search-results :card="card" :results="results"/>
+    <search-results :card="card" :results="results" 
+      :class="resultsClass"/>
   </v-sheet>
 </template>
 
@@ -76,21 +75,35 @@
       SearchResults,
     },
     methods: {
+      onInspireMe() {
+        let { langTrans, settings } = this;
+        let that = this;
+        let langEx = Examples[langTrans] || [];
+        let iExample = Math.trunc(Math.random() * langEx.length);
+        let eg = langEx[iExample];
+        this.search = eg;
+        this.$nextTick(()=>{
+          that.onSearch();
+        });
+        logger.info('onInspireMe', eg);
+      },
       searchFilter(item, queryText, itemText) {
         let it = itemText.toLowerCase();
         let qt = queryText.toLowerCase();
         return it.indexOf(qt) >= 0;
       },
       onEnter(evt) {
+        let { search } = this;
         logger.info('onEnter()', {evt});
+        search && this.onSearch();
       },
-      async onSearch(evt) {
+      async onSearch() {
         let { volatile, url, search, card, } = this;
         let res;
         try {
           logger.info('onSearch()', {url, volatile});
-          card.location[0] = search;
           this.results = undefined;
+          card.location[0] = search;
           volatile.waiting = true;
           res = await fetch(url);
           this.results = res.ok
@@ -107,15 +120,24 @@
           volatile.waiting = false;
         }
       },
-      updateSearch(val) {
-        console.log('updateSearch', val);
-        this.search = val;
+      updateSearch(search) {
+        let { card } = this;
+        this.search = search;
+        if (search) {
+          console.log('updateSearch', search);
+          if (Examples.isExample(search)) {
+            this.onSearch();
+          }
+        } else {
+          console.log('updateSearch EMPTY');
+        }
+        return false;
       },
       onSearchKey(evt) {
         if (evt.code === "Enter") {
           let { card, search } = this;
           console.log('onSearchKey', {card, search});
-          search && this.onSearch(evt);
+          search && this.onSearch();
           evt.preventDefault();
         }
       },
@@ -130,43 +152,77 @@
       this.search = card.location[0];
     },
     computed: {
+      resultsClass(ctx) {
+        let { card, search } = this;
+        return !search || card.location[0] === search 
+          ? "ebt-results-new" 
+          : "ebt-results-old";
+      },
       searchItems() {
         let { search='', settings } = this;
-        let { langTrans } = settings;
+        let { langTrans, maxResults } = settings;
         var searchLower = search.toLowerCase();
         var langEx = Examples[langTrans] || Examples.en;
         var examples = search
           ? langEx.filter(ex=>ex.toLowerCase().indexOf(searchLower)>=0)
           : langEx;
-        return !search || Examples.isExample(search)
+
+        let MAX_CHOICES = 7;
+        if (examples.length > MAX_CHOICES) {
+          examples = examples.filter(ex=>ex.toLowerCase().indexOf(searchLower)===0)
+        }
+        examples = !search || Examples.isExample(search)
           ? [ ...examples ]
           : [`${this.search}`, ...examples];
+        return examples.slice(0,MAX_CHOICES);
       },
       url: (ctx) => {
         let { search, settings, card } = ctx;
-        let { langTrans } = settings;
+        let { langTrans, maxResults } = settings;
         let pattern = search && search.toLowerCase().trim();
         let url = [
           settings.serverUrl,
           'search',
           encodeURIComponent(pattern),
         ].join('/');
+        let query=[
+          `maxResults=${maxResults}`,
+        ].join('&');
         let lang = pattern.split('/')[1];
         return lang == null 
-          ? `${url}/${langTrans}`
-          : `${url}/${lang}`;
+          ? `${url}/${langTrans}?${query}`
+          : `${url}/${lang}?${query}`;
       },
       layout(ctx) {
         let { volatile } = ctx;
         let { layout } = volatile;
         return layout.value || layout;
       },
+      langTrans(ctx) {
+        return ctx.settings.langTrans;
+      },
+      hasExamples(ctx) {
+        let { langTrans } = ctx;
+        return !!Examples[langTrans];
+      }
     },
   }
 </script>
 
-<style scoped>
-.results {
-  max-width: 40rem;
+<style>
+.inspire {
+  display: flex;
+  justify-content: center;
+}
+.ebt-search {
+  min-width: 350px;
+}
+.ebt-results-new {
+}
+.ebt-results-old {
+  opacity: 0.5;
+}
+.v-autocomplete__content {
+  border: 1pt solid rgb(var(--v-theme-matched));
 }
 </style>
