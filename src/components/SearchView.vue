@@ -167,7 +167,10 @@
 
         let MAX_CHOICES = 7;
         if (examples.length > MAX_CHOICES) {
-          examples = examples.filter(ex=>ex.toLowerCase().indexOf(searchLower)===0)
+          let newExamples = examples.filter(ex=>ex.toLowerCase().indexOf(searchLower)===0)
+          if (newExamples.length) {
+            examples = newExamples;
+          }
         }
         examples = !search || Examples.isExample(search)
           ? [ ...examples ]
