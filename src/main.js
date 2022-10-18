@@ -26,7 +26,7 @@ const vuetifyOpts = {
           chip: colors.brown.darken2,
           link: colors.brown.darken2,
           toolbar: colors.brown.darken2,
-          matched: colors.brown.darken2,
+          matched: "#bf235d",
           placeholder: "#600060",
           expansion: colors.grey.lighten4,
         },

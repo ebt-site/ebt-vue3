@@ -52,3 +52,6 @@ a:focus {
 .debug {
   color: aqua;
 }
+.debug:hover {
+  color: red;
+}

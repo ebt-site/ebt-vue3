@@ -95,13 +95,14 @@
     },
     methods: {
       langClass(langType) {
-        let { volatile, nCols } = this;
-        let { layout } = volatile;
-        let w = layout.value.w;
+        let { layout, volatile, nCols } = this;
         let colw = "lg";
         switch (nCols) {
           case 3:
-            colw = w < 1132 ? "sm" : "lg";
+            colw = layout.w < 1132 ? "sm" : "lg";
+            break;
+          case 1:
+            colw = layout.w < 600 ? "sm" : "lg";
             break;
           default:
             colw = "lg";
@@ -120,7 +121,10 @@
           { sutta_uid, lang, author_uid, nSegments});
       },
       segMatchedClass(seg) {
-        return seg.matched ? "seg-match seg-matched" : "seg-match";
+        let { layout } = this;
+        let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
+        let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
+        return `${matchedClass} ${idClass}`;
       },
     },
     computed: {
@@ -165,6 +169,9 @@
         let { title='(no-title)' } = mlDoc;
         return title.split('\n');
       },
+      layout(ctx) {
+        return ctx.volatile.layout.value;
+      },
     },
   }
 </script>
@@ -190,16 +197,33 @@
   font-family: var(--ebt-sc-sans-font);
   font-size: larger;
   font-weight: 600;
+  line-height: 1.5em;
+  margin-bottom: 1em;
+}
+.sutta-title div:first-child {
+  font-size: smaller;
+  font-weight: 400;
 }
 .seg-match {
+  display: flex;
+  justify-content: space-between;
   border-left: 2pt solid rgba(0,0,0,0);
 }
 .seg-matched {
-  border-left-color: rgb(var(--v-theme-chip));
+  border-left-color: rgb(var(--v-theme-matched));
+}
+.seg-id-col {
+  flex-flow: column;
+}
+.seg-id-row {
+  flex-flow: row;
 }
 .seg-id {
   font-size: x-small;
   margin-left: 10px;
+}
+.seg-id-col .seg-id {
+  margin-left: 5px;
 }
 .seg-text {
   display: flex;
@@ -221,12 +245,10 @@
   font-family: var(--ebt-sc-serif-font);
 }
 .seg-lang-1col-sm {
-  min-width: 310px;
-  max-width: 40em;
+  width: 310px;
 }
 .seg-lang-1col-lg {
-  min-width: 310px;
-  max-width: 40em;
+  width: 310px;
 }
 .seg-lang-2col-sm {
   width: 300px;
