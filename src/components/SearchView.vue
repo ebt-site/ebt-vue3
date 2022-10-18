@@ -12,7 +12,7 @@
           @update:search="updateSearch($event)"
           @keyup.enter="onEnter($event)"
           :filter="searchFilter"
-          :items="searchItems"
+          :items="exampleItems"
           :label="$t('ebt.search')"
           :placeholder="$t('ebt.searchPrompt')"
           variant="underlined"
@@ -156,7 +156,7 @@
           ? "ebt-results-new" 
           : "ebt-results-old";
       },
-      searchItems() {
+      exampleItems() {
         let { search='', settings } = this;
         let { langTrans, maxResults } = settings;
         var searchLower = search.toLowerCase();
@@ -165,8 +165,8 @@
           ? langEx.filter(ex=>ex.toLowerCase().indexOf(searchLower)>=0)
           : langEx;
 
-        let MAX_CHOICES = 7;
-        if (examples.length > MAX_CHOICES) {
+        let MAX_CHOICES = 8;
+        if (0 && examples.length > MAX_CHOICES) {
           let newExamples = examples.filter(ex=>ex.toLowerCase().indexOf(searchLower)===0)
           if (newExamples.length) {
             examples = newExamples;
