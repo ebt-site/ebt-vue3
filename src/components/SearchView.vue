@@ -121,15 +121,7 @@
       updateSearch(search) {
         let { card } = this;
         this.search = search;
-        if (search) {
-          console.log('updateSearch', search);
-          if (Examples.isExample(search)) {
-            this.onSearch();
-          }
-        } else {
-          console.log('updateSearch EMPTY');
-        }
-        return false;
+        Examples.isExample(search) && this.onSearch();
       },
       onSearchKey(evt) {
         if (evt.code === "Enter") {

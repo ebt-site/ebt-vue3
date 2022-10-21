@@ -10,6 +10,7 @@
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { useSettingsStore } from '../stores/settings';
+  import { logger } from "log-instance";
 
   export default {
     setup() {
@@ -25,7 +26,7 @@
       let { cards } = settings;
       let card = EbtCard.pathToCard(fullPath, cards, 
         (opts) => settings.addCard(opts));
-      console.log(`EbtCards.mounted()`, card);
+      logger.info(`EbtCards.mounted()`, card);
     },
     computed: {
       cardsClass: (ctx) => {
@@ -39,7 +40,7 @@
       $route (to, from){
         let { settings, $route }  = this;
         let { cards } = settings;
-        console.log(`EbtCards.watch.$route()`, {$route, to, });
+        logger.info(`EbtCards.watch.$route()`, {$route, to, });
         let card = EbtCard.pathToCard(to.fullPath, cards, 
           (opts) => settings.addCard(opts));
       }

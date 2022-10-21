@@ -78,7 +78,11 @@ export default class EbtCard {
     } else {
       logger.info(`pathToCard ${path} (EXISTING))`, card);
     } 
-    card && (card.isOpen = true);
+    if (card && card.isOpen) {
+      if (cards.length > 1 && card.context !== CONTEXT_HOME) {
+        card.isOpen = true;
+      }
+    }
 
     return card;
   }
