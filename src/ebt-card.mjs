@@ -1,6 +1,6 @@
-//import { SuttaRef } from 'scv-esm';
 import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
+import { SuttaRef } from 'scv-esm';
 
 const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
@@ -134,7 +134,7 @@ export default class EbtCard {
       ? location.map(loc => loc && decodeURIComponent(loc.toLowerCase())) 
       : [];
 
-    let dbg = 1;
+    let dbg = 0;
     let cardLocation = this.location instanceof Array 
       ? this.location
       : (this.location == null ? [] : [this.location]);
@@ -153,21 +153,24 @@ export default class EbtCard {
       }
     }
     if (context === CONTEXT_SUTTA) {
-      //let pathRef = SuttaRef.create(location.join('/'));
-      //let cardRef = SuttaRef.create(cardLocation.join('/'));
-      //if (pathRef == cardRef) {
-        //dbg & console.log("matchPath(${path}) => true ", {pathRef, cardRef});
-        //return true;
-      //}
-      //if (!pathRef || !cardRef) {
-        //dbg & console.log("matchPath(${path}) => false", {pathRef, cardRef});
-        //return false;
-      //}
-      //if (pathRef.suid !== cardRef.suid) {
-        //dbg & console.log("matchPath(${path}) => false", {pathRef, cardRef});
-        //return false;
-      //}
-      //return true;
+      let loc = location.join('/');
+      let cardLoc = cardLocation.join('/');
+      if (loc === '') {
+        let result = cardLoc === loc;
+        dbg && console.log(`matchPath(${path}) => ${result}`, {cardLoc, loc});
+        return result;
+      }
+      if (cardLoc === '') {
+        dbg && console.log("matchPath(${path}) => false", {cardLoc, loc});
+        return false;
+      }
+      let pathRef = SuttaRef.create(loc);
+      let cardRef = SuttaRef.create(cardLoc);
+      if (pathRef.suid !== cardRef.suid) {
+        dbg && console.log("matchPath(${path}) => false", {pathRef, cardRef});
+        return false;
+      }
+      return true;
     }
     if (location.length !== cardLocation.length) {
       if (context === CONTEXT_SEARCH) {

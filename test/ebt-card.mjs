@@ -149,14 +149,14 @@ logger.logLevel = 'warn';
     });
   });
   it("TESTTESTmatchPath() sutta context", async() => {
-    let locSutta = "sn42:11";
+    let locSutta = "sn35.1";
     let locSegA = `${locSutta}:1.10`;
     let locSegB = `${locSutta}:2.3`;
     let cardSutta = new EbtCard({ context: "sutta", location: [locSutta]});
     let cardSegA = new EbtCard({ context: "sutta", location: [locSegA]});
     let cardSegB = new EbtCard({ context: "sutta", location: [locSegB]});
 
-    let dbg = 1;
+    let dbg = 0;
     if (dbg) {
       let path = `/sutta/${locSutta}`;
       should(cardSegA.matchPath(path)).equal(true);
