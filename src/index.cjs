@@ -1,3 +1,4 @@
+/*
 const {
   BilaraPath,
   SuttaCentralId,
@@ -7,8 +8,9 @@ const {
 module.exports = {
 
   BilaraWeb: require("./bilara-web"),
-  Settings: import('./ebt-settings.mjs'),
+  Settings: require('./ebt-settings.mjs'),
   SuttaCentralId,
   Tipitaka,
 
 "" : ""};
+*/

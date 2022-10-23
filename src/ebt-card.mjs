@@ -1,6 +1,6 @@
 import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
-import { SuttaRef } from 'scv-esm';
+import { SuttaRef } from 'scv-esm/main.mjs';
 
 const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";

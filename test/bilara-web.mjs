@@ -1,15 +1,17 @@
+import should from 'should';
+import fs from 'fs';
+import path from 'path';
+import { logger } from 'log-instance';
+import { MerkleJson } from 'merkle-json';
+import axios from 'axios';
+
+import {
+//  BilaraWeb,
+  SuttaRef,
+} from "../src/index.mjs";
 /*
+
 (typeof describe === 'function') && describe("bilara-web", function () {
-  const should = require("should");
-  const fs = require('fs');
-  const path = require('path');
-  const { MerkleJson } = require('merkle-json');
-  const {
-    BilaraWeb,
-    SuttaRef,
-  } = require("../src/index");
-  const { logger, LogInstance } = require('log-instance');
-  const axios = require('axios');
   logger.logLevel = 'warn';
   const fetch = async function (url, opts) {
     return {
