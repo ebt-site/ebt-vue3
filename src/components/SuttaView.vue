@@ -10,6 +10,9 @@
         <div v-for="t in title"> {{t}} </div>
       </div> <!-- sutta-title -->
       <template v-for="seg in segments">
+        <div :id="`/sutta/${seg.scid}`" class="seg-anchor" >
+          <!--span class="debug">{{seg.scid}}</span-->
+        </div>
         <div :class="segMatchedClass(seg)">
           <div class="seg-id" v-if="settings.showId"> 
             {{seg.scid}} 
@@ -261,6 +264,12 @@
 }
 .seg-lang-3col-lg {
   width: 350px;
+}
+.seg-anchor {
+  position: relative;
+  font-size: 10px;
+  top: -200px;
+  height: 1px;
 }
 </style>
 

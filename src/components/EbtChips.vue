@@ -31,6 +31,7 @@
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
   import { ref, nextTick } from "vue";
+  import { logger } from "log-instance";
 
   export default {
     setup() {
@@ -56,13 +57,13 @@
         settings.moveCard(srcIndex, dstIndex);
       },
       updateActive: (evt) => {
-        console.log(`updateActive`, evt);
+        logger.info(`updateActive`, evt);
       },
       onClick: async (id, cards) => {
         const volatile = await useVolatileStore();
         let card = cards.find(c=>c.id === id);
         card && nextTick(()=>{ // wait for card to show
-          console.debug(`onClick toggling card ${id}`);
+          logger.info(`onClick toggling card ${id}`);
           if ((card.isOpen = !card.isOpen)) {
             nextTick(()=>{ // wait for Vue to settle
               let topAnchor = document.getElementById(card.topAnchor);
@@ -75,13 +76,14 @@
           } else {
             let card = cards.find(card => card.isOpen);
             let anchor = card ? card.anchor : "/";
+            logger.info(`onClick toggling showing open card ${id}`);
             window.location.hash = `#${anchor}`;
           }
         });
       },
       onClose: (card, settings) => {
         let { cards } = settings;
-        console.debug(`onClose removing card ${card.id}`);
+        logger.info(`onClose removing card ${card.id}`);
         nextTick(() => settings.removeCard(card));
       },
       closable: (card, settings) => {

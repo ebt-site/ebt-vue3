@@ -7,6 +7,7 @@
 </template>
 
 <script>
+  import { nextTick } from "vue";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { useSettingsStore } from '../stores/settings';
@@ -24,9 +25,15 @@
       let { settings, $route }  = this;
       let { params, fullPath }  = $route;
       let { cards } = settings;
+      fullPath = decodeURIComponent(fullPath);
       let card = EbtCard.pathToCard(fullPath, cards, 
         (opts) => settings.addCard(opts));
-      logger.info(`EbtCards.mounted()`, card);
+
+      nextTick(() => {
+        let anchor = document.getElementById(fullPath);
+        logger.info(`EbtCards.mounted()`, {card, fullPath, anchor});
+        anchor && anchor.scrollIntoView(true);
+      });
     },
     computed: {
       cardsClass: (ctx) => {
@@ -43,10 +50,19 @@
         logger.info(`EbtCards.watch.$route()`, {$route, to, });
         let card = EbtCard.pathToCard(to.fullPath, cards, 
           (opts) => settings.addCard(opts));
-      }
-    }, 
-    components: {
-      EbtCardVue,
+        
+        if (0) {
+          let topAnchor = document.getElementById(card.topAnchor);
+          let titleAnchor = document.getElementById(card.titleAnchor);
+          topAnchor && topAnchor.scrollIntoView({
+            block: "start",
+            behavior: "smooth",
+          });
+        }
+        }
+      }, 
+      components: {
+        EbtCardVue,
     },
   }
 </script>

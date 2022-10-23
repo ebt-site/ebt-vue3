@@ -148,6 +148,52 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
+  it("TESTTESTmatchPath() sutta context", async() => {
+    let locSutta = "sn42:11";
+    let locSegA = `${locSutta}:1.10`;
+    let locSegB = `${locSutta}:2.3`;
+    let cardSutta = new EbtCard({ context: "sutta", location: [locSutta]});
+    let cardSegA = new EbtCard({ context: "sutta", location: [locSegA]});
+    let cardSegB = new EbtCard({ context: "sutta", location: [locSegB]});
+
+    let dbg = 1;
+    if (dbg) {
+      let path = `/sutta/${locSutta}`;
+      should(cardSegA.matchPath(path)).equal(true);
+    }
+
+    let noPaths = [
+      "sutta/sn10.1",
+      "/wiki",
+      "/search/sn42.11",
+      "sutta/mn1",
+      "/sutta",
+    ];
+    noPaths.forEach(path=>{
+      should(cardSutta.matchPath(path)).equal(false);
+      should(cardSegA.matchPath(path)).equal(false);
+      should(cardSegB.matchPath(path)).equal(false);
+    });
+
+    let suttaPaths = [
+      `/sutta/${locSutta}`,
+    ];
+    suttaPaths.forEach(path => {
+      should(cardSutta.matchPath(path)).equal(true);
+      should(cardSegA.matchPath(path)).equal(true);
+      should(cardSegB.matchPath(path)).equal(true);
+    });
+
+    let segPaths = [
+      `/sutta/${locSegA}`,
+      `/sutta/${locSegB}`,
+    ];
+    segPaths.forEach(path => {
+      should(cardSutta.matchPath(path)).equal(true);
+      should(cardSegA.matchPath(path)).equal(true);
+      should(cardSegB.matchPath(path)).equal(true);
+    });
+  });
   it("pathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
@@ -182,6 +228,27 @@ logger.logLevel = 'warn';
     should.deepEqual(cards, [cardHome, cardSearch, cardSearchAB, cardSearchABC]);
 
     should(nAdd).equal(4);
+  });
+  it("pathToCard() sutta", ()=>{
+    let cards = [];
+    let nAdd = 0;
+    let langTrans = "test-lang";
+    let addCard = (opts) => {
+      let card = new EbtCard(Object.assign({langTrans},opts));
+      //console.trace(`added card`, card);
+      cards.push(card);
+      nAdd++
+      return card;
+    }
+    let cardSN42_11 = EbtCard.pathToCard('/sutta/sn42.11', cards, addCard);
+    should.deepEqual(cards, [cardSN42_11]);
+    let cardSN42_11$2 = EbtCard.pathToCard('/sutta/sn42.11', cards, addCard);
+    should.deepEqual(cards, [cardSN42_11]);
+
+    let cardSN42_11_1_10 = EbtCard.pathToCard('/sutta/sn42.11:1.10', cards, addCard);
+    should.deepEqual(cards, [cardSN42_11]);
+
+    should(nAdd).equal(1);
   });
 });
 

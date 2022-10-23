@@ -1,3 +1,4 @@
+/*
 (typeof describe === 'function') && describe("bilara-web", function () {
   const should = require("should");
   const fs = require('fs');
@@ -124,7 +125,7 @@
     should(BilaraWeb.encodeHash({ sutta_uid, segnum }))
       .equal('#mn1:1.2');
   });
-  it("TESTTESTisExample", async () => {
+  it("isExample", async () => {
     var bw = new BilaraWeb({
       fetch,
       lang: 'en', // English default
@@ -496,6 +497,7 @@
     should.deepEqual(suttaSomaDE.segments[1], {
       scid: 'sn35.7:0.2',
       pli: '1. Aniccavagga ',
+      ref: "1. Das Kapitel über Unbeständigkeit ",
     });
 
     // Soma has no translation for SN35.7
@@ -504,6 +506,7 @@
     should.deepEqual(suttaSoma.segments[1], {
       scid: 'sn35.7:0.2',
       pli: '1. Aniccavagga ',
+      ref: "1. Das Kapitel über Unbeständigkeit ",
     });
   });
   it("loadSuttaRef(...) => thig1.1 (soma/sujato)", async () => {
@@ -836,3 +839,4 @@
     });
   });
 })
+*/

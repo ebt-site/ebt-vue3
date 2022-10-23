@@ -1,3 +1,4 @@
+//import { SuttaRef } from 'scv-esm';
 import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -132,7 +133,8 @@ export default class EbtCard {
     location = location 
       ? location.map(loc => loc && decodeURIComponent(loc.toLowerCase())) 
       : [];
-    let dbg = 0;
+
+    let dbg = 1;
     let cardLocation = this.location instanceof Array 
       ? this.location
       : (this.location == null ? [] : [this.location]);
@@ -149,6 +151,23 @@ export default class EbtCard {
         dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
         return false;
       }
+    }
+    if (context === CONTEXT_SUTTA) {
+      //let pathRef = SuttaRef.create(location.join('/'));
+      //let cardRef = SuttaRef.create(cardLocation.join('/'));
+      //if (pathRef == cardRef) {
+        //dbg & console.log("matchPath(${path}) => true ", {pathRef, cardRef});
+        //return true;
+      //}
+      //if (!pathRef || !cardRef) {
+        //dbg & console.log("matchPath(${path}) => false", {pathRef, cardRef});
+        //return false;
+      //}
+      //if (pathRef.suid !== cardRef.suid) {
+        //dbg & console.log("matchPath(${path}) => false", {pathRef, cardRef});
+        //return false;
+      //}
+      //return true;
     }
     if (location.length !== cardLocation.length) {
       if (context === CONTEXT_SEARCH) {
@@ -176,7 +195,7 @@ export default class EbtCard {
       return match;
     }, true);
 
-    dbg && console.log(`matchPath(${path}) ${match}`, {context, location});
+    dbg && console.log(`matchPath(${path}) => ${match}`, {context, location});
     return match;
   }
 
