@@ -152,9 +152,15 @@ logger.logLevel = 'warn';
     let locSutta = "sn35.1";
     let locSegA = `${locSutta}:1.10`;
     let locSegB = `${locSutta}:2.3`;
-    let cardSutta = new EbtCard({ context: "sutta", location: [locSutta]});
-    let cardSegA = new EbtCard({ context: "sutta", location: [locSegA]});
-    let cardSegB = new EbtCard({ context: "sutta", location: [locSegB]});
+    let lang = 'de';
+    let notLang = 'en';
+    let author = 'sabbamitta';
+    let notAuthor = 'sujato';
+
+    // create fully specified cards
+    let cardSutta = new EbtCard({ context: "sutta", location: [locSutta, lang, author]});
+    let cardSegA = new EbtCard({ context: "sutta", location: [locSegA, lang, author]});
+    let cardSegB = new EbtCard({ context: "sutta", location: [locSegB, lang, author]});
 
     let dbg = 0;
     if (dbg) {
@@ -162,10 +168,24 @@ logger.logLevel = 'warn';
       should(cardSegA.matchPath(path)).equal(true);
     }
 
+    // not matches
     let noPaths = [
-      "sutta/sn10.1",
+      "sutta/thig1.1",
       "/wiki",
-      "/search/sn42.11",
+      "/search/thig1.1",
+      "/search/thig1.1/${lang}",
+      "/search/thig1.1/${lang}/${author}",
+      "/search/thig1.1:1.0",
+      "/search/thig1.1:1.0/${lang}",
+      "/search/thig1.1:1.0/${lang}/${author}",
+      `/search/${locSutta}/${notLang}`,
+      `/search/${locSutta}/${notLang}/${notAuthor}`,
+      `/search/${locSutta}/${notLang}/${author}`,
+      `/search/${locSutta}/${lang}/${notAuthor}`,
+      `/search/${locSegA}/${notLang}`,
+      `/search/${locSegA}/${notLang}/${notAuthor}`,
+      `/search/${locSegA}/${notLang}/${author}`,
+      `/search/${locSegA}/${lang}/${notAuthor}`,
       "sutta/mn1",
       "/sutta",
     ];
@@ -175,8 +195,11 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(false);
     });
 
+    // match without segment number
     let suttaPaths = [
       `/sutta/${locSutta}`,
+      `/sutta/${locSutta}/${lang}`,
+      `/sutta/${locSutta}/${lang}/${author}`,
     ];
     suttaPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -184,9 +207,12 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
 
+    // match with segment number
     let segPaths = [
       `/sutta/${locSegA}`,
       `/sutta/${locSegB}`,
+      `/sutta/${locSegA}/${lang}`,
+      `/sutta/${locSegA}/${lang}/${author}`,
     ];
     segPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -251,4 +277,3 @@ logger.logLevel = 'warn';
     should(nAdd).equal(1);
   });
 });
-

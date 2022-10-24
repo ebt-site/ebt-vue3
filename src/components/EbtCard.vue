@@ -1,10 +1,7 @@
 <template>
   <v-sheet v-if="card.isOpen">
     <div :id="card.topAnchor" class="card-top-anchor">
-      <a :name="card.anchor"></a>
-    </div>
-    <div :id="card.titleAnchor" class="card-title-anchor">
-        <a :name="card.titleAnchor"></a>
+      <a :name="card.topAnchor"></a>
     </div>
     <v-card :variant="cardVariant" >
       <template v-slot:title>
@@ -116,10 +113,6 @@
       cardVariant: (ctx) => {
         let { settings } = ctx;
         return settings.cardsOpen === 1 ? "flat" : "outlined";
-      },
-      topAnchor: (ctx) => {
-        let {card} = ctx;
-        return `${card.id}-top`;
       },
       cardLink: (ctx) => {
         let { card } = ctx;

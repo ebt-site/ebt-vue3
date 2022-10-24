@@ -7,7 +7,7 @@ import {
   SuttaCentralId,
   SuttaRef,
 } from 'scv-esm/main.mjs';
-import VOICES from './auto/voices.json' 
+import VOICES from './auto/voices.json' assert {type: 'json'};
 import assert from 'assert'
 
 export default class BilaraWeb {
@@ -412,7 +412,7 @@ export default class BilaraWeb {
   }
 
   async loadBilaraPath(bilaraPath) {
-    assert(bilaraPath);
+    assert(bilaraPath, "loadBilaraPath() => empty bilaraPath");
     let { authors, fetch, host, includeUnpublished } = this;
     let segments;
     let branch = includeUnpublished ? "unpublished" : "published";

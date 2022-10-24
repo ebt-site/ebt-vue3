@@ -61,24 +61,37 @@
       },
       onClick: async (id, cards) => {
         const volatile = await useVolatileStore();
+        const settings = await useSettingsStore();
         let card = cards.find(c=>c.id === id);
+        if (!settings.scrollToElementId(card.topAnchor)) {
+        }
         card && nextTick(()=>{ // wait for card to show
+          if (settings.scrollToElementId(card.topAnchor)) {
+          } else {
+          }
+
+          /*
           logger.info(`onClick toggling card ${id}`);
           if ((card.isOpen = !card.isOpen)) {
+            window.location.hash = `#${card.route}`;
             nextTick(()=>{ // wait for Vue to settle
-              let topAnchor = document.getElementById(card.topAnchor);
-              let titleAnchor = document.getElementById(card.titleAnchor);
-              topAnchor && topAnchor.scrollIntoView({
+              let anchor = document.getElementById(card.topAnchor);
+              console.log('scrolling to', {anchor, cardAnchor} );
+              anchor && anchor.scrollIntoView({
                 block: "start",
                 behavior: "smooth",
               });
             });
           } else {
             let card = cards.find(card => card.isOpen);
-            let anchor = card ? card.anchor : "/";
-            logger.info(`onClick toggling showing open card ${id}`);
-            window.location.hash = `#${anchor}`;
+            if (card) {
+              let cardAnchor = card..topAnchor;
+              let cardRoute = card.route;
+              logger.info(`onClick showing open card`, {cardAnchor, cardRoute});
+              //window.location.hash = `#${cardAnchor}`;
+            }
           }
+          */
         });
       },
       onClose: (card, settings) => {

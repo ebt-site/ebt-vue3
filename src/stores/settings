@@ -6,6 +6,14 @@ import { default as EbtCard } from "../../src/ebt-card.mjs";
 
 var id = 1;
 
+function elementInViewport(elt) {
+  const root = document.documentElement;
+  const rect = elt?.getBoundingClientRect();
+  return rect?.top >= 0 && rect?.left >= 0 &&
+    rect?.bottom <= (window.innerHeight || root.clientHeight) &&
+    rect?.right <= (window.innerWidth || root.clientWidth)
+}
+
 export const useSettingsStore = defineStore('settings', {
   state: () => {
     let s = Object.assign({}, Settings.INITIAL_STATE);
@@ -51,16 +59,39 @@ export const useSettingsStore = defineStore('settings', {
     addCard(opts) {
       let { cards, langTrans } = this;
       let { context, location } = opts;
-      logger.info("addCard", {context, location, langTrans});
-      let card = new EbtCard(Object.assign({langTrans}, opts));
-      this.cards.push(card);
-      return card;
+      switch (context) {
+        case EbtCard.CONTEXT_SEARCH:
+        case EbtCard.CONTEXT_SUTTA:
+        case EbtCard.CONTEXT_HOME:
+        case EbtCard.CONTEXT_WIKI:
+          logger.info("addCard", {context, location, langTrans});
+          let card = new EbtCard(Object.assign({langTrans}, opts));
+          this.cards.push(card);
+          return card;
+        default:
+          logger.info("addCard => null [INVALID CONTEXT]", opts);
+          return null;
+      }
     },
     moveCard(srcIndex, dstIndex) {
       let { cards } = this;
       let srcCard = cards[srcIndex];
       cards.splice(srcIndex, 1);
       cards.splice(dstIndex, 0, srcCard);
+    },
+    scrollToElementId(id) {
+      let elt = document.getElementById(id);
+      if (elementInViewport(elt)) {
+        logger.info(`settings.scrollToElementId(${id}) is visible`, {elt, id} );
+        return false; // element already visible (no scrolling)
+      }
+
+      logger.info(`settings.scrollToElementId(${id}) not visible`, {elt, id} );
+      elt?.scrollIntoView({
+        block: "start",
+        behavior: "smooth",
+      });
+      return true; // element originally not in viewport
     },
     clear() {
       delete localStorage.settings;

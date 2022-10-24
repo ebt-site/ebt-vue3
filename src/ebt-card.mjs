@@ -75,7 +75,7 @@ export default class EbtCard {
         throw new Error("addCard is required");
       }
       card = addCard({context, location});
-      logger.info(`pathToCard ${path} (NEW)`, {card, context, location});
+      card && logger.info(`pathToCard ${path} (NEW)`, {card, context, location});
     } else {
       logger.info(`pathToCard ${path} (EXISTING))`, card);
     } 
@@ -93,23 +93,28 @@ export default class EbtCard {
   }
 
   get topAnchor() {
-    let { id } = this;
-    return `${id}-top`;
-  }
-
-  get titleAnchor() {
-    let { id } = this;
-    return `${id}-title`;
-  }
-
-  get anchor() {
     let { context, location } = this;
-    context = encodeURIComponent(context);
-    let link = location.reduce((a,loc) => {
-      let uriPart = encodeURIComponent(loc);
-      return `${a}/${uriPart}`;
-    }, `/${context}`);
-    return link;
+    switch (context) {
+      case CONTEXT_SUTTA:
+        let { sutta_uid, lang, author, segnum } = SuttaRef.create(location[0]);
+        return `/${context}/${sutta_uid}/${lang}/${author}`;
+      default:
+        return `${this.id}`;
+    }
+  }
+
+  get path() {
+    let { context, location } = this;
+    switch (context) {
+      case CONTEXT_SUTTA: 
+        return location.reduce((a,v) => {
+          return `/${v}`;
+        }, `/${context}`);
+      default:
+        return location.reduce((a,v) => {
+          return `/${encodeUriComponent(v)}`;
+        }, `/${context}`);
+    }
   }
 
   chipTitle($t=((k)=>k)) {

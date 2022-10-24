@@ -29,11 +29,16 @@
       let card = EbtCard.pathToCard(fullPath, cards, 
         (opts) => settings.addCard(opts));
 
-      nextTick(() => {
-        let anchor = document.getElementById(fullPath);
-        logger.info(`EbtCards.mounted()`, {card, fullPath, anchor});
-        anchor && anchor.scrollIntoView(true);
-      });
+      if (card == null) {
+        window.location.hash = '';
+        logger.info("EbtCards.mounted => no card", {fullPath});
+      } else {
+        nextTick(() => {
+          let anchor = document.getElementById(fullPath);
+          logger.info(`EbtCards.mounted()`, {card, fullPath, anchor});
+          anchor && anchor.scrollIntoView(true);
+        });
+      }
     },
     computed: {
       cardsClass: (ctx) => {
@@ -44,25 +49,34 @@
       },
     },
     watch:{
-      $route (to, from){
+      $route (to, from) {
         let { settings, $route }  = this;
         let { cards } = settings;
-        logger.info(`EbtCards.watch.$route()`, {$route, to, });
+        let msg = 'EbtCards.watch.$route';
         let card = EbtCard.pathToCard(to.fullPath, cards, 
           (opts) => settings.addCard(opts));
-        
-        if (0) {
-          let topAnchor = document.getElementById(card.topAnchor);
-          let titleAnchor = document.getElementById(card.titleAnchor);
-          topAnchor && topAnchor.scrollIntoView({
-            block: "start",
-            behavior: "smooth",
-          });
+        if (card == null) {
+          window.location.hash = '';
+          logger.info(`${msg} => invalid card route`, {$route, to, from});
+        } else {
+          if (card.isOpen) {
+            logger.info(`${msg} => card`, {$route, to, from, card});
+            settings.scrollToElementId(card.topAnchor);
+          } else {
+            card.isOpen = true;
+            logger.info(`${msg} => opened card`, {$route, to, from, card});
+            nextTick(()=>{
+              // card comes on screen
+              nextTick(() => {
+                settings.scrollToElementId(card.topAnchor);
+              })
+            });
+          }
         }
-        }
-      }, 
-      components: {
-        EbtCardVue,
+      }
+    }, 
+    components: {
+      EbtCardVue,
     },
   }
 </script>

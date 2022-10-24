@@ -107,7 +107,7 @@
           this.results = res.ok
             ? await res.json()
             : res;
-          window.location.hash = `#${card.anchor}`;
+          window.location.hash = `#${card.topAnchor}`;
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));

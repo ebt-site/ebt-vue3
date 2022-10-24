@@ -6,10 +6,9 @@ import { MerkleJson } from 'merkle-json';
 import axios from 'axios';
 
 import {
-//  BilaraWeb,
+  BilaraWeb,
   SuttaRef,
 } from "../src/index.mjs";
-/*
 
 (typeof describe === 'function') && describe("bilara-web", function () {
   logger.logLevel = 'warn';
@@ -484,7 +483,7 @@ import {
     } catch (e) {
       eCaught = e;
     }
-    should(eCaught.message).match(/assert\(bilaraPath\)/);
+    should(eCaught?.message).match(/empty bilaraPath/);
   });
   it("loadSuttaRef(...) => sn35.7 (soma/sabbamitta) none/none", async () => {
     let bw = new BilaraWeb({ fetch });
@@ -841,4 +840,3 @@ import {
     });
   });
 })
-*/
