@@ -276,4 +276,16 @@ logger.logLevel = 'warn';
 
     should(nAdd).equal(1);
   });
+  it("TESTTESTrouteHash() sutta", ()=>{
+    let context = 'sutta';
+    let suid = 'sn34.1';
+    let suidSeg = `${suid}:2.3`;
+    let lang = "de";
+    let author = "sabbamitta";
+    let cardSuid = new EbtCard({context, location:[suid, lang, author]});
+    let cardSuidSeg = new EbtCard({context, location:[suidSeg, lang, author]});
+
+    should(cardSuid.routeHash).equal(`#/${context}/${suid}/${lang}/${author}`);
+    should(cardSuidSeg.routeHash).equal(`#/${context}/${suidSeg}/${lang}/${author}`);
+  });
 });

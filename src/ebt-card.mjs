@@ -103,17 +103,17 @@ export default class EbtCard {
     }
   }
 
-  get path() {
+  get routeHash() {
     let { context, location } = this;
     switch (context) {
       case CONTEXT_SUTTA: 
         return location.reduce((a,v) => {
-          return `/${v}`;
-        }, `/${context}`);
+          return `${a}/${v}`;
+        }, `#/${context}`);
       default:
         return location.reduce((a,v) => {
-          return `/${encodeUriComponent(v)}`;
-        }, `/${context}`);
+          return `${a}/${encodeUriComponent(v)}`;
+        }, `#/${context}`);
     }
   }
 
