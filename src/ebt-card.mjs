@@ -103,10 +103,14 @@ export default class EbtCard {
     }
   }
 
-  get routeHash() {
+  routeHash(dstPath) {
     let { context, location } = this;
     switch (context) {
       case CONTEXT_SUTTA: 
+        if (dstPath) {
+          console.log('routeHash', {dstPath});
+          location[0] = dstPath.split('/')[2];
+        }
         return location.reduce((a,v) => {
           return `${a}/${v}`;
         }, `#/${context}`);

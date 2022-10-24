@@ -5,12 +5,13 @@
         {{volatile.layout}}
         {{suttaClass}}
         {{langClass('trans')}}
+        {{currentScid}}
       </div>
       <div class="sutta-title">
         <div v-for="t in title"> {{t}} </div>
       </div> <!-- sutta-title -->
       <template v-for="seg in segments">
-        <div :id="`/sutta/${seg.scid}`" class="seg-anchor" >
+        <div :id="segId(seg)" class="seg-anchor" >
           <!--span class="debug">{{seg.scid}}</span-->
         </div>
         <div :class="segMatchedClass(seg)">
@@ -97,6 +98,11 @@
       }
     },
     methods: {
+      segId(seg) {
+        let { card } = this;
+        let [ suidSeg, lang, author ] = card.location;
+        return `#/sutta/${seg.scid}/${lang}/${author}`;
+      },
       langClass(langType) {
         let { layout, volatile, nCols } = this;
         let colw = "lg";
@@ -124,13 +130,19 @@
           { sutta_uid, lang, author_uid, nSegments});
       },
       segMatchedClass(seg) {
-        let { layout } = this;
+        let { layout, card, currentScid } = this;
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
-        return `${matchedClass} ${idClass}`;
+        let currentClass = seg.scid ===  currentScid ? "seg-current" : '';
+        return `${matchedClass} ${idClass} ${currentClass}`;
       },
     },
     computed: {
+      currentScid(ctx) {
+        let { card } = ctx;
+        let { sutta_uid, segnum } = SuttaRef.create(card.location[0]);
+        return `${sutta_uid}:${segnum}`;
+      },
       suttaClass(ctx) {
         let { nCols, volatile } = ctx;
         switch (nCols) {
@@ -270,6 +282,13 @@
   font-size: 10px;
   top: -200px;
   height: 1px;
+}
+.seg-current {
+  border-top: 1pt dashed rgb(var(--v-theme-matched));
+  border-right: 1pt dashed rgb(var(--v-theme-matched));
+  border-bottom: 1pt dashed rgb(var(--v-theme-matched));
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 </style>
 

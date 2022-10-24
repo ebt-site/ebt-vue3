@@ -22,20 +22,6 @@
             {{$t('ebt.inspireMe')}}
           </v-btn>
         </div>
-        <!--
-        <v-text-field v-if="settings.searchMode!=='examples'"
-          v-model="search" 
-          :append-icon="search ? 'mdi-magnify' : ''"
-          clearable 
-          @click:append="onSearch"
-          @click:clear="onSearchCleared($event, card)"
-          @keypress="onSearchKey($event)"
-          :hint="$t('auth.required')"
-          :label="$t('ebt.text')"
-          :placeholder="$t('ebt.searchPrompt')"
-          variant="underlined"
-        />
-        -->
       </v-card-text>
     </v-card>
     <search-results :card="card" :results="results" 
@@ -107,7 +93,7 @@
           this.results = res.ok
             ? await res.json()
             : res;
-          window.location.hash = `#${card.topAnchor}`;
+          window.location.hash = card.routeHash;
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));

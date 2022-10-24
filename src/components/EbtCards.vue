@@ -58,21 +58,18 @@
         if (card == null) {
           window.location.hash = '';
           logger.info(`${msg} => invalid card route`, {$route, to, from});
-        } else {
-          if (card.isOpen) {
-            logger.info(`${msg} => card`, {$route, to, from, card});
-            settings.scrollToElementId(card.topAnchor);
-          } else {
-            card.isOpen = true;
-            logger.info(`${msg} => opened card`, {$route, to, from, card});
-            nextTick(()=>{
-              // card comes on screen
-              nextTick(() => {
-                settings.scrollToElementId(card.topAnchor);
-              })
-            });
-          }
+          return;
         }
+
+        if (card.isOpen) {
+          logger.info(`${msg} => card`, {$route, to, from, card});
+        } else {
+          card.isOpen = true;
+          logger.info(`${msg} => opened card`, {$route, to, from, card});
+        }
+        nextTick(() => {
+          settings.scrollToElementId(card.routeHash(to.fullPath));
+        })
       }
     }, 
     components: {

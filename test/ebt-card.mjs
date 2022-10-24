@@ -280,12 +280,27 @@ logger.logLevel = 'warn';
     let context = 'sutta';
     let suid = 'sn34.1';
     let suidSeg = `${suid}:2.3`;
+    let suidSeg2 = `${suid}:4.1`;
     let lang = "de";
     let author = "sabbamitta";
     let cardSuid = new EbtCard({context, location:[suid, lang, author]});
     let cardSuidSeg = new EbtCard({context, location:[suidSeg, lang, author]});
 
-    should(cardSuid.routeHash).equal(`#/${context}/${suid}/${lang}/${author}`);
-    should(cardSuidSeg.routeHash).equal(`#/${context}/${suidSeg}/${lang}/${author}`);
+    // no arguments uses existing card location
+    should(cardSuid.routeHash()).equal(`#/${context}/${suid}/${lang}/${author}`);
+    should(cardSuidSeg.routeHash()).equal(`#/${context}/${suidSeg}/${lang}/${author}`);
+
+    // update location segment id
+    should(cardSuid.routeHash(`/${context}/${suidSeg2}`))
+      .equal(`#/${context}/${suidSeg2}/${lang}/${author}`);
+    should.deepEqual(cardSuid.location, [suidSeg2, lang, author]);
+    should(cardSuidSeg.routeHash(`/${context}/${suidSeg2}`))
+      .equal(`#/${context}/${suidSeg2}/${lang}/${author}`);
+    should.deepEqual(cardSuidSeg.location, [suidSeg2, lang, author]);
+    
+    // remove segment id
+    should(cardSuidSeg.routeHash(`/${context}/${suid}`))
+      .equal(`#/${context}/${suid}/${lang}/${author}`);
+    should.deepEqual(cardSuidSeg.location, [suid, lang, author]);
   });
 });
