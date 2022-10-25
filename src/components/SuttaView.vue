@@ -40,7 +40,7 @@
   import { useVolatileStore } from '../stores/volatile';
   import { logger } from "log-instance";
   import { SuttaRef } from "scv-esm";
-  import { ref } from "vue";
+  import { nextTick, ref } from "vue";
 
   export default {
     props: {
@@ -62,8 +62,8 @@
     },
     components: {
     },
-    mounted() {
-      let { segments, settings, volatile, card, } = this;
+    async mounted() {
+      let { $route, segments, settings, volatile, card, } = this;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
       let ref = {sutta_uid, lang, author}
@@ -83,6 +83,16 @@
           this.bindMlDoc(mlDoc);
         } else {
           let url = settings.suttaRefUrl(suttaRef);
+          let json = await volatile.fetchJson(url);
+          let {mlDocs=[]} = json;
+          if (mlDocs.length) {
+            mlDoc = mlDocs[0];
+            volatile.addMlDoc(mlDoc);
+            this.bindMlDoc(mlDoc);
+          } else {
+            console.log("DEBUG", {url, json});
+          }
+          /*
           let promise = volatile.fetchJson(url);
           promise.then(json=>{
             let {mlDocs=[]} = json;
@@ -94,7 +104,14 @@
               console.log("DEBUG", {url, json});
             }
           });
+          */
         }
+      }
+      if (card.matchPath($route.fullPath)) {
+        nextTick(()=>{
+          console.log(`SuttaView.mounted()`, card.routeHash(), $route);
+          settings.scrollToElementId(card.routeHash());
+        });
       }
     },
     methods: {

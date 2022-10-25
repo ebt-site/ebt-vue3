@@ -1,6 +1,6 @@
 import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
-import { SuttaRef } from 'scv-esm/main.mjs';
+import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 
 const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
@@ -43,13 +43,19 @@ export default class EbtCard {
     if (!(location instanceof Array)) {
       throw new Error('Expected location array');
     }
-    if (context === CONTEXT_SEARCH) {
-      if (location[0] == null) {
-        location[0] = '';
-      }
-      if (location.length === 1) {
-        langTrans && location.push(langTrans);
-      }
+    switch (context) {
+      case CONTEXT_SEARCH:
+        if (location[0] == null) {
+          location[0] = '';
+        }
+        if (location.length === 1) {
+          langTrans && location.push(langTrans);
+        }
+        break;
+      case CONTEXT_SUTTA:
+        location[1] == null && (location[1] = langTrans);
+        location[2] == null && (location[2] = Authors.langAuthor(langTrans));
+        break;
     }
 
     Object.assign(this, {
