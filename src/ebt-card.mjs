@@ -72,18 +72,19 @@ export default class EbtCard {
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
 
-  static pathToCard(path='/', cards=[], addCard) {
+  static pathToCard(args) {
+    let {path='/', cards=[], addCard, defaultLang} = args;
     let [ tbd, context, ...location ] = path.split('/');
     location = location.map(loc => decodeURIComponent(loc));
-    let card = cards.find(card => card.matchPath(path));
+    let card = cards.find(card => card.matchPath({path, defaultLang}));
     if (card == null) {
       if (!addCard) {
         throw new Error("addCard is required");
       }
       card = addCard({context, location});
-      card && logger.info(`pathToCard ${path} (NEW)`, {card, context, location});
+      card && logger.info(`pathToCard ${args} (NEW)`, {card, context, location});
     } else {
-      logger.info(`pathToCard ${path} (EXISTING))`, card);
+      logger.info(`pathToCard ${args} (EXISTING))`, card);
     } 
     if (card && card.isOpen) {
       if (cards.length > 1 && card.context !== CONTEXT_HOME) {
@@ -99,14 +100,7 @@ export default class EbtCard {
   }
 
   get topAnchor() {
-    let { context, location } = this;
-    switch (context) {
-      case CONTEXT_SUTTA:
-        let { sutta_uid, lang, author, segnum } = SuttaRef.create(location[0]);
-        return `/${context}/${sutta_uid}/${lang}/${author}`;
-      default:
-        return `${this.id}`;
-    }
+    return `${this.id}`;
   }
 
   routeHash(dstPath) {
@@ -114,8 +108,8 @@ export default class EbtCard {
     switch (context) {
       case CONTEXT_SUTTA: 
         if (dstPath) {
-          console.log('routeHash', {dstPath});
-          location[0] = dstPath.split('/')[2];
+          let [ ignored, ctx, suttaSeg, lang, author ] =  dstPath.split('/');
+          location[0] = suttaSeg;
         }
         return location.reduce((a,v) => {
           return `${a}/${v}`;
@@ -138,9 +132,46 @@ export default class EbtCard {
     return $t(`ebt.no-location-${context}`);
   }
 
-  matchPath(path='') {
+  matchPathSutta({opts, context, location, cardLocation, }) {
+    let { path, defaultLang } = opts;
+    let dbg = 0;
+    let loc = location.join('/');
+    let cardLoc = cardLocation.join('/');
+    if (loc === '') {
+      let result = cardLoc === loc;
+      dbg && console.log(`matchPath(${path}) => ${result}`, {cardLoc, loc});
+      return result;
+    }
+    if (cardLoc === '') {
+      dbg && console.log(`matchPath(${path}) => false`, {cardLoc, loc});
+      return false;
+    }
+    let pathRef = SuttaRef.create(loc, defaultLang);
+    let cardRef = SuttaRef.create(cardLoc, defaultLang);
+    if (pathRef.suid !== cardRef.suid) {
+      dbg && console.log(`matchPath(${path}) => false`, pathRef.suid, cardRef.suid);
+      return false;
+    }
+    if (pathRef.lang && pathRef.lang !== cardRef.lang) {
+      dbg && console.log(`matchPath(${path}, ${defaultLang}) => false`, 
+        pathRef.lang, cardRef.lang);
+      return false;
+    }
+    if (pathRef.author && pathRef.author !== cardRef.author) {
+      dbg && console.log(`matchPath(${path}) => false`, pathRef.author, cardRef.author);
+      return false;
+    }
+    dbg && console.log(`matchPath(${path})`, pathRef.toString(), '~=', cardRef.toString());
+    return true;
+  }
+
+  matchPath(strOrObj) {
+    let opts = typeof strOrObj === 'string'
+      ? { path: strOrObj }
+      : strOrObj;
+    let { path } = opts;
     path = path.toLowerCase();
-    let [ tbd, context, ...location ] = path.split('/');
+    let [ tbd, context="", ...location ] = path.split('/');
     while (location.length && location[location.length-1] === '') {
       location.pop();
     }
@@ -158,34 +189,11 @@ export default class EbtCard {
       return false;
     }
     if (context !== this.context) {
-      if (context == null || this.context == null) {
-        dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
-        return false;
-      }
-      if (context.toLowerCase() !== this.context.toLowerCase()) {
-        dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
-        return false;
-      }
+      dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
+      return false;
     }
     if (context === CONTEXT_SUTTA) {
-      let loc = location.join('/');
-      let cardLoc = cardLocation.join('/');
-      if (loc === '') {
-        let result = cardLoc === loc;
-        dbg && console.log(`matchPath(${path}) => ${result}`, {cardLoc, loc});
-        return result;
-      }
-      if (cardLoc === '') {
-        dbg && console.log("matchPath(${path}) => false", {cardLoc, loc});
-        return false;
-      }
-      let pathRef = SuttaRef.create(loc);
-      let cardRef = SuttaRef.create(cardLoc);
-      if (pathRef.suid !== cardRef.suid) {
-        dbg && console.log("matchPath(${path}) => false", {pathRef, cardRef});
-        return false;
-      }
-      return true;
+      return this.matchPathSutta({opts, context, location, cardLocation});
     }
     if (location.length !== cardLocation.length) {
       if (context === CONTEXT_SEARCH) {

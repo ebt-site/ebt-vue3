@@ -26,8 +26,12 @@
       let { params, fullPath }  = $route;
       let { cards } = settings;
       fullPath = decodeURIComponent(fullPath);
-      let card = EbtCard.pathToCard(fullPath, cards, 
-        (opts) => settings.addCard(opts));
+      let card = EbtCard.pathToCard({
+        path:fullPath, 
+        cards, 
+        defaultLang: settings.langTrans,
+        addCard: (opts) => settings.addCard(opts),
+      });
 
       if (card == null) {
         window.location.hash = '';
@@ -53,8 +57,12 @@
         let { settings, $route }  = this;
         let { cards } = settings;
         let msg = 'EbtCards.watch.$route';
-        let card = EbtCard.pathToCard(to.fullPath, cards, 
-          (opts) => settings.addCard(opts));
+        let card = EbtCard.pathToCard({
+          path: to.fullPath, 
+          cards, 
+          addCard: (opts) => settings.addCard(opts),
+          defaultLang: settings.langTrans,
+        });
         if (card == null) {
           window.location.hash = '';
           logger.info(`${msg} => invalid card route`, {$route, to, from});

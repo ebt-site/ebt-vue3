@@ -109,8 +109,13 @@
       }
       if (card.matchPath($route.fullPath)) {
         nextTick(()=>{
-          console.log(`SuttaView.mounted()`, card.routeHash(), $route);
-          settings.scrollToElementId(card.routeHash());
+          let routeHash = card.routeHash();
+          settings.scrollToElementId(routeHash);
+          if (window.location.hash !== routeHash) {
+            logger.info(`SuttaView.mounted() route => `, 
+              card.routeHash(), $route, window.location.hash);
+            window.location.hash = routeHash;
+          }
         });
       }
     },
