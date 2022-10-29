@@ -100,7 +100,23 @@ export default class EbtCard {
   }
 
   get topAnchor() {
+    return `${this.id}-top`;
+  }
+
+  get titleAnchor() {
     return `${this.id}`;
+  }
+
+  get currentElementId() {
+    let { context, location } = this;
+    switch (context) {
+      case CONTEXT_SUTTA:
+        return location[0].includes(':')
+          ? this.routeHash()
+          : this.titleAnchor;
+      default:
+        return this.titleAnchor;
+    }
   }
 
   routeHash(dstPath) {

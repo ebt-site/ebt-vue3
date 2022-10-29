@@ -1,17 +1,34 @@
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance';
 import Utils from "../utils.mjs";
+import { SuttaRef } from 'scv-esm';
 import { default as Settings } from "../../src/ebt-settings.mjs";
 import { default as EbtCard } from "../../src/ebt-card.mjs";
 
 var id = 1;
 
-function elementInViewport(elt) {
-  const root = document.documentElement;
+function elementInViewport(elt, root = document.documentElement) {
   const rect = elt?.getBoundingClientRect();
-  return rect?.top >= 0 && rect?.left >= 0 &&
-    rect?.bottom <= (window.innerHeight || root.clientHeight) &&
-    rect?.right <= (window.innerWidth || root.clientWidth)
+  const viewBottom = (window.innerHeight || root.clientHeight);
+  const viewRight = (window.innerWidth || root.clientWidth);
+
+  if (!rect) {
+    return false;
+  }
+  if (rect.bottom < 0) {
+    return false;
+  }
+  if (rect.right < 0) {
+    return false;
+  }
+  if (rect.top > viewBottom) {
+    return false;
+  }
+  if (rect.left > viewRight) {
+    return false;
+  }
+
+  return true;
 }
 
 export const useSettingsStore = defineStore('settings', {
@@ -79,15 +96,27 @@ export const useSettingsStore = defineStore('settings', {
       cards.splice(srcIndex, 1);
       cards.splice(dstIndex, 0, srcCard);
     },
-    scrollToElementId(id) {
-      let elt = document.getElementById(id);
-      if (elementInViewport(elt)) {
-        logger.info(`settings.scrollToElementId(${id}) is visible`, {elt, id} );
+    async scrollToElementId(idShow, idScroll) {
+      let eltShow = document.getElementById(idShow);
+      let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
+      if (eltShow == null) {
+        logger.debug(`settings.scrollToElementId(${idShow}) no element`);
+        return false;
+      }
+      if (eltScroll == null) {
+        logger.debug(`settings.scrollToElementId(${idScroll}) no scroll element`);
+        return false;
+      }
+      let idShowInView = elementInViewport(eltShow);
+      let idScrollInView = elementInViewport(eltScroll);
+      if (idShowInView && idScrollInView) {
+        logger.debug(`settings.scrollToElementId(${idShow}) no scroll`, {eltShow} );
         return false; // element already visible (no scrolling)
       }
 
-      logger.info(`settings.scrollToElementId(${id}) not visible`, {elt, id} );
-      elt?.scrollIntoView({
+      logger.debug(`settings.scrollToElementId(${idShow}) scrolling to`, 
+        {eltScroll, idShowInView, idScrollInView});
+      await eltScroll.scrollIntoView({
         block: "start",
         behavior: "smooth",
       });
@@ -98,16 +127,34 @@ export const useSettingsStore = defineStore('settings', {
       Utils.assignTyped(this, Settings.INITIAL_STATE);
       logger.debug(`SettingsStore.clear()`, this);
     },
-    suttaRefUrl(suttaRef) {
-      let search = encodeURIComponent(suttaRef.toString());
+    suttaUrl(idOrRef) {
+      suttaRef = SuttaRef.create(suttaRef, settings.langTrans);
+      let { sutta_uid, lang, author, segnum } = suttaRef;
+      let search = `${sutta_uid}/${lang}/${author}`;
       let { serverUrl } = this;
-      return [ serverUrl, 'search', search, ].join('/');
+      return [ 
+        serverUrl, 
+        'search', 
+        encodeURIComponent(search), 
+        lang,
+      ].join('/');
     },
     async fetchSutta(suttaRef) {
-      let url = this.suttaRefUrl(suttaRef);
+      let url = this.suttaUrl(suttaRef);
       logger.info("volatile.fetchSutta()", {suttaRef, url});
       let sutta;
       return sutta;
+    },
+    async scrollToCard(card) {
+      if (!card.isOpen) {
+        return false;
+      }
+
+      let scrollId = card.topAnchor;
+      let eltId = card.currentElementId;
+      let scrolled = await this.scrollToElementId(eltId, scrollId);
+      console.log("scrollToCard", {scrolled});
+      return scrolled;
     },
   },
   getters: {

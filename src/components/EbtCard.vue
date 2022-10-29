@@ -1,12 +1,12 @@
 <template>
   <v-sheet v-if="card.isOpen">
-    <div :id="card.topAnchor" class="card-top-anchor">
-      <a :name="card.topAnchor"></a>
+    <div :id="`${card.id}-top`" class="card-top-anchor debug">
+      {{card.topAnchor}}
     </div>
-    <v-card :variant="cardVariant" >
+    <v-card :variant="cardVariant" class="ebt-card">
       <template v-slot:title>
         <v-icon :icon="card.icon" class="card-icon"/>
-        {{card.chipTitle($t)}}
+        <span :id="card.id">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
         <v-btn icon="mdi-close" @click="closeCard(card)"
@@ -163,8 +163,12 @@
     padding-left: 0.5em;
   }
   .card-top-anchor {
+    font-size: 12px;
     position: relative;
-    top: -7.0em;
+    overflow: hidden;
+    border-left: 1pt solid rgb(0,0,0,0);
+    width: 1px;
+    top: 0em;
   }
   .card-title-anchor {
     position: relative;
@@ -190,8 +194,8 @@
     vertical-align: top;
   }
   .ebt-card {
-    margin: 1pt;
-    margin: 1pt;
+    margin-left: 2pt;
+    margin-right: 2pt;
   }
   .debug {
     color: rgb(var(--v-theme-placeholder));

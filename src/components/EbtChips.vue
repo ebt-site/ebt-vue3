@@ -4,7 +4,7 @@
       <div v-for="card in settings.cards" :key="card.id">
         <v-chip 
           :prepend-icon="card.icon"
-          @click="onClick(card.id, settings.cards)"
+          @click="onClickChip(card, settings.cards)"
           draggable
           @dragstart="startDrag($event, card)"
           @drop="onDrop($event, card, settings)"
@@ -59,40 +59,19 @@
       updateActive: (evt) => {
         logger.info(`updateActive`, evt);
       },
-      onClick: async (id, cards) => {
-        const volatile = await useVolatileStore();
+      onClickChip: async (card, cards) => {
         const settings = await useSettingsStore();
-        let card = cards.find(c=>c.id === id);
-        if (!settings.scrollToElementId(card.topAnchor)) {
+        if (card.isOpen) {
+          if (await settings.scrollToCard(card)) {
+            // We scrolled to card so just let user look at it
+          } else {
+            // Card was already visible so we close it
+            card.isOpen = false;
+          }
+        } else {
+          card.isOpen = true;
+          nextTick(() => settings.scrollToCard(card));
         }
-        card && nextTick(()=>{ // wait for card to show
-          if (settings.scrollToElementId(card.topAnchor)) {
-          } else {
-          }
-
-          /*
-          logger.info(`onClick toggling card ${id}`);
-          if ((card.isOpen = !card.isOpen)) {
-            window.location.hash = `#${card.route}`;
-            nextTick(()=>{ // wait for Vue to settle
-              let anchor = document.getElementById(card.topAnchor);
-              console.log('scrolling to', {anchor, cardAnchor} );
-              anchor && anchor.scrollIntoView({
-                block: "start",
-                behavior: "smooth",
-              });
-            });
-          } else {
-            let card = cards.find(card => card.isOpen);
-            if (card) {
-              let cardAnchor = card..topAnchor;
-              let cardRoute = card.route;
-              logger.info(`onClick showing open card`, {cardAnchor, cardRoute});
-              //window.location.hash = `#${cardAnchor}`;
-            }
-          }
-          */
-        });
       },
       onClose: (card, settings) => {
         let { cards } = settings;
@@ -131,19 +110,19 @@
     min-height: 32px;
     margin-left: 1.0rem;
   }
-  .chip-close {
-    margin-right: -0.4em;
-  }
   .chip-title {
     display: inline-block;
     overflow: hidden;
-    max-width:5em;
+    max-width: 80px;
     text-overflow: ellipsis;
   }
   .chip-open {
     border-bottom: 2pt solid #ff9933;
   }
   .chip-closed {
+  }
+  .chip-close {
+    margin-right: -0.4em;
   }
   .chip-home {
     padding-right: 6pt;

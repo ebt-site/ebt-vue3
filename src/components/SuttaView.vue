@@ -64,6 +64,7 @@
     },
     async mounted() {
       let { $route, segments, settings, volatile, card, } = this;
+      let { langTrans:defaultLang } = settings;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
       let ref = {sutta_uid, lang, author}
@@ -73,6 +74,7 @@
         return;
       }
       let suttaRef = this.suttaRef = refInst.toString();
+      console.log('DEBUG', {suttaRef, refInst});
       let mlDoc;
       if (data) {
         this.bindMlDoc(data);
@@ -82,7 +84,7 @@
           volatile.addMlDoc(mlDoc);
           this.bindMlDoc(mlDoc);
         } else {
-          let url = settings.suttaRefUrl(suttaRef);
+          let url = settings.suttaUrl(suttaRef);
           let json = await volatile.fetchJson(url);
           let {mlDocs=[]} = json;
           if (mlDocs.length) {
@@ -92,22 +94,9 @@
           } else {
             console.log("DEBUG", {url, json});
           }
-          /*
-          let promise = volatile.fetchJson(url);
-          promise.then(json=>{
-            let {mlDocs=[]} = json;
-            if (mlDocs.length) {
-              mlDoc = mlDocs[0];
-              volatile.addMlDoc(mlDoc);
-              this.bindMlDoc(mlDoc);
-            } else {
-              console.log("DEBUG", {url, json});
-            }
-          });
-          */
         }
       }
-      if (card.matchPath($route.fullPath)) {
+      if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
           let routeHash = card.routeHash();
           settings.scrollToElementId(routeHash);

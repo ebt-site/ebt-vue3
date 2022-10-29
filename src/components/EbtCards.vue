@@ -1,5 +1,5 @@
 <template>
-  <v-sheet color="background" :class="cardsClass" >
+  <v-sheet id="ebt-cards" color="background" :class="cardsClass" >
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
