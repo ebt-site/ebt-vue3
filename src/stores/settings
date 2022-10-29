@@ -128,7 +128,7 @@ export const useSettingsStore = defineStore('settings', {
       logger.debug(`SettingsStore.clear()`, this);
     },
     suttaUrl(idOrRef) {
-      suttaRef = SuttaRef.create(suttaRef, settings.langTrans);
+      let suttaRef = SuttaRef.create(idOrRef, this.langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
       let search = `${sutta_uid}/${lang}/${author}`;
       let { serverUrl } = this;
@@ -150,11 +150,13 @@ export const useSettingsStore = defineStore('settings', {
         return false;
       }
 
-      let scrollId = card.topAnchor;
       let eltId = card.currentElementId;
-      let scrolled = await this.scrollToElementId(eltId, scrollId);
-      console.log("scrollToCard", {scrolled});
-      return scrolled;
+      if (eltId === card.titleAnchor) {
+        let scrollId = card.topAnchor;
+        return this.scrollToElementId(eltId, scrollId);
+      } 
+
+      return this.scrollToElementId(eltId);
     },
   },
   getters: {

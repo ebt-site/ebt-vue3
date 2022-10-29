@@ -35,12 +35,9 @@
 
       if (card == null) {
         window.location.hash = '';
-        logger.info("EbtCards.mounted => no card", {fullPath});
       } else {
         nextTick(() => {
-          let anchor = document.getElementById(fullPath);
-          logger.info(`EbtCards.mounted()`, {card, fullPath, anchor});
-          anchor && anchor.scrollIntoView(true);
+          settings.scrollToCard(card);
         });
       }
     },
