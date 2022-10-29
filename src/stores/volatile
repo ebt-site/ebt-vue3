@@ -9,7 +9,6 @@ const layout = ref();
 const INITIAL_STATE = {
   waiting: false,
   suttas,
-  layout,
 };
 
 export const useVolatileStore = defineStore('volatile', {
