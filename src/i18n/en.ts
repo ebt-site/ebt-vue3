@@ -5,6 +5,11 @@ export default {
     "noResultsText": "No results found",
     "loadingText": "Loading items..."
   },
+  "input": {
+    "appendAction": "{0} appended action",
+    "clear": "Clear {0}",
+    "prependAction": "{0} prepended action"
+  },
   "dataTable": {
     "itemsPerPageText": "Rows per page:",
     "ariaLabel": {

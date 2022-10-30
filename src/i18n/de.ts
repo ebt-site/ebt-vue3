@@ -280,5 +280,8 @@ export default {
     "viewEditGithub": "Seite auf Github ansehen/bearbeiten",
     "weeks": "A_WEEKS Wochen",
     "wikiAria": "Home@Deutsch.md"
+  },
+  "input": {
+    "clear": "Clear {0}"
   }
 }

@@ -274,5 +274,8 @@ export default {
     "weeks": "A_WEEKS weeks",
     "wikiAria": "Home-FR.md",
     "wikiHome": "Welcome"
+  },
+  "input": {
+    "clear": "Clear {0}"
   }
 }

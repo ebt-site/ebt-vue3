@@ -276,5 +276,8 @@ export default {
     "viewEditGithub": "View/Edit page on Github",
     "weeks": "A_WEEKS weeks",
     "wikiAria": "Home-EN.md"
+  },
+  "input": {
+    "clear": "Clear {0}"
   }
 }
