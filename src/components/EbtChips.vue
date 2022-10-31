@@ -62,17 +62,17 @@
       onClickChip: async (card, cards) => {
         const settings = await useSettingsStore();
         let cardHash = card.routeHash();
+        if (cardHash !== window.location.hash) {
+          window.location.hash = cardHash;
+          return;
+        }
         if (card.isOpen) {
-          if (await settings.scrollToCard(card)) {
-            console.log("[1]DEBUG", cardHash, card.matchPath(cardHash));
-            // We scrolled to card so just let user look at it
-          } else {
-            // Card was already visible so we close it
+          let scrolled = await settings.scrollToCard(card);
+          if (!scrolled) {
             card.isOpen = false;
           }
         } else {
           card.isOpen = true;
-          console.log("[2]DEBUG", cardHash, card.matchPath(cardHash));
           nextTick(() => settings.scrollToCard(card));
         }
       },
