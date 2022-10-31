@@ -74,7 +74,7 @@
         return;
       }
       let suttaRef = this.suttaRef = refInst.toString();
-      console.log('DEBUG', {suttaRef, refInst});
+      logger.info('SuttaView.mounted()', {suttaRef, refInst});
       let mlDoc;
       if (data) {
         this.bindMlDoc(data);
@@ -92,7 +92,7 @@
             volatile.addMlDoc(mlDoc);
             this.bindMlDoc(mlDoc);
           } else {
-            console.log("DEBUG", {url, json});
+            logger.info("SuttaView.mounted() fetched", {url, json});
           }
         }
       }

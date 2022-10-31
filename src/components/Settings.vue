@@ -193,13 +193,11 @@
               :label="$t('ebt.logLevel')"
               :hint="settings.logLevel || 'info'"
             />
-            <v-card>
-              <v-card-text>
+            <v-sheet class="settings-link">
               <a :href="githubUrl" target="_blank">
                 {{$t('ebt.showGithub')}}
               </a>
-              </v-card-text>
-            </v-card>
+            </v-sheet>
             <v-dialog 
               v-model="isClearSettings">
               <template v-slot:activator="{ on, attrs }">
@@ -405,5 +403,8 @@ export default {
 .settings-summary {
   text-align: right;
   font-size: smaller;
+}
+.settings-link {
+  margin: 0.7rem;
 }
 </style>
