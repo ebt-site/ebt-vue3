@@ -84,7 +84,7 @@ export default class EbtCard {
       card = addCard({context, location});
       card && logger.info(`EbtCard.pathToCard ${args} (NEW)`, {card, context, location});
     } else {
-      console.log(`EbtCard.pathToCard (EXISTING))`, {args,card});
+      logger.info(`EbtCard.pathToCard (EXISTING))`, {args,card});
     } 
     if (card && card.isOpen) {
       if (cards.length > 1 && card.context !== CONTEXT_HOME) {
@@ -132,7 +132,7 @@ export default class EbtCard {
         }, `#/${context}`);
       default:
         return location.reduce((a,v) => {
-          return `${a}/${encodeUriComponent(v)}`;
+          return `${a}/${encodeURIComponent(v)}`;
         }, `#/${context}`);
     }
   }
@@ -189,7 +189,7 @@ export default class EbtCard {
       ? { path: strOrObj }
       : strOrObj;
     let { path } = opts;
-    path = path.toLowerCase();
+    path = path.toLowerCase().replace(/^#/, '');
     let [ tbd, context="", ...location ] = path.split('/');
     while (location.length && location[location.length-1] === '') {
       location.pop();

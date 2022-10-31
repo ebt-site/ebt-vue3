@@ -46,14 +46,16 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(JSON.parse(json));
     should(card2).properties(card1);
   });
-  it("matchPath() wiki context", async() => {
+  it("TESTTESTmatchPath() wiki context", async() => {
     let card0 = new EbtCard({ context: "" });
     let card1 = new EbtCard({ context: "wiki", });
     let card2 = new EbtCard({ context: "wiki", location:["a","b c"], });
 
     let noPaths = [
       "/search/a",
+      "#/search/a",
       "/wiki/a",
+      "#/wiki/a",
       "/wiki/a/c",
     ];
     noPaths.forEach(path=>{
@@ -73,9 +75,13 @@ logger.logLevel = 'warn';
 
     let card1Paths = [
       "/wiki",
+      "#/wiki",
       "/wiki/",
+      "#/wiki/",
       "/WIKI",
+      "#/WIKI",
       "/WIKI/",
+      "#/WIKI/",
       "/WIKI//",
     ];
     card1Paths.forEach(path=>{
@@ -86,9 +92,13 @@ logger.logLevel = 'warn';
 
     let card2Paths = [
       "/wiki/a/b%20c",
+      "#/wiki/a/b%20c",
       "/wiki/a/b%20c/",
+      "#/wiki/a/b%20c/",
       "/WIKI/A/B%20C",
+      "#/WIKI/A/B%20C",
       "/WIKI/A/B%20C/",
+      "#/WIKI/A/B%20C/",
     ];
     card2Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -96,17 +106,15 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("matchPath() search context", async() => {
+  it("TESTTESTmatchPath() search context", async() => {
     let langTrans = 'test-lang';
     let card0 = new EbtCard({ context: "" , langTrans});
     let card1 = new EbtCard({ context: "search", langTrans});
     let card2 = new EbtCard({ context: "SEARCH", location: ["a b"], langTrans});
 
-      let path = `/search/a%20b/${langTrans}`;
-      should(card2.matchPath(path)).equal(true);
-
     let noPaths = [
       "/search/nothing",
+      "#/search/nothing",
       "/wiki",
       "search",
       "search/a",
@@ -120,6 +128,7 @@ logger.logLevel = 'warn';
 
     let card0Paths = [
       "/",
+      "#/",
     ];
     card0Paths.forEach(path => {
       should(card0.matchPath(path)).equal(true);
@@ -128,7 +137,10 @@ logger.logLevel = 'warn';
     });
 
     let card1Paths = [
+      {path: '/search//', defaultLang: langTrans},
+      {path: '#/search//', defaultLang: langTrans},
       `/search//${langTrans}`,
+      `#/search//${langTrans}`,
     ];
     card1Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -138,9 +150,9 @@ logger.logLevel = 'warn';
 
     let card2Paths = [
       `/search/a%20b/${langTrans}`,
-      //`/search/a%20b/${langTrans}/`,
-      //`/SEARCH/A%20B/${langTrans.toUpperCase()}`,
-      //`/SEARCH/A%20B/${langTrans.toUpperCase()}/`,
+      `#/search/a%20b/${langTrans}/`,
+      `/SEARCH/A%20B/${langTrans.toUpperCase()}`,
+      `#/SEARCH/A%20B/${langTrans.toUpperCase()}/`,
     ];
     card2Paths.forEach(path=>{
       should(card0.matchPath(path)).equal(false);
@@ -155,7 +167,7 @@ logger.logLevel = 'warn';
     let lang = 'de';
     let context = 'sutta';
     let author = 'sabbamitta';
-    let notSUtta = "thig1.1";
+    let notSutta = "thig1.1";
     let notLang = 'en';
     let notAuthor = 'sujato';
 
@@ -163,20 +175,6 @@ logger.logLevel = 'warn';
     let cardSutta = new EbtCard({ context, location: [locSutta, lang, author]});
     let cardSegA = new EbtCard({ context, location: [locSegA, lang, author]});
     let cardSegB = new EbtCard({ context, location: [locSegB, lang, author]});
-
-    {
-      let path = '/sutta/mn145/en/sujato';
-      let defaultLang = 'en';
-      let card = new EbtCard({
-        context,
-        location: [
-          'sn35.88',
-          'en',
-          'sujato',
-        ],
-      })
-      should(card.matchPath(path, defaultLang)).equal(false);
-    }
 
     let dbg = 0;
     if (dbg) {
@@ -191,6 +189,10 @@ logger.logLevel = 'warn';
       `/search/${locSutta}`,
       `/search/${locSutta}/${lang}`,
       `/search/${locSutta}/${lang}/${author}`,
+
+      `/sutta/${notSutta}`, 
+      `/sutta/${notSutta}/${lang}`,
+      `/sutta/${notSutta}/${lang}/${author}`,
       `/sutta/${locSutta}`, // defaultLang is pli
       `/sutta/${locSegA}`, // defaultLang is pli
       `/sutta/${locSegB}`, // defaultLang is pli
@@ -214,8 +216,11 @@ logger.logLevel = 'warn';
     // match without segment number
     let suttaPaths = [
       { path: `/sutta/${locSutta}`, defaultLang: lang },
+      { path: `#/sutta/${locSutta}`, defaultLang: lang },
       `/sutta/${locSutta}/${lang}`,
+      `#/sutta/${locSutta}/${lang}`,
       `/sutta/${locSutta}/${lang}/${author}`,
+      `#/sutta/${locSutta}/${lang}/${author}`,
     ];
     suttaPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -225,10 +230,13 @@ logger.logLevel = 'warn';
 
     // match with segment number
     let segPaths = [
+      { path: `#/sutta/${locSegA}`, defaultLang: lang},
       { path: `/sutta/${locSegA}`, defaultLang: lang},
       { path: `/sutta/${locSegB}`, defaultLang: lang},
       `/sutta/${locSegA}/${lang}`,
+      `#/sutta/${locSegA}/${lang}`,
       `/sutta/${locSegA}/${lang}/${author}`,
+      `#/sutta/${locSegA}/${lang}/${author}`,
     ];
     segPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -236,7 +244,7 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
   });
-  it("pathToCard() search", ()=>{
+  it("TESTTESTpathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
     let langTrans = "test-lang";
