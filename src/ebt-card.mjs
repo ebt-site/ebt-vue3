@@ -82,9 +82,9 @@ export default class EbtCard {
         throw new Error("addCard is required");
       }
       card = addCard({context, location});
-      card && logger.info(`pathToCard ${args} (NEW)`, {card, context, location});
+      card && logger.info(`EbtCard.pathToCard ${args} (NEW)`, {card, context, location});
     } else {
-      logger.info(`pathToCard ${args} (EXISTING))`, card);
+      console.log(`EbtCard.pathToCard (EXISTING))`, {args,card});
     } 
     if (card && card.isOpen) {
       if (cards.length > 1 && card.context !== CONTEXT_HOME) {
@@ -155,29 +155,32 @@ export default class EbtCard {
     let cardLoc = cardLocation.join('/');
     if (loc === '') {
       let result = cardLoc === loc;
-      dbg && console.log(`matchPath(${path}) => ${result}`, {cardLoc, loc});
+      dbg && console.log(`[1]matchPathSutta(${path}) => ${result}`, {cardLoc, loc});
       return result;
     }
     if (cardLoc === '') {
-      dbg && console.log(`matchPath(${path}) => false`, {cardLoc, loc});
+      dbg && console.log(`[2]match(${path}) => false`, {cardLoc, loc});
       return false;
     }
     let pathRef = SuttaRef.create(loc, defaultLang);
     let cardRef = SuttaRef.create(cardLoc, defaultLang);
-    if (pathRef.suid !== cardRef.suid) {
-      dbg && console.log(`matchPath(${path}) => false`, pathRef.suid, cardRef.suid);
+    if (pathRef.sutta_uid !== cardRef.sutta_uid) {
+      dbg && console.log(`[3]match(${path}) => false`, pathRef.suid, cardRef.suid);
       return false;
     }
     if (pathRef.lang && pathRef.lang !== cardRef.lang) {
-      dbg && console.log(`matchPath(${path}, ${defaultLang}) => false`, 
+      dbg && console.log(`[4]match(${path}, ${defaultLang}) => false`, 
         pathRef.lang, cardRef.lang);
       return false;
     }
     if (pathRef.author && pathRef.author !== cardRef.author) {
-      dbg && console.log(`matchPath(${path}) => false`, pathRef.author, cardRef.author);
+      dbg && console.log(`[5]match(${path}) => false`, 
+        pathRef.author, cardRef.author);
       return false;
     }
-    dbg && console.log(`matchPath(${path})`, pathRef.toString(), '~=', cardRef.toString());
+
+    dbg && console.log(`[6]match(${path})`, 
+      pathRef.toString(), '~=', cardRef.toString());
     return true;
   }
 

@@ -148,20 +148,35 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("matchPath() sutta context", async() => {
+  it("TESTTESTmatchPath() sutta context", async() => {
     let locSutta = "sn35.1";
     let locSegA = `${locSutta}:1.10`;
     let locSegB = `${locSutta}:2.3`;
     let lang = 'de';
+    let context = 'sutta';
     let author = 'sabbamitta';
     let notSUtta = "thig1.1";
     let notLang = 'en';
     let notAuthor = 'sujato';
 
     // create fully specified cards
-    let cardSutta = new EbtCard({ context: "sutta", location: [locSutta, lang, author]});
-    let cardSegA = new EbtCard({ context: "sutta", location: [locSegA, lang, author]});
-    let cardSegB = new EbtCard({ context: "sutta", location: [locSegB, lang, author]});
+    let cardSutta = new EbtCard({ context, location: [locSutta, lang, author]});
+    let cardSegA = new EbtCard({ context, location: [locSegA, lang, author]});
+    let cardSegB = new EbtCard({ context, location: [locSegB, lang, author]});
+
+    {
+      let path = '/sutta/mn145/en/sujato';
+      let defaultLang = 'en';
+      let card = new EbtCard({
+        context,
+        location: [
+          'sn35.88',
+          'en',
+          'sujato',
+        ],
+      })
+      should(card.matchPath(path, defaultLang)).equal(false);
+    }
 
     let dbg = 0;
     if (dbg) {
@@ -221,7 +236,7 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard() search", ()=>{
+  it("pathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
     let langTrans = "test-lang";
@@ -256,7 +271,7 @@ logger.logLevel = 'warn';
 
     should(nAdd).equal(4);
   });
-  it("TESTTESTpathToCard() sutta", ()=>{
+  it("pathToCard() sutta", ()=>{
     let cards = [];
     let nAdd = 0;
     let langTrans = "test-lang";

@@ -73,7 +73,7 @@
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
         nextTick(() => {
-          settings.scrollToElementId(card.routeHash(to.fullPath));
+          settings.scrollToCard(card);
         })
       }
     }, 
