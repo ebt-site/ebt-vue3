@@ -122,6 +122,11 @@ export default class EbtCard {
   routeHash(dstPath) {
     let { context, location } = this;
     switch (context) {
+      case CONTEXT_SEARCH:
+        return location.reduce((a,v) => {
+          return `${a}/${encodeURIComponent(v)}`;
+        }, `#/${context}`);
+        
       case CONTEXT_SUTTA: 
         if (dstPath) {
           let [ ignored, ctx, suttaSeg, lang, author ] =  dstPath.split('/');

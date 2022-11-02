@@ -89,7 +89,7 @@
           this.results = undefined;
           card.location[0] = search;
           volatile.waiting = true;
-          res = await fetch(url);
+          res = await volatile.fetchJson(url);
           this.results = res.ok
             ? await res.json()
             : res;
@@ -99,7 +99,7 @@
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
-          this.results = `ERROR: ${url.value} ${e.message}`;
+          this.results = `ERROR: ${url} ${e.message}`;
         } finally {
           volatile.waiting = false;
         }

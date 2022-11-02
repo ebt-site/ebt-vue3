@@ -7,14 +7,14 @@ import Utils from "../utils.mjs";
 const suttas = new Map();
 const layout = ref();
 const INITIAL_STATE = {
-  waiting: false,
+  waiting: 0,
   suttas,
 };
 
 export const useVolatileStore = defineStore('volatile', {
   state: () => {
     let s = Object.assign({}, INITIAL_STATE);
-    logger.debug(`VolatileStore.state() => `, s);
+    logger.debug(`volatile.state() => `, s);
     return s;
   },
   getters: {
@@ -48,20 +48,20 @@ export const useVolatileStore = defineStore('volatile', {
     },
     async fetchJson(url, options) {
       let res;
-      if (this.waiting) {
-        throw new Error("fetchJson() waiting... (request ignored)");
-      }
+      //if (this.waiting) {
+        //throw new Error("fetchJson() waiting... (request ignored)");
+      //}
       try {
-        logger.info('fetchJson() url:', url);
-        this.waiting = true;
+        logger.info('volatile.fetchJson() url:', url);
+        this.waiting++;
         res = await fetch(url, options);
-        logger.debug('fetchJson()', res);
+        logger.debug('volatile()', res);
         return res.ok ? await res.json() : res;
       } catch(e) {
-        logger.error("fetchJson() ERROR:", res, e);
+        logger.error("volatile.fetchJson() ERROR:", res, e);
         res = { error: `ERROR: ${url.value} ${e.message}` };
       } finally {
-        this.waiting = false;
+        this.waiting--;
       }
       return res;
     },

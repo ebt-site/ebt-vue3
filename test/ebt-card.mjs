@@ -21,7 +21,10 @@ logger.logLevel = 'warn';
     should(card2).properties(defaultProps);
   });
   it("constants", ()=>{
+    should(EbtCard.CONTEXT_HOME).equal('home');
     should(EbtCard.CONTEXT_SEARCH).equal('search');
+    should(EbtCard.CONTEXT_SUTTA).equal('sutta');
+    should(EbtCard.CONTEXT_WIKI).equal('wiki');
   });
   it("custom ctor", async () => {
     let id = 'test-id';

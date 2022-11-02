@@ -25,7 +25,6 @@
       let { settings, $route }  = this;
       let { params, fullPath }  = $route;
       let { cards } = settings;
-      fullPath = decodeURIComponent(fullPath);
       let card = EbtCard.pathToCard({
         path:fullPath, 
         cards, 
