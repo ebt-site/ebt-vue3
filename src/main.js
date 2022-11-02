@@ -29,6 +29,8 @@ const vuetifyOpts = {
           matched: "#bf235d",
           placeholder: "#600060",
           expansion: colors.grey.lighten4,
+          progress1: "#8E24AA",
+          progress2: COLOR_SAFFRON,
         },
       },
       dark: {
@@ -42,6 +44,8 @@ const vuetifyOpts = {
           toolbar: colors.brown.darken2,
           placeholder: "#00FFFF",
           expansion: colors.grey.darken2,
+          progress1: "#8E24AA",
+          progress2: COLOR_SAFFRON,
         },
       },
     },

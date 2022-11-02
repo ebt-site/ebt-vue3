@@ -84,16 +84,17 @@
       async onSearch() {
         let { volatile, url, search, card, } = this;
         let res;
+        let waitingOld = volatile.waiting;
         try {
           logger.info('onSearch()', {url, volatile});
           this.results = undefined;
           card.location[0] = search;
-          volatile.waiting = true;
+          volatile.waiting++;
           res = await volatile.fetchJson(url);
           this.results = res.ok
             ? await res.json()
             : res;
-          window.location.hash = card.routeHash;
+          window.location.hash = card.routeHash();
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mld=>volatile.addMlDoc(mld));
@@ -101,13 +102,14 @@
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url} ${e.message}`;
         } finally {
-          volatile.waiting = false;
+          volatile.waiting = waitingOld;
         }
       },
       updateSearch(search) {
         let { card } = this;
-        this.search = search;
-        Examples.isExample(search) && this.onSearch();
+        if (search) {
+          this.search = search;
+        }
       },
       onSearchKey(evt) {
         if (evt.code === "Enter") {
@@ -135,7 +137,7 @@
           : "ebt-results-old";
       },
       exampleItems() {
-        let { search='', settings } = this;
+        let { card, search='', settings } = this;
         let { langTrans, maxResults } = settings;
         var searchLower = search.toLowerCase();
         var langEx = Examples[langTrans] || Examples.en;
@@ -143,16 +145,19 @@
           ? langEx.filter(ex=>ex.toLowerCase().indexOf(searchLower)>=0)
           : langEx;
 
-        let MAX_CHOICES = 8;
-        if (0 && examples.length > MAX_CHOICES) {
-          let newExamples = examples.filter(ex=>ex.toLowerCase().indexOf(searchLower)===0)
-          if (newExamples.length) {
-            examples = newExamples;
-          }
+        // Include card location
+        let loc0 = card.location[0];
+        loc0 = loc0 ? loc0.toLowerCase() : '';
+        if (loc0 && loc0 !== search.toLowerCase()) {
+          examples = [loc0, ...examples];
         }
+
+        // Include adhoc search
         examples = !search || Examples.isExample(search)
-          ? [ ...examples ]
+          ? [...examples ]
           : [`${this.search}`, ...examples];
+
+        let MAX_CHOICES = 8; // TODO: Ayya Sabbamitta wants more
         return examples.slice(0,MAX_CHOICES);
       },
       url: (ctx) => {

@@ -33,7 +33,9 @@
       });
 
       if (card == null) {
-        window.location.hash = '';
+        //window.location.hash = '';
+        console.warn("DEBUG EbtCards.mounted UNEXPECTED", fullPath);
+
       } else {
         nextTick(() => {
           settings.scrollToCard(card);

@@ -48,12 +48,9 @@ export const useVolatileStore = defineStore('volatile', {
     },
     async fetchJson(url, options) {
       let res;
-      //if (this.waiting) {
-        //throw new Error("fetchJson() waiting... (request ignored)");
-      //}
       try {
-        logger.info('volatile.fetchJson() url:', url);
         this.waiting++;
+        logger.info('volatile.fetchJson() url:', url);
         res = await fetch(url, options);
         logger.debug('volatile()', res);
         return res.ok ? await res.json() : res;

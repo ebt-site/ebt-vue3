@@ -19,8 +19,13 @@
               />
               <div>EBT-Vue3</div>
             </div>
+          <v-progress-linear v-if="volatile.waiting"
+            indeterminate 
+            color="progress1" 
+            bg-color="progress2"
+            class="mb-0"
+          ></v-progress-linear>
           </v-app-bar-title>
-          <v-spacer/>
           <v-btn icon href="#/search">
             <v-icon icon="mdi-magnify"/>
           </v-btn>
@@ -30,8 +35,6 @@
           <ebt-chips />
         </template> <!-- !collapsed -->
       </v-app-bar>
-      <v-progress-linear v-if="volatile.waiting"
-        indeterminate color="secondary" class="mb-0"/>
 
       <v-sheet>
         <div>
