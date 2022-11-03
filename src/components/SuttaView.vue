@@ -1,36 +1,53 @@
 <template>
   <v-sheet :class="suttaClass">
-    <div>
-      <div v-if="settings.development" class="debug">
-        {{volatile.layout}}
-        {{suttaClass}}
-        {{langClass('trans')}}
-        {{currentScid}}
+    <div class="tipitaka-nav">
+      <div>
+        <v-icon icon="mdi-menu-left" />
+        <a :href="`#/sutta/${prevSuid}`" v-if="prevSuid" tabindex=-1>
+          {{prevSuid}}
+        </a>
       </div>
-      <div class="sutta-title">
-        <div v-for="t in title"> {{t}} </div>
-      </div> <!-- sutta-title -->
-      <template v-for="seg in segments">
-        <div :id="segId(seg)" class="seg-anchor" >
-          <!--span class="debug">{{seg.scid}}</span-->
+      <div>
+        <a :href="hrefSuttaCentral(sutta_uid)" target="_blank" tabindex=-1>
+          suttacentral/{{sutta_uid}}
+        </a>
+      </div>
+      <div>
+        <a :href="`#/sutta/${nextSuid}`" v-if="nextSuid" tabindex=-1>
+          {{nextSuid}}
+        </a>
+        <v-icon icon="mdi-menu-right" />
+      </div>
+    </div><!-- tipitaka-nav -->
+    <div class="sutta-title">
+      <div v-for="t in title"> {{t}} </div>
+    </div> <!-- sutta-title -->
+    <template v-for="seg in segments">
+      <div :id="segId(seg)" class="seg-anchor" >
+        <!--span class="debug">{{seg.scid}}</span-->
+      </div>
+      <div :class="segMatchedClass(seg)">
+        <div class="seg-id" v-if="settings.showId"> 
+          {{seg.scid}} 
         </div>
-        <div :class="segMatchedClass(seg)">
-          <div class="seg-id" v-if="settings.showId"> 
-            {{seg.scid}} 
-          </div>
-          <div class="seg-text">
-            <div :class="langClass('root')" 
-              v-if="settings.showPali"
-              v-html="seg.pli" />
-            <div :class="langClass('trans')" 
-              v-if="settings.showTrans"
-              v-html="seg[langTrans]" />
-            <div :class="langClass('ref')" 
-              v-if="settings.showReference"
-              v-html="seg[settings.refLang]" />
-          </div>
+        <div class="seg-text">
+          <div :class="langClass('root')" 
+            v-if="settings.showPali"
+            v-html="seg.pli" />
+          <div :class="langClass('trans')" 
+            v-if="settings.showTrans"
+            v-html="seg[langTrans]" />
+          <div :class="langClass('ref')" 
+            v-if="settings.showReference"
+            v-html="seg[settings.refLang]" />
         </div>
-      </template>
+      </div>
+    </template>
+    <div v-if="settings.development" class="debug">
+      {{volatile.layout}}
+      {{suttaClass}}
+      {{langClass('trans')}}
+      {{currentScid}}
     </div>
   </v-sheet>
 </template>
@@ -39,7 +56,7 @@
   import { useSettingsStore } from '../stores/settings';
   import { useVolatileStore } from '../stores/volatile';
   import { logger } from "log-instance";
-  import { SuttaRef } from "scv-esm";
+  import { Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
 
   export default {
@@ -53,11 +70,14 @@
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const segments = ref([]);
+      const showTakaNav = ref(false);
       return {
         settings,
         volatile,
         suttaRef: undefined,
         segments,
+        taka: new Tipitaka(),
+        showTakaNav,
       }
     },
     components: {
@@ -147,8 +167,24 @@
         let currentClass = seg.scid ===  currentScid ? "seg-current" : '';
         return `${matchedClass} ${idClass} ${currentClass}`;
       },
+      hrefSuttaCentral(sutta_uid) {
+        return `https://suttacentral.net/${sutta_uid}`;
+      },
     },
     computed: {
+      nextSuid(ctx) {
+        let { sutta_uid, taka } = ctx;
+        return taka.nextSuid(sutta_uid);
+      },
+      prevSuid(ctx) {
+        let { sutta_uid, taka } = ctx;
+        return taka.previousSuid(sutta_uid);
+      },
+      sutta_uid(ctx) {
+        let { card } = ctx;
+        let { sutta_uid } = SuttaRef.create(card.location[0]);
+        return sutta_uid;
+      },
       currentScid(ctx) {
         let { card } = ctx;
         let { sutta_uid, segnum } = SuttaRef.create(card.location[0]);
@@ -197,6 +233,12 @@
       },
       layout(ctx) {
         return ctx.volatile.layout.value;
+      },
+      takaNavIcon(ctx) {
+        let { showTakaNav } = ctx;
+        return showTakaNav 
+          ? 'mdi-arrow-collapse-horizontal' 
+          : 'mdi-arrow-expand-horizontal'
       },
     },
   }
@@ -300,6 +342,17 @@
   border-bottom: 1pt dashed rgb(var(--v-theme-matched));
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+.tipitaka-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  opacity: 0.4;
+  margin-bottom: 0.5rem;
+}
+.tipitaka-nav:focus-within,
+.tipitaka-nav:hover {
+  opacity: 1;
 }
 </style>
 

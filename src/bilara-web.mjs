@@ -353,7 +353,7 @@ export default class BilaraWeb {
       keys = keys.filter((k) => k.match(patAuth) || k.match(`/pli/`));
     } else if (lang) {
       let patAuth = new RegExp(`/${lang.toLowerCase()}$`);
-      let patLang = new RegExp(`/{lang.toLowerCase()/`);
+      let patLang = new RegExp(`/${lang.toLowerCase()}/`);
       keys = keys.filter(
         (k) => k.match(patAuth) || k.match(patLang) || k.match(`/pli/`)
       );
