@@ -5,7 +5,7 @@
         <v-autocomplete 
           v-model="search" 
           :append-icon="search ? 'mdi-magnify' : ''"
-          clearable
+
           @click:append="onSearch"
           @click:clear="onSearchCleared($event, card)"
           :hint="$t('auth.required')"
@@ -17,6 +17,22 @@
           :placeholder="$t('ebt.searchPrompt')"
           variant="underlined"
         />
+      <!-- DEBUG TODO
+        <v-autocomplete 
+          v-model="search" 
+          :append-icon="search ? 'mdi-magnify' : ''"
+          clearable
+          @click:append="onSearch"
+          @click:clear="onSearchCleared($event, card)"
+          :hint="$t('auth.required')"
+          @update:search="updateSearch($event)"
+          @keyup.enter="onEnter($event)"
+          :filter="searchFilter"
+          :items="exampleItems"
+          :label="$t('ebt.search')"
+          :placeholder="$t('ebt.searchPrompt')"
+          variant="underlined"
+        /> DEBUG TODO -->
         <div class="inspire" v-if="hasExamples">
           <v-btn variant=tonal @click="onInspireMe">
             {{$t('ebt.inspireMe')}}

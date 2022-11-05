@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, ref } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import { logger } from 'log-instance';
@@ -69,27 +69,28 @@ import pt from './i18n/pt.ts';
 import ro from './i18n/ro.ts';
 import si from './i18n/si.ts';
 import vi from './i18n/vi.ts';
+const messages = ref({ 
+  cs,
+  da,
+  de,
+  en,
+  fr,
+  hi,
+  is,
+  ja,
+  nb,
+  nl,
+  pl,
+  pt,
+  ro,
+  si,
+  vi,
+});
 const i18n = new createI18n({
   legacy: false,
   locale: "en",
   fallbackLocale: "en",
-  messages: { 
-    cs,
-    da,
-    de,
-    en,
-    fr,
-    hi,
-    is,
-    ja,
-    nb,
-    nl,
-    pl,
-    pt,
-    ro,
-    si,
-    vi,
-  },
+  messages,
 });
 vuetifyOpts.locale = createVueI18nAdapter({ i18n, useI18n });
 

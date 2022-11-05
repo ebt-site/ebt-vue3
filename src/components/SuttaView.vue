@@ -58,6 +58,9 @@
   import { logger } from "log-instance";
   import { Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
+  import * as Idb from "idb-keyval";
+
+  var hello = 0;
 
   export default {
     props: {
@@ -94,6 +97,7 @@
         return;
       }
       let suttaRef = this.suttaRef = refInst.toString();
+
       logger.info('SuttaView.mounted()', {suttaRef, refInst});
       let mlDoc;
       if (data) {
@@ -151,12 +155,13 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       bindMlDoc(mlDoc) {
-        let { card } = this;
-        let { segMap } = mlDoc;
+        let { card, settings, } = this;
+        let { refLang } = settings;
+        let { segMap, sutta_uid, lang, author_uid } = mlDoc;
         card.data = mlDoc;
         this.segments = Object.keys(segMap).map(segId=>segMap[segId]);
         let nSegments = this.segments.length;
-        let { sutta_uid, lang, author_uid } = mlDoc;
+
         logger.info("SuttaView.bindMlDoc()", 
           { sutta_uid, lang, author_uid, nSegments});
       },
