@@ -69,7 +69,7 @@ import pt from './i18n/pt.ts';
 import ro from './i18n/ro.ts';
 import si from './i18n/si.ts';
 import vi from './i18n/vi.ts';
-const messages = ref({ 
+const messages = { 
   cs,
   da,
   de,
@@ -85,14 +85,14 @@ const messages = ref({
   ro,
   si,
   vi,
-});
+};
 const i18n = new createI18n({
   legacy: false,
   locale: "en",
   fallbackLocale: "en",
   messages,
 });
-vuetifyOpts.locale = createVueI18nAdapter({ i18n, useI18n });
+vuetifyOpts.adapter = createVueI18nAdapter({ i18n, useI18n });
 
 // Vuetify
 import { createVuetify, } from "vuetify"
@@ -117,7 +117,7 @@ const router = VueRouter.createRouter({
 
 var app = createApp(App);
 app.use(pinia);
-app.use(i18n)
-app.use(vuetify)
-app.use(router);
-app.mount('#app')
+app.use(i18n);
+app.use(vuetify);
+app.use(router);;
+app.mount('#app');
