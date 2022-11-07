@@ -101,12 +101,12 @@
       logger.info('SuttaView.mounted()', {suttaRef, refInst});
       let mlDoc;
       if (data) {
-        this.bindMlDoc(data);
+        await this.bindMlDoc(data);
       } else {
         mlDoc = volatile.mlDocFromSuttaRef(suttaRef);
         if (mlDoc) {
           volatile.addMlDoc(mlDoc);
-          this.bindMlDoc(mlDoc);
+          await this.bindMlDoc(mlDoc);
         } else {
           let url = settings.suttaUrl(suttaRef);
           let json = await volatile.fetchJson(url);
@@ -114,7 +114,7 @@
           if (mlDocs.length) {
             mlDoc = mlDocs[0];
             volatile.addMlDoc(mlDoc);
-            this.bindMlDoc(mlDoc);
+            await this.bindMlDoc(mlDoc);
           } else {
             logger.info("SuttaView.mounted() fetched", {url, json});
           }
@@ -154,13 +154,27 @@
         }
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
-      bindMlDoc(mlDoc) {
+      async bindMlDoc(mlDoc) {
         let { card, settings, } = this;
         let { refLang } = settings;
         let { segMap, sutta_uid, lang, author_uid } = mlDoc;
         card.data = mlDoc;
-        this.segments = Object.keys(segMap).map(segId=>segMap[segId]);
-        let nSegments = this.segments.length;
+        let segments = Object.keys(segMap)
+          .map(segId=>Object.assign({},segMap[segId])); // remove Proxy
+        let nSegments = segments.length;
+        this.segments = segments;
+
+        let idbSutta = await Idb.get(sutta_uid);
+        console.log("bindMLDoc DEBUG", {segments, segMap});
+        if (1 || idbSutta == null) {
+          idbSutta = {
+            sutta_uid,
+            lang,
+            author_uid,
+            segments,
+          }
+          await Idb.set(sutta_uid, idbSutta);
+        }
 
         logger.info("SuttaView.bindMlDoc()", 
           { sutta_uid, lang, author_uid, nSegments});

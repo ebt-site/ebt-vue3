@@ -49,7 +49,7 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(JSON.parse(json));
     should(card2).properties(card1);
   });
-  it("TESTTESTmatchPath() wiki context", async() => {
+  it("matchPath() wiki context", async() => {
     let card0 = new EbtCard({ context: "" });
     let card1 = new EbtCard({ context: "wiki", });
     let card2 = new EbtCard({ context: "wiki", location:["a","b c"], });
@@ -109,7 +109,7 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTmatchPath() search context", async() => {
+  it("matchPath() search context", async() => {
     let langTrans = 'test-lang';
     let card0 = new EbtCard({ context: "" , langTrans});
     let card1 = new EbtCard({ context: "search", langTrans});
@@ -163,7 +163,7 @@ logger.logLevel = 'warn';
       should(card2.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTmatchPath() sutta context", async() => {
+  it("matchPath() sutta context", async() => {
     let locSutta = "sn35.1";
     let locSegA = `${locSutta}:1.10`;
     let locSegB = `${locSutta}:2.3`;
@@ -247,7 +247,7 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard() search", ()=>{
+  it("pathToCard() search", ()=>{
     let cards = [];
     let nAdd = 0;
     let langTrans = "test-lang";
