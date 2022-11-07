@@ -18,21 +18,24 @@ export default class IdbSutta {
       lang, 
       author = opts.author_uid,
       segments,
-      segMap,
     } = opts;
 
     try {
       IdbSutta.#privateCtor = true;
-      if (segments) {
+
+      if (segments) { // opts is IdbSutta-like
         return new IdbSutta({sutta_uid, lang, author, segments});
-      } else if (segMap) {
-        let sutta = new IdbSutta({sutta_uid, lang, author, segments:[]});
-        let mlDoc = {sutta_uid, lang, author_uid: author, segMap};
-        sutta.merge({mlDoc});
-        return sutta;
-      } else {
+      } 
+
+      // opts is MlDoc
+      let { segMap } = opts;
+      if (segMap == null) {
         throw new Error(`IdbSutta.create() required: segMap or segments`);
       }
+      let sutta = new IdbSutta({sutta_uid, lang, author, segments:[]});
+      let mlDoc = {sutta_uid, lang, author_uid: author, segMap};
+      sutta.merge({mlDoc});
+      return sutta;
     } finally {
       IdbSutta.#privateCtor = false;
     }
