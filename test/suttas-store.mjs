@@ -26,9 +26,14 @@ const MSDAY = 24*3600*MSSEC;
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("default state", ()=>{
+  it("TESTTESTdefault state", ()=>{
     let suttas = useSuttasStore();
-    should(suttas.maxAge).equal(MSDAY);
+    should(suttas).properties({
+      nFetch: 0,
+      nGet: 0,
+      nSet: 0,
+      maxAge: MSDAY,
+    });
   });
   it("suttaUrl", async () => {
     let settings = useSettingsStore();
@@ -46,9 +51,10 @@ const MSDAY = 24*3600*MSSEC;
       'en', // not zz!
     ].join('/'));
   });
-  it("loadIdbSutta", async () => {
+  it("TESTTESTloadIdbSutta", async () => {
     //logger.logLevel = 'info';
     let suttas = useSuttasStore();
+    let { nFetch, nGet, nSet } = suttas;
     let suttaRef = SuttaRef.create(THIG1_1_SOMA);
 
     // Load sutta from cloud
@@ -58,6 +64,9 @@ const MSDAY = 24*3600*MSSEC;
       lang: 'en',
       author: 'soma',
     });
+    should(suttas.nGet).equal(nGet+1);
+    should(suttas.nSet).equal(nSet+1);
+    should(suttas.nFetch).equal(nFetch+1);
     let [seg0] = idbSutta.segments;
     should(seg0.en).match(/Elder Bhikkhunīs/);
     should(seg0.pli).match(/Therīgāthā 1.1/);
@@ -67,12 +76,18 @@ const MSDAY = 24*3600*MSSEC;
     // Load cached sutta
     let idbSutta2 = await suttas.loadIdbSutta(suttaRef);
     should.deepEqual(idbSutta2, idbSutta);
+    should(suttas.nGet).equal(nGet+2);
+    should(suttas.nSet).equal(nSet+1);
+    should(suttas.nFetch).equal(nFetch+1);
 
     // Don't refresh almost stale data
     let freshSaved = Date.now() - MSDAY + MSSEC;
     Idb.set(idbSutta.idbKey, Object.assign({}, idbSutta, {saved:freshSaved}));
     let idbSutta3 = await suttas.loadIdbSutta(suttaRef);
     should(idbSutta3.saved).equal(freshSaved);
+    should(suttas.nGet).equal(nGet+3);
+    should(suttas.nSet).equal(nSet+1);
+    should(suttas.nFetch).equal(nFetch+1);
 
     // Re-fetch stale sutta
     let staleSaved = Date.now() - MSDAY - 1;
@@ -80,5 +95,28 @@ const MSDAY = 24*3600*MSSEC;
     let idbSutta4 = await suttas.loadIdbSutta(suttaRef);
     let age = Date.now() - idbSutta4.saved;
     should(age).below(MSSEC);
+  });
+  it("TESTTESTsaveIdbSutta()", async () => {
+    let suttas = useSuttasStore();
+    let { nFetch, nGet, nSet } = suttas;
+    let author = 'test-author';
+    let lang = 'test-lang';
+    let sutta_uid = "thig1.1";
+    let segments = [{
+      "testsuid:0.1": "TEST-SEGMENT",
+    }];
+    let idbSutta = IdbSutta.create({ author, lang, sutta_uid, segments, });
+
+    let idbSuttaSaved = await suttas.saveIdbSutta(idbSutta);
+    should(idbSuttaSaved).properties(idbSutta);
+    let now = Date.now();
+    should(now - idbSuttaSaved.saved).above(-1).below(MSSEC);
+    should(suttas.nGet).equal(nGet);
+    should(suttas.nSet).equal(nSet+1);
+
+    let idbSuttaLoaded = await suttas.loadIdbSutta({author, lang, sutta_uid});
+    should.deepEqual(idbSuttaLoaded, idbSuttaSaved);
+    should(suttas.nGet).equal(nGet+1);
+    should(suttas.nSet).equal(nSet+1);
   });
 })

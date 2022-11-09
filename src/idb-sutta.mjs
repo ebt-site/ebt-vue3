@@ -58,7 +58,8 @@ export default class IdbSutta {
   static idbKey(suttaRef) {
     let sref = SuttaRef.create(suttaRef);
     if (sref == null) {
-      throw new Error(`IdbSutta.idbKey() invalid suttaRef:${suttaRef}`);
+      let msg = `IdbSutta.idbKey() invalid suttaRef:${JSON.stringify(suttaRef)}`;
+      throw new Error(msg);
     }
     let { sutta_uid, lang, author} = sref;
     return `/sutta/${sutta_uid}/${lang}/${author}`;

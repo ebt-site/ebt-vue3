@@ -13,6 +13,9 @@ export const useSuttasStore = defineStore('suttas', {
   state: () => {
     return {
       maxAge: MSDAY,
+      nFetch: 0,
+      nGet: 0,
+      nSet: 0,
     }
   },
   actions: {
@@ -34,6 +37,7 @@ export const useSuttasStore = defineStore('suttas', {
       let { refresh=false } = opts;
       let idbKey = IdbSutta.idbKey(suttaRef);
       let idbData = await Idb.get(idbKey);
+      this.nGet++;
       let age = idbData?.saved ? Date.now()-idbData.saved : maxAge+1;
       let idbSutta;
 
@@ -41,6 +45,7 @@ export const useSuttasStore = defineStore('suttas', {
         let volatile = useVolatileStore();
         let url = this.suttaUrl(suttaRef);
         let json = await volatile.fetchJson(url);;
+        this.nFetch++;
         let { mlDocs, results } = json;
         idbSutta = IdbSutta.create(mlDocs[0]);
         logger.debug(`suttas.loadIdbSutta()`,
@@ -61,6 +66,8 @@ export const useSuttasStore = defineStore('suttas', {
       idbSutta.saved = Date.now();
       logger.debug(`suttas.saveIdbSutta()`, idbSutta.saved);
       await Idb.set(idbKey, idbSutta);
+      this.nSet++;
+      return idbSutta;
     },
   },
   getters: {
