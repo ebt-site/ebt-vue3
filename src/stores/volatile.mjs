@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { SuttaRef } from "scv-esm";
+import { SuttaRef } from "scv-esm/main.mjs";
 import { logger } from "log-instance";
 import { ref } from "vue";
 import Utils from "../utils.mjs";
@@ -41,49 +41,6 @@ export const useVolatileStore = defineStore('volatile', {
       let key = suttaRef.toString();
       logger.info("volatile.addMlDoc", {key, mld});
       suttas[key] = mld;
-    },
-    async idbPutMlDoc(suttaRef, mlDoc) {
-      let msgPfx = 'volatile.idbPutMlDoc()';
-      let suttaRef = SuttaRef.create(suttaRef);
-      let { sutta_uid, lang, author } = suttaRef;
-      if (mlDoc.sutta_uid !== sutta_uid) {
-        let msg = `${msgPfx} sutta_uid expected:${sutta_uid} actual:${mlDoc.sutta_uid}`;
-        logger.error(msg);
-        throw new Error(msg);
-      }
-      let { refLang } = this;
-      let { segMap, lang, author_uid } = mlDoc;
-      let segids = Object.keys(segMap);
-      let nSegments = segids.length;
-      let segments = [];
-
-      let idbKey = `/sutta/${sutta_uid}/${lang}/${author}`;
-      let idbSutta = await Idb.get(idbKey);
-      if (idbSutta == null) {
-        idbSutta = {
-          sutta_uid,
-          lang,
-          author_uid,
-          segments,
-        }
-      }
-      let oldSegments = idbSutta?.segments || [];
-      for (let i = 0; i < nSegments; i++) {
-        let segid = segids[i];
-        if (idbSutta) {
-          segments[i] = Object.assign({}, segments[i], segMap[segid]);
-        } else {
-          segments[i] = Object.assign({}, segMap[segid]);
-        }
-      }
-
-      let segments = scids.map(segId=>{
-        Object.assign({},segMap[segId]); // remove Proxy
-      });
-      let nSegments = segments.length;
-
-      await Idb.set(idbKey, idbSutta);
-      logger.info("volatile.idbPutMlDoc()", { idbKey, idbSutta });
     },
     mlDocFromSuttaRef(suttaRefArg) {
       let suttaRef = SuttaRef.create(suttaRefArg);

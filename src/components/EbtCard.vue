@@ -70,8 +70,8 @@
   import { default as WikiView } from './WikiView.vue';
   import { default as SuttaView } from './SuttaView.vue';
   import { default as EbtCard } from '../ebt-card.mjs';
-  import { useSettingsStore } from '../stores/settings';
-  import { useVolatileStore } from '../stores/volatile';
+  import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { ref } from "vue";
 
   export default {

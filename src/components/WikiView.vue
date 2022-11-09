@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { useSettingsStore } from '../stores/settings';
+  import { useSettingsStore } from '../stores/settings.mjs';
   import { ref } from "vue";
 
   export default {

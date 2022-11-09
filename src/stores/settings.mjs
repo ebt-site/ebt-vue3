@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance';
 import Utils from "../utils.mjs";
-import { SuttaRef } from 'scv-esm';
+import { SuttaRef } from 'scv-esm/main.mjs';
 import { default as Settings } from "../../src/ebt-settings.mjs";
 import { default as EbtCard } from "../../src/ebt-card.mjs";
 

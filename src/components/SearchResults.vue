@@ -37,8 +37,8 @@
 </template>
 
 <script>
-  import { useSettingsStore } from '../stores/settings';
-  import { useVolatileStore } from '../stores/volatile';
+  import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { SuttaRef } from 'scv-esm';
   import { ref } from "vue";
 

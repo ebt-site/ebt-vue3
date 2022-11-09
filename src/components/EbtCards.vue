@@ -10,7 +10,7 @@
   import { nextTick } from "vue";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
-  import { useSettingsStore } from '../stores/settings';
+  import { useSettingsStore } from '../stores/settings.mjs';
   import { logger } from "log-instance";
 
   export default {

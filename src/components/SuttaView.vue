@@ -53,8 +53,8 @@
 </template>
 
 <script>
-  import { useSettingsStore } from '../stores/settings';
-  import { useVolatileStore } from '../stores/volatile';
+  import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { logger } from "log-instance";
   import { Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";

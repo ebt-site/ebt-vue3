@@ -1,5 +1,6 @@
 import { logger } from 'log-instance';
-import { SuttaCentralId } from 'scv-esm/main.mjs';
+import { SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
+import * as Idb from "idb-keyval";
 
 export default class IdbSutta {
   static #privateCtor;
@@ -24,7 +25,9 @@ export default class IdbSutta {
       IdbSutta.#privateCtor = true;
 
       if (segments) { // opts is IdbSutta-like
-        return new IdbSutta({sutta_uid, lang, author, segments});
+        let idbSutta = {sutta_uid, lang, author, segments};
+        opts.saved != null && (idbSutta.saved = opts.saved);
+        return new IdbSutta(idbSutta);
       } 
 
       // opts is MlDoc
@@ -41,9 +44,18 @@ export default class IdbSutta {
     }
   }
 
+  static idbKey(suttaRef) {
+    let sref = SuttaRef.create(suttaRef);
+    if (sref == null) {
+      throw new Error(`IdbSutta.idbKey() invalid suttaRef:${suttaRef}`);
+    }
+    let { sutta_uid, lang, author} = sref;
+    return `/sutta/${sutta_uid}/${lang}/${author}`;
+  }
+
   get idbKey() {
     let { sutta_uid, lang, author } = this;
-    return `/sutta/${sutta_uid}/${lang}/${author}`;
+    return IdbSutta.idbKey({ sutta_uid, lang, author });
   }
 
   merge(opts={}) {

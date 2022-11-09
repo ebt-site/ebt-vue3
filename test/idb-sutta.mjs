@@ -1,6 +1,8 @@
 import { logger } from "log-instance";
 import should from "should";
+import "fake-indexeddb/auto";
 import { default as IdbSutta } from "../src/idb-sutta.mjs";
+import * as Idb from "idb-keyval";
 
 logger.logLevel = 'warn';
 
@@ -121,8 +123,13 @@ const TESTMLDOC = {
     should.deepEqual(sutta2, sutta);
   });
   it("TESTTESTidbKey", ()=>{
-    let sutta = IdbSutta.create(TESTMLDOC);
-    should(sutta.idbKey).equal('/sutta/testsuid/testlang/test-author');
+    let sutta = IdbSutta.create({
+      sutta_uid: 'thig1.1',
+      lang: 'en',
+      author: 'soma',
+      segments: [],
+    });
+    should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
   it("TESTTESTmerge mlDoc lang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);

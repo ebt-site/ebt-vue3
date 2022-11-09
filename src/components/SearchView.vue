@@ -47,8 +47,8 @@
 
 <script>
   import { default as SearchResults } from "./SearchResults.vue";
-  import { useSettingsStore } from '../stores/settings';
-  import { useVolatileStore } from '../stores/volatile';
+  import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { logger } from "log-instance";
   import { Examples } from "scv-esm";
   import { ref, nextTick } from "vue";

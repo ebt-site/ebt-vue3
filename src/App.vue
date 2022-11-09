@@ -58,8 +58,8 @@
   import EbtCards from './components/EbtCards.vue';
   import EbtChips from './components/EbtChips.vue';
   import Settings from './components/Settings.vue';
-  import { useSettingsStore } from './stores/settings';
-  import { useVolatileStore } from './stores/volatile';
+  import { useSettingsStore } from './stores/settings.mjs';
+  import { useVolatileStore } from './stores/volatile.mjs';
   import { logger } from "log-instance";
   import { ref } from "vue";
 

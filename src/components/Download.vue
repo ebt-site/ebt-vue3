@@ -124,8 +124,8 @@
 
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import { useSettingsStore } from "../stores/settings";
-  import { useVolatileStore } from "../stores/volatile";
+  import { useSettingsStore } from "../stores/settings.mjs";
+  import { useVolatileStore } from "../stores/volatile.mjs";
 
   const downloadLink = ref(undefined);
   const results = ref(undefined); 

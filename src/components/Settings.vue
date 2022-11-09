@@ -234,7 +234,7 @@
 
 <script>
 import { ref, reactive, onMounted, computed, } from 'vue';
-import { useSettingsStore } from "../stores/settings";
+import { useSettingsStore } from "../stores/settings.mjs";
 import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
