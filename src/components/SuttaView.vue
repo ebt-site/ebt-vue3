@@ -55,6 +55,7 @@
 <script>
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { useSuttasStore } from '../stores/suttas.mjs';
   import { logger } from "log-instance";
   import { Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
@@ -72,13 +73,15 @@
     setup() {
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
-      const segments = ref([]);
+      const suttas = useSuttasStore();
+      const oldsegments = ref([]);
       const showTakaNav = ref(false);
       return {
         settings,
         volatile,
+        suttas,
         suttaRef: undefined,
-        segments,
+        oldsegments,
         taka: new Tipitaka(),
         showTakaNav,
       }
@@ -86,7 +89,7 @@
     components: {
     },
     async mounted() {
-      let { $route, segments, settings, volatile, card, } = this;
+      let { $route, oldsegments, suttas, settings, volatile, card, } = this;
       let { langTrans:defaultLang } = settings;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
@@ -162,10 +165,11 @@
         let segments = Object.keys(segMap)
           .map(segId=>Object.assign({},segMap[segId])); // remove Proxy
         let nSegments = segments.length;
-        this.segments = segments;
+        this.oldsegments = segments;
 
         let idbSutta = await Idb.get(sutta_uid);
         console.log("bindMLDoc DEBUG", {segments, segMap});
+        /*
         if (1 || idbSutta == null) {
           idbSutta = {
             sutta_uid,
@@ -175,6 +179,7 @@
           }
           await Idb.set(sutta_uid, idbSutta);
         }
+        */
 
         logger.info("SuttaView.bindMlDoc()", 
           { sutta_uid, lang, author_uid, nSegments});
@@ -191,6 +196,9 @@
       },
     },
     computed: {
+      segments(ctx) {
+        return ctx.oldsegments;
+      },
       nextSuid(ctx) {
         let { sutta_uid, taka } = ctx;
         return taka.nextSuid(sutta_uid);
