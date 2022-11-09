@@ -26,11 +26,11 @@ const MSDAY = 24*3600*MSSEC;
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("TESTTESTdefault state", ()=>{
+  it("default state", ()=>{
     let suttas = useSuttasStore();
     should(suttas.maxAge).equal(MSDAY);
   });
-  it("TESTTESTsuttaUrl", async () => {
+  it("suttaUrl", async () => {
     let settings = useSettingsStore();
     should(settings.langTrans).equal('en');
     let langTrans = 'zz';
@@ -46,8 +46,8 @@ const MSDAY = 24*3600*MSSEC;
       'en', // not zz!
     ].join('/'));
   });
-  it("TESTTESTloadIdbSutta", async () => {
-    logger.logLevel = 'info';
+  it("loadIdbSutta", async () => {
+    //logger.logLevel = 'info';
     let suttas = useSuttasStore();
     let suttaRef = SuttaRef.create(THIG1_1_SOMA);
 

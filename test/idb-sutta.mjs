@@ -39,12 +39,12 @@ const TESTSEGS = [
 const TESTMLDOC = {
   sutta_uid: 'testsuid',
   lang: 'testlang',
-  author: 'test-author',
+  author_uid: 'test-author',
   segMap: TESTMAP,
 };
 
 (typeof describe === 'function') && describe("idb-sutta.mjs", function () {
-  it("TESTTESTprivate ctor", async () => {
+  it("private ctor", async () => {
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -57,7 +57,7 @@ const TESTMLDOC = {
     try { new IdbSutta(mlDoc); } catch(e) { eCaught = e; }
     should(eCaught?.message).match(/use idbSutta.create/i);
   });
-  it("TESTTESTcreate(mlDoc)", ()=>{
+  it("create(mlDoc)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -71,7 +71,7 @@ const TESTMLDOC = {
     });
     should.deepEqual(sutta.segments, TESTSEGS);
   });
-  it("TESTTESTcreate(mlDoc) segment order", ()=>{
+  it("create(mlDoc) segment order", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -90,7 +90,7 @@ const TESTMLDOC = {
     });
     should.deepEqual(sutta.segments, TESTSEGS);
   });
-  it("TESTTESTcreate(mlDocProxy)", ()=>{
+  it("create(mlDocProxy)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -100,7 +100,7 @@ const TESTMLDOC = {
     should(sutta).properties({ sutta_uid, lang, author, });
     should.deepEqual(sutta.segments, TESTSEGS);
   });
-  it("TESTTESTcreate(idbSutta)", ()=>{
+  it("create(idbSutta)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -112,7 +112,7 @@ const TESTMLDOC = {
     should.deepEqual(sutta2, sutta);
     should.deepEqual(sutta3, sutta);
   });
-  it("TESTTESTserialize", ()=>{
+  it("serialize", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -122,7 +122,7 @@ const TESTMLDOC = {
     let sutta2 = IdbSutta.create(JSON.parse(json));
     should.deepEqual(sutta2, sutta);
   });
-  it("TESTTESTidbKey", ()=>{
+  it("idbKey", ()=>{
     let sutta = IdbSutta.create({
       sutta_uid: 'thig1.1',
       lang: 'en',
@@ -131,7 +131,7 @@ const TESTMLDOC = {
     });
     should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
-  it("TESTTESTmerge mlDoc lang", ()=>{
+  it("merge mlDoc lang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
@@ -162,9 +162,9 @@ const TESTMLDOC = {
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
-    let lang = 'testlang';
-    let refLang = lang;
-    let author_uid = 'test-author';
+    let lang = 'ref-lang';
+    let refLang = TESTMLDOC.lang;
+    let author_uid = 'ref-author';
     let updatedSeg1_1 = {
       scid: TESTSEG1_1.scid,
       [lang]: "test-update",
@@ -179,12 +179,25 @@ const TESTMLDOC = {
     // Merge with refLang creates a "ref" property with value
     // obtained from sourceSegment[refLang]
     dstSutta.merge({mlDoc, refLang});
-    should(dstSutta).properties({sutta_uid, lang, author: author_uid});
-    should.deepEqual(dstSutta.segments, [
-      Object.assign({}, TESTSEG1_0, {ref:TESTSEG1_0.testlang}),    // old seg
+    should(dstSutta).properties({
+      sutta_uid, 
+      lang: TESTMLDOC.lang,
+      author: TESTMLDOC.author_uid,
+      refAuthor: author_uid,
+      refLang,
+    });
+    should.deepEqual(dstSutta.segments[0], 
+      Object.assign({}, TESTSEG1_0, {ref:TESTSEG1_0.testlang}) // old seg
+    ); 
+    should.deepEqual(dstSutta.segments[1], 
       Object.assign({}, TESTSEG1_1, {ref:updatedSeg1_1.testlang}), // old seg
+    );
+    should.deepEqual(dstSutta.segments[2], 
       TESTSEG1_2,   // old seg but no ref content
+    );
+    should.deepEqual(dstSutta.segments[3], 
       Object.assign({scid:TESTSEG1_3.scid, ref:TESTSEG1_3.testlang}), // new seg
-    ]);
+    );
+    should(dstSutta.segments.length).equal(4);
   });
 });

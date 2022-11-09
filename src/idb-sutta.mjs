@@ -2,6 +2,8 @@ import { logger } from 'log-instance';
 import { SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
 import * as Idb from "idb-keyval";
 
+const OPTIONAL_PROPS = ['saved', 'refAuthor', 'refLang'];
+
 export default class IdbSutta {
   static #privateCtor;
 
@@ -12,6 +14,15 @@ export default class IdbSutta {
 
     Object.assign(this, opts);
   }
+  
+  static #copyOptional(src,dst) {
+    OPTIONAL_PROPS.forEach(prop=>{
+      if (src[prop] != null) {
+        dst[prop] = src[prop];
+      }
+    });
+  }
+
 
   static create(opts = {}) {
     let { 
@@ -26,7 +37,7 @@ export default class IdbSutta {
 
       if (segments) { // opts is IdbSutta-like
         let idbSutta = {sutta_uid, lang, author, segments};
-        opts.saved != null && (idbSutta.saved = opts.saved);
+        IdbSutta.#copyOptional(opts, idbSutta);
         return new IdbSutta(idbSutta);
       } 
 
@@ -35,10 +46,10 @@ export default class IdbSutta {
       if (segMap == null) {
         throw new Error(`IdbSutta.create() required: segMap or segments`);
       }
-      let sutta = new IdbSutta({sutta_uid, lang, author, segments:[]});
+      let idbSutta = new IdbSutta({sutta_uid, lang, author, segments:[]});
       let mlDoc = {sutta_uid, lang, author_uid: author, segMap};
-      sutta.merge({mlDoc});
-      return sutta;
+      idbSutta.merge({mlDoc});
+      return idbSutta;
     } finally {
       IdbSutta.#privateCtor = false;
     }
@@ -68,24 +79,28 @@ export default class IdbSutta {
       a[seg.scid] = seg;
       return a;
     }, {});
-    let { segMap:srcSegMap } = mlDoc;
+    let { lang, author_uid, segMap:srcSegMap } = mlDoc;
     if (srcSegMap == null) {
       throw new Error(`IdbSutta.merge({mlDoc.segMap?}) invalid mlDoc`);
+    }
+    if (refLang) {
+      this.refAuthor = author_uid;
+      this.refLang = refLang;
+    } else {
+      this.author = author_uid;
+      this.lang = lang;
     }
     Object.keys(srcSegMap).forEach(scid=>{
       let srcSeg = srcSegMap[scid];
       let dstSeg = dstSegMap[scid];
-      if (dstSeg) {
-        if (refLang) {
-          dstSeg.ref = srcSeg[refLang];
-        } else {
-          Object.assign(dstSeg, srcSeg);
-        }
-      } else {
-        dstSeg = refLang
-          ? {scid: srcSeg.scid, ref: srcSeg[refLang]}
-          : Object.assign({}, srcSeg);
+      if (!dstSeg) {
+        dstSeg = {scid:srcSeg.scid};
         dstSegMap[scid] = dstSeg;
+      }
+      if (refLang) {
+        dstSeg.ref = srcSeg[refLang];
+      } else {
+        Object.assign(dstSeg, srcSeg);
       }
     });
     this.segments = Object.keys(dstSegMap)
