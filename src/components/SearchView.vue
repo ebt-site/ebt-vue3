@@ -17,22 +17,6 @@
           :placeholder="$t('ebt.searchPrompt')"
           variant="underlined"
         />
-      <!-- DEBUG TODO
-        <v-autocomplete 
-          v-model="search" 
-          :append-icon="search ? 'mdi-magnify' : ''"
-          clearable
-          @click:append="onSearch"
-          @click:clear="onSearchCleared($event, card)"
-          :hint="$t('auth.required')"
-          @update:search="updateSearch($event)"
-          @keyup.enter="onEnter($event)"
-          :filter="searchFilter"
-          :items="exampleItems"
-          :label="$t('ebt.search')"
-          :placeholder="$t('ebt.searchPrompt')"
-          variant="underlined"
-        /> DEBUG TODO -->
         <div class="inspire" v-if="hasExamples">
           <v-btn variant=tonal @click="onInspireMe">
             {{$t('ebt.inspireMe')}}
@@ -49,6 +33,9 @@
   import { default as SearchResults } from "./SearchResults.vue";
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { useSuttasStore } from '../stores/suttas.mjs';
+  import { default as IdbSutta } from '../idb-sutta.mjs';
+  import * as Idb from 'idb-keyval';
   import { logger } from "log-instance";
   import { Examples } from "scv-esm";
   import { ref, nextTick } from "vue";
@@ -62,9 +49,11 @@
     setup() {
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
+      const suttas = useSuttasStore();
       return {
         settings,
         volatile,
+        suttas,
       }
     },
     data: () => {
@@ -98,7 +87,7 @@
         search && this.onSearch();
       },
       async onSearch() {
-        let { volatile, url, search, card, } = this;
+        let { volatile, url, search, card, suttas, } = this;
         let res;
         let waitingOld = volatile.waiting;
         try {
@@ -113,7 +102,22 @@
           window.location.hash = card.routeHash();
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
-          mlDocs.forEach(mld=>volatile.addMlDoc(mld));
+          mlDocs.forEach(mlDoc=>volatile.addMlDoc(mlDoc));
+          for (let i = 0; i < mlDocs.length; i++) {
+            let mlDoc = mlDocs[i];
+            let { sutta_uid, lang, author_uid } = mlDoc;
+            let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
+            let idbData = await Idb.get(idbKey);
+            let idbSutta;
+            if (idbData) {
+              idbSutta = IdbSutta.create(idbData);
+              idbSutta.merge({mlDoc});
+            } else {
+              idbSutta = IdbSutta.create(mlDoc);
+            }
+            suttas.saveIdbSutta(idbSutta);
+            console.log("DEBUG onSearch", {idbKey, idbData, idbSutta});
+          }
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url} ${e.message}`;

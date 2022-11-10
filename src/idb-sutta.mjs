@@ -101,6 +101,9 @@ export default class IdbSutta {
       if (refLang) {
         dstSeg.ref = srcSeg[refLang];
       } else {
+        if (!srcSeg.matched) {
+          delete dstSeg.matched;
+        }
         Object.assign(dstSeg, srcSeg);
       }
     });

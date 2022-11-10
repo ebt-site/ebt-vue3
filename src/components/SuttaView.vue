@@ -74,14 +74,16 @@
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const suttas = useSuttasStore();
-      const oldsegments = ref([]);
+      const idbSutta = null;
+      const segments = ref([]);
       const showTakaNav = ref(false);
       return {
         settings,
         volatile,
         suttas,
+        idbSutta,
+        segments,
         suttaRef: undefined,
-        oldsegments,
         taka: new Tipitaka(),
         showTakaNav,
       }
@@ -89,11 +91,15 @@
     components: {
     },
     async mounted() {
-      let { $route, oldsegments, suttas, settings, volatile, card, } = this;
+      let { $route, suttas, settings, volatile, card, } = this;
       let { langTrans:defaultLang } = settings;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
       let ref = {sutta_uid, lang, author}
+      let idbSutta = await suttas.loadIdbSutta(ref);
+      this.idbSutta = idbSutta;
+      this.segments = idbSutta.segments;
+      console.log("SuttaView.mounted()", {idbSutta});
       let refInst = SuttaRef.create(ref);
       if (refInst == null) {
         alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
@@ -158,28 +164,16 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       async bindMlDoc(mlDoc) {
-        let { card, settings, } = this;
+        let { card, idbSutta, settings, suttas} = this;
+        await idbSutta.merge({mlDoc});
+        console.log("DEBUG bindMlDoc2 saveIdbSutta", {idbSutta, mlDoc});
+        suttas.saveIdbSutta(idbSutta);
         let { refLang } = settings;
         let { segMap, sutta_uid, lang, author_uid } = mlDoc;
         card.data = mlDoc;
         let segments = Object.keys(segMap)
           .map(segId=>Object.assign({},segMap[segId])); // remove Proxy
         let nSegments = segments.length;
-        this.oldsegments = segments;
-
-        let idbSutta = await Idb.get(sutta_uid);
-        console.log("bindMLDoc DEBUG", {segments, segMap});
-        /*
-        if (1 || idbSutta == null) {
-          idbSutta = {
-            sutta_uid,
-            lang,
-            author_uid,
-            segments,
-          }
-          await Idb.set(sutta_uid, idbSutta);
-        }
-        */
 
         logger.info("SuttaView.bindMlDoc()", 
           { sutta_uid, lang, author_uid, nSegments});
@@ -196,9 +190,6 @@
       },
     },
     computed: {
-      segments(ctx) {
-        return ctx.oldsegments;
-      },
       nextSuid(ctx) {
         let { sutta_uid, taka } = ctx;
         return taka.nextSuid(sutta_uid);

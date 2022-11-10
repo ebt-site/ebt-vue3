@@ -9,6 +9,7 @@ import { useSettingsStore } from '../src/stores/settings.mjs';
 import { useSuttasStore } from '../src/stores/suttas.mjs';
 import { default as IdbSutta } from "../src/idb-sutta.mjs";
 import * as Idb from "idb-keyval";
+import { ref, shallowRef, watch, watchEffect } from "vue";
 
 const THIG1_1_SOMA = SuttaRef.create('thig1.1/en/soma');
 
@@ -26,7 +27,7 @@ const MSDAY = 24*3600*MSSEC;
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("TESTTESTdefault state", ()=>{
+  it("default state", ()=>{
     let suttas = useSuttasStore();
     should(suttas).properties({
       nFetch: 0,
@@ -51,7 +52,7 @@ const MSDAY = 24*3600*MSSEC;
       'en', // not zz!
     ].join('/'));
   });
-  it("TESTTESTloadIdbSutta", async () => {
+  it("loadIdbSutta", async () => {
     //logger.logLevel = 'info';
     let suttas = useSuttasStore();
     let { nFetch, nGet, nSet } = suttas;
@@ -96,7 +97,7 @@ const MSDAY = 24*3600*MSSEC;
     let age = Date.now() - idbSutta4.saved;
     should(age).below(MSSEC);
   });
-  it("TESTTESTsaveIdbSutta()", async () => {
+  it("saveIdbSutta()", async () => {
     let suttas = useSuttasStore();
     let { nFetch, nGet, nSet } = suttas;
     let author = 'test-author';
@@ -118,5 +119,107 @@ const MSDAY = 24*3600*MSSEC;
     should.deepEqual(idbSuttaLoaded, idbSuttaSaved);
     should(suttas.nGet).equal(nGet+1);
     should(suttas.nSet).equal(nSet+1);
+  });
+  it("TESTTESTref()", ()=>{
+    let obj1 = {count:0, segs: [{text:'A'}]};
+    let obj2 = {count:0, segs: [{text:'a'}]};
+    let refObj = ref(obj1);
+    let nWatch = 0;
+
+    let stop = watch(
+      refObj,
+      ()=>{ nWatch++; }, 
+      {immediate: false, deep: true, flush:'sync'}
+    );
+
+    try {
+
+      // ref wraps the object with proxies
+      should(refObj.value).not.equal(obj1);
+
+      // changing the object triggers watch
+      refObj.value = obj2;
+      should(nWatch).equal(1);
+      should(refObj.value.count).equal(0);
+      should(refObj.value.segs[0].text).equal('a');
+
+      // changing underlying object does nothing
+      obj2.count++;
+      obj2.segs[0].text = "B";
+      should(obj2.count).equal(1);
+      should(obj2.segs[0].text).equal("B");
+      should(refObj.value.segs[0].text).equal("B");
+      should(nWatch).equal(1);
+
+      // changing via reference triggers watch
+      refObj.value.count++;
+      should(nWatch).equal(2);
+
+      // changing via reference triggers watch
+      refObj.value.segs[0].text = 'C';
+      should(nWatch).equal(3);
+      should(obj2.count).equal(2);
+      should(obj2.segs[0].text).equal('C');
+      should(refObj.value.segs[0].text).equal('C');
+
+    } finally {
+      stop();
+    }
+  });
+  it("shallowRef()", ()=>{
+    let obj1 = {count:0, segs: [{text:'A'}]};
+    let obj2 = {count:0, segs: [{text:'a'}]};
+    let refObj = shallowRef(obj1);
+    let nWatch = 0;
+
+    let stop = watch(
+      refObj,
+      ()=>{ nWatch++; }, 
+      {immediate: false, deep: true, flush:'sync'}
+    );
+
+    try {
+
+      // shallowRef uses actual object
+      should(refObj.value).equal(obj1);  // Different than ref()
+
+      // changing the object triggers watch
+      refObj.value = obj2;
+      should(nWatch).equal(1);
+      should(refObj.value.count).equal(0);
+      should(refObj.value.segs[0].text).equal('a');
+
+      // changing underlying object does nothing
+      obj2.count++;
+      obj2.segs[0].text = "B";
+      should(obj2.count).equal(1);
+      should(obj2.segs[0].text).equal("B");
+      should(refObj.value.segs[0].text).equal("B");
+      should(nWatch).equal(1);
+
+      // changing via reference triggers watch
+      refObj.value.count++;
+      should(nWatch).equal(1);  // Different than ref()
+
+      // changing via reference triggers watch
+      refObj.value.segs[0].text = 'C';
+      should(nWatch).equal(1);  // Different than ref()
+      should(obj2.count).equal(2);
+      should(obj2.segs[0].text).equal('C');
+      should(refObj.value.segs[0].text).equal('C');
+
+    } finally {
+      stop();
+    }
+  });
+  it("TESTTESTidbSuttaRef()", async () => {
+    let suttas = useSuttasStore();
+    let suttaRef = SuttaRef.create("thig1.1/en/soma");
+    let { sutta_uid, lang, author } = suttaRef;
+    let idbSuttaRef = await suttas.idbSuttaRef(suttaRef);
+    should(idbSuttaRef.value).properties({sutta_uid, lang, author});
+    let idbSuttaRef2 = await suttas.idbSuttaRef(suttaRef);
+    should(idbSuttaRef2.value).properties({sutta_uid, lang, author});
+    should(idbSuttaRef2).equal(idbSuttaRef);
   });
 })

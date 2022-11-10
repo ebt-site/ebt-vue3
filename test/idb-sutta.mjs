@@ -158,6 +158,40 @@ const TESTMLDOC = {
       TESTSEG1_3,    // new segment
     ]);
   });
+  it("TESTTESTmerge mlDoc matched", ()=>{
+    let sutta = IdbSutta.create(TESTMLDOC);
+    let dstSutta = IdbSutta.create(TESTMLDOC);
+    let sutta_uid = 'testsuid';
+    let lang = 'testlang';
+    let author_uid = 'test-author';
+
+    // Mark all dstSutta segments as matched:true
+    dstSutta.segments.forEach(seg=>seg.matched = true);
+
+    // Only updated segment is matched
+    let updatedSeg1_1 = {
+      scid: TESTSEG1_1.scid,
+      matched: true,
+      [lang]: "test-update",
+    }
+    let srcSegMap = {
+      [TESTSEG1_0.scid]: new Proxy(TESTSEG1_0, {}),
+      [TESTSEG1_1.scid]: new Proxy(updatedSeg1_1, {}),
+      //[TESTSEG1_2.scid]: TESTSEG1_2,  // don't update 
+      [TESTSEG1_3.scid]: TESTSEG1_3,
+    }
+    let mlDoc = { sutta_uid, lang, author_uid, segMap:srcSegMap, }
+
+    // Merge updates and adds but does not delete
+    dstSutta.merge({mlDoc});
+    should(dstSutta).properties({sutta_uid, lang, author: author_uid});
+    should.deepEqual(dstSutta.segments, [
+      TESTSEG1_0,    // cleared matched
+      updatedSeg1_1, // new matched
+      Object.assign({matched:true}, TESTSEG1_2),   // ignored existing matched
+      TESTSEG1_3,    // new segment has no matched
+    ]);
+  });
   it("TESTTESTmerge mlDoc refLang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
@@ -187,13 +221,13 @@ const TESTMLDOC = {
       refLang,
     });
     should.deepEqual(dstSutta.segments[0], 
-      Object.assign({}, TESTSEG1_0, {ref:TESTSEG1_0.testlang}) // old seg
+      Object.assign({}, TESTSEG1_0, {ref:TESTSEG1_0.testlang}) // updated old seg
     ); 
     should.deepEqual(dstSutta.segments[1], 
-      Object.assign({}, TESTSEG1_1, {ref:updatedSeg1_1.testlang}), // old seg
+      Object.assign({}, TESTSEG1_1, {ref:updatedSeg1_1.testlang}), // updated old seg
     );
     should.deepEqual(dstSutta.segments[2], 
-      TESTSEG1_2,   // old seg but no ref content
+      TESTSEG1_2,
     );
     should.deepEqual(dstSutta.segments[3], 
       Object.assign({scid:TESTSEG1_3.scid, ref:TESTSEG1_3.testlang}), // new seg

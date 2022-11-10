@@ -5,9 +5,11 @@ import { SuttaRef } from 'scv-esm/main.mjs';
 import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';
 import { default as IdbSutta } from '../idb-sutta.mjs';
+import { ref, shallowRef } from 'vue';
 import * as Idb from 'idb-keyval';
 
 const MSDAY = 24 * 3600 * 1000;
+const VUEREFS = new Map();
 
 export const useSuttasStore = defineStore('suttas', {
   state: () => {
@@ -30,8 +32,7 @@ export const useSuttasStore = defineStore('suttas', {
         'search', 
         encodeURIComponent(search), 
         lang,
-      ].join('/');
-    },
+      ].join('/'); },
     async loadIdbSutta(suttaRef, opts={}) {
       let { maxAge } = this;
       let { refresh=false } = opts;
@@ -44,7 +45,7 @@ export const useSuttasStore = defineStore('suttas', {
       if (refresh || !idbData || maxAge < age) {
         let volatile = useVolatileStore();
         let url = this.suttaUrl(suttaRef);
-        let json = await volatile.fetchJson(url);;
+        let json = await volatile.fetchJson(url);
         this.nFetch++;
         let { mlDocs, results } = json;
         idbSutta = IdbSutta.create(mlDocs[0]);
@@ -69,6 +70,22 @@ export const useSuttasStore = defineStore('suttas', {
       this.nSet++;
       return idbSutta;
     },
+    async idbSuttaRef(suttaRef) {
+      let idbKey = IdbSutta.idbKey(suttaRef);
+      let vueRef = VUEREFS.get(idbKey);
+      let idbSutta = vueRef?.value;
+
+      if (idbSutta == null) {
+        idbSutta = await this.loadIdbSutta(suttaRef);
+        vueRef = shallowRef(idbSutta);
+        VUEREFS.set(idbKey, vueRef);
+        //console.log("DEBUG idbSuttaRef loaded", {idbKey});
+      } else {
+        //console.log("DEBUG idbSuttaRef found", {idbKey, idbSutta});
+      }
+
+      return vueRef;
+    }
   },
   getters: {
   },
