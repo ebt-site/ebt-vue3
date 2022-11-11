@@ -32,7 +32,8 @@ export const useSuttasStore = defineStore('suttas', {
         'search', 
         encodeURIComponent(search), 
         lang,
-      ].join('/'); },
+      ].join('/'); 
+    },
     async loadIdbSutta(suttaRef, opts={}) {
       let { maxAge } = this;
       let { refresh=false } = opts;
@@ -64,18 +65,27 @@ export const useSuttasStore = defineStore('suttas', {
     },
     async saveIdbSutta(idbSutta) {
       let { idbKey } = idbSutta;
+      let vueRef = VUEREFS.get(idbKey);
+      if (vueRef == null) {
+        vueRef = shallowRef(idbSutta);
+      } else if (vueRef.value !== idbSutta) {
+        vueRef.value = idbSutta;
+      }
       idbSutta.saved = Date.now();
       logger.debug(`suttas.saveIdbSutta()`, idbSutta.saved);
       await Idb.set(idbKey, idbSutta);
       this.nSet++;
-      return idbSutta;
+      return vueRef;
     },
-    async idbSuttaRef(suttaRef) {
+    async loadIdbSuttaRef(suttaRef, opts={refresh:true}) {
       let idbKey = IdbSutta.idbKey(suttaRef);
       let vueRef = VUEREFS.get(idbKey);
       let idbSutta = vueRef?.value;
 
       if (idbSutta == null) {
+        if (!opts.refresh) {
+          return null;
+        }
         idbSutta = await this.loadIdbSutta(suttaRef);
         vueRef = shallowRef(idbSutta);
         VUEREFS.set(idbKey, vueRef);
@@ -85,7 +95,9 @@ export const useSuttasStore = defineStore('suttas', {
       }
 
       return vueRef;
-    }
+    },
+    async updateIdbSuttaRef(opts) {
+    },
   },
   getters: {
   },

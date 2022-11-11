@@ -97,7 +97,7 @@ const MSDAY = 24*3600*MSSEC;
     let age = Date.now() - idbSutta4.saved;
     should(age).below(MSSEC);
   });
-  it("saveIdbSutta()", async () => {
+  it("TESTTESTsaveIdbSutta()", async () => {
     let suttas = useSuttasStore();
     let { nFetch, nGet, nSet } = suttas;
     let author = 'test-author';
@@ -109,14 +109,14 @@ const MSDAY = 24*3600*MSSEC;
     let idbSutta = IdbSutta.create({ author, lang, sutta_uid, segments, });
 
     let idbSuttaSaved = await suttas.saveIdbSutta(idbSutta);
-    should(idbSuttaSaved).properties(idbSutta);
+    should(idbSuttaSaved.value).properties(idbSutta);
     let now = Date.now();
-    should(now - idbSuttaSaved.saved).above(-1).below(MSSEC);
+    should(now - idbSuttaSaved.value.saved).above(-1).below(MSSEC);
     should(suttas.nGet).equal(nGet);
     should(suttas.nSet).equal(nSet+1);
 
     let idbSuttaLoaded = await suttas.loadIdbSutta({author, lang, sutta_uid});
-    should.deepEqual(idbSuttaLoaded, idbSuttaSaved);
+    should.deepEqual(idbSuttaLoaded, idbSuttaSaved.value);
     should(suttas.nGet).equal(nGet+1);
     should(suttas.nSet).equal(nSet+1);
   });
@@ -212,14 +212,27 @@ const MSDAY = 24*3600*MSSEC;
       stop();
     }
   });
-  it("TESTTESTidbSuttaRef()", async () => {
+  it("TESTTESTloadIdbSuttaRef()", async () => {
     let suttas = useSuttasStore();
+
+    // return shallowRef() of volatile idbSutta, fetching if needed
     let suttaRef = SuttaRef.create("thig1.1/en/soma");
     let { sutta_uid, lang, author } = suttaRef;
-    let idbSuttaRef = await suttas.idbSuttaRef(suttaRef);
+    let idbSuttaRef = await suttas.loadIdbSuttaRef(suttaRef);
     should(idbSuttaRef.value).properties({sutta_uid, lang, author});
-    let idbSuttaRef2 = await suttas.idbSuttaRef(suttaRef);
+    let idbSuttaRef2 = await suttas.loadIdbSuttaRef(suttaRef);
     should(idbSuttaRef2.value).properties({sutta_uid, lang, author});
     should(idbSuttaRef2).equal(idbSuttaRef);
+
+    // refresh is true by default
+    let noRefresh = await suttas.loadIdbSuttaRef("thig1.2/en/soma", {refresh:false});
+    should(noRefresh).equal(null);
+
+    // Bad suttaRef error
+    let eCaught;
+    try { await suttas.loadIdbSuttaRef("xyz"); } 
+    catch(e) {eCaught=e;}
+    finally { should(eCaught?.message).match(/invalid suttaRef.*xyz/); }
+
   });
 })
