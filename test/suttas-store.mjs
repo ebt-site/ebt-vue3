@@ -212,27 +212,71 @@ const MSDAY = 24*3600*MSSEC;
       stop();
     }
   });
-  it("TESTTESTloadIdbSuttaRef()", async () => {
+  it("TESTTESTgetIdbSuttaRef()", async () => {
     let suttas = useSuttasStore();
-
-    // return shallowRef() of volatile idbSutta, fetching if needed
     let suttaRef = SuttaRef.create("thig1.1/en/soma");
     let { sutta_uid, lang, author } = suttaRef;
-    let idbSuttaRef = await suttas.loadIdbSuttaRef(suttaRef);
+
+    // return shallowRef() of volatile idbSutta, fetching if needed
+    let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
     should(idbSuttaRef.value).properties({sutta_uid, lang, author});
-    let idbSuttaRef2 = await suttas.loadIdbSuttaRef(suttaRef);
+    let idbSuttaRef2 = await suttas.getIdbSuttaRef(suttaRef);
     should(idbSuttaRef2.value).properties({sutta_uid, lang, author});
     should(idbSuttaRef2).equal(idbSuttaRef);
 
     // refresh is true by default
-    let noRefresh = await suttas.loadIdbSuttaRef("thig1.2/en/soma", {refresh:false});
+    let noRefresh = await suttas.getIdbSuttaRef("thig1.2/en/soma", {refresh:false});
     should(noRefresh).equal(null);
 
     // Bad suttaRef error
     let eCaught;
-    try { await suttas.loadIdbSuttaRef("xyz"); } 
-    catch(e) {eCaught=e;}
-    finally { should(eCaught?.message).match(/invalid suttaRef.*xyz/); }
+    let oldLogLevel = logger.logLevel;
+    try { 
+      logger.logLevel = "error";
+      await suttas.getIdbSuttaRef("xyz"); 
+    } catch(e) {eCaught=e;}
+    finally { 
+      logger.logLevel = oldLogLevel;
+      should(eCaught?.message).match(/invalid suttaRef.*xyz/);
+    }
+  });
+  it("TESTTESTpostIdbSuttaRef()", async () => {
+    let suttas = useSuttasStore();
+    let suttaRef = SuttaRef.create(`thig1.1/en/test-author`);
+    let { sutta_uid, lang, author } = suttaRef;
+    let mlDoc = {
+      sutta_uid,
+      lang,
+      author_uid: author,
+      segMap: {
+        "thig1.1:0.1": {
+          scid: "thig1.1:0.1", 
+          en: "test-segment",
+        },
+      },
+    }
+
+    // create a new indexedDb record
+    let idbSuttaRef = await suttas.postIdbSuttaRef(mlDoc);
+    let idbSutta = idbSuttaRef?.value;
+    should(idbSutta).properties({sutta_uid, lang, author});
+    should.deepEqual(idbSutta.segments, [
+      mlDoc.segMap['thig1.1:0.1'],
+    ]);
+    let idbKey = idbSutta.idbKey;
+    let idbObj = await Idb.get(idbKey);
+    should(idbObj).properties({sutta_uid, lang, author});
+
+    // update idbSutta
+    let mlDoc2 = JSON.parse(JSON.stringify(mlDoc));
+    mlDoc2.segMap['thig1.1:0.1'].marked = true;
+    let idbSuttaRef2 = await suttas.postIdbSuttaRef(mlDoc2);
+    let idbSutta2 = idbSuttaRef2?.value;
+    should(idbSutta2).properties({sutta_uid, lang, author});
+    should.deepEqual(idbSutta.segments, [
+      mlDoc2.segMap['thig1.1:0.1'],
+    ]);
+    should(await suttas.getIdbSuttaRef(suttaRef)).equal(idbSuttaRef2);
 
   });
 })

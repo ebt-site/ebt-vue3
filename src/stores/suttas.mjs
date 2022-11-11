@@ -34,7 +34,7 @@ export const useSuttasStore = defineStore('suttas', {
         lang,
       ].join('/'); 
     },
-    async loadIdbSutta(suttaRef, opts={}) {
+    async loadIdbSutta(suttaRef, opts={}) { // low-level API
       let { maxAge } = this;
       let { refresh=false } = opts;
       let idbKey = IdbSutta.idbKey(suttaRef);
@@ -63,11 +63,12 @@ export const useSuttasStore = defineStore('suttas', {
 
       return idbSutta;
     },
-    async saveIdbSutta(idbSutta) {
+    async saveIdbSutta(idbSutta) { // low-level API
       let { idbKey } = idbSutta;
       let vueRef = VUEREFS.get(idbKey);
       if (vueRef == null) {
         vueRef = shallowRef(idbSutta);
+        VUEREFS.set(idbKey, vueRef);
       } else if (vueRef.value !== idbSutta) {
         vueRef.value = idbSutta;
       }
@@ -77,7 +78,7 @@ export const useSuttasStore = defineStore('suttas', {
       this.nSet++;
       return vueRef;
     },
-    async loadIdbSuttaRef(suttaRef, opts={refresh:true}) {
+    async getIdbSuttaRef(suttaRef, opts={refresh:true}) { // get/post API
       let idbKey = IdbSutta.idbKey(suttaRef);
       let vueRef = VUEREFS.get(idbKey);
       let idbSutta = vueRef?.value;
@@ -96,7 +97,20 @@ export const useSuttasStore = defineStore('suttas', {
 
       return vueRef;
     },
-    async updateIdbSuttaRef(opts) {
+    async postIdbSuttaRef(opts) {// get/post API
+      let idbKey = IdbSutta.idbKey(opts);
+      let vueRef = VUEREFS.get(idbKey);
+      let idbSutta = vueRef?.value;
+
+      if (idbSutta == null) {
+        idbSutta = IdbSutta.create(opts);
+        vueRef = await this.saveIdbSutta(idbSutta);
+      } else {
+        idbSutta.merge({mlDoc:opts});
+        vueRef = await this.saveIdbSutta(idbSutta);
+      }
+
+      return vueRef;
     },
   },
   getters: {
