@@ -29,6 +29,7 @@ export default class IdbSutta {
       sutta_uid, 
       lang, 
       author = opts.author_uid,
+      title,
       segments,
     } = opts;
 
@@ -36,7 +37,7 @@ export default class IdbSutta {
       IdbSutta.#privateCtor = true;
 
       if (segments) { // opts is IdbSutta-like
-        let idbSutta = {sutta_uid, lang, author, segments};
+        let idbSutta = {sutta_uid, lang, author, title, segments};
         IdbSutta.#copyOptional(opts, idbSutta);
         return new IdbSutta(idbSutta);
       } 
@@ -46,8 +47,10 @@ export default class IdbSutta {
       if (segMap == null) {
         throw new Error(`IdbSutta.create() required: segMap or segments`);
       }
-      let idbSutta = new IdbSutta({sutta_uid, lang, author, segments:[]});
-      let mlDoc = {sutta_uid, lang, author_uid: author, segMap};
+      let idbSutta = new IdbSutta({
+        sutta_uid, lang, author, title, segments:[],
+      });
+      let mlDoc = {sutta_uid, lang, author_uid:author, title, segMap};
       idbSutta.merge({mlDoc});
       return idbSutta;
     } finally {
@@ -80,7 +83,7 @@ export default class IdbSutta {
       a[seg.scid] = seg;
       return a;
     }, {});
-    let { lang, author_uid, segMap:srcSegMap } = mlDoc;
+    let { lang, author_uid, title, segMap:srcSegMap } = mlDoc;
     if (srcSegMap == null) {
       throw new Error(`IdbSutta.merge({mlDoc.segMap?}) invalid mlDoc`);
     }
@@ -90,6 +93,7 @@ export default class IdbSutta {
     } else {
       this.author = author_uid;
       this.lang = lang;
+      this.title = title;
     }
     Object.keys(srcSegMap).forEach(scid=>{
       let srcSeg = srcSegMap[scid];

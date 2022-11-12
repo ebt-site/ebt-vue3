@@ -22,7 +22,7 @@
     <div class="sutta-title">
       <div v-for="t in title"> {{t}} </div>
     </div> <!-- sutta-title -->
-    <template v-for="seg in segments">
+    <template v-for="seg in idbSuttaSegments">
       <div :id="segId(seg)" class="seg-anchor" >
         <!--span class="debug">{{seg.scid}}</span-->
       </div>
@@ -59,6 +59,7 @@
   import { logger } from "log-instance";
   import { Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
+  import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from "idb-keyval";
 
   var hello = 0;
@@ -74,16 +75,15 @@
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const suttas = useSuttasStore();
-      const idbSutta = null;
-      const segments = ref([]);
+      const idbSuttaRef = ref(null);
+      const idbSuttaSegments = ref([]);
       const showTakaNav = ref(false);
       return {
         settings,
         volatile,
         suttas,
-        idbSutta,
-        segments,
-        suttaRef: undefined,
+        idbSuttaRef,
+        idbSuttaSegments,
         taka: new Tipitaka(),
         showTakaNav,
       }
@@ -92,43 +92,27 @@
     },
     async mounted() {
       let { $route, suttas, settings, volatile, card, } = this;
-      let { langTrans:defaultLang } = settings;
       let { location, data } = card;
       let [ sutta_uid, lang, author ] = location;
       let ref = {sutta_uid, lang, author}
-      let idbSutta = await suttas.loadIdbSutta(ref);
-      this.idbSutta = idbSutta;
-      this.segments = idbSutta.segments;
-      console.log("SuttaView.mounted()", {idbSutta});
+      let idbKey = IdbSutta.idbKey({sutta_uid, lang, author});
+      console.log("DEBUG mounted getIdbSuttaRef");
+      let idbSuttaRef = await suttas.getIdbSuttaRef({sutta_uid, lang, author});
+      let { langTrans:defaultLang } = settings;
+      let idbSuttaSegments = idbSuttaRef?.value?.segments;
+
+      this.idbSuttaRef = idbSuttaRef;
+      this.idbSuttaSegments = idbSuttaSegments;
+
+      let idbSutta = idbSuttaRef.value;
       let refInst = SuttaRef.create(ref);
       if (refInst == null) {
         alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
         return;
       }
       let suttaRef = this.suttaRef = refInst.toString();
-
       logger.info('SuttaView.mounted()', {suttaRef, refInst});
-      let mlDoc;
-      if (data) {
-        await this.bindMlDoc(data);
-      } else {
-        mlDoc = volatile.mlDocFromSuttaRef(suttaRef);
-        if (mlDoc) {
-          volatile.addMlDoc(mlDoc);
-          await this.bindMlDoc(mlDoc);
-        } else {
-          let url = settings.suttaUrl(suttaRef);
-          let json = await volatile.fetchJson(url);
-          let {mlDocs=[]} = json;
-          if (mlDocs.length) {
-            mlDoc = mlDocs[0];
-            volatile.addMlDoc(mlDoc);
-            await this.bindMlDoc(mlDoc);
-          } else {
-            logger.info("SuttaView.mounted() fetched", {url, json});
-          }
-        }
-      }
+
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
           let routeHash = card.routeHash();
@@ -162,21 +146,6 @@
             break;
         }
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
-      },
-      async bindMlDoc(mlDoc) {
-        let { card, idbSutta, settings, suttas} = this;
-        await idbSutta.merge({mlDoc});
-        console.log("DEBUG bindMlDoc2 saveIdbSutta", {idbSutta, mlDoc});
-        suttas.saveIdbSutta(idbSutta);
-        let { refLang } = settings;
-        let { segMap, sutta_uid, lang, author_uid } = mlDoc;
-        card.data = mlDoc;
-        let segments = Object.keys(segMap)
-          .map(segId=>Object.assign({},segMap[segId])); // remove Proxy
-        let nSegments = segments.length;
-
-        logger.info("SuttaView.bindMlDoc()", 
-          { sutta_uid, lang, author_uid, nSegments});
       },
       segMatchedClass(seg) {
         let { layout, card, currentScid } = this;
@@ -240,13 +209,9 @@
         let { location } = card;
         return location[1] || settings.langTrans;
       },
-      mlDoc(ctx) {
-        let { card } = ctx;
-        return card.data;
-      },
       title(ctx) {
-        let { mlDoc={} } = ctx;
-        let { title='(no-title)' } = mlDoc;
+        let { idbSuttaRef } = ctx;
+        let title = idbSuttaRef?.title || '(no-title)';
         return title.split('\n');
       },
       layout(ctx) {
