@@ -116,6 +116,13 @@
               idbSutta = IdbSutta.create(mlDoc);
             }
             suttas.saveIdbSutta(idbSutta);
+            let result = card.data[i];
+            result.segsMatched = idbSutta.segments.reduce((a,v)=>{
+              return a + (v.matched ? 1 : 0);
+            }, 0);
+            result.showMatched = Math.min(3, result.segsMatched);
+            delete result.sections;
+            result.segments = idbSutta.segments;
           }
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);

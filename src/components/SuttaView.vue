@@ -164,12 +164,19 @@
       },
       sutta_uid(ctx) {
         let { card } = ctx;
-        let { sutta_uid } = SuttaRef.create(card.location[0]);
-        return sutta_uid;
+        let suttaRef = SuttaRef.create(card.location[0]);
+        if (suttaRef == null) {
+          return 'sutta_uid?';
+        }
+        return suttaRef.sutta_uid;
       },
       currentScid(ctx) {
         let { card } = ctx;
-        let { sutta_uid, segnum } = SuttaRef.create(card.location[0]);
+        let suttaRef = SuttaRef.create(card.location[0]);
+        if (suttaRef == null) {
+          return 'currentScid?'
+        }
+        let { sutta_uid, segnum } = suttaRef;
         return `${sutta_uid}:${segnum}`;
       },
       suttaClass(ctx) {

@@ -84,7 +84,7 @@ export default class EbtCard {
       card = addCard({context, location});
       card && logger.info(`EbtCard.pathToCard ${args} (NEW)`, {card, context, location});
     } else {
-      logger.info(`EbtCard.pathToCard (EXISTING))`, {args,card});
+      logger.debug(`EbtCard.pathToCard (EXISTING))`, {args,card});
     } 
     if (card && card.isOpen) {
       if (cards.length > 1 && card.context !== CONTEXT_HOME) {
@@ -168,6 +168,10 @@ export default class EbtCard {
       return false;
     }
     let pathRef = SuttaRef.create(loc, defaultLang);
+    if (pathRef == null) {
+      dbg && console.log(`[2.5]match(${path}) => false`, {loc});
+      return false;
+    }
     let cardRef = SuttaRef.create(cardLoc, defaultLang);
     if (pathRef.sutta_uid !== cardRef.sutta_uid) {
       dbg && console.log(`[3]match(${path}) => false`, pathRef.suid, cardRef.suid);

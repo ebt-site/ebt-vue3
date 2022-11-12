@@ -1,21 +1,21 @@
 <template>
   <v-expansion-panels v-model="panels" class="mt-2" 
   >
-    <template v-for="(sutta,i) in matchedSuttas" >
+    <template v-for="(result,i) in matchedSuttas" >
       <v-expansion-panel :value="i" class="result-expansion">
         <v-expansion-panel-title
           expand-icon="mdi-dots-vertical"
           collapse-icon="mdi-dots-horizontal"
-          :aria-label="sutta.uid"
+          :aria-label="result.uid"
         >
           <div class="result-title">
             <div class="result-title-main">
               <div class="result-title-number">{{i+1}}</div>
               <div class="result-title-body">
-                {{card.data[i].suttaplex.acronym}}
+                {{resultTitle(card.data[i])}}
               </div> <!-- result-title-body -->
               <div class="result-title-stats">
-                {{suttaDuration(sutta)}}
+                {{suttaDuration(result)}}
               </div> <!-- result-title-stats -->
             </div> <!-- result-title-main -->
             <div class="result-subtitle" v-html="card.data[i].title">
@@ -23,12 +23,30 @@
           </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <div class="result-blurb">{{sutta.blurb || sutta.suttaplex.blurb}}</div>
-          <div class="result-quote">
+          <div class="result-blurb">
             <a :href="`#/sutta/${href(card.data[i])}`" class="pr-1">
-              <v-icon icon="mdi-open-in-new"/>
+              {{result.suttaplex.acronym}}
             </a>
-            <span v-html="sutta.quote[sutta.lang]" />
+            {{result.blurb || result.suttaplex.blurb}}
+          </div>
+          <table>
+            <tr v-for="seg in matchedSegments(result)">
+              <th>
+                <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" >
+                  <span>{{seg.scid}}</span>
+                </a>
+              </th>
+              <td>
+                <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" >
+                <span v-html="seg.en" />
+                </a>
+              </td>
+            </tr>
+          </table>
+          <div v-if="result.showMatched < result.segsMatched">
+            <v-btn icon @click="showMoreSegments(result)">
+              <v-icon icon="mdi-dots-horizontal"/>
+            </v-btn>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -70,6 +88,18 @@
     async mounted() {
     },
     methods: {
+      matchedSegments(result) {
+        return result.segments
+          .filter(seg=>seg.matched)
+          .slice(0,result.showMatched);
+      },
+      showMoreSegments(result) {
+        result.showMatched = Math.min( 
+          result.showMatched+3, 
+          result.segsMatched, 
+        );
+        console.log("showMoreSegments", result.showMatched);
+      },
       durationDisplay(totalSeconds) {
         let { $t } = this;
         totalSeconds = Math.round(totalSeconds);
@@ -109,10 +139,20 @@
       suttaDuration(sutta) {
         return this.durationDisplay(sutta.stats.seconds).display;
       },
-      href(result) {
+      href(result, segnum) {
         let { uid:sutta_uid, lang, author_uid:author, } = result;
+        if (segnum) {
+          sutta_uid = segnum;
+        }
         let suttaRef = new SuttaRef({sutta_uid, lang, author});
         return `${suttaRef.toString()}`;
+      },
+      resultTitle(sutta) {
+        return [
+          sutta.uid,
+          sutta.lang,
+          sutta.author_uid,
+        ].join('/');
       },
     },
     computed: {
@@ -124,6 +164,12 @@
 </script>
 
 <style scoped>
+th {
+  padding-left: 0.5rem;
+  padding-right: 0.3rem;
+  text-align: end;
+  vertical-align: top;
+}
 .result-title {
   display: flex;
   flex-flow: row wrap;
@@ -140,6 +186,7 @@
 }
 .result-subtitle {
   margin-left: 1rem;
+  margin-right: 0.3rem;
   margin-bottom: 0.3rem;
   text-align: right;
   font-size: small;
