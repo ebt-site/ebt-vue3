@@ -34,8 +34,7 @@
 
       if (card == null) {
         //window.location.hash = '';
-        console.warn("DEBUG EbtCards.mounted UNEXPECTED", fullPath);
-
+        logger.warn("EbtCards.mounted UNEXPECTED", fullPath);
       } else {
         nextTick(() => {
           settings.scrollToCard(card);

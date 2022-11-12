@@ -76,14 +76,12 @@
       const volatile = useVolatileStore();
       const suttas = useSuttasStore();
       const idbSuttaRef = ref(null);
-      const idbSuttaSegments = ref([]);
       const showTakaNav = ref(false);
       return {
         settings,
         volatile,
         suttas,
         idbSuttaRef,
-        idbSuttaSegments,
         taka: new Tipitaka(),
         showTakaNav,
       }
@@ -93,25 +91,19 @@
     async mounted() {
       let { $route, suttas, settings, volatile, card, } = this;
       let { location, data } = card;
-      let [ sutta_uid, lang, author ] = location;
-      let ref = {sutta_uid, lang, author}
-      let idbKey = IdbSutta.idbKey({sutta_uid, lang, author});
-      console.log("DEBUG mounted getIdbSuttaRef");
-      let idbSuttaRef = await suttas.getIdbSuttaRef({sutta_uid, lang, author});
-      let { langTrans:defaultLang } = settings;
-      let idbSuttaSegments = idbSuttaRef?.value?.segments;
-
-      this.idbSuttaRef = idbSuttaRef;
-      this.idbSuttaSegments = idbSuttaSegments;
-
-      let idbSutta = idbSuttaRef.value;
-      let refInst = SuttaRef.create(ref);
-      if (refInst == null) {
+      let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
+      let suttaRef = SuttaRef.create(ref);
+      if (suttaRef == null) {
         alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
         return;
       }
-      let suttaRef = this.suttaRef = refInst.toString();
-      logger.info('SuttaView.mounted()', {suttaRef, refInst});
+      let { sutta_uid, lang, author, segnum } = suttaRef;
+      let idbKey = IdbSutta.idbKey({sutta_uid, lang, author});
+      let idbSuttaRef = await suttas.getIdbSuttaRef({sutta_uid, lang, author});
+      let { langTrans:defaultLang } = settings;
+      this.idbSuttaRef = idbSuttaRef?.value;
+
+      logger.info('SuttaView.mounted()', {suttaRef});
 
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
@@ -159,6 +151,9 @@
       },
     },
     computed: {
+      idbSuttaSegments(ctx) {
+        return ctx.idbSuttaRef?.segments || [];
+      },
       nextSuid(ctx) {
         let { sutta_uid, taka } = ctx;
         return taka.nextSuid(sutta_uid);

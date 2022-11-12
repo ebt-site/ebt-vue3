@@ -116,7 +116,6 @@
               idbSutta = IdbSutta.create(mlDoc);
             }
             suttas.saveIdbSutta(idbSutta);
-            console.log("DEBUG onSearch", {idbKey, idbData, idbSutta});
           }
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
