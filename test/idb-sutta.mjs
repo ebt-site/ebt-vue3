@@ -8,23 +8,28 @@ logger.logLevel = 'warn';
 
 const TESTSEG1_0 = {
   scid: "testsuid:1.0",
-  testlang: "testsuid:1.0-text",
+  testlang: "testsuid:1.0-testlang",
+  en: "testsuid:1.0-en",
 };
 const TESTSEG1_1 = {
   scid: "testsuid:1.1",
-  testlang: "testsuid:1.1-text",
+  testlang: "testsuid:1.1-testlang",
+  en: "testsuid:1.1-en root of suffering en-end",
 };
 const TESTSEG1_2 = {
   scid: "testsuid:1.2",
-  testlang: "testsuid:1.2-text",
+  testlang: "testsuid:1.2-testlang",
+  en: "testsuid:1.2-en",
 };
 const TESTSEG1_2A = {
   scid: "testsuid:1.2",
-  testlang: "testsuid:1.2-textA",
+  testlang: "testsuid:1.2-testlangtA",
+  en: "testsuid:1.2-en",
 };
 const TESTSEG1_3 = {
   scid: "testsuid:1.3",
   testlang: "testsuid:1.3-text",
+  en: "testsuid:1.3-en",
 };
 const TESTMAP = {
   [TESTSEG1_0.scid]: TESTSEG1_0,
@@ -44,7 +49,7 @@ const TESTMLDOC = {
 };
 
 (typeof describe === 'function') && describe("idb-sutta.mjs", function () {
-  it("TESTTESTprivate ctor", async () => {
+  it("private ctor", async () => {
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -57,7 +62,7 @@ const TESTMLDOC = {
     try { new IdbSutta(mlDoc); } catch(e) { eCaught = e; }
     should(eCaught?.message).match(/use idbSutta.create/i);
   });
-  it("TESTTESTcreate(mlDoc)", ()=>{
+  it("create(mlDoc)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -92,7 +97,7 @@ const TESTMLDOC = {
     });
     should.deepEqual(sutta.segments, TESTSEGS);
   });
-  it("TESTTESTcreate(mlDocProxy)", ()=>{
+  it("create(mlDocProxy)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -103,7 +108,7 @@ const TESTMLDOC = {
     should(sutta).properties({ sutta_uid, lang, author, title });
     should.deepEqual(sutta.segments, TESTSEGS);
   });
-  it("TESTTESTcreate(idbSutta)", ()=>{
+  it("create(idbSutta)", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -116,7 +121,7 @@ const TESTMLDOC = {
     should.deepEqual(sutta2, sutta);
     should.deepEqual(sutta3, sutta);
   });
-  it("TESTTESTserialize", ()=>{
+  it("serialize", ()=>{
     let sutta_uid = "testsuid";
     let lang = 'testlang';
     let author = 'test-author';
@@ -136,17 +141,17 @@ const TESTMLDOC = {
     });
     should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
-  it("TESTTESTmerge mlDoc lang", ()=>{
+  it("merge mlDoc lang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
     let lang = 'testlang';
     let title = 'test-title';
     let author_uid = 'test-author';
-    let updatedSeg1_1 = {
-      scid: TESTSEG1_1.scid,
+    let updatedSeg1_1 = Object.assign({}, TESTSEG1_1, {
+      matched: true,
       [lang]: "test-update",
-    }
+    });
     let srcSegMap = {
       [TESTSEG1_0.scid]: new Proxy(TESTSEG1_0, {}),
       [TESTSEG1_1.scid]: new Proxy(updatedSeg1_1, {}),
@@ -164,7 +169,7 @@ const TESTMLDOC = {
       TESTSEG1_3,    // new segment
     ]);
   });
-  it("TESTTESTmerge mlDoc matched", ()=>{
+  it("merge mlDoc matched", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
@@ -175,11 +180,10 @@ const TESTMLDOC = {
     dstSutta.segments.forEach(seg=>seg.matched = true);
 
     // Only updated segment is matched
-    let updatedSeg1_1 = {
-      scid: TESTSEG1_1.scid,
+    let updatedSeg1_1 = Object.assign({}, TESTSEG1_1, {
       matched: true,
       [lang]: "test-update",
-    }
+    });
     let srcSegMap = {
       [TESTSEG1_0.scid]: new Proxy(TESTSEG1_0, {}),
       [TESTSEG1_1.scid]: new Proxy(updatedSeg1_1, {}),
@@ -198,7 +202,7 @@ const TESTMLDOC = {
       TESTSEG1_3,    // new segment has no matched
     ]);
   });
-  it("TESTTESTmerge mlDoc refLang", ()=>{
+  it("merge mlDoc refLang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
@@ -239,5 +243,15 @@ const TESTMLDOC = {
       Object.assign({scid:TESTSEG1_3.scid, ref:TESTSEG1_3.testlang}), // new seg
     );
     should(dstSutta.segments.length).equal(4);
+  });
+  it("TESTTESThighlightExamples()", ()=>{
+    let suttaBefore = IdbSutta.create(TESTMLDOC);
+    let suttaAfter = IdbSutta.create(TESTMLDOC);
+    suttaAfter.highlightExamples({lang:'en'});
+    should.deepEqual(suttaAfter.segments[0], suttaBefore.segments[0]);
+    should.deepEqual(suttaAfter.segments[1].testLang, suttaBefore.segments[1].testLang); 
+    should.deepEqual(suttaAfter.segments[1].en, 
+      'testsuid:1.1-en <span class="ebt-example">root of suffering</span> en-end');
+    should.deepEqual(suttaAfter.segments[2], suttaBefore.segments[2]);
   });
 });

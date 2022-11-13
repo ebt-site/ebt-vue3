@@ -1,8 +1,9 @@
 import { logger } from 'log-instance';
-import { SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
+import { Examples, SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
 import * as Idb from "idb-keyval";
 
 const OPTIONAL_PROPS = ['saved', 'refAuthor', 'refLang'];
+const EXAMPLE_TEMPLATE = '<span class="ebt-example">$&</span>';
 
 export default class IdbSutta {
   static #privateCtor;
@@ -22,7 +23,6 @@ export default class IdbSutta {
       }
     });
   }
-
 
   static create(opts = {}) {
     let { 
@@ -118,5 +118,30 @@ export default class IdbSutta {
         return a;
       }, []);
   }
+
+  highlightExamples(opts={}) {
+    let { segments } = this;
+    let { 
+      lang=this.lang, 
+      template=EXAMPLE_TEMPLATE,
+      replace,
+    } = opts;
+    if (replace == null) {
+      replace = (match => template.replace("$&", match) || match);
+    }
+    let reLang = Examples.regExpLangExamples(lang);
+    if (!reLang) {
+      return segments;
+    }
+
+    segments.forEach(seg => {
+      let langText = seg[lang];
+      if (langText) {
+        seg[lang] = langText.replace(reLang, replace);
+      }
+      let newSeg = Object.assign({}, seg);
+    });
+  }
+
 
 }

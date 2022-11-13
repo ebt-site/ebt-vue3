@@ -97,7 +97,7 @@ const MSDAY = 24*3600*MSSEC;
     let age = Date.now() - idbSutta4.saved;
     should(age).below(MSSEC);
   });
-  it("TESTTESTsaveIdbSutta()", async () => {
+  it("saveIdbSutta()", async () => {
     let suttas = useSuttasStore();
     let { nFetch, nGet, nSet } = suttas;
     let author = 'test-author';
@@ -120,7 +120,7 @@ const MSDAY = 24*3600*MSSEC;
     should(suttas.nGet).equal(nGet+1);
     should(suttas.nSet).equal(nSet+1);
   });
-  it("TESTTESTref()", ()=>{
+  it("ref()", ()=>{
     let obj1 = {count:0, segs: [{text:'A'}]};
     let obj2 = {count:0, segs: [{text:'a'}]};
     let refObj = ref(obj1);
@@ -212,7 +212,7 @@ const MSDAY = 24*3600*MSSEC;
       stop();
     }
   });
-  it("TESTTESTgetIdbSuttaRef()", async () => {
+  it("getIdbSuttaRef()", async () => {
     let suttas = useSuttasStore();
     let suttaRef = SuttaRef.create("thig1.1/en/soma");
     let { sutta_uid, lang, author } = suttaRef;
@@ -240,7 +240,7 @@ const MSDAY = 24*3600*MSSEC;
       should(eCaught?.message).match(/invalid suttaRef.*xyz/);
     }
   });
-  it("TESTTESTpostIdbSuttaRef()", async () => {
+  it("postIdbSuttaRef()", async () => {
     let suttas = useSuttasStore();
     let suttaRef = SuttaRef.create(`thig1.1/en/test-author`);
     let { sutta_uid, lang, author } = suttaRef;
