@@ -124,22 +124,13 @@ export default class IdbSutta {
     let { 
       lang=this.lang, 
       template=EXAMPLE_TEMPLATE,
-      replace,
     } = opts;
-    if (replace == null) {
-      replace = (match => template.replace("$&", match) || match);
-    }
-    let reLang = Examples.regExpLangExamples(lang);
-    if (!reLang) {
-      return segments;
-    }
 
     segments.forEach(seg => {
       let langText = seg[lang];
       if (langText) {
-        seg[lang] = langText.replace(reLang, replace);
+        seg[lang] = Examples.replaceAll(langText, template, lang);
       }
-      let newSeg = Object.assign({}, seg);
     });
   }
 

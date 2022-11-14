@@ -167,6 +167,7 @@ export default class EbtCard {
       dbg && console.log(`[2]match(${path}) => false`, {cardLoc, loc});
       return false;
     }
+    let msStart = Date.now();
     let pathRef = SuttaRef.create(loc, defaultLang);
     if (pathRef == null) {
       dbg && console.log(`[2.5]match(${path}) => false`, {loc});

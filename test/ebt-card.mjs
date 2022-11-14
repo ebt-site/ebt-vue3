@@ -181,8 +181,8 @@ logger.logLevel = 'warn';
 
     let dbg = 0;
     if (dbg) {
-      let path = `/sutta/${locSutta}`;
-      should(cardSegA.matchPath(path)).equal(true);
+      //let path = `/sutta/${locSutta}`;
+      //should(cardSegA.matchPath(path)).equal(false);
     }
 
     // not matches
