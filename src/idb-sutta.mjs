@@ -74,7 +74,7 @@ export default class IdbSutta {
   }
 
   merge(opts={}) {
-    let { mlDoc, refLang } = opts;
+    let { mlDoc, refLang, highlightExamples=true } = opts;
     if (mlDoc == null) {
       throw new Error(`IdbSutta.merge({mlDoc?}) mlDoc is required`);
     }
@@ -117,6 +117,9 @@ export default class IdbSutta {
         a[i] = dstSegMap[v];
         return a;
       }, []);
+    if (highlightExamples) {
+      this.highlightExamples();
+    }
   }
 
   highlightExamples(opts={}) {

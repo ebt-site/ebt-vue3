@@ -55,3 +55,10 @@ a:focus {
 .debug:hover {
   color: red;
 }
+.ebt-example {
+  font-weight: 600;
+}
+.ebt-example:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

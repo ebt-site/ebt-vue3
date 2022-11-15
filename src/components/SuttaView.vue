@@ -30,7 +30,7 @@
         <div class="seg-id" v-if="settings.showId"> 
           {{seg.scid}} 
         </div>
-        <div class="seg-text">
+        <div class="seg-text" @click="clickSeg">
           <div :class="langClass('root')" 
             v-if="settings.showPali"
             v-html="seg.pli" />
@@ -118,6 +118,17 @@
       }
     },
     methods: {
+      clickExample(...args) {
+        console.log("DEBUG clickExample", args);
+      },
+      clickSeg(evt) {
+        let { srcElement } = evt;
+        let { className, innerText } = srcElement;
+        if (className === 'ebt-example') {
+          console.log("DEBUG clickSeg", {innerText});
+        }
+
+      },
       segId(seg) {
         let { card } = this;
         let [ suidSeg, lang, author ] = card.location;
