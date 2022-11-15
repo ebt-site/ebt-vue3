@@ -53,7 +53,7 @@ export const useVolatileStore = defineStore('volatile', {
         this.waiting++;
         logger.info('volatile.fetchJson() url:', url);
         let fetchOpts = Object.assign({
-          mode: 'no-cors',
+    //      mode: 'no-cors',
         }, options);
         res = await fetch(url, fetchOpts);
         logger.debug('volatile()', res);

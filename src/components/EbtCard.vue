@@ -9,7 +9,9 @@
         <span :id="card.id">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
-        <v-btn icon="mdi-close" @click="closeCard(card)"
+        <v-btn icon="mdi-eye-off" @click="closeCard(card)"
+        />
+        <v-btn icon="mdi-close" @click="settings.removeCard(card)"
         />
       </template>
       <v-card-text>
@@ -98,6 +100,12 @@
       WikiView,
     },
     methods: {
+      mouseDown: (card, evt) => {
+        console.log("DEBUG mouseDown", evt);
+      },
+      mouseUp: (card, evt) => {
+        console.log("DEBUG mouseUp", evt);
+      },
       closeCard: (card) => {
         card.isOpen = false;
       },
@@ -202,6 +210,12 @@
   }
   .v-card-text {
     min-width: 20em;
+  }
+  .close-item {
+    cursor: pointer;
+  }
+  .close-item:hover {
+    color: rgb(var(--v-theme-link));
   }
 </style>
 
