@@ -1,3 +1,4 @@
+import { nextTick } from "vue";
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance';
 import Utils from "../utils.mjs";
@@ -67,8 +68,7 @@ export const useSettingsStore = defineStore('settings', {
       logger.logLevel = saved.logLevel;
       let json = JSON.stringify(saved);
       localStorage.settings = json;
-      logger.debug("SettingsStore.saveSettings() localStorage.settings", 
-        localStorage.settings);
+      logger.debug("SettingsStore.saveSettings() localStorage.settings");
     },
     removeCard(card) {
       this.cards = this.cards.filter(c => c !== card);
@@ -100,21 +100,22 @@ export const useSettingsStore = defineStore('settings', {
       let eltShow = document.getElementById(idShow);
       let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
       if (eltShow == null) {
-        logger.debug(`settings.scrollToElementId(${idShow}) no element`);
+        logger.debug(`[1]settings.scrollToElementId(${idShow}) no element`);
         return false;
       }
       if (eltScroll == null) {
-        logger.debug(`settings.scrollToElementId(${idScroll}) no scroll element`);
+        logger.debug(`[2]settings.scrollToElementId(${idScroll}) no scroll element`);
         return false;
       }
       let idShowInView = elementInViewport(eltShow);
       let idScrollInView = elementInViewport(eltScroll);
       if (idShowInView && idScrollInView) {
-        logger.debug(`settings.scrollToElementId(${idShow}) no scroll`, {eltShow} );
+        logger.debug(`[3]settings.scrollToElementId(${idShow}) no scroll`, 
+          {eltShow, idShowInView, idScrollInView} );
         return false; // element already visible (no scrolling)
       }
 
-      logger.debug(`settings.scrollToElementId(${idShow}) scrolling to`, 
+      logger.debug(`[4]settings.scrollToElementId(${idShow}) scrolling to`, 
         {eltScroll, idShowInView, idScrollInView});
       await eltScroll.scrollIntoView({
         block: "start",
@@ -153,10 +154,12 @@ export const useSettingsStore = defineStore('settings', {
       let eltId = card.currentElementId;
       if (eltId === card.titleAnchor) {
         let scrollId = card.topAnchor;
-        return this.scrollToElementId(eltId, scrollId);
+        let scrolled = this.scrollToElementId(eltId, scrollId);
+        return scrolled;
       } 
 
-      return this.scrollToElementId(eltId);
+      let scrolled = this.scrollToElementId(eltId);
+      return scrolled;
     },
   },
   getters: {

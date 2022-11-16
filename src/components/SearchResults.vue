@@ -38,7 +38,7 @@
               </th>
               <td>
                 <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" >
-                <span v-html="seg.en" />
+                <span v-html="seg[settings.langTrans]" />
                 </a>
               </td>
             </tr>

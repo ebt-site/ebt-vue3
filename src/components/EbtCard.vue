@@ -1,6 +1,6 @@
 <template>
   <v-sheet v-if="card.isOpen">
-    <div :id="`${card.id}-top`" class="card-top-anchor debug">
+    <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
     <v-card :variant="cardVariant" class="ebt-card">
