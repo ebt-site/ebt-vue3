@@ -13,7 +13,6 @@ function elementInViewport(elt, root = document.documentElement) {
   const viewBottom = (window.innerHeight || root.clientHeight);
   const viewRight = (window.innerWidth || root.clientWidth);
 
-  console.log("elementInViewPort", {elt, rect, viewBottom, viewRight});
   if (!rect) {
     return false;
   }
