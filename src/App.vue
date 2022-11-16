@@ -7,14 +7,15 @@
         :collapse="collapsed"
       >
         <template v-if="collapsed">
-          <v-btn icon @click="collapsed = false">
+          <v-btn icon @click="collapsed=false">
             <v-icon icon="mdi-arrow-expand-right" />
           </v-btn>
         </template> <!-- collapsed -->
         <template v-if="!collapsed">
           <v-app-bar-title > 
-            <div class="ebt-title" @click="collapsed=true">
+            <div class="ebt-title">
               <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
+                @click="collapsed=true"
                 class="ebt-nav-img"
               />
               <div>EBT-Vue3</div>
