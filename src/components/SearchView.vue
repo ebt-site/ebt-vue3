@@ -154,6 +154,9 @@
       let { card } = this;
       console.log('SearchView.mounted()', {card});
       this.search = card.location[0];
+      if (card.data == null) {
+        nextTick(()=>this.onSearch());
+      }
     },
     computed: {
       resultsClass(ctx) {
