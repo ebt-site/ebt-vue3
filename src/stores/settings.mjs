@@ -13,6 +13,7 @@ function elementInViewport(elt, root = document.documentElement) {
   const viewBottom = (window.innerHeight || root.clientHeight);
   const viewRight = (window.innerWidth || root.clientWidth);
 
+  console.log("elementInViewPort", {elt, rect, viewBottom, viewRight});
   if (!rect) {
     return false;
   }
@@ -108,19 +109,23 @@ export const useSettingsStore = defineStore('settings', {
         return false;
       }
       let idShowInView = elementInViewport(eltShow);
-      let idScrollInView = elementInViewport(eltScroll);
+      let idScrollInView = eltShow === eltScroll
+        ? idShowInView
+        : elementInViewport(eltScroll);
       if (idShowInView && idScrollInView) {
         logger.debug(`[3]settings.scrollToElementId(${idShow}) no scroll`, 
-          {eltShow, idShowInView, idScrollInView} );
+          {eltShow, idShow, idScroll} );
         return false; // element already visible (no scrolling)
       }
 
       logger.debug(`[4]settings.scrollToElementId(${idShow}) scrolling to`, 
-        {eltScroll, idShowInView, idScrollInView});
-      await eltScroll.scrollIntoView({
-        block: "start",
-        behavior: "smooth",
-      });
+        {eltScroll, idShow, idScroll, idShowInView, idScrollInView});
+      setTimeout(()=>{ // scroll after Vue is done refreshing
+        eltScroll.scrollIntoView({
+          block: "start",
+          behavior: "smooth",
+        });
+      }, 300);
       return true; // element originally not in viewport
     },
     clear() {
@@ -152,13 +157,23 @@ export const useSettingsStore = defineStore('settings', {
       }
 
       let eltId = card.currentElementId;
+      let topId = card.topAnchor;
+      let scrolled = false;
       if (eltId === card.titleAnchor) {
-        let scrollId = card.topAnchor;
-        let scrolled = this.scrollToElementId(eltId, scrollId);
+        scrolled = await this.scrollToElementId(eltId, topId);
+        logger.debug("[1]scrollToCard()", {eltId, topId, scrolled});
         return scrolled;
       } 
 
-      let scrolled = this.scrollToElementId(eltId);
+      scrolled = await this.scrollToElementId(eltId);
+      if (scrolled) {
+        logger.debug("[2]scrollToCard()", {eltId, scrolled});
+      } else if (topId !== eltId) {
+        scrolled = await this.scrollToElementId(topId);
+        logger.debug("[3]scrollToCard()", {eltId, scrolled, topId});
+      } else {
+        logger.debug("[4]scrollToCard()", {eltId, scrolled});
+      }
       return scrolled;
     },
   },

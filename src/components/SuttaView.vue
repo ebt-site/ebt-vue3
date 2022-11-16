@@ -24,10 +24,9 @@
     </div> <!-- sutta-title -->
     <template v-for="seg in idbSuttaSegments">
       <div :id="segId(seg)" class="seg-anchor" >
-        <span class="debug" v-if="0&&logger.logLevel==='debug'">
+        <span class="debug" v-if="logger.logLevel==='debug'">
           {{seg.scid}}
         </span>
-        &nbsp;
       </div>
       <div :class="segMatchedClass(seg)">
         <div class="seg-id" v-if="settings.showId"> 
