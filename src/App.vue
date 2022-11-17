@@ -27,10 +27,12 @@
             class="mb-0"
           ></v-progress-linear>
           </v-app-bar-title>
-          <v-btn icon href="#/search">
-            <v-icon icon="mdi-magnify"/>
-          </v-btn>
-          <Settings />
+          <div class="app-buttons">
+            <v-btn icon href="#/search" >
+              <v-icon icon="mdi-magnify"/>
+            </v-btn>
+            <Settings />
+          </div>
         </template>
         <template v-if="!collapsed" v-slot:extension>
           <ebt-chips />
@@ -122,7 +124,7 @@
 }
 .v-toolbar-title {
   margin-left: 0px;
-  min-width: 14em;
+  min-width: 13em;
 }
 .ebt-nav-img {
   display: relative;
@@ -146,6 +148,11 @@
 }
 .nav-bar {
   background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
+}
+.app-buttons {
+  position: relative;
+  right: 20px;
+  border: 1pt solid aqua;
 }
 </style>
 
