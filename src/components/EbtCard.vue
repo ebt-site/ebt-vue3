@@ -9,9 +9,11 @@
         <span :id="card.id">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
-        <v-btn icon="mdi-eye-off" @click="closeCard(card)"
+        <v-btn icon="mdi-trash-can-outline" 
+          v-if="isClosable"
+          @click="settings.removeCard(card)"
         />
-        <v-btn icon="mdi-close" @click="settings.removeCard(card)"
+        <v-btn icon="mdi-close" @click="closeCard(card)"
         />
       </template>
       <v-card-text>
@@ -113,6 +115,10 @@
     mounted() {
     },
     computed: {
+      isClosable(ctx) {
+        let { card } = ctx;
+        return card.context !== EbtCard.CONTEXT_HOME;
+      },
       showDev(ctx) {
         let logLevel = ctx.settings.logLevel;
 

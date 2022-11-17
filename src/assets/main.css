@@ -57,6 +57,7 @@ a:focus {
 }
 .ebt-example {
   font-weight: 600;
+  text-decoration: underline;
 }
 .ebt-example:hover {
   text-decoration: underline;

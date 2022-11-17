@@ -6,6 +6,7 @@
         <v-expansion-panel-title
           expand-icon="mdi-dots-vertical"
           collapse-icon="mdi-dots-horizontal"
+          class="expansion-panel-title"
           :aria-label="result.uid"
         >
           <div class="result-title">
@@ -23,23 +24,25 @@
           </div> <!-- result-title -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <div class="result-blurb">
-            <a :href="`#/sutta/${href(card.data[i])}`" class="pr-1">
+          <div>
+            <a :href="`#/sutta/${href(card.data[i])}`" class="scv-matched">
               {{result.suttaplex.acronym}}
             </a>
-            {{result.blurb || result.suttaplex.blurb}}
+            <span class="result-blurb pl-2">
+              {{result.blurb || result.suttaplex.blurb}}
+            </span>
           </div>
           <table>
             <tr v-for="seg in matchedSegments(result)">
               <th>
-                <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" >
+                <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" 
+                  class="scv-matched"
+                >
                   <span>{{seg.scid}}</span>
                 </a>
               </th>
               <td>
-                <a :href="`#/sutta/${href(card.data[i], seg.scid)}`" >
                 <span v-html="seg[settings.langTrans]" />
-                </a>
               </td>
             </tr>
           </table>
@@ -215,5 +218,8 @@ th {
 .result-quote {
   display: inline-block;
   margin-left: 0.3em;
+}
+.expansion-panel-title {
+  cursor: zoom-in;
 }
 </style>

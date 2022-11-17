@@ -14,7 +14,7 @@
           :class="chipClass(card)"
         >
           <div class="chip-title">{{card.chipTitle($t)}}</div>
-          <v-icon icon="mdi-close-circle chip-close"
+          <v-icon icon="mdi-trash-can-outline chip-close"
             v-if="closable(card, settings)"
             size="small"
             class="ml-2"
@@ -82,7 +82,8 @@
         nextTick(() => settings.removeCard(card));
       },
       closable: (card, settings) => {
-        return settings.cards.length > 1
+        const IS_PHONE = 1; // save space for iPhone
+        return !IS_PHONE && settings.cards.length > 1
           ? !card.isOpen && card.context !== EbtCard.CONTEXT_HOME
           : false;
       },
