@@ -150,8 +150,10 @@
   background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
 }
 .app-buttons {
+  display: flex;
+  flex-flow: row nowrap;
   position: relative;
-  right: 20px;
+  right: 10px;
   border: 1pt solid aqua;
 }
 </style>
