@@ -175,13 +175,14 @@
   background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
 }
 .app-menu-activator {
-  border-left: 10px solid red;
-  border-right: 10px solid red;
+  padding-right: 10px;
 }
 .app-menu-items {
   display: flex;
   flex-flow: row nowrap ;
-  border: 1pt solid aqua;
+  border: 1px solid rgb(var(--v-theme-on-surface));
+  border-radius: 10px;
+  border-top-right-radius: 0px;
   background: rgb(var(--v-theme-surface));
 }
 </style>
