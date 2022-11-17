@@ -27,7 +27,23 @@
             class="mb-0"
           ></v-progress-linear>
           </v-app-bar-title>
-          <div class="app-buttons">
+          
+          <v-menu location="start" attach=true v-if="narrowView">
+            <template v-slot:activator="{ props }">
+              <div class="app-menu-activator">
+                <v-btn v-bind="props" icon>
+                  <v-icon icon="mdi-menu" />
+                </v-btn>
+              </div>
+            </template>
+            <div class="app-menu-items">
+              <v-btn icon href="#/search" >
+                <v-icon icon="mdi-magnify"/>
+              </v-btn>
+              <Settings />
+            </div>
+          </v-menu>
+          <div v-if="!narrowView">
             <v-btn icon href="#/search" >
               <v-icon icon="mdi-magnify"/>
             </v-btn>
@@ -108,6 +124,15 @@
         $i18n.locale = settings.locale;
       });
     },
+    computed: {
+      layout(ctx) {
+        return ctx.volatile.layout.value;
+      },
+      narrowView(ctx) {
+        let { layout } = ctx;
+        return layout.w < 400;
+      },
+    },
   }
 </script>
 <style scoped>
@@ -149,12 +174,15 @@
 .nav-bar {
   background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
 }
-.app-buttons {
+.app-menu-activator {
+  border-left: 10px solid red;
+  border-right: 10px solid red;
+}
+.app-menu-items {
   display: flex;
-  flex-flow: row nowrap;
-  position: relative;
-  right: 10px;
+  flex-flow: row nowrap ;
   border: 1pt solid aqua;
+  background: rgb(var(--v-theme-surface));
 }
 </style>
 
