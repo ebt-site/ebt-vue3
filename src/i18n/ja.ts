@@ -241,6 +241,7 @@ export default {
     "playAll": "すべて再生",
     "playSection": " A_SECTION セクションを再生",
     "point": "Punkt",
+    "processing": "Processing...",
     "publicDomain": "パブリックドメイン",
     "reader": "語り手",
     "refLanguage": "Reference language",

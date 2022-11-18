@@ -240,6 +240,7 @@ export default {
     "playAll": "Play all",
     "playSection": "Play Section A_SECTION",
     "point": "Punkt",
+    "processing": "Processing...",
     "publicDomain": "पब्लिक डोमेन",
     "reader": "आवाज़",
     "refLanguage": "Reference language",

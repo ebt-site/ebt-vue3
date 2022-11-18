@@ -238,6 +238,7 @@ export default {
     "playAll": "Play all",
     "playSection": "Play Section A_SECTION",
     "point": "Punkt",
+    "processing": "Processing...",
     "publicDomain": "Domaine publique",
     "reader": "Locuteur",
     "refLanguage": "Reference language",

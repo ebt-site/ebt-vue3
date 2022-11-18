@@ -240,6 +240,7 @@ export default {
     "playAll": "Play all",
     "playSection": "Play Section A_SECTION",
     "point": "Punktum",
+    "processing": "Processing...",
     "publicDomain": "Offentligt Domæne",
     "reader": "Stemme",
     "refLanguage": "Reference language",

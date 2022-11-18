@@ -239,6 +239,7 @@ export default {
     "playAll": "සියල්ල වාදනය කරන්න",
     "playSection": "A_SECTION කොටස වාදනය කරන්න",
     "point": "Punkt",
+    "processing": "Processing...",
     "publicDomain": "Public Domain",
     "reader": "විස්තර කරන්නා",
     "refLanguage": "Reference language",

@@ -131,4 +131,14 @@
   .chip-home {
     padding-right: 6pt;
   }
+  @media (max-width:400px) {
+    .chip-title {
+      overflow: hidden;
+      max-width: 60px;
+      text-overflow: clip;
+    }
+    .chip-container {
+      margin-left: 0rem;
+    }
+  }
 </style>

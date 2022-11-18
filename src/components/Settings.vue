@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-model="dialog" max-width=600>
     <template v-slot:activator="{ props }">
-      <v-btn icon="mdi-cog" v-bind="props" 
-        :title="$t('ebt.settingsTitle')"/> 
+      <v-btn icon v-bind="props" :title="$t('ebt.settingsTitle')"> 
+        <v-icon icon="mdi-cog" />
+      </v-btn>
     </template>
     <v-sheet>
       <v-toolbar dense color="toolbar">

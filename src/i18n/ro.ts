@@ -239,6 +239,7 @@ export default {
     "playAll": "Play all",
     "playSection": "Play Section A_SECTION",
     "point": "Punct",
+    "processing": "Processing...",
     "publicDomain": "Domeniu Public",
     "reader": "Voce",
     "refLanguage": "Reference language",

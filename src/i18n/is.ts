@@ -242,6 +242,7 @@ export default {
     "playAll": "Play all",
     "playSection": "Play Section A_SECTION",
     "point": "Punktur",
+    "processing": "Processing...",
     "publicDomain": "Í almenningi",
     "reader": "Rödd",
     "refLanguage": "Reference language",

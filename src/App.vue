@@ -20,15 +20,9 @@
               />
               <div>EBT-Vue3</div>
             </div>
-          <v-progress-linear v-if="volatile.waiting"
-            indeterminate 
-            color="progress1" 
-            bg-color="progress2"
-            class="mb-0"
-          ></v-progress-linear>
           </v-app-bar-title>
           
-          <v-menu location="start" attach=true v-if="narrowView">
+          <v-menu location="bottom" attach=true v-if="narrowView">
             <template v-slot:activator="{ props }">
               <div class="app-menu-activator">
                 <v-btn v-bind="props" icon>
@@ -36,12 +30,12 @@
                 </v-btn>
               </div>
             </template>
-            <div class="app-menu-items">
+            <v-sheet class="app-menu-items">
               <v-btn icon href="#/search" >
                 <v-icon icon="mdi-magnify"/>
               </v-btn>
               <Settings />
-            </div>
+            </v-sheet>
           </v-menu>
           <div v-if="!narrowView">
             <v-btn icon href="#/search" >
@@ -57,6 +51,7 @@
 
       <v-sheet>
         <div>
+          <ebt-processing />
           <router-view />
         </div>
       </v-sheet>
@@ -77,6 +72,7 @@
   import EbtCards from './components/EbtCards.vue';
   import EbtChips from './components/EbtChips.vue';
   import Settings from './components/Settings.vue';
+  import EbtProcessing from './components/EbtProcessing.vue';
   import { useSettingsStore } from './stores/settings.mjs';
   import { useVolatileStore } from './stores/volatile.mjs';
   import { logger } from "log-instance";
@@ -99,6 +95,7 @@
       EbtCards,
       EbtChips,
       Settings,
+      EbtProcessing,
     },
     methods: {
       allowLocalStorage() {
@@ -181,9 +178,9 @@
   display: flex;
   flex-flow: row nowrap ;
   border: 1px solid rgb(var(--v-theme-on-surface));
-  border-radius: 10px;
-  border-top-right-radius: 0px;
-  background: rgb(var(--v-theme-surface));
+  border-radius: 10px !important;
+  border-top-right-radius: 0px !important;
+  background: rgba(var(--v-theme-surface), 0.5);
 }
 </style>
 

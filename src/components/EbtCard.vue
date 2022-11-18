@@ -9,11 +9,12 @@
         <span :id="card.id">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
-        <v-btn icon="mdi-trash-can-outline" 
+        <v-btn icon="mdi-trash-can-outline" flat
           v-if="isClosable"
           @click="settings.removeCard(card)"
         />
-        <v-btn icon="mdi-close" @click="closeCard(card)"
+        <v-btn icon="mdi-close" flat 
+          @click="closeCard(card)"
         />
       </template>
       <v-card-text>

@@ -240,6 +240,7 @@ export default {
     "playAll": "Přehraj vše",
     "playSection": "Play Section A_SECTION",
     "point": "Bod",
+    "processing": "Processing...",
     "publicDomain": "Volné Dílo",
     "reader": "Vypravěč",
     "refLanguage": "Reference language",
