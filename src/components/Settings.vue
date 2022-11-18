@@ -1,16 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" max-width=600>
-    <template v-slot:activator="{ props }">
-      <v-btn icon v-bind="props" :title="$t('ebt.settingsTitle')"> 
-        <v-icon icon="mdi-cog" />
-      </v-btn>
-    </template>
+  <v-dialog v-model="volatile.showSettings" max-width=600>
     <v-sheet>
       <v-toolbar dense color="toolbar">
         <v-toolbar-title>
           <div>{{$t('ebt.settingsTitle')}}</div>
         </v-toolbar-title>
-        <v-btn icon @click="dialog = false">
+        <v-btn icon @click="volatile.showSettings = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
@@ -236,6 +231,7 @@
 <script>
 import { ref, reactive, onMounted, computed, } from 'vue';
 import { useSettingsStore } from "../stores/settings.mjs";
+import { useVolatileStore } from "../stores/volatile.mjs";
 import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
@@ -262,8 +258,8 @@ export default {
     const refLogger = ref(logger);
     const bellAudio = ref({});
     const ipsChoices = EbtSettings.IPS_CHOICES;
-    const dialog = ref(false);
     const settings = useSettingsStore();
+    const volatile = useVolatileStore();
     const host = ref(undefined);
     const isClearSettings = ref(false);
     const logLevels = [{
@@ -285,7 +281,6 @@ export default {
     return {
       bellAudio,
       isClearSettings,
-      dialog,
       host,
       ipsChoices,
       languages,
@@ -293,6 +288,7 @@ export default {
       maxResultsItems,
       refLogger,
       settings,
+      volatile,
     }
   },
   components: {
@@ -310,9 +306,9 @@ export default {
       this.isClearSettings = !this.isClearSettings;
     },
     resetDefaults() {
-      let { settings } = this;
+      let { settings, volatile } = this;
       settings.clear();
-      this.dialog = false;
+      volatile.showSettings = false;
       logger.info("Settings.resetDefaults()", settings);
       window.location.reload();
     },

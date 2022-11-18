@@ -11,6 +11,7 @@
           :hint="$t('auth.required')"
           @update:search="updateSearch($event)"
           @keyup.enter="onEnter($event)"
+          class="search-field"
           :filter="searchFilter"
           :items="exampleItems"
           :label="$t('ebt.search')"
@@ -73,7 +74,7 @@
         let iExample = Math.trunc(Math.random() * langEx.length);
         let eg = langEx[iExample];
         this.search = eg;
-        this.onSearch();
+        nextTick(()=>{ this.onSearch(); });
         logger.info('onInspireMe', eg);
       },
       searchFilter(item, queryText, itemText) {
@@ -90,6 +91,9 @@
         let { volatile, url, search, card, suttas, } = this;
         let res;
         let waitingOld = volatile.waiting;
+        if (!search) {
+          return;
+        }
         try {
           logger.info('onSearch()', {url, volatile});
           this.results = undefined;

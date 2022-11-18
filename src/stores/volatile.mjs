@@ -7,9 +7,11 @@ import * as Idb from "idb-keyval";
 
 const suttas = new Map();
 const layout = ref();
+const showSettings = ref(false);
 const INITIAL_STATE = {
   waiting: 0,
   suttas,
+  showSettings,
 };
 
 export const useVolatileStore = defineStore('volatile', {

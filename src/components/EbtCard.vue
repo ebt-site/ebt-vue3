@@ -1,5 +1,5 @@
 <template>
-  <v-sheet v-if="card.isOpen">
+  <v-sheet v-if="card.isOpen" class="card-sheet">
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
@@ -209,8 +209,14 @@
     vertical-align: top;
   }
   .ebt-card {
+    background: rgb(var(--v-theme-surface));
     margin-left: 2pt;
     margin-right: 2pt;
+  }
+  @media (max-width: 400px) {
+    .ebt-card {
+      max-width: 375px;
+    }
   }
   .debug {
     color: rgb(var(--v-theme-placeholder));
@@ -223,6 +229,9 @@
   }
   .close-item:hover {
     color: rgb(var(--v-theme-link));
+  }
+  .card-sheet {
+    background: rgba(0,0,0,0);
   }
 </style>
 

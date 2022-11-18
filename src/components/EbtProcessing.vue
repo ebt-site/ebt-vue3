@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="volatile.waiting" class="ebt-processing">
+  <v-dialog v-model="processing" class="ebt-processing">
     <v-card>
       <v-card-title>
         {{$t('ebt.processing')}}
@@ -38,8 +38,8 @@ export default {
   },
   computed: {
     processing() {
-      let { $store } = this;
-      return 1 || $store && $store.state.ebt.processing;
+      let { volatile } = this;
+      return volatile.waiting > 0;
     },
   },
 }

@@ -34,7 +34,9 @@
               <v-btn icon href="#/search" >
                 <v-icon icon="mdi-magnify"/>
               </v-btn>
-              <Settings />
+              <v-btn icon @click="onClickSettings">
+                <v-icon icon="mdi-cog"/>
+              </v-btn>
             </v-sheet>
           </v-menu>
           <div v-if="!narrowView">
@@ -52,6 +54,7 @@
       <v-sheet>
         <div>
           <ebt-processing />
+          <Settings />
           <router-view />
         </div>
       </v-sheet>
@@ -61,7 +64,7 @@
         <a href="#/wiki/privacy">{{$t('ebt.allowSettingsLink')}}</a>
         <v-icon icon="mdi-close-circle" 
           class="ml-2"
-          @click="clickGdrp"/>
+          @click="onClickGdrp"/>
       </v-sheet>
 
     </v-main>
@@ -76,7 +79,7 @@
   import { useSettingsStore } from './stores/settings.mjs';
   import { useVolatileStore } from './stores/volatile.mjs';
   import { logger } from "log-instance";
-  import { ref } from "vue";
+  import { nextTick, ref } from "vue";
 
   export default {
     setup() {
@@ -103,11 +106,15 @@
         settings.saveSettings();
         logger.debug("allowLocalStorage()", settings);
       },
-      clickGdrp(evt) {
+      onClickGdrp(evt) {
         let { settings } = this;
-        logger.debug('clickGdrp', evt);
+        logger.debug('onClickGdrp', evt);
         settings.showGdpr = false;
         evt.preventDefault();
+      },
+      onClickSettings(evt) {
+        let { volatile } = this;
+        volatile.showSettings = true;
       },
     },
     mounted() {

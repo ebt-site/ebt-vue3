@@ -134,7 +134,7 @@
   @media (max-width:400px) {
     .chip-title {
       overflow: hidden;
-      max-width: 60px;
+      max-width: 55px;
       text-overflow: clip;
     }
     .chip-container {
