@@ -144,7 +144,7 @@
       onSearchKey(evt) {
         if (evt.code === "Enter") {
           let { card, search } = this;
-          console.log('onSearchKey', {card, search});
+          logger.info('onSearchKey', {card, search});
           search && this.onSearch();
           evt.preventDefault();
         }
@@ -156,7 +156,7 @@
     },
     mounted() {
       let { card } = this;
-      console.log('SearchView.mounted()', {card});
+      logger.info('SearchView.mounted()', {card});
       this.search = card.location[0];
       if (card.data == null) {
         nextTick(()=>this.onSearch());

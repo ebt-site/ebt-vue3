@@ -152,7 +152,8 @@ export const useSettingsStore = defineStore('settings', {
     },
     async scrollToCard(card) {
       if (!card.isOpen) {
-        return false;
+        card.isOpen = true;
+        await new Promise(resolve => setTimeout(()=>resolve(), 100));
       }
 
       let eltId = card.currentElementId;

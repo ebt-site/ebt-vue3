@@ -43,7 +43,9 @@
             <v-btn icon href="#/search" >
               <v-icon icon="mdi-magnify"/>
             </v-btn>
-            <Settings />
+            <v-btn icon @click="onClickSettings">
+              <v-icon icon="mdi-cog"/>
+            </v-btn>
           </div>
         </template>
         <template v-if="!collapsed" v-slot:extension>

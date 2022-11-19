@@ -66,22 +66,14 @@
           window.location.hash = cardHash;
           return;
         }
-        if (card.isOpen) {
-          let scrolled = await settings.scrollToCard(card);
-          if (!scrolled) {
-            card.isOpen = false;
-          }
-        } else {
-          card.isOpen = true;
-          nextTick(() => settings.scrollToCard(card));
-        }
+        settings.scrollToCard(card);
       },
-      onClose: (card, settings) => {
+      onClose: (card, settings) => { // DEPRECATED
         let { cards } = settings;
         logger.info(`onClose removing card ${card.id}`);
         nextTick(() => settings.removeCard(card));
       },
-      closable: (card, settings) => {
+      closable: (card, settings) => { // DEPRECATED
         const IS_PHONE = 1; // save space for iPhone
         return !IS_PHONE && settings.cards.length > 1
           ? !card.isOpen && card.context !== EbtCard.CONTEXT_HOME
@@ -118,7 +110,7 @@
     display: inline-block;
     overflow: hidden;
     max-width: 80px;
-    text-overflow: ellipsis;
+    text-overflow: clip;
   }
   .chip-open {
     border-bottom: 2pt solid #ff9933;
@@ -133,9 +125,7 @@
   }
   @media (max-width:400px) {
     .chip-title {
-      overflow: hidden;
       max-width: 55px;
-      text-overflow: clip;
     }
     .chip-container {
       margin-left: 0rem;

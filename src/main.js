@@ -31,6 +31,7 @@ const vuetifyOpts = {
           expansion: colors.grey.lighten4,
           progress1: COLOR_SAFFRON,
           progress2: "#888888",
+          "high-emphasis-opacity": 1,
         },
       },
       dark: {
@@ -46,6 +47,7 @@ const vuetifyOpts = {
           expansion: colors.grey.darken2,
           progress1: COLOR_SAFFRON,
           progress2: "#888888",
+          "high-emphasis-opacity": 1,
         },
       },
     },

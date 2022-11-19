@@ -14,7 +14,7 @@
           @click="settings.removeCard(card)"
         />
         <v-btn icon="mdi-close" flat 
-          @click="closeCard(card)"
+          @click="closeCard(card, settings.cards)"
         />
       </template>
       <v-card-text>
@@ -103,14 +103,17 @@
       WikiView,
     },
     methods: {
-      mouseDown: (card, evt) => {
-        console.log("DEBUG mouseDown", evt);
-      },
-      mouseUp: (card, evt) => {
-        console.log("DEBUG mouseUp", evt);
-      },
-      closeCard: (card) => {
+      closeCard: (card, cards) => {
         card.isOpen = false;
+        if (window.location.hash === card.routeHash()) {
+          let openCard = cards.reduce((a,c)=> a || (c.isOpen ? c : a), null);
+          if (openCard == null) {
+            openCard = cards.reduce((a,c)=> a || (
+              c.context === EbtCard.CONTEXT_HOME ? c : a
+            ), null);
+          }
+          window.location.hash = openCard.routeHash();
+        }
       },
     },
     mounted() {
@@ -183,6 +186,7 @@
     overflow: hidden;
     border-left: 1pt solid rgb(0,0,0,0);
     width: 1px;
+    height: 118px;
     top: 0em;
   }
   .card-title-anchor {
