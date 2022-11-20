@@ -156,23 +156,20 @@ export const useSettingsStore = defineStore('settings', {
         await new Promise(resolve => setTimeout(()=>resolve(), 100));
       }
 
-      let eltId = card.currentElementId;
+      let curId = card.currentElementId;
       let topId = card.topAnchor;
       let scrolled = false;
-      if (eltId === card.titleAnchor) {
-        scrolled = await this.scrollToElementId(eltId, topId);
-        logger.debug("[1]scrollToCard()", {eltId, topId, scrolled});
+      if (curId === card.titleAnchor) {
+        scrolled = await this.scrollToElementId(curId, topId);
+        logger.debug("[1]scrollToCard()", {curId, topId, scrolled});
         return scrolled;
       } 
 
-      scrolled = await this.scrollToElementId(eltId);
+      scrolled = await this.scrollToElementId(curId);
       if (scrolled) {
-        logger.debug("[2]scrollToCard()", {eltId, scrolled});
-      } else if (topId !== eltId) {
-        scrolled = await this.scrollToElementId(topId);
-        logger.debug("[3]scrollToCard()", {eltId, scrolled, topId});
+        logger.debug("[2]scrollToCard()", {curId, scrolled});
       } else {
-        logger.debug("[4]scrollToCard()", {eltId, scrolled});
+        logger.debug("[3]scrollToCard()", {curId, scrolled});
       }
       return scrolled;
     },

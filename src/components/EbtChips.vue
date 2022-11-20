@@ -66,7 +66,13 @@
           window.location.hash = cardHash;
           return;
         }
-        settings.scrollToCard(card);
+        let scrolled = await settings.scrollToCard(card);
+        if (!scrolled) {
+          let { topAnchor, currentElementId } = card;
+          if (currentElementId !== topAnchor) {
+            await settings.scrollToElementId(topAnchor);
+          }
+        }
       },
       onClose: (card, settings) => { // DEPRECATED
         let { cards } = settings;

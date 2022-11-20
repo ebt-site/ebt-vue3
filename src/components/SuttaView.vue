@@ -32,7 +32,10 @@
         <div class="seg-id" v-if="settings.showId"> 
           {{seg.scid}} 
         </div>
-        <div class="seg-text" @click="clickSeg(seg, $event)">
+        <div class="seg-text" 
+          @click="clickSeg(seg, $event)"
+          :title="seg.scid"
+        >
           <div :class="langClass('root')" 
             v-if="settings.showPali"
             v-html="seg.pli" />
@@ -121,20 +124,24 @@
       }
     },
     methods: {
-      clickExample(...args) {
-        console.log("DEBUG clickExample", args);
-      },
       clickSeg(seg, evt) {
+        let { currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
-        if (className === 'ebt-example') {
-          let pattern = encodeURIComponent(innerText);
-          let hash = `#/search/${pattern}`
+        if (currentScid === scid) {
+          if (className === 'ebt-example') {
+            let pattern = encodeURIComponent(innerText);
+            let hash = `#/search/${pattern}`
+            window.location.hash = hash;
+            return;
+          } 
+        } else {
+          let [ scidHash, lang, author ] = card.location;
+          let hash = `#/sutta/${scid}/${lang}/${author}`
+          card.location[0] = scid;
           window.location.hash = hash;
-          return;
-        } 
-        console.log("DEBUG clickSeg", {innerText, seg, scid});
+        }
       },
       segId(seg) {
         let { card } = this;
@@ -300,6 +307,10 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
+  opacity: 0.80;
+}
+.seg-current .seg-text {
+  opacity: 1;
 }
 .seg-lang {
   margin-bottom: 0.3em;
@@ -340,11 +351,9 @@
   height: 1px;
 }
 .seg-current {
-  border-top: 1pt dashed rgb(var(--v-theme-matched));
-  border-right: 1pt dashed rgb(var(--v-theme-matched));
-  border-bottom: 1pt dashed rgb(var(--v-theme-matched));
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border: 2px dashed rgb(var(--v-theme-matched));
+  border-radius: 5px;
+  opacity: 1;
 }
 .tipitaka-nav {
   display: flex;
