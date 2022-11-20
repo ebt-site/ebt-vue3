@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="processing" class="ebt-processing">
-    <v-card>
+  <v-dialog v-model="processing" class="ebt-processing-overlay">
+    <v-card loading="true" class="ebt-processing">
       <v-card-title>
         {{$t('ebt.processing')}}
         {{volatile.waiting}}
@@ -9,8 +9,8 @@
         <div class="text-center">
           <v-progress-circular 
             indeterminate 
-            width=7
-            size=70
+            width=3
+            size=30
             color="progress1" 
             bg-color="progress2"
             class=""
@@ -46,6 +46,13 @@ export default {
 </script>
 <style>
 .ebt-processing {
+  border: 2px solid rgb(var(--v-theme-progress1));
+  width: 15em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5px;
+}
+.ebt-processing-overlay {
   height: 100%;
   width: 100%;
   background: rgb(0,0,0,0.1);

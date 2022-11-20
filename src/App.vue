@@ -39,7 +39,7 @@
               </v-btn>
             </v-sheet>
           </v-menu>
-          <div v-if="!narrowView">
+          <div v-if="!narrowView" class="pr-3">
             <v-btn icon href="#/search" >
               <v-icon icon="mdi-magnify"/>
             </v-btn>

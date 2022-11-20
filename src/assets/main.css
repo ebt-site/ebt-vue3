@@ -13,6 +13,12 @@
   --ebt-sc-sans-font: "Skolar Sans PE", "Noto Sans", sans-serif;
   --ebt-sc-serif-font: "Skolar PE", "Noto Serif", "Skolar Sans PE", "Noto Sans", serif;
 }
+div.v-theme--light {
+  --v-high-emphasis-opacity: 1;
+}
+div.v-theme--dark {
+  --v-high-emphasis-opacity: 1;
+}
 .v-btn:focus-within {
   border: var(--focus-border) var(--focus-color);
   border-radius: 8pt;
