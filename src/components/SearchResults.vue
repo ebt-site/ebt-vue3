@@ -182,7 +182,7 @@ th {
 .result-title-main {
   display: flex;
   flex-flow: row nowrap;
-  min-width: 16rem;
+  min-width: 280px;
   justify-content: space-between;
   margin-bottom: 0.3rem;
   margin-left: 0.5rem;
@@ -194,7 +194,7 @@ th {
   text-align: right;
   font-size: small;
   font-style: italic;
-  width: 280px;
+  width: 270px;
 }
 .result-title-body {
 }

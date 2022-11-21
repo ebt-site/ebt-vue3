@@ -214,12 +214,12 @@
   }
   .ebt-card {
     background: rgb(var(--v-theme-surface));
-    margin-left: 2pt;
-    margin-right: 2pt;
+    margin-left: 2px;
+    margin-right: 2px;
   }
-  @media (max-width: 400px) {
+  @media (max-width: 600px) {
     .ebt-card {
-      max-width: 375px;
+      max-width: calc(100vw - 10px);
     }
   }
   .debug {
