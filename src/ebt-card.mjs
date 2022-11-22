@@ -24,7 +24,7 @@ const CONTEXTS = {
 export default class EbtCard {
   constructor(opts = {}) {
     let {
-      id = uuidv4(),
+      id = uuidv4().split('-').pop(),
       context,
       location=[],
       isOpen = true,
@@ -104,7 +104,7 @@ export default class EbtCard {
   }
 
   get titleAnchor() {
-    return `${this.id}`;
+    return `${this.id}-title`;
   }
 
   get currentElementId() {

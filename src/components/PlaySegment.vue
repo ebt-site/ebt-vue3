@@ -136,13 +136,13 @@
 
 
   onMounted(()=>{
-    console.log("PlaySegment.mounted()");
+    logger.info("PlaySegment.mounted()");
   })
 
   async function onFetch(evt) {
     let res;
     try {
-      console.log('PlaySegment.onFetch() url:', url.value);
+      logger.info('PlaySegment.onFetch() url:', url.value);
       results.value = undefined;
       let json = await volatile.fetchJson(url.value);
       res = json;

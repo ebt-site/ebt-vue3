@@ -14,7 +14,7 @@ logger.logLevel = 'warn';
       isOpen: true,
       data: undefined,
     }
-    should(card1.id.length).equal(36);
+    should(card1.id.length).equal(12);
     should(card1).properties(defaultProps);
 
     should(card2.id).not.equal(card1.id);

@@ -101,7 +101,7 @@
           result.showMatched+3, 
           result.segsMatched, 
         );
-        console.log("showMoreSegments", result.showMatched);
+        logger.debug("showMoreSegments", result.showMatched);
       },
       durationDisplay(totalSeconds) {
         let { $t } = this;

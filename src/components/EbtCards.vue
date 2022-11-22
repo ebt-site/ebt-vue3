@@ -1,5 +1,8 @@
 <template>
-  <v-sheet id="ebt-cards" color="background" :class="cardsClass" >
+  <v-sheet id="ebt-cards" color="background" 
+    :class="cardsClass" 
+    @scroll.native="onScroll"
+  >
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
@@ -32,6 +35,8 @@
         addCard: (opts) => settings.addCard(opts),
       });
 
+      logger.info("EbtCards.mounted", this);
+
       if (card == null) {
         //window.location.hash = '';
         logger.warn("EbtCards.mounted UNEXPECTED", fullPath);
@@ -41,7 +46,11 @@
         });
       }
     },
+    methods: {
+    },
     computed: {
+      scrollY: (ctx) => {
+      },
       cardsClass: (ctx) => {
         let { settings } = ctx;
         return settings.cardsOpen === 1 

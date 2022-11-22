@@ -21,7 +21,7 @@
     methods: {
     },
     mounted() {
-      console.log("NotFound", this.$route.params);
+      logger.warn("NotFound", this.$route.params);
     },
     computed: {
       hash: (ctx)=>{

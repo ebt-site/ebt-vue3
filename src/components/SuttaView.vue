@@ -54,6 +54,14 @@
       {{langClass('trans')}}
       {{currentScid}}
     </div>
+    <v-bottom-navigation hide-on-scroll=true>
+      <v-btn icon>
+        <v-icon icon="mdi-play-pause" />
+      </v-btn>
+      <v-btn icon>
+        <v-icon icon="mdi-play" />
+      </v-btn>
+    </v-bottom-navigation>
   </v-sheet>
 </template>
 

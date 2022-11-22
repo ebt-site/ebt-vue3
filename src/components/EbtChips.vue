@@ -90,6 +90,7 @@
 
         card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
         chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
+        card.isOpen && card.visible && chipClass.push('card-in-view');
         return chipClass.join(' ');
       },
     },
@@ -115,11 +116,18 @@
   .chip-title {
     display: inline-block;
     overflow: hidden;
-    max-width: 80px;
+    max-width: 30px;
     text-overflow: clip;
   }
   .chip-open {
     border-bottom: 2pt solid #ff9933;
+    opacity: 0.6;
+  }
+  .card-in-view {
+    opacity: 1;
+  }
+  .card-in-view .chip-title {
+    max-width: 80px;
   }
   .chip-closed {
   }
@@ -131,6 +139,9 @@
   }
   @media (max-width:400px) {
     .chip-title {
+      max-width: 1em;
+    }
+    .card-in-view .chip-title {
       max-width: 55px;
     }
     .chip-container {

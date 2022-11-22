@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="processing" class="ebt-processing-overlay">
-    <v-card loading="true" class="ebt-processing">
+    <v-card loading=true class="ebt-processing">
       <v-card-title>
         {{$t('ebt.processing')}}
         {{volatile.waiting}}

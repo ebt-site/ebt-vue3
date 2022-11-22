@@ -1,12 +1,12 @@
 <template>
-  <v-sheet v-if="card.isOpen" class="card-sheet">
+  <v-sheet :class="cardClass">
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
-    <v-card :variant="cardVariant" class="ebt-card">
+    <v-card :id="card.id" :variant="cardVariant" class="ebt-card">
       <template v-slot:title>
         <v-icon :icon="card.icon" class="card-icon"/>
-        <span :id="card.id">{{card.chipTitle($t)}}</span>
+        <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
         <v-btn icon="mdi-trash-can-outline" flat
@@ -28,6 +28,7 @@
           <v-icon icon="mdi-hammer-wrench" size="x-small" class="debug" />
         </div>
         <v-card v-if="showDebug" class="debug" >
+          <div>{{card.id}}</div>
           <v-select v-model="card.context" :items="contexts"
             :label="'Context'"
             >
@@ -37,32 +38,6 @@
               label="$t('ebt.location')"
             />
           </v-card-text>
-          <table>
-            <tbody>
-              <tr> 
-                <th>layout</th> 
-                <td>{{JSON.stringify(volatile.layout.value)}}</td> 
-              </tr>
-              <tr> <th>id</th> <td>{{card.id}}</td> </tr>
-              <tr> <th>isOpen</th> <td>{{card.isOpen}}</td> </tr>
-              <tr> <th>chipTitle</th> <td>{{card.chipTitle($t)}}</td> </tr>
-              <tr> <th>icon</th> <td>{{card.icon}}</td> </tr>
-              <tr> <th>context</th> <td>{{card.context}}</td> </tr>
-              <tr> <th>location</th> <td>{{card.location}}</td> </tr>
-              <tr> <th>data</th> <td>{{card.data ? "yes" : "no"}}</td> </tr>
-              <tr> <th>route</th> <td>{{Object.keys($route)}}</td> </tr>
-              <tr> <th>route.fullPath</th> <td>{{$route.fullPath}}</td> </tr>
-              <tr> <th>route.params</th> <td>{{$route.params}}</td> </tr>
-              <tr> 
-                <th>route.params. context</th> 
-                <td>{{$route.params.context}}</td> 
-              </tr>
-              <tr> 
-                <th>route.params.location</th> 
-                <td>{{$route.params.location}}</td> 
-              </tr>
-            </tbody>
-          </table>
         </v-card>
       </div>
     </v-card>
@@ -77,7 +52,8 @@
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
-  import { ref } from "vue";
+  import { logger } from 'log-instance';
+  import { nextTick, ref } from "vue";
 
   export default {
     props: {
@@ -89,11 +65,13 @@
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const showDebug = ref(false);
+      const observer = null;
 
       return {
         settings,
         showDebug,
         volatile,
+        observer,
       }
     },
     components: {
@@ -117,8 +95,43 @@
       },
     },
     mounted() {
+      let { card, } = this;
+      let { id } = card;
+      let elt = document.getElementById(card.id);
+      elt && setTimeout(()=>{ // wait for full-size element
+        let { scrollHeight } = elt;
+        let callback = (entries, observer) => {
+          logger.debug(`IntersectionObserver#${id}`, entries);
+          card.visible = entries[0].isIntersecting;
+        }
+        const HEADER_HEIGHT = 104;
+        const LINE_HEIGHT = 20;
+        let threshold = [
+          HEADER_HEIGHT+2*LINE_HEIGHT,   
+        ].map(t=>Math.min(1,t/scrollHeight));
+        let obsOpts = {
+          root: null,
+          rootMargin: "0px",
+          threshold,
+        }
+        let observer = new IntersectionObserver(callback, obsOpts);
+        this.observer = observer;
+        observer.observe(elt);
+      }, 300);
+      logger.info(`EbtCard.mounted(${card.routeHash()})`, {elt});
+    },
+    unmounted() {
+      let { card, } = this;
+      logger.info(`EbtCard.unmounted(${card.routeHash()})`);
     },
     computed: {
+      cardClass(ctx) {
+        let { card } = ctx;
+        return card.isOpen
+          ? 'card-sheet'
+          : 'card-sheet-closed';
+
+      },
       isClosable(ctx) {
         let { card } = ctx;
         return card.context !== EbtCard.CONTEXT_HOME;
@@ -165,21 +178,6 @@
 </script>
 
 <style scoped>
-  table {
-    border: 1pt solid ;
-    padding: 2pt;
-  }
-  thead th {
-    border-bottom: 1pt solid;
-  }
-  tbody th {
-    text-align: right;
-    padding-right: 0.5em;
-    border-right: 1pt solid ;
-  }
-  td {
-    padding-left: 0.5em;
-  }
   .card-top-anchor {
     font-size: 12px;
     position: relative;
@@ -236,6 +234,9 @@
   }
   .card-sheet {
     background: rgba(0,0,0,0);
+  }
+  .card-sheet-closed {
+    display: none;
   }
 </style>
 
