@@ -3,11 +3,26 @@
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
+    <v-bottom-navigation v-if="playScid" 
+      class="play-nav" 
+      hide-on-scroll
+      dense
+    >
+      <v-btn icon>
+        <v-icon icon="mdi-play-pause" />
+      </v-btn>
+      <div class="play-scid">
+        {{playScid}}
+      </div>
+      <v-btn icon>
+        <v-icon icon="mdi-play" />
+      </v-btn>
+    </v-bottom-navigation>
   </v-sheet>
 </template>
 
 <script>
-  import { nextTick } from "vue";
+  import { ref, nextTick } from "vue";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { useSettingsStore } from '../stores/settings.mjs';
@@ -19,6 +34,7 @@
 
       return {
         settings,
+        playScid: ref(undefined),
       }
     },
     mounted() {
@@ -31,6 +47,7 @@
         defaultLang: settings.langTrans,
         addCard: (opts) => settings.addCard(opts),
       });
+      this.playScid = this.routeScid(window.location.hash);
 
       logger.info("EbtCards.mounted", this);
 
@@ -44,10 +61,16 @@
       }
     },
     methods: {
+      routeScid: (route) => {
+        let hashParts = route.split("/");
+        if (hashParts[0] === '#') {
+          hashParts.shift();
+        }
+        let [ context, loc0, loc1, loc2 ] = hashParts;
+        return context === EbtCard.CONTEXT_SUTTA ? loc0 : null;
+      },
     },
     computed: {
-      scrollY: (ctx) => {
-      },
       cardsClass: (ctx) => {
         let { settings } = ctx;
         return settings.cardsOpen === 1 
@@ -60,6 +83,7 @@
         let { settings, $route }  = this;
         let { cards } = settings;
         let msg = 'EbtCards.watch.$route';
+        this.playScid = this.routeScid(to.href);
         let card = EbtCard.pathToCard({
           path: to.fullPath, 
           cards, 
@@ -73,7 +97,7 @@
         }
 
         if (card.isOpen) {
-          logger.debug(`${msg} => card`, {$route, to, from, card});
+          logger.info(`${msg} => card`, {$route, to, from, card});
         } else {
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});
@@ -97,5 +121,16 @@
   }
   .ebt-cards1 {
     background-color: rgb(var(--v-theme-surface)) !important;
+  }
+  .play-nav {
+    align-items: center;
+    opacity: 1;
+  }
+  .play-scid {
+    font-family: var(--ebt-sc-sans-font);
+    font-size: larger;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
   }
 </style>
