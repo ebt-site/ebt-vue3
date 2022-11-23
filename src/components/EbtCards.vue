@@ -1,8 +1,5 @@
 <template>
-  <v-sheet id="ebt-cards" color="background" 
-    :class="cardsClass" 
-    @scroll.native="onScroll"
-  >
+  <v-sheet id="ebt-cards" color="background" :class="cardsClass" >
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
@@ -71,12 +68,12 @@
         });
         if (card == null) {
           window.location.hash = '';
-          logger.info(`${msg} => invalid card route`, {$route, to, from});
+          logger.warn(`${msg} => invalid card route`, {$route, to, from});
           return;
         }
 
         if (card.isOpen) {
-          logger.info(`${msg} => card`, {$route, to, from, card});
+          logger.debug(`${msg} => card`, {$route, to, from, card});
         } else {
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});

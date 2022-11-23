@@ -22,7 +22,7 @@
             </div>
           </v-app-bar-title>
           
-          <v-menu location="bottom" attach=true v-if="narrowView">
+          <v-menu location="bottom" attach v-if="narrowView">
             <template v-slot:activator="{ props }">
               <div class="app-menu-activator">
                 <v-btn v-bind="props" icon>

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet :class="cardClass">
+  <v-sheet v-if="card.isOpen || observer" :class="cardClass">
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
@@ -65,7 +65,7 @@
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const showDebug = ref(false);
-      const observer = null;
+      const observer = undefined;
 
       return {
         settings,
@@ -80,11 +80,27 @@
       SuttaView,
       WikiView,
     },
+    mounted() {
+      let { card } = this;
+      let { id } = card;
+      logger.debug("EbtCard.mounted()", {id});
+      this.addIntersectionObserver();
+    },
+    updated() {
+      this.addIntersectionObserver();
+    },
     methods: {
       closeCard: (card, cards) => {
         card.isOpen = false;
         if (window.location.hash === card.routeHash()) {
-          let openCard = cards.reduce((a,c)=> a || (c.isOpen ? c : a), null);
+          let openCard = cards.reduce((a,c)=>{
+            if (c.isOpen) {
+              if (!a || !a.visible && c.visible) {
+                a = c;
+              }
+            }
+            return a;
+          }, null);
           if (openCard == null) {
             openCard = cards.reduce((a,c)=> a || (
               c.context === EbtCard.CONTEXT_HOME ? c : a
@@ -93,36 +109,36 @@
           window.location.hash = openCard.routeHash();
         }
       },
-    },
-    mounted() {
-      let { card, } = this;
-      let { id } = card;
-      let elt = document.getElementById(card.id);
-      elt && setTimeout(()=>{ // wait for full-size element
-        let { scrollHeight } = elt;
-        let callback = (entries, observer) => {
-          logger.debug(`IntersectionObserver#${id}`, entries);
-          card.visible = entries[0].isIntersecting;
+      addIntersectionObserver() {
+        let { card, observer } = this;
+        let { id } = card;
+        let elt = document.getElementById(card.id);
+        if (!elt || this.observer) {
+          return;
         }
-        const HEADER_HEIGHT = 104;
-        const LINE_HEIGHT = 20;
-        let threshold = [
-          HEADER_HEIGHT+2*LINE_HEIGHT,   
-        ].map(t=>Math.min(1,t/scrollHeight));
-        let obsOpts = {
-          root: null,
-          rootMargin: "0px",
-          threshold,
-        }
-        let observer = new IntersectionObserver(callback, obsOpts);
-        this.observer = observer;
-        observer.observe(elt);
-      }, 300);
-      logger.info(`EbtCard.mounted(${card.routeHash()})`, {elt});
-    },
-    unmounted() {
-      let { card, } = this;
-      logger.info(`EbtCard.unmounted(${card.routeHash()})`);
+
+        setTimeout(()=>{ // wait for full-size element
+          let { scrollHeight } = elt;
+          let callback = (entries, observer) => {
+            logger.debug(`IntersectionObserver#${id}`, entries);
+            card.visible = entries[0].isIntersecting;
+          }
+          const HEADER_HEIGHT = 104;
+          const LINE_HEIGHT = 20;
+          let threshold = [
+            HEADER_HEIGHT+2*LINE_HEIGHT,   
+          ].map(t=>Math.min(1,t/scrollHeight));
+          let obsOpts = {
+            root: null,
+            rootMargin: "0px",
+            threshold,
+          }
+          let observer = new IntersectionObserver(callback, obsOpts);
+          this.observer = observer;
+          observer.observe(elt);
+          let routeHash = card.routeHash();
+        }, 300);
+      },
     },
     computed: {
       cardClass(ctx) {
