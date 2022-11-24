@@ -8,13 +8,13 @@
       hide-on-scroll
       dense
     >
-      <v-btn icon>
+      <v-btn icon @click="clickPlayPause">
         <v-icon icon="mdi-play-pause" />
       </v-btn>
       <div class="play-scid">
         {{playScid}}
       </div>
-      <v-btn icon>
+      <v-btn icon @click="clickPlay">
         <v-icon icon="mdi-play" />
       </v-btn>
     </v-bottom-navigation>
@@ -26,15 +26,24 @@
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { logger } from "log-instance";
+
+  // TODO: Apple doesn't support AudioContext symbol
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"
+  const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
+  const LENGTH_NOAUDIO = 5000; // actually 3761
 
   export default {
     setup() {
-      const settings = useSettingsStore();
-
       return {
-        settings,
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
         playScid: ref(undefined),
+        theAudioContext: ref(undefined),
+        reNoAudio: new RegExp(PAT_NOAUDIO.join('|')),
+        audioSource: undefined,
       }
     },
     mounted() {
@@ -61,6 +70,93 @@
       }
     },
     methods: {
+      async clickPlayPause() {
+        logger.info("EbtCards.clickPlayPause()");
+        await this.playUrl(URL_NOAUDIO);
+        let route = window.location.hash;
+        logger.info("EbtCards.clickPlayPause() => OK", {route});
+      },
+      async clickPlay() {
+        logger.info("EbtCards.clickPlay()");
+        this.playUrl(URL_NOAUDIO);
+      },
+      async playUrl(url) { 
+        try {
+          let { patNoAudio, reNoAudio, audioContext, volatile } = this;
+          let length = 0;
+          let numberOfChannels = 2;
+          let sampleRate = 48000;
+
+          if (reNoAudio.test(url)) {
+            url = URL_NOAUDIO;
+          }
+          let headers = new Headers();
+          headers.append('Accept',  'audio/mpeg');
+
+          let res = await volatile.fetch(url, { headers });
+          if (!res.ok) {
+             let e = new Error(`playUrl(${url}) ERROR => HTTP${res.status}`);
+             e.url = url;
+             throw e;
+          }
+          let urlBuf = await res.arrayBuffer();
+          let audioSource = audioContext.createBufferSource();
+          this.audioSource = audioSource;
+          let urlAudio = await new Promise((resolve, reject)=>{
+            audioContext.decodeAudioData(urlBuf, resolve, reject);
+          });
+          numberOfChannels = Math.min(numberOfChannels, urlAudio.numberOfChannels);
+          length += urlAudio.length;
+          sampleRate = Math.max(sampleRate, urlAudio.sampleRate);
+          console.debug(`playUrl(${url})`, {sampleRate, length, numberOfChannels});
+          if (length < LENGTH_NOAUDIO) {
+            let guid = url.split('/').pop();
+            patNoAudio.push(guid);
+            logger.info(`EbtCards.playUrl() patNoAudio => `, patNoAudio);
+            this.reNoAudio = new RegExp(patNoAudio.join('|'));
+            return await this.playUrl(URL_NOAUDIO);
+          }
+
+          let msg = [
+            `audioContext.createBuffer`,
+            JSON.stringify({numberOfChannels, length, sampleRate}),
+          ].join(' ');
+          let audioBuffer = audioContext
+            .createBuffer(numberOfChannels, length, sampleRate);
+          for (let iChannel = 0; iChannel < numberOfChannels; iChannel++) {
+            let offset = 0;
+            msg = [
+              `new Float32Array`,
+              typeof Float32Array,
+              typeof window.Float32Array,
+              Float32Array == null ? "null" : "OK",
+            ].join(' ');
+            let channelData = new Float32Array(length);
+            channelData.set(urlAudio.getChannelData(iChannel), offset);
+            offset += urlAudio.length;
+            audioBuffer.getChannelData(iChannel).set(channelData);
+          }
+
+          audioSource.buffer = audioBuffer;
+          audioSource.connect(audioContext.destination);
+          return new Promise((resolve, reject) => { try {
+            audioSource.onended = evt => {
+              logger.debug(`EbtCards.playUrl(${url}) => OK`);
+              resolve();
+            };
+            audioSource.start();
+          } catch(e) {
+            let msg = `EbtCards.playUrl(ERROR) ${url} could not start() => ${e.message}`;
+            logger.error(msg);
+            alert(msg);
+            reject(e);
+          }}); // Promise
+        } catch(e) {
+          let msg = `EbtCards.playURL(ERROR) ${url} => ${e.message}`;
+          logger.info(msg);
+          throw e;
+        }
+      }, // playUrl()
       routeScid: (route) => {
         let hashParts = route.split("/");
         if (hashParts[0] === '#') {
@@ -71,7 +167,15 @@
       },
     },
     computed: {
-      cardsClass: (ctx) => {
+      audioContext(ctx) {
+        let { theAudioContext:ac } = ctx;
+        if (ac == null) {
+          ac = new AudioContext();
+          ctx.theAudioContext = ac;
+        }
+        return ac;
+      },
+      cardsClass(ctx) {
         let { settings } = ctx;
         return settings.cardsOpen === 1 
           ? "ebt-cards ebt-cards1" 

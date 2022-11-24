@@ -10,6 +10,7 @@ const layout = ref();
 const showSettings = ref(false);
 const INITIAL_STATE = {
   waiting: 0,
+  delayedWaiting: 0,
   suttas,
   showSettings,
 };
@@ -49,22 +50,34 @@ export const useVolatileStore = defineStore('volatile', {
       let key = suttaRef.toString();
       return suttas[key];
     },
-    async fetchJson(url, options) {
+    async fetch(url, options={}) {
       let res;
+      let { waitingDelay=100 } = options;
       try {
-        this.waiting++;
-        logger.info('volatile.fetchJson() url:', url);
+        setTimeout(()=>this.waiting++, waitingDelay);
+
+        logger.info('volatile.fetch() url:', url);
         let fetchOpts = Object.assign({
     //      mode: 'no-cors',
         }, options);
         res = await fetch(url, fetchOpts);
         logger.debug('volatile()', res);
+        return res;
+      } catch(e) {
+        logger.error("volatile.fetch() ERROR:", res, e);
+        res = { error: `ERROR: ${url.value} ${e.message}` };
+      } finally {
+        this.waiting--;
+      }
+      return res;
+    },
+    async fetchJson(url, options) {
+      try {
+        let res = await this.fetch(url, options);;
         return res.ok ? await res.json() : res;
       } catch(e) {
         logger.error("volatile.fetchJson() ERROR:", res, e);
         res = { error: `ERROR: ${url.value} ${e.message}` };
-      } finally {
-        this.waiting--;
       }
       return res;
     },
