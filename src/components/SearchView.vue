@@ -1,30 +1,26 @@
 <template>
   <v-sheet class="ebt-search">
-    <v-card>
-      <v-card-text>
-        <v-autocomplete 
-          v-model="search" 
-          :append-icon="search ? 'mdi-magnify' : ''"
+    <v-autocomplete 
+      v-model="search" 
+      :append-icon="search ? 'mdi-magnify' : ''"
 
-          @click:append="onSearch"
-          @click:clear="onSearchCleared($event, card)"
-          :hint="$t('auth.required')"
-          @update:search="updateSearch($event)"
-          @keyup.enter="onEnter($event)"
-          class="search-field"
-          :filter="searchFilter"
-          :items="exampleItems"
-          :label="$t('ebt.search')"
-          :placeholder="$t('ebt.searchPrompt')"
-          variant="underlined"
-        />
-        <div class="inspire" v-if="hasExamples">
-          <v-btn variant=tonal @click="onInspireMe">
-            {{$t('ebt.inspireMe')}}
-          </v-btn>
-        </div>
-      </v-card-text>
-    </v-card>
+      @click:append="onSearch"
+      @click:clear="onSearchCleared($event, card)"
+      :hint="$t('auth.required')"
+      @update:search="updateSearch($event)"
+      @keyup.enter="onEnter($event)"
+      class="search-field"
+      :filter="searchFilter"
+      :items="exampleItems"
+      :label="$t('ebt.search')"
+      :placeholder="$t('ebt.searchPrompt')"
+      variant="underlined"
+    />
+    <div class="inspire" v-if="hasExamples">
+      <v-btn variant=tonal @click="onInspireMe">
+        {{$t('ebt.inspireMe')}}
+      </v-btn>
+    </div>
     <search-results :card="card" :results="results" 
       :class="resultsClass"/>
   </v-sheet>
@@ -232,7 +228,6 @@
   justify-content: center;
 }
 .ebt-search {
-  min-width: 350px;
   max-width: 50em;
 }
 .ebt-results-new {

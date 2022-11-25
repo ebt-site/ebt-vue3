@@ -139,10 +139,11 @@
   }
   @media (max-width:400px) {
     .chip-title {
-      max-width: 1em;
+      display: none;
     }
     .card-in-view .chip-title {
-      max-width: 55px;
+      display: inline;
+      max-width: 40px;
     }
     .chip-container {
       margin-left: 0rem;

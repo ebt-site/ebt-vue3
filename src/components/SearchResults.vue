@@ -177,12 +177,15 @@ th {
   display: flex;
   flex-flow: row wrap;
   align-items: baseline;
+  min-width: 220px;
+  max-width: 40em;
   justify-content: space-between;
 }
 .result-title-main {
   display: flex;
   flex-flow: row nowrap;
-  min-width: 280px;
+  min-width: 210px;
+  max-width: 30em;
   justify-content: space-between;
   margin-bottom: 0.3rem;
   margin-left: 0.5rem;
@@ -197,6 +200,7 @@ th {
   width: 270px;
 }
 .result-title-body {
+  margin-right: 10px;
 }
 .result-title-stats {
 }
