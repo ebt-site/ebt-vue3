@@ -8,15 +8,24 @@
       hide-on-scroll
       dense
     >
-      <v-btn icon @click="clickPlayPause">
-        <v-icon icon="mdi-play-pause" />
-      </v-btn>
+      <v-progress-circular :indeterminate="!!audioPlaying">
+        <v-btn icon @click="clickPlayPause">
+          <v-icon icon="mdi-play-pause" />
+        </v-btn>
+      </v-progress-circular>
       <div class="play-scid">
         {{playScid}}
       </div>
       <v-btn icon @click="clickPlay">
         <v-icon icon="mdi-play" />
       </v-btn>
+      <audio :ref="el => {audioElt = el}" 
+        @emptied = "audioEmptied"
+        @ended = "audioEnded"
+        preload=auto >
+        <source type="audio/mp3" :src="audioUrl" />
+        <p>{{ $t('ebt.noHTML5') }}</p>
+      </audio>
     </v-bottom-navigation>
   </v-sheet>
 </template>
@@ -44,6 +53,9 @@
         theAudioContext: ref(undefined),
         reNoAudio: new RegExp(PAT_NOAUDIO.join('|')),
         audioSource: undefined,
+        audioElt: ref(undefined),
+        audioUrl: ref(URL_NOAUDIO),
+        audioPlaying: ref(false),
       }
     },
     mounted() {
@@ -70,11 +82,30 @@
       }
     },
     methods: {
+      audioEnded(evt) {
+        logger.info('EbtCards.audioEnded', {evt});
+        this.audioPlaying--;
+      },
+      audioEmptied(evt) {
+        logger.info('EbtCards.audioEmptied', {evt});
+      },
       async clickPlayPause() {
-        logger.info("EbtCards.clickPlayPause()");
-        await this.playUrl(URL_NOAUDIO);
+        let that = this;
+        let { audioElt } = this;
         let route = window.location.hash;
-        logger.info("EbtCards.clickPlayPause() => OK", {route});
+
+        logger.info('EbtCards.clickPlayPause() play', {audioElt});
+        if (audioElt) {
+          let msg = 'EbtCards.clickPlayPause() done';
+          audioElt.play().then(res=>{
+            that.audioPlaying++;
+            logger.info(msg);
+          }).catch(e=>{
+            logger.info(e);
+          });
+        } else {
+          logger.warn(`EbtCards.clickPlayPause() NO_AUDIO`);
+        }
       },
       async clickPlay() {
         logger.info("EbtCards.clickPlay()");
