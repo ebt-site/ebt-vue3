@@ -4,21 +4,24 @@
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
     <v-bottom-navigation v-if="playScid" 
-      class="play-nav" 
       hide-on-scroll
       dense
     >
-      <v-progress-circular :indeterminate="!!audioPlaying">
-        <v-btn icon @click="clickPlayPause">
-          <v-icon icon="mdi-play-pause" />
-        </v-btn>
-      </v-progress-circular>
-      <div class="play-scid">
-        {{playScid}}
-      </div>
-      <v-btn icon @click="clickPlay">
-        <v-icon icon="mdi-play" />
-      </v-btn>
+      <div class="play-col">
+        <v-progress-linear :indeterminate="!!audioPlaying" 
+          color="progress1" height="2px" />
+        <div class="play-row">
+          <v-btn icon @click="clickPlayPause" density="compact">
+            <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
+          </v-btn>
+          <div class="play-scid">
+            {{playScid}}
+          </div>
+          <v-btn icon @click="clickPlay" density="compact">
+            <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
+          </v-btn>
+        </div><!-- play-row -->
+      </div><!-- play-col -->
       <audio :ref="el => {audioElt = el}" 
         @emptied = "audioEmptied"
         @ended = "audioEnded"
@@ -84,108 +87,34 @@
     methods: {
       audioEnded(evt) {
         logger.info('EbtCards.audioEnded', {evt});
-        this.audioPlaying--;
+        this.audioPlaying = false;
       },
       audioEmptied(evt) {
         logger.info('EbtCards.audioEmptied', {evt});
       },
       async clickPlayPause() {
+        logger.info("EbtCards.clickPlayPause()", window.location.hash);
+        this.playUrl(URL_NOAUDIO);
+      },
+      async clickPlay() {
+        logger.info("EbtCards.clickPlay()", window.location.hash);
+        this.playUrl(URL_NOAUDIO);
+      },
+      async playUrl(url=URL_NOAUDIO) {
         let that = this;
         let { audioElt } = this;
-        let route = window.location.hash;
+        this.audioUrl = url;
 
-        logger.info('EbtCards.clickPlayPause() play', {audioElt});
         if (audioElt) {
-          let msg = 'EbtCards.clickPlayPause() done';
           audioElt.play().then(res=>{
-            that.audioPlaying++;
+            let msg = `EbtCards.playUrl() ${url}`;
+            that.audioPlaying = true;
             logger.info(msg);
           }).catch(e=>{
             logger.info(e);
           });
         } else {
-          logger.warn(`EbtCards.clickPlayPause() NO_AUDIO`);
-        }
-      },
-      async clickPlay() {
-        logger.info("EbtCards.clickPlay()");
-        this.playUrl(URL_NOAUDIO);
-      },
-      async playUrl(url) { 
-        try {
-          let { patNoAudio, reNoAudio, audioContext, volatile } = this;
-          let length = 0;
-          let numberOfChannels = 2;
-          let sampleRate = 48000;
-
-          if (reNoAudio.test(url)) {
-            url = URL_NOAUDIO;
-          }
-          let headers = new Headers();
-          headers.append('Accept',  'audio/mpeg');
-
-          let res = await volatile.fetch(url, { headers });
-          if (!res.ok) {
-             let e = new Error(`playUrl(${url}) ERROR => HTTP${res.status}`);
-             e.url = url;
-             throw e;
-          }
-          let urlBuf = await res.arrayBuffer();
-          let audioSource = audioContext.createBufferSource();
-          this.audioSource = audioSource;
-          let urlAudio = await new Promise((resolve, reject)=>{
-            audioContext.decodeAudioData(urlBuf, resolve, reject);
-          });
-          numberOfChannels = Math.min(numberOfChannels, urlAudio.numberOfChannels);
-          length += urlAudio.length;
-          sampleRate = Math.max(sampleRate, urlAudio.sampleRate);
-          console.debug(`playUrl(${url})`, {sampleRate, length, numberOfChannels});
-          if (length < LENGTH_NOAUDIO) {
-            let guid = url.split('/').pop();
-            patNoAudio.push(guid);
-            logger.info(`EbtCards.playUrl() patNoAudio => `, patNoAudio);
-            this.reNoAudio = new RegExp(patNoAudio.join('|'));
-            return await this.playUrl(URL_NOAUDIO);
-          }
-
-          let msg = [
-            `audioContext.createBuffer`,
-            JSON.stringify({numberOfChannels, length, sampleRate}),
-          ].join(' ');
-          let audioBuffer = audioContext
-            .createBuffer(numberOfChannels, length, sampleRate);
-          for (let iChannel = 0; iChannel < numberOfChannels; iChannel++) {
-            let offset = 0;
-            msg = [
-              `new Float32Array`,
-              typeof Float32Array,
-              typeof window.Float32Array,
-              Float32Array == null ? "null" : "OK",
-            ].join(' ');
-            let channelData = new Float32Array(length);
-            channelData.set(urlAudio.getChannelData(iChannel), offset);
-            offset += urlAudio.length;
-            audioBuffer.getChannelData(iChannel).set(channelData);
-          }
-
-          audioSource.buffer = audioBuffer;
-          audioSource.connect(audioContext.destination);
-          return new Promise((resolve, reject) => { try {
-            audioSource.onended = evt => {
-              logger.debug(`EbtCards.playUrl(${url}) => OK`);
-              resolve();
-            };
-            audioSource.start();
-          } catch(e) {
-            let msg = `EbtCards.playUrl(ERROR) ${url} could not start() => ${e.message}`;
-            logger.error(msg);
-            alert(msg);
-            reject(e);
-          }}); // Promise
-        } catch(e) {
-          let msg = `EbtCards.playURL(ERROR) ${url} => ${e.message}`;
-          logger.info(msg);
-          throw e;
+          logger.warn(`EbtCards.playUrl() audioElt?`);
         }
       }, // playUrl()
       routeScid: (route) => {
@@ -257,7 +186,14 @@
   .ebt-cards1 {
     background-color: rgb(var(--v-theme-surface)) !important;
   }
-  .play-nav {
+  .play-col {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+  .play-row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
     align-items: center;
     opacity: 1;
   }
