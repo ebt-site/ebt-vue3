@@ -22,7 +22,7 @@ function elementInViewport(elt, root = document.documentElement) {
   if (rect.right < 0) {
     return false;
   }
-  if (rect.top > viewBottom) {
+  if (rect.top > viewBottom/2) { // show in top half of viewport
     return false;
   }
   if (rect.left > viewRight) {

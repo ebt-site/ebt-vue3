@@ -347,7 +347,7 @@
 .seg-anchor {
   position: relative;
   font-size: 10px;
-  top: -200px;
+  top: -110px;
   height: 1px;
 }
 .seg-current {

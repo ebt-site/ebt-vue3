@@ -335,4 +335,34 @@ logger.logLevel = 'warn';
       .equal(`#/${context}/${suid}/${lang}/${author}`);
     should.deepEqual(cardSuidSeg.location, [suid, lang, author]);
   });
+  it('TESTTESTincrementLocation() sutta', ()=>{
+    let context = 'sutta';
+    let suid = 'sn34.1';
+    let scids = [ '1.0', '1.1', '2.1'].map(id=>`${suid}:${id}`);
+    let segments = scids.map(scid => ({scid}));
+    let lang = "de";
+    let author = "sabbamitta";
+    let location = [ segments[0].scid, lang, author ];
+    let card = new EbtCard({context, location});
+
+    // forward
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:1}), 
+      [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments}), 
+      [ scids[2], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments}), null);
+    should.deepEqual(card.location, [ scids[2], lang, author, ]);
+
+    // backward
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), 
+      [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), 
+      [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+  });
 });

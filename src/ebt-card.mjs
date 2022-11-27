@@ -72,6 +72,17 @@ export default class EbtCard {
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
 
+  static routeSuttaRef(route) {
+    let hashParts = route.split("/");
+    if (hashParts[0] === '#') {
+      hashParts.shift();
+    }
+    let [ context, sutta_uid, lang, author ] = hashParts;
+    return context === EbtCard.CONTEXT_SUTTA
+      ? SuttaRef.create({sutta_uid, lang, author})
+      : null;
+  }
+
   static pathToCard(args) {
     let {path='/', cards=[], addCard, defaultLang} = args;
     let [ tbd, context, ...location ] = path.split('/');
@@ -252,6 +263,29 @@ export default class EbtCard {
 
     dbg && console.log(`matchPath(${path}) => ${match}`, {context, location});
     return match;
+  }
+
+  incrementLocation({segments, delta=1}) {
+    let { location, context } = this;
+
+    if (context === CONTEXT_SUTTA) {
+      let [ id, lang, author ] = location;
+      let suttaRef = SuttaRef.create({sutta_uid:id, lang, author});
+      if (suttaRef == null) {
+        logger.warn("no suttaref");
+        return null;
+      }
+      let { sutta_uid, segnum=segments[0].scid } = suttaRef;
+      let scid = `${sutta_uid}:${segnum}`;
+      let iSeg = segments.findIndex(seg=>seg.scid === scid);
+      let iSegNext = iSeg + delta;
+      if (iSeg<0 || iSegNext<0 || segments.length<=iSegNext) {
+        logger.warn("next segment out of bounds", {iSeg, iSegNext, delta});
+        return null;
+      }
+      location[0] = segments[iSegNext].scid;
+      return location;
+    }
   }
 
 }

@@ -3,7 +3,7 @@
     <div v-for="card in settings.cards">
       <ebt-card-vue :card="card" />
     </div><!-- v-for card -->
-    <v-bottom-navigation v-if="playScid" 
+    <v-bottom-navigation v-if="audioScid" 
       hide-on-scroll
       dense
     >
@@ -15,7 +15,7 @@
             <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
           </v-btn>
           <div class="play-scid">
-            {{playScid}}
+            {{audioScid}}
           </div>
           <v-btn icon @click="clickPlay" density="compact">
             <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
@@ -35,14 +35,15 @@
 
 <script>
   import { ref, nextTick } from "vue";
+  import { SuttaRef } from 'scv-esm';
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
+  import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { logger } from "log-instance";
 
   // TODO: Apple doesn't support AudioContext symbol
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
   const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"
   const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
   const LENGTH_NOAUDIO = 5000; // actually 3761
@@ -50,12 +51,12 @@
   export default {
     setup() {
       return {
+        suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        playScid: ref(undefined),
-        theAudioContext: ref(undefined),
-        reNoAudio: new RegExp(PAT_NOAUDIO.join('|')),
-        audioSource: undefined,
+        audioScid: ref(undefined),
+        audioSegments: ref(undefined),
+        routeCard: ref(undefined),
         audioElt: ref(undefined),
         audioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(false),
@@ -71,7 +72,6 @@
         defaultLang: settings.langTrans,
         addCard: (opts) => settings.addCard(opts),
       });
-      this.playScid = this.routeScid(window.location.hash);
 
       logger.info("EbtCards.mounted", this);
 
@@ -79,15 +79,20 @@
         //window.location.hash = '';
         logger.warn("EbtCards.mounted UNEXPECTED", fullPath);
       } else {
+        this.routeCard = card;
         nextTick(() => {
           settings.scrollToCard(card);
+          this.bindAudioSegments(window.location.hash);
         });
       }
     },
     methods: {
-      audioEnded(evt) {
-        logger.info('EbtCards.audioEnded', {evt});
+      async audioEnded(evt) {
+        let { routeCard, audioSegments:segments, settings } = this;
+        routeCard.incrementLocation({segments});
+        logger.info('EbtCards.audioEnded', {evt, });
         this.audioPlaying = false;
+        nextTick(() => { settings.scrollToCard(routeCard); })
       },
       audioEmptied(evt) {
         logger.info('EbtCards.audioEmptied', {evt});
@@ -117,24 +122,35 @@
           logger.warn(`EbtCards.playUrl() audioElt?`);
         }
       }, // playUrl()
-      routeScid: (route) => {
+      routeSuttaRef(route) {
         let hashParts = route.split("/");
         if (hashParts[0] === '#') {
           hashParts.shift();
         }
-        let [ context, loc0, loc1, loc2 ] = hashParts;
-        return context === EbtCard.CONTEXT_SUTTA ? loc0 : null;
+        let [ context, sutta_uid, lang, author ] = hashParts;
+        return context === EbtCard.CONTEXT_SUTTA
+          ? SuttaRef.create({sutta_uid, lang, author})
+          : null;
+      },
+      async bindAudioSegments(route) {
+        let { routeCard, suttas } = this;
+        if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
+          let suttaRef = this.routeSuttaRef(route);
+          let idbSutta = await suttas.loadIdbSutta(suttaRef);
+          let { sutta_uid, segnum } = suttaRef;
+          this.audioScid =  segnum ? `${sutta_uid}:${segnum}` : sutta_uid;
+          this.audioSegments = idbSutta.segments;
+        } else {
+          this.audioScid = null;
+          this.audioSegments = null;
+        }
+      },
+      routeScid(route) {
+        let { sutta_uid, segnum } = this.routeSuttaRef(route);
+        return segnum ? `${sutta_uid}:${segnum}` : sutta_uid;
       },
     },
     computed: {
-      audioContext(ctx) {
-        let { theAudioContext:ac } = ctx;
-        if (ac == null) {
-          ac = new AudioContext();
-          ctx.theAudioContext = ac;
-        }
-        return ac;
-      },
       cardsClass(ctx) {
         let { settings } = ctx;
         return settings.cardsOpen === 1 
@@ -147,13 +163,14 @@
         let { settings, $route }  = this;
         let { cards } = settings;
         let msg = 'EbtCards.watch.$route';
-        this.playScid = this.routeScid(to.href);
         let card = EbtCard.pathToCard({
           path: to.fullPath, 
           cards, 
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
+        this.routeCard = card;
+        this.bindAudioSegments(to.href);
         if (card == null) {
           window.location.hash = '';
           logger.warn(`${msg} => invalid card route`, {$route, to, from});
@@ -166,9 +183,7 @@
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
-        nextTick(() => {
-          settings.scrollToCard(card);
-        })
+        nextTick(() => { settings.scrollToCard(card); })
       }
     }, 
     components: {
@@ -182,6 +197,7 @@
     flex-flow: row wrap;
     justify-content: center;
     min-height: 50em;
+    padding-bottom: calc(80vw);
   }
   .ebt-cards1 {
     background-color: rgb(var(--v-theme-surface)) !important;
