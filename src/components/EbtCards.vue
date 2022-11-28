@@ -295,6 +295,11 @@
     align-items: center;
     opacity: 1;
   }
+  .play-row button {
+    padding: 0;
+    min-width: 48px;
+    max-width: 54px;
+  }
   .play-scid {
     display: flex;
     flex-flow: column;
