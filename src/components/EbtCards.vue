@@ -13,8 +13,11 @@
           :buffer-value="progressDuration"
           color="progress1" height="2px" />
         <div class="play-row">
+          <v-btn icon @click="clickBack" density="compact">
+            <v-icon size="small" icon="mdi-skip-previous" />
+          </v-btn>
           <v-btn icon @click="clickPlayPause" density="compact">
-            <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
+            <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
           </v-btn>
           <div class="play-scid" >
             <div>{{audioScid}}</div>
@@ -28,7 +31,10 @@
             </div>
           </div>
           <v-btn icon @click="clickPlay" density="compact">
-            <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
+            <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
+          </v-btn>
+          <v-btn icon @click="clickNext" density="compact">
+            <v-icon size="small" icon="mdi-skip-next" />
           </v-btn>
         </div><!-- play-row -->
       </div><!-- play-col -->
@@ -105,6 +111,34 @@
       }
     },
     methods: {
+      clickBack() {
+        let { audioElt, routeCard, audioSegments:segments, audioPlaying } = this;
+        if (audioPlaying) {
+          audioElt.currentTime = 0;
+        } else {
+          let { location, iSegment } = routeCard.incrementLocation({
+            segments,
+            delta:-1,
+          });
+          if (location) {
+            window.location.hash = routeCard.routeHash();
+          }
+        }
+      },
+      clickNext() {
+        let { audioElt, routeCard, audioSegments:segments, audioPlaying } = this;
+        if (audioPlaying) {
+          audioLet.pause();
+          audioElt.currentTime = 0;
+        } 
+        let { location, iSegment } = routeCard.incrementLocation({
+          segments,
+          delta:1,
+        });
+        if (location) {
+          window.location.hash = routeCard.routeHash();
+        }
+      },
       async audioEnded(evt) {
         let { routeCard, audioSegments:segments, settings, audioPlaying } = this;
         let { location, iSegment } = routeCard.incrementLocation({segments});
