@@ -284,7 +284,10 @@ export default class EbtCard {
         return null;
       }
       location[0] = segments[iSegNext].scid;
-      return location;
+      return {
+        location,
+        iSegment: iSegNext,
+      };
     }
   }
 

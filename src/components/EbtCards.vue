@@ -9,7 +9,7 @@
     >
       <div class="play-col">
         <v-progress-linear v-if="audioElt"
-          v-model="currentTime"
+          v-model="progressTime"
           :buffer-value="duration"
           color="progress1" height="2px" />
         <div class="play-row">
@@ -18,8 +18,8 @@
           </v-btn>
           <div class="play-scid" :title="duration/1000">
             <div>{{audioScid}}</div>
-            <div v-if="audioPlaying" class="currentTime">
-              {{ (currentTime/1000).toFixed(1) }} / 
+            <div v-if="audioPlaying" class="progressTime">
+              {{ (progressTime/1000).toFixed(1) }} / 
               {{ (duration/1000).toFixed(1) }}
             </div>
           </div>
@@ -70,7 +70,7 @@
         audioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
         duration: ref(0),
-        currentTime: ref(0),
+        progressTime: ref(0),
       }
     },
     mounted() {
@@ -100,7 +100,7 @@
     methods: {
       async audioEnded(evt) {
         let { routeCard, audioSegments:segments, settings, audioPlaying } = this;
-        let location = routeCard.incrementLocation({segments});
+        let { location } = routeCard.incrementLocation({segments});
         if (location) {
           window.location.hash = routeCard.routeHash();
         }
@@ -109,7 +109,7 @@
         } else {
           logger.info('EbtCards.audioEnded() done', {evt, });
           this.audioPlaying = AUDIO_INACTIVE;
-          this.currentTime = 0;
+          this.progressTime = 0;
         }
         nextTick(() => { settings.scrollToCard(routeCard); })
       },
@@ -144,15 +144,15 @@
           let msg = `EbtCards.playUrl()`;
           that.audioPlaying = audioPlaying;
           that.duration = (audioElt.duration*1000).toFixed();
-          let updateCurrentTime = ()=>{
-            that.currentTime = (audioElt.currentTime*1000).toFixed();
+          let updateProgressTime = ()=>{
+            that.progressTime = (audioElt.currentTime*1000).toFixed();
             if (that.audioPlaying) {
-              setTimeout(updateCurrentTime, 100);
+              setTimeout(updateProgressTime, 100);
             } else {
-              that.currentTime = 0;
+              that.progressTime = 0;
             }
           };
-          updateCurrentTime();
+          updateProgressTime();
           logger.info(msg, {url, audioElt});
         }).catch(e=>{
           logger.info(e);
@@ -259,7 +259,7 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
-  .currentTime {
+  .progressTime {
     font-weight: 400;
   }
 </style>

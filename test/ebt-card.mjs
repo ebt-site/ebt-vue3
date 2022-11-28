@@ -347,20 +347,28 @@ logger.logLevel = 'warn';
 
     // forward
     should.deepEqual(card.location, [ scids[0], lang, author, ]);
-    should.deepEqual(card.incrementLocation({segments, delta:1}), 
-      [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:1}), {
+      location: [ scids[1], lang, author, ],
+      iSegment: 1,
+    });
     should.deepEqual(card.location, [ scids[1], lang, author, ]);
-    should.deepEqual(card.incrementLocation({segments}), 
-      [ scids[2], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments}), {
+      location: [ scids[2], lang, author, ],
+      iSegment: 2,
+    });
     should.deepEqual(card.incrementLocation({segments}), null);
     should.deepEqual(card.location, [ scids[2], lang, author, ]);
 
     // backward
-    should.deepEqual(card.incrementLocation({segments, delta:-1}), 
-      [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), {
+      location: [ scids[1], lang, author, ],
+      iSegment: 1,
+    });
     should.deepEqual(card.location, [ scids[1], lang, author, ]);
-    should.deepEqual(card.incrementLocation({segments, delta:-1}), 
-      [ scids[0], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), {
+      location: [ scids[0], lang, author, ],
+      iSegment: 0,
+    });
     should.deepEqual(card.location, [ scids[0], lang, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
     should.deepEqual(card.location, [ scids[0], lang, author, ]);
