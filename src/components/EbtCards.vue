@@ -8,14 +8,20 @@
       dense
     >
       <div class="play-col">
-        <v-progress-linear :indeterminate="!!audioPlaying" 
+        <v-progress-linear v-if="audioElt"
+          v-model="currentTime"
+          :buffer-value="duration"
           color="progress1" height="2px" />
         <div class="play-row">
           <v-btn icon @click="clickPlayPause" density="compact">
             <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
           </v-btn>
-          <div class="play-scid">
-            {{audioScid}}
+          <div class="play-scid" :title="duration/1000">
+            <div>{{audioScid}}</div>
+            <div v-if="audioPlaying" class="currentTime">
+              {{ (currentTime/1000).toFixed(1) }} / 
+              {{ (duration/1000).toFixed(1) }}
+            </div>
           </div>
           <v-btn icon @click="clickPlay" density="compact">
             <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
@@ -47,6 +53,9 @@
   const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"
   const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
   const LENGTH_NOAUDIO = 5000; // actually 3761
+  const AUDIO_INACTIVE = 0;
+  const AUDIO_PLAY1 = 1;
+  const AUDIO_PLAYALL = 2;
 
   export default {
     setup() {
@@ -59,7 +68,9 @@
         routeCard: ref(undefined),
         audioElt: ref(undefined),
         audioUrl: ref(URL_NOAUDIO),
-        audioPlaying: ref(false),
+        audioPlaying: ref(AUDIO_INACTIVE),
+        duration: ref(0),
+        currentTime: ref(0),
       }
     },
     mounted() {
@@ -88,10 +99,18 @@
     },
     methods: {
       async audioEnded(evt) {
-        let { routeCard, audioSegments:segments, settings } = this;
-        routeCard.incrementLocation({segments});
-        logger.info('EbtCards.audioEnded', {evt, });
-        this.audioPlaying = false;
+        let { routeCard, audioSegments:segments, settings, audioPlaying } = this;
+        let location = routeCard.incrementLocation({segments});
+        if (location) {
+          window.location.hash = routeCard.routeHash();
+        }
+        if (location && this.audioPlaying === AUDIO_PLAYALL) {
+          logger.info('EbtCards.audioEnded() playing', {evt, location});
+        } else {
+          logger.info('EbtCards.audioEnded() done', {evt, });
+          this.audioPlaying = AUDIO_INACTIVE;
+          this.currentTime = 0;
+        }
         nextTick(() => { settings.scrollToCard(routeCard); })
       },
       audioEmptied(evt) {
@@ -99,28 +118,45 @@
       },
       async clickPlayPause() {
         logger.info("EbtCards.clickPlayPause()", window.location.hash);
-        this.playUrl(URL_NOAUDIO);
+        this.playUrl(URL_NOAUDIO, AUDIO_PLAY1);
       },
       async clickPlay() {
         logger.info("EbtCards.clickPlay()", window.location.hash);
-        this.playUrl(URL_NOAUDIO);
+        this.playUrl(URL_NOAUDIO, AUDIO_PLAYALL);
       },
-      async playUrl(url=URL_NOAUDIO) {
+      async playUrl(url=URL_NOAUDIO, audioPlaying=AUDIO_PLAY1) {
         let that = this;
-        let { audioElt } = this;
-        this.audioUrl = url;
+        let { audioElt, } = this;
 
-        if (audioElt) {
-          audioElt.play().then(res=>{
-            let msg = `EbtCards.playUrl() ${url}`;
-            that.audioPlaying = true;
-            logger.info(msg);
-          }).catch(e=>{
-            logger.info(e);
-          });
-        } else {
+        if (!audioElt) {
           logger.warn(`EbtCards.playUrl() audioElt?`);
+          return;
+        } 
+        if (this.audioPlaying) {
+          audioElt.pause();
+          audioElt.currentTime = 0;
+          this.audioPlaying = AUDIO_INACTIVE;
+          return;
         }
+
+        this.audioUrl = url;
+        audioElt.play().then(res=>{
+          let msg = `EbtCards.playUrl()`;
+          that.audioPlaying = audioPlaying;
+          that.duration = (audioElt.duration*1000).toFixed();
+          let updateCurrentTime = ()=>{
+            that.currentTime = (audioElt.currentTime*1000).toFixed();
+            if (that.audioPlaying) {
+              setTimeout(updateCurrentTime, 100);
+            } else {
+              that.currentTime = 0;
+            }
+          };
+          updateCurrentTime();
+          logger.info(msg, {url, audioElt});
+        }).catch(e=>{
+          logger.info(e);
+        });
       }, // playUrl()
       routeSuttaRef(route) {
         let hashParts = route.split("/");
@@ -214,10 +250,16 @@
     opacity: 1;
   }
   .play-scid {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     font-family: var(--ebt-sc-sans-font);
     font-size: larger;
     font-weight: 600;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+  }
+  .currentTime {
+    font-weight: 400;
   }
 </style>
