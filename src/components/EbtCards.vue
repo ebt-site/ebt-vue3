@@ -10,17 +10,21 @@
       <div class="play-col">
         <v-progress-linear v-if="audioElt"
           v-model="progressTime"
-          :buffer-value="duration"
+          :buffer-value="progressDuration"
           color="progress1" height="2px" />
         <div class="play-row">
           <v-btn icon @click="clickPlayPause" density="compact">
             <v-icon :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
           </v-btn>
-          <div class="play-scid" :title="duration/1000">
+          <div class="play-scid" >
             <div>{{audioScid}}</div>
-            <div v-if="audioPlaying" class="progressTime">
+            <div v-if="audioPlaying === AUDIO_PLAY1" class="progressTime">
               {{ (progressTime/1000).toFixed(1) }} / 
-              {{ (duration/1000).toFixed(1) }}
+              {{ (progressDuration/1000).toFixed(1) }}
+            </div>
+            <div v-if="audioPlaying === AUDIO_PLAYALL" class="progressTime">
+              {{ progressTime }} / 
+              {{ progressDuration }}
             </div>
           </div>
           <v-btn icon @click="clickPlay" density="compact">
@@ -69,8 +73,11 @@
         audioElt: ref(undefined),
         audioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
-        duration: ref(0),
+        progressDuration: ref(0),
         progressTime: ref(0),
+        AUDIO_INACTIVE,
+        AUDIO_PLAY1,
+        AUDIO_PLAYALL,
       }
     },
     mounted() {
@@ -100,7 +107,7 @@
     methods: {
       async audioEnded(evt) {
         let { routeCard, audioSegments:segments, settings, audioPlaying } = this;
-        let { location } = routeCard.incrementLocation({segments});
+        let { location, iSegment } = routeCard.incrementLocation({segments});
         if (location) {
           window.location.hash = routeCard.routeHash();
         }
@@ -126,7 +133,8 @@
       },
       async playUrl(url=URL_NOAUDIO, audioPlaying=AUDIO_PLAY1) {
         let that = this;
-        let { audioElt, } = this;
+        let { audioElt, audioSegments:segments, routeCard } = this;
+        let { iSegment } = routeCard.incrementLocation({ segments, delta: 0, });
 
         if (!audioElt) {
           logger.warn(`EbtCards.playUrl() audioElt?`);
@@ -143,9 +151,13 @@
         audioElt.play().then(res=>{
           let msg = `EbtCards.playUrl()`;
           that.audioPlaying = audioPlaying;
-          that.duration = (audioElt.duration*1000).toFixed();
+          that.progressDuration = audioPlaying === AUDIO_PLAY1
+            ? (audioElt.duration*1000).toFixed()
+            : segments.length;
           let updateProgressTime = ()=>{
-            that.progressTime = (audioElt.currentTime*1000).toFixed();
+            that.progressTime = audioPlaying === AUDIO_PLAY1
+              ? (audioElt.currentTime*1000).toFixed()
+              : iSegment;
             if (that.audioPlaying) {
               setTimeout(updateProgressTime, 100);
             } else {
