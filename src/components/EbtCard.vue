@@ -20,7 +20,10 @@
       <v-card-text>
         <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
         <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
-        <sutta-view :card="card" v-if="card.context===CONTEXT_SUTTA"/>
+        <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
+          :card="card" 
+          :routeCard="routeCard"
+        ></sutta-view>
         <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
       </v-card-text>
       <div class="debug-footer" v-if="showDev" >
@@ -57,9 +60,8 @@
 
   export default {
     props: {
-      card: {
-        type: Object,
-      },
+      card: { type: Object, },
+      routeCard: { type: Object },
     },
     setup() {
       const settings = useSettingsStore();

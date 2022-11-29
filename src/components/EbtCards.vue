@@ -1,7 +1,7 @@
 <template>
   <v-sheet id="ebt-cards" color="background" :class="cardsClass" >
     <div v-for="card in settings.cards">
-      <ebt-card-vue :card="card" />
+      <ebt-card-vue :card="card" :routeCard="routeCard"/>
     </div><!-- v-for card -->
     <sutta-player 
       :audioSegments="audioSegments"

@@ -2,6 +2,7 @@
   <v-bottom-navigation v-if="audioScid" 
     hide-on-scroll
     dense
+    class="audio-nav"
   >
     <div class="play-col">
       <v-progress-linear v-if="audioElt"
@@ -215,5 +216,11 @@
   }
   .progressTime {
     font-weight: 400;
+  }
+  .audio-nav {
+    background: rgba(var(--v-theme-audiobar), 0.50);
+  }
+  .audio-nav:hover {
+    background: rgba(var(--v-theme-audiobar), 1);
   }
 </style>

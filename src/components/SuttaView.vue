@@ -48,12 +48,6 @@
         </div>
       </div>
     </template>
-    <div v-if="settings.development" class="debug">
-      {{volatile.layout}}
-      {{suttaClass}}
-      {{langClass('trans')}}
-      {{currentScid}}
-    </div>
   </v-sheet>
 </template>
 
@@ -71,10 +65,8 @@
 
   export default {
     props: {
-      card: {
-        type: Object,
-        required: true,
-      },
+      card: { type: Object, required: true, },
+      routeCard: { type: Object, required: true },
     },
     setup() {
       const settings = useSettingsStore();
@@ -125,11 +117,11 @@
     },
     methods: {
       clickSeg(seg, evt) {
-        let { currentScid, card } = this;
+        let { routeCard, currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
-        if (currentScid === scid) {
+        if (currentScid === scid && routeCard === card) {
           if (className === 'ebt-example') {
             let pattern = encodeURIComponent(innerText);
             let hash = `#/search/${pattern}`
@@ -165,11 +157,12 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       segMatchedClass(seg) {
-        let { layout, card, currentScid } = this;
+        let { layout, card, currentScid, routeCard } = this;
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
-        let currentClass = seg.scid ===  currentScid ? "seg-current" : '';
-        return `${matchedClass} ${idClass} ${currentClass}`;
+        let currentClass = seg.scid === currentScid ? "seg-current" : '';
+        let routeClass = card === routeCard ? "seg-route" : "";
+        return `${matchedClass} ${idClass} ${currentClass} ${routeClass}`;
       },
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
@@ -254,7 +247,7 @@
   }
 </script>
 
-<style scoped>
+<style >
 .sutta {
   margin-left: auto;
   margin-right: auto;
@@ -307,10 +300,7 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
-  opacity: 0.80;
-}
-.seg-current .seg-text {
-  opacity: 1;
+  opacity: 0.85;
 }
 .seg-lang {
   margin-bottom: 0.3em;
@@ -351,9 +341,20 @@
   height: 1px;
 }
 .seg-current {
-  border: 2px dashed rgb(var(--v-theme-matched));
+  border: 2px dotted rgba(var(--v-theme-matched), 0.5);
   border-radius: 5px;
+}
+.seg-current .seg-text {
   opacity: 1;
+}
+.seg-route .seg-text{
+  opacity: 1;
+}
+.seg-route.seg-current {
+  border: 2px dotted rgba(var(--v-theme-matched), 1);
+}
+.seg-route.seg-current .ebt-example:hover {
+  cursor: pointer;
 }
 .tipitaka-nav {
   display: flex;
