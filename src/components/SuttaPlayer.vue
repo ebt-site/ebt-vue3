@@ -48,6 +48,7 @@
 <script>
   import { ref, nextTick } from "vue";
   import { SuttaRef } from 'scv-esm';
+  import { default as EbtSettings } from "../ebt-settings.mjs";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
@@ -74,6 +75,7 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         audioElt: ref(undefined),
+        audioUrls: ref([]),
         audioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
         progressDuration: ref(0),
@@ -115,8 +117,15 @@
           window.location.hash = routeCard.routeHash();
         }
       },
-      async audioEnded(evt) {
-        let { routeCard, audioSegments:segments, settings, audioPlaying } = this;
+      audioEnded(evt) {
+      /*
+        let { 
+          audioResolve, 
+          routeCard, 
+          audioSegments:segments, 
+          settings, 
+          audioPlaying,
+        } = this;
         let { location, iSegment } = routeCard.incrementLocation({segments});
         if (location) {
           window.location.hash = routeCard.routeHash();
@@ -124,22 +133,57 @@
         if (location && this.audioPlaying === AUDIO_PLAYALL) {
           logger.info('SuttaPlayer.audioEnded() playing', {evt, location});
         } else {
-          logger.info('SuttaPlayer.audioEnded() done', {evt, });
+          logger.info('SuttaPlayer.audioEnded() done', {evt, audioResolve});
           this.audioPlaying = AUDIO_INACTIVE;
           this.progressTime = 0;
         }
         nextTick(() => { settings.scrollToCard(routeCard); })
+      */
+        this.audioResolve();
+        this.audioResolve = undefined;
       },
       audioEmptied(evt) {
         logger.info('SuttaPlayer.audioEmptied', {evt});
       },
+      async playSegment() {
+        let { audioScid, routeCard, audioSegments:segments, settings, } = this;
+        logger.info("SuttaPlayer.playSegment()", audioScid);
+
+        await this.playUrl(URL_NOAUDIO, AUDIO_PLAY1);
+        if (this.audioPlaying) {
+          let { location, iSegment } = routeCard.incrementLocation({segments});
+          if (location) {
+            window.location.hash = routeCard.routeHash();
+          }
+          nextTick(() => { settings.scrollToCard(routeCard); })
+          logger.debug("SuttaPlayer.playSegment() DONE");
+        } else {
+          logger.debug("SuttaPlayer.playSegment() PAUSE");
+        }
+      },
+      async playBell(ips=this.settings.ips) {
+        let { settings, bellAudio } = this;
+        let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
+        logger.info(`SuttaPlayer.playBell()`, ipsChoice);
+        return this.playUrl(ipsChoice.url);
+      },
       async clickPlayPause() {
-        logger.info("SuttaPlayer.clickPlayPause()", window.location.hash);
-        this.playUrl(URL_NOAUDIO, AUDIO_PLAY1);
+        let { audioScid } = this;
+        logger.info("SuttaPlayer.clickPlayPause()", audioScid);
+        await this.playSegment();
+        this.audioPlaying = AUDIO_INACTIVE;
+        this.progressTime = 0;
       },
       async clickPlay() {
-        logger.info("SuttaPlayer.clickPlay()", window.location.hash);
-        this.playUrl(URL_NOAUDIO, AUDIO_PLAYALL);
+        let { audioScid } = this;
+        logger.info("SuttaPlayer.clickPlay()", audioScid);
+
+        await this.playSegment();
+        this.audioPlaying = AUDIO_INACTIVE;
+        await this.playBell();
+        this.audioPlaying = AUDIO_INACTIVE;
+        this.progressTime = 0;
+        logger.info("SuttaPlayer.clickPlay() done", audioScid);
       },
       async playUrl(url=URL_NOAUDIO, audioPlaying=AUDIO_PLAY1) {
         let that = this;
@@ -147,8 +191,9 @@
         let { iSegment } = routeCard.incrementLocation({ segments, delta: 0, });
 
         if (!audioElt) {
-          logger.warn(`SuttaPlayer.playUrl() audioElt?`);
-          return;
+          let msg = `SuttaPlayer.playUrl() audioElt?`;
+          logger.warn(msg);
+          throw new Error(msg);
         } 
         if (this.audioPlaying) {
           audioElt.pause();
@@ -158,27 +203,34 @@
         }
 
         this.audioUrl = url;
-        audioElt.play().then(res=>{
-          let msg = `SuttaPlayer.playUrl()`;
-          that.audioPlaying = audioPlaying;
-          that.progressDuration = audioPlaying === AUDIO_PLAY1
-            ? (audioElt.duration*1000).toFixed()
-            : segments.length;
-          let updateProgressTime = ()=>{
-            that.progressTime = audioPlaying === AUDIO_PLAY1
-              ? (audioElt.currentTime*1000).toFixed()
-              : iSegment;
-            if (that.audioPlaying) {
-              setTimeout(updateProgressTime, 100);
-            } else {
-              that.progressTime = 0;
-            }
-          };
-          updateProgressTime();
-          logger.info(msg, {url, audioElt});
-        }).catch(e=>{
-          logger.info(e);
-        });
+        let res;
+        logger.info("SuttaPlayer.playUrl()", {audioElt});
+        try {
+          await audioElt.play();
+          await new Promise((resolve,reject)=>{
+            that.audioResolve = resolve;
+            let msg = `SuttaPlayer.playUrl() ${url}`;
+            logger.info(msg);
+            that.audioPlaying = audioPlaying;
+            that.progressDuration = audioPlaying === AUDIO_PLAY1
+              ? (audioElt.duration*1000).toFixed()
+              : segments.length;
+            let updateProgressTime = ()=>{
+              that.progressTime = audioPlaying === AUDIO_PLAY1
+                ? (audioElt.currentTime*1000).toFixed()
+                : iSegment;
+              if (that.audioPlaying) {
+                setTimeout(updateProgressTime, 100);
+              } else {
+                that.progressTime = 0;
+              }
+            };
+            updateProgressTime();
+          });
+          logger.info("SuttaPlayer.playUrl() DONE");
+        } catch(e) {
+          alert(`playUrl(${url}), ${e.message}`);
+        }
       }, // playUrl()
     },
     computed: {
