@@ -35,13 +35,15 @@
         </v-btn>
       </div><!-- play-row -->
     </div><!-- play-col -->
-    <audio :ref="el => {audioElt = el}" 
-      @emptied = "audioEmptied"
-      @ended = "audioEnded"
-      preload=auto >
-      <source type="audio/mp3" :src="audioUrl" />
-      <p>{{ $t('ebt.noHTML5') }}</p>
-    </audio>
+    <template v-for="(audioUrl,i) in audioUrls">
+      <audio :ref="el => {audioElts[i] = el}" 
+        @emptied = "audioEmptied"
+        @ended = "audioEnded"
+        preload=auto >
+        <source type="audio/mp3" :src="audioUrl" />
+        <p>{{ $t('ebt.noHTML5') }}</p>
+      </audio>
+    </template>
   </v-bottom-navigation>
 </template>
 
@@ -74,12 +76,14 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        audioElt: ref(undefined),
         audioUrls: ref([]),
+        audioElts: ref([null,null,null]),
+        audioElt: ref(undefined),
         audioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
         progressDuration: ref(0),
         progressTime: ref(0),
+        segmentPlaying: ref(false),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
         AUDIO_PLAYALL,
@@ -89,10 +93,43 @@
       logger.info("SuttaPlayer.mounted", this);
     },
     methods: {
+      async clickPlayPause() {
+        let { audioPlaying, audioScid } = this;
+
+        if (this.stopAudio(true)) {
+          return;
+        } 
+
+        logger.info("SuttaPlayer.clickPlayPause()", audioScid);
+        this.audioUrls = [ URL_NOAUDIO ];
+        await new Promise(resolve=>nextTick(()=>resolve()));
+        console.log("DEBUG clickPlayPause", this.audioElts);
+        await this.playSegment();
+        this.stopAudio(true);
+      },
+      async clickPlay() {
+        let { audioPlaying, settings, audioScid } = this;
+        if (!audioPlaying) {
+          let { ips } = settings;
+          let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
+          logger.info("SuttaPlayer.clickPlay()", {audioScid});
+
+          this.audioUrls = [ URL_NOAUDIO, ipsChoice.url ];
+          await new Promise(resolve=>nextTick(()=>resolve()));
+
+          await this.playSegment();
+        }
+
+        this.stopAudio(true);
+      },
       clickBack() {
-        let { audioElt, routeCard, audioSegments:segments, audioPlaying } = this;
+        let { audioElts, routeCard, audioSegments:segments, audioPlaying } = this;
         if (audioPlaying) {
-          audioElt.currentTime = 0;
+          audioElts.forEach(elt=>{
+            if (elt) {
+              elt.currentTime = 0;
+            }
+          });
         } else {
           let { location, iSegment } = routeCard.incrementLocation({
             segments,
@@ -104,11 +141,8 @@
         }
       },
       clickNext() {
-        let { audioElt, routeCard, audioSegments:segments, audioPlaying } = this;
-        if (audioPlaying) {
-          audioLet.pause();
-          audioElt.currentTime = 0;
-        } 
+        let { audioElts, routeCard, audioSegments:segments, audioPlaying } = this;
+        this.stopAudio(true);
         let { location, iSegment } = routeCard.incrementLocation({
           segments,
           delta:1,
@@ -117,100 +151,85 @@
           window.location.hash = routeCard.routeHash();
         }
       },
+
       audioEnded(evt) {
-      /*
-        let { 
-          audioResolve, 
-          routeCard, 
-          audioSegments:segments, 
-          settings, 
-          audioPlaying,
-        } = this;
-        let { location, iSegment } = routeCard.incrementLocation({segments});
-        if (location) {
-          window.location.hash = routeCard.routeHash();
-        }
-        if (location && this.audioPlaying === AUDIO_PLAYALL) {
-          logger.info('SuttaPlayer.audioEnded() playing', {evt, location});
-        } else {
-          logger.info('SuttaPlayer.audioEnded() done', {evt, audioResolve});
-          this.audioPlaying = AUDIO_INACTIVE;
-          this.progressTime = 0;
-        }
-        nextTick(() => { settings.scrollToCard(routeCard); })
-      */
-        this.audioResolve();
-        this.audioResolve = undefined;
+        this.stopAudio(false);
       },
       audioEmptied(evt) {
         logger.info('SuttaPlayer.audioEmptied', {evt});
       },
+      stopAudio(stopSegment) {
+        let { audioElts } = this;
+        logger.info("SuttaPlayer.stopAudio()");
+        let stopped = !!this.audioPlaying;
+        this.audioPlaying = AUDIO_INACTIVE;
+        stopSegment && (this.segmentPlaying = false);
+        audioElts.forEach(elt => {
+          if (elt) {
+            elt.pause();
+            elt.currentTime = 0;
+          }
+        });
+        if (this.audioResolve) {
+          this.audioResolve();
+          this.audioResolve = undefined;
+        }
+        return stopped;
+      },
       async playSegment() {
-        let { audioScid, routeCard, audioSegments:segments, settings, } = this;
+        let { 
+          audioElts, 
+          audioScid, 
+          routeCard, 
+          audioSegments:segments, 
+          settings, 
+        } = this;
         logger.info("SuttaPlayer.playSegment()", audioScid);
 
-        await this.playUrl(URL_NOAUDIO, AUDIO_PLAY1);
-        if (this.audioPlaying) {
-          let { location, iSegment } = routeCard.incrementLocation({segments});
-          if (location) {
-            window.location.hash = routeCard.routeHash();
+        this.segmentPlaying = true;
+        for (let i=0; this.segmentPlaying && i < audioElts.length; i++) {
+          let audioElt = audioElts[i];
+          if (audioElt) {
+            await this.playAudio(audioElt, AUDIO_PLAY1);
+            if (this.audioPlaying) {
+              let { location, iSegment } = routeCard.incrementLocation({segments});
+              if (location) {
+                window.location.hash = routeCard.routeHash();
+              }
+              nextTick(() => { settings.scrollToCard(routeCard); })
+              logger.debug("SuttaPlayer.playSegment() DONE");
+            } else {
+              logger.debug("SuttaPlayer.playSegment() PAUSE");
+            }
           }
-          nextTick(() => { settings.scrollToCard(routeCard); })
-          logger.debug("SuttaPlayer.playSegment() DONE");
-        } else {
-          logger.debug("SuttaPlayer.playSegment() PAUSE");
         }
+        this.segmentPlaying = false;
       },
-      async playBell(ips=this.settings.ips) {
-        let { settings, bellAudio } = this;
-        let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
-        logger.info(`SuttaPlayer.playBell()`, ipsChoice);
-        return this.playUrl(ipsChoice.url);
-      },
-      async clickPlayPause() {
-        let { audioScid } = this;
-        logger.info("SuttaPlayer.clickPlayPause()", audioScid);
-        await this.playSegment();
-        this.audioPlaying = AUDIO_INACTIVE;
-        this.progressTime = 0;
-      },
-      async clickPlay() {
-        let { audioScid } = this;
-        logger.info("SuttaPlayer.clickPlay()", audioScid);
-
-        await this.playSegment();
-        this.audioPlaying = AUDIO_INACTIVE;
-        await this.playBell();
-        this.audioPlaying = AUDIO_INACTIVE;
-        this.progressTime = 0;
-        logger.info("SuttaPlayer.clickPlay() done", audioScid);
-      },
-      async playUrl(url=URL_NOAUDIO, audioPlaying=AUDIO_PLAY1) {
+      async playAudio(audioElt, audioPlaying=AUDIO_PLAY1) {
         let that = this;
-        let { audioElt, audioSegments:segments, routeCard } = this;
+        let { audioSegments:segments, routeCard } = this;
         let { iSegment } = routeCard.incrementLocation({ segments, delta: 0, });
 
         if (!audioElt) {
-          let msg = `SuttaPlayer.playUrl() audioElt?`;
+          let msg = `SuttaPlayer.playAudio() audioElt?`;
           logger.warn(msg);
           throw new Error(msg);
         } 
-        if (this.audioPlaying) {
-          audioElt.pause();
-          audioElt.currentTime = 0;
-          this.audioPlaying = AUDIO_INACTIVE;
-          return;
+        if (this.stopAudio()) {
+          let msg = `SuttaPlayer.playAudio() stopAudio?`;
+          logger.warn(msg);
+          throw new Error(msg);
         }
 
-        this.audioUrl = url;
         let res;
-        logger.info("SuttaPlayer.playUrl()", {audioElt});
+        logger.info("SuttaPlayer.playAudio()", {audioElt});
         try {
           await audioElt.play();
           await new Promise((resolve,reject)=>{
+            if (that.audioResolve) {
+              throw new Error(`SuttaPlayer.playAudio() audioResolve in progress`);
+            }
             that.audioResolve = resolve;
-            let msg = `SuttaPlayer.playUrl() ${url}`;
-            logger.info(msg);
             that.audioPlaying = audioPlaying;
             that.progressDuration = audioPlaying === AUDIO_PLAY1
               ? (audioElt.duration*1000).toFixed()
@@ -227,11 +246,11 @@
             };
             updateProgressTime();
           });
-          logger.info("SuttaPlayer.playUrl() DONE");
+          logger.info("SuttaPlayer.playAudio() DONE");
         } catch(e) {
-          alert(`playUrl(${url}), ${e.message}`);
+          alert(e.message);
         }
-      }, // playUrl()
+      }, // playAudio
     },
     computed: {
     },
@@ -270,7 +289,8 @@
     font-weight: 400;
   }
   .audio-nav {
-    background: rgba(var(--v-theme-audiobar), 0.50);
+    padding-top: 2px;
+    background: rgba(var(--v-theme-audiobar), 0.80);
   }
   .audio-nav:hover {
     background: rgba(var(--v-theme-audiobar), 1);

@@ -10,7 +10,6 @@
 :root {
   --focus-color: rgb(206, 132, 0);
   --focus-border: 2pt dashed;
-  --bottom-navigation-color: ;
   --ebt-sc-sans-font: "Skolar Sans PE", "Noto Sans", sans-serif;
   --ebt-sc-serif-font: "Skolar PE", "Noto Serif", "Skolar Sans PE", "Noto Sans", serif;
 }
