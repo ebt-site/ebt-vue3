@@ -44,6 +44,13 @@
         <p>{{ $t('ebt.noHTML5') }}</p>
       </audio>
     </template>
+    <audio :ref="el => {bellAudioElt = el}" 
+      @emptied = "audioEmptied"
+      @ended = "audioEnded"
+      preload=auto >
+      <source type="audio/mp3" :src="bellUrl" />
+      <p>{{ $t('ebt.noHTML5') }}</p>
+    </audio>
   </v-bottom-navigation>
 </template>
 
@@ -84,6 +91,7 @@
         progressDuration: ref(0),
         progressTime: ref(0),
         segmentPlaying: ref(false),
+        bellAudioElt: ref(null),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
         AUDIO_PLAYALL,
@@ -96,62 +104,81 @@
       async clickPlayPause() {
         let { audioPlaying, audioScid } = this;
 
-        if (this.stopAudio(true)) {
-          return;
+        if (audioPlaying) {
+          logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
+        } else {
+          logger.info("SuttaPlayer.clickPlayPause() PLAY", audioScid);
+          let completed = await this.playSegment(AUDIO_PLAY1);
+          completed && this.clickNext(); 
         } 
 
-        logger.info("SuttaPlayer.clickPlayPause()", audioScid);
-        this.audioUrls = [ URL_NOAUDIO ];
-        await new Promise(resolve=>nextTick(()=>resolve()));
-        console.log("DEBUG clickPlayPause", this.audioElts);
-        await this.playSegment();
         this.stopAudio(true);
       },
-      async clickPlay() {
-        let { audioPlaying, settings, audioScid } = this;
-        if (!audioPlaying) {
-          let { ips } = settings;
-          let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
-          logger.info("SuttaPlayer.clickPlay()", {audioScid});
+      async playToEnd() {
+        let { bellAudioElt, audioPlaying, audioScid } = this;
 
-          this.audioUrls = [ URL_NOAUDIO, ipsChoice.url ];
-          await new Promise(resolve=>nextTick(()=>resolve()));
-
-          await this.playSegment();
+        logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
+        let completed = false;
+        do {
+          completed = await this.playSegment(AUDIO_PLAYALL);
+        } while(completed && (await this.clickNext()));
+        if (completed) {
+          logger.info("SuttaPlayer.playToEnd() DONE");
+          await this.playAudio(bellAudioElt, AUDIO_PLAY1);
         }
-
         this.stopAudio(true);
+      },
+      clickPlay() {
+        let that = this;
+        let { bellAudioElt, audioPlaying, audioScid } = this;
+
+        if (audioPlaying) {
+          logger.info("SuttaPlayer.clickPlay() PAUSE", {audioScid});
+          this.stopAudio(true);
+        } else {
+          nextTick(()=>that.playToEnd());
+        }
       },
       clickBack() {
-        let { audioElts, routeCard, audioSegments:segments, audioPlaying } = this;
+        let { audioPlaying } = this;
         if (audioPlaying) {
-          audioElts.forEach(elt=>{
-            if (elt) {
-              elt.currentTime = 0;
-            }
-          });
+          this.resetSegmentAudio();
         } else {
-          let { location, iSegment } = routeCard.incrementLocation({
-            segments,
-            delta:-1,
-          });
-          if (location) {
-            window.location.hash = routeCard.routeHash();
-          }
+          this.incrementSegment(-1);
         }
       },
-      clickNext() {
-        let { audioElts, routeCard, audioSegments:segments, audioPlaying } = this;
-        this.stopAudio(true);
-        let { location, iSegment } = routeCard.incrementLocation({
-          segments,
-          delta:1,
-        });
-        if (location) {
-          window.location.hash = routeCard.routeHash();
+      async clickNext() {
+        let { audioPlaying } = this;
+        let incremented = false;
+        if (audioPlaying) {
+          this.stopAudio(true);
+        } else {
+          incremented = this.incrementSegment(1);
         }
+        await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
+
+        return incremented;
       },
 
+      resetSegmentAudio() {
+        let { audioElts, audioPlaying } = this;
+        audioElts.forEach(elt => {
+          if (elt) {
+            elt.currentTime = 0;
+          }
+        });
+      },
+      incrementSegment(delta) {
+        let { routeCard, audioSegments:segments, } = this;
+        let incRes = routeCard.incrementLocation({ segments, delta, });
+        if (incRes == null) {
+          return false; // at end
+        }
+        let { location, iSegment } = incRes;
+        window.location.hash = routeCard.routeHash();
+
+        return true; // incremented
+      },
       audioEnded(evt) {
         this.stopAudio(false);
       },
@@ -160,7 +187,7 @@
       },
       stopAudio(stopSegment) {
         let { audioElts } = this;
-        logger.info("SuttaPlayer.stopAudio()");
+        logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
         let stopped = !!this.audioPlaying;
         this.audioPlaying = AUDIO_INACTIVE;
         stopSegment && (this.segmentPlaying = false);
@@ -176,34 +203,39 @@
         }
         return stopped;
       },
-      async playSegment() {
-        let { 
+      async playSegment(audioPlaying=AUDIO_PLAY1) {
+        await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
+
+        var { 
           audioElts, 
           audioScid, 
           routeCard, 
           audioSegments:segments, 
           settings, 
+          bellAudioElt,
         } = this;
-        logger.info("SuttaPlayer.playSegment()", audioScid);
+
+        // TODO
+        this.audioUrls = audioPlaying === AUDIO_PLAY1
+          ? [ URL_NOAUDIO ]
+          : [ URL_NOAUDIO ]
+
+        logger.info(`SuttaPlayer.playSegment() ${audioScid})`);
 
         this.segmentPlaying = true;
         for (let i=0; this.segmentPlaying && i < audioElts.length; i++) {
           let audioElt = audioElts[i];
           if (audioElt) {
-            await this.playAudio(audioElt, AUDIO_PLAY1);
-            if (this.audioPlaying) {
-              let { location, iSegment } = routeCard.incrementLocation({segments});
-              if (location) {
-                window.location.hash = routeCard.routeHash();
-              }
-              nextTick(() => { settings.scrollToCard(routeCard); })
-              logger.debug("SuttaPlayer.playSegment() DONE");
-            } else {
-              logger.debug("SuttaPlayer.playSegment() PAUSE");
-            }
+            await this.playAudio(audioElt, audioPlaying);
           }
         }
+
+        if (!this.segmentPlaying) {
+          return false; // interrupted
+        }
+
         this.segmentPlaying = false;
+        return true; // completed
       },
       async playAudio(audioElt, audioPlaying=AUDIO_PLAY1) {
         let that = this;
@@ -222,7 +254,7 @@
         }
 
         let res;
-        logger.info("SuttaPlayer.playAudio()", {audioElt});
+        logger.debug("SuttaPlayer.playAudio()", {audioElt});
         try {
           await audioElt.play();
           await new Promise((resolve,reject)=>{
@@ -233,7 +265,7 @@
             that.audioPlaying = audioPlaying;
             that.progressDuration = audioPlaying === AUDIO_PLAY1
               ? (audioElt.duration*1000).toFixed()
-              : segments.length;
+              : segments.length-1;
             let updateProgressTime = ()=>{
               that.progressTime = audioPlaying === AUDIO_PLAY1
                 ? (audioElt.currentTime*1000).toFixed()
@@ -246,13 +278,18 @@
             };
             updateProgressTime();
           });
-          logger.info("SuttaPlayer.playAudio() DONE");
+          logger.debug("SuttaPlayer.playAudio() DONE");
         } catch(e) {
           alert(e.message);
         }
       }, // playAudio
     },
     computed: {
+      bellUrl(ctx) {
+        let { ips } = ctx.settings;
+        let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
+        return ipsChoice?.url;
+      },
     },
     components: {
     },

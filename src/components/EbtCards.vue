@@ -112,7 +112,7 @@
         }
 
         if (card.isOpen) {
-          logger.info(`${msg} => card`, {$route, to, from, card});
+          logger.debug(`${msg} => card`, {$route, to, from, card});
         } else {
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});

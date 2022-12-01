@@ -280,7 +280,7 @@ export default class EbtCard {
       let iSeg = segments.findIndex(seg=>seg.scid === scid);
       let iSegNext = iSeg + delta;
       if (iSeg<0 || iSegNext<0 || segments.length<=iSegNext) {
-        logger.warn("next segment out of bounds", {iSeg, iSegNext, delta});
+        logger.debug("next segment out of bounds", {iSeg, iSegNext, delta});
         return null;
       }
       location[0] = segments[iSegNext].scid;
