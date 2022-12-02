@@ -1,9 +1,8 @@
 <template>
   <v-dialog v-model="processing" class="ebt-processing-overlay">
-    <v-card loading class="ebt-processing">
+    <v-card loading class="ebt-processing" v-if="volatile.showWaiting">
       <v-card-title>
-        {{$t('ebt.processing')}}
-        {{volatile.waiting}}
+        {{volatile.waitingMsg}}
       </v-card-title>
       <v-card-text>
         <div class="text-center">
@@ -14,7 +13,9 @@
             color="progress1" 
             bg-color="progress2"
             class=""
-          />
+          >
+            {{volatile.waiting}}
+          </v-progress-circular>
         </div>
       </v-card-text>
     </v-card>
@@ -29,15 +30,14 @@ export default {
   components: {
   },
   data () {
-    let volatile = useVolatileStore();
     return {
-      volatile,
+      volatile: useVolatileStore(),
     }
   },
   methods: {
   },
   computed: {
-    processing() {
+    processing(ctx) {
       let { volatile } = this;
       return volatile.waiting > 0;
     },

@@ -84,51 +84,57 @@
         search && this.onSearch();
       },
       async onSearch() {
-        let { volatile, url, search, card, suttas, } = this;
+        let { $t, volatile, url, search, card, suttas, } = this;
         let res;
-        let waitingOld = volatile.waiting;
         if (!search) {
           return;
         }
         try {
-          logger.info('onSearch()', {url, volatile});
+          volatile.waitBegin($t('ebt.searching'));
+          logger.info('SearchView.onSearch()', url);
           this.results = undefined;
           card.location[0] = search;
-          volatile.waiting++;
           res = await volatile.fetchJson(url);
           this.results = res.ok
             ? await res.json()
             : res;
+
           window.location.hash = card.routeHash();
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mlDoc=>volatile.addMlDoc(mlDoc));
           for (let i = 0; i < mlDocs.length; i++) {
-            let mlDoc = mlDocs[i];
-            let { sutta_uid, lang, author_uid } = mlDoc;
-            let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
-            let idbData = await Idb.get(idbKey);
-            let idbSutta;
-            if (idbData) {
-              idbSutta = IdbSutta.create(idbData);
-              idbSutta.merge({mlDoc});
-            } else {
-              idbSutta = IdbSutta.create(mlDoc);
+            try {
+              let mlDoc = mlDocs[i];
+              let { sutta_uid, lang, author_uid } = mlDoc;
+              volatile.waitBegin($t('ebt.processing') + ' ' + sutta_uid);
+
+              let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
+              let idbData = await Idb.get(idbKey);
+              let idbSutta;
+              if (idbData) {
+                idbSutta = IdbSutta.create(idbData);
+                idbSutta.merge({mlDoc});
+              } else {
+                idbSutta = IdbSutta.create(mlDoc);
+              }
+              suttas.saveIdbSutta(idbSutta);
+              let result = card.data[i];
+              result.segsMatched = idbSutta.segments.reduce((a,v)=>{
+                return a + (v.matched ? 1 : 0);
+              }, 0);
+              result.showMatched = Math.min(3, result.segsMatched);
+              delete result.sections;
+              result.segments = idbSutta.segments;
+            } finally {
+              volatile.waitEnd();
             }
-            suttas.saveIdbSutta(idbSutta);
-            let result = card.data[i];
-            result.segsMatched = idbSutta.segments.reduce((a,v)=>{
-              return a + (v.matched ? 1 : 0);
-            }, 0);
-            result.showMatched = Math.min(3, result.segsMatched);
-            delete result.sections;
-            result.segments = idbSutta.segments;
           }
         } catch(e) {
           console.error("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url} ${e.message}`;
         } finally {
-          volatile.waiting = waitingOld;
+          volatile.waitEnd();
         }
       },
       updateSearch(search) {

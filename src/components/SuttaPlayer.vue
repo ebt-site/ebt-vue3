@@ -35,15 +35,6 @@
         </v-btn>
       </div><!-- play-row -->
     </div><!-- play-col -->
-    <!--template v-for="(audioUrl,i) in audioUrls">
-      <audio :ref="el => {audioElts[i] = el}" 
-        @emptied = "audioEmptied"
-        @ended = "audioEnded"
-        preload=auto >
-        <source type="audio/mp3" :src="audioUrl" />
-        <p>{{ $t('ebt.noHTML5') }}</p>
-      </audio>
-    </template-->
     <audio :ref="el => {pliAudioElt = el}" 
       @emptied = "audioEmptied"
       @ended = "audioEnded"
@@ -99,8 +90,6 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        audioUrls: ref([]),
-        audioElts: ref([null,null,null]),
         audioElt: ref(undefined),
         pliAudioElt: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
@@ -161,7 +150,7 @@
       },
       clickPlay() {
         let that = this;
-        let { bellAudioElt, audioPlaying, audioScid } = this;
+        let { audioPlaying, audioScid } = this;
 
         if (audioPlaying) {
           logger.info("SuttaPlayer.clickPlay() PAUSE", {audioScid});
@@ -192,7 +181,7 @@
       },
 
       resetSegmentAudio() {
-        let { audioElts, audioPlaying } = this;
+        let { audioElts } = this;
         audioElts.forEach(elt => {
           if (elt) {
             elt.currentTime = 0;
@@ -235,7 +224,7 @@
         return stopped;
       },
       async bindSegmentAudio() {
-        let { volatile, settings, routeCard } = this;
+        let { $t, volatile, settings, routeCard } = this;
         let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
         let [ scid, lang, author ] = routeCard.location;
         let suttaRef = SuttaRef.create(scid, langTrans);
@@ -252,41 +241,49 @@
           vnameTrans,
         ].join('/'); 
 
-        let playJson = await volatile.fetchJson(url);
-        let { audio } = playJson.segment;
+        try {
+          volatile.waitBegin($t('ebt.loadingAudio'));
 
-        let audioUrls = [];
-        if (settings.showPali) {
-          this.pliAudioUrl = [
-            serverUrl,
-            'audio',
-            sutta_uid,
-            'pli',
-            author,
-            vnameRoot,
-            audio.pli,
-          ].join('/');
-          audioUrls.push(this.pliiAudioUrl);
-        }
-        if (settings.showTrans) {
-          this.transAudioUrl = [
-            serverUrl,
-            'audio',
-            sutta_uid,
-            lang,
-            author,
-            vnameTrans,
-            audio[lang],
-          ].join('/');
-          audioUrls.push(this.tansAudioUrl);
-        }
-        logger.info("SuttaPlay.bindSegmentAudio()", audioUrls);
+          let playJson = await volatile.fetchJson(url);
+          let { segment } = playJson;
 
-        return audioUrls;
+          if (settings.showPali) {
+            if (segment.pli) {
+              this.pliAudioUrl = [
+                serverUrl,
+                'audio',
+                sutta_uid,
+                'pli',
+                author,
+                vnameRoot,
+                segment.audio.pli,
+              ].join('/');
+            } else {
+              this.pliAudioUrl = URL_NOAUDIO;
+            }
+          }
+          if (settings.showTrans) {
+            if (segment[lang]) {
+              this.transAudioUrl = [
+                serverUrl,
+                'audio',
+                sutta_uid,
+                lang,
+                author,
+                vnameTrans,
+                segment.audio[lang],
+              ].join('/');
+            } else {
+              this.transAudioUrl = URL_NOAUDIO;
+            }
+          }
+          logger.info("SuttaPlay.bindSegmentAudio()");
+        } finally {
+          volatile.waitEnd();
+        }
       },
       async playSegment(audioPlaying=AUDIO_PLAY1) {
         let { 
-          audioElts, 
           routeCard, 
           audioSegments:segments, 
           settings, 
@@ -297,20 +294,11 @@
         } = this;
         let audioScid = routeCard.location[0]; // avoid Vue sync lag
 
-        let audioUrls = await this.bindSegmentAudio();
-
-        // TODO
-        this.audioUrls = audioUrls;
+        await this.bindSegmentAudio();
 
         logger.info(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
-        //for (let i=0; this.segmentPlaying && i < audioElts.length; i++) {
-          //let audioElt = audioElts[i];
-          //if (audioElt) {
-            //await this.playAudio(audioElt, audioPlaying);
-          //}
-        //}
         if (this.segmentPlaying && settings.showPali) {
           await this.playAudio(pliAudioElt, audioPlaying);
         }
@@ -374,6 +362,11 @@
       }, // playAudio
     },
     computed: {
+      audioElts(ctx) {
+        let { transAudioElt, pliAudioElt, bellAudioElt } = ctx;
+        return [ transAudioElt, pliAudioElt, bellAudioElt ]
+          .filter(e=>!!e);
+      },
       bellUrl(ctx) {
         let { ips } = ctx.settings;
         let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];

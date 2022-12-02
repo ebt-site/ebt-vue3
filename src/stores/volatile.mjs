@@ -10,6 +10,9 @@ const layout = ref();
 const showSettings = ref(false);
 const INITIAL_STATE = {
   waiting: 0,
+  waitingMsg: ref('...'),
+  waitingDelay: ref(500),
+  showWaiting: ref(false),
   delayedWaiting: 0,
   suttas,
   showSettings,
@@ -38,6 +41,23 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
+    waitBegin(msg) {
+      msg && (this.waitingMsg = msg);
+      if (this.waiting === 0) {
+        setTimeout(()=>{
+          if (this.waiting > 0) {
+            this.showWaiting = true;
+          }
+        }, this.waitingDelay);
+      }
+      this.waiting++;
+    },
+    waitEnd() {
+      this.waiting--;
+      if (this.waiting <= 0) {
+        this.showWaiting = false;
+      }
+    },
     addMlDoc(mld) {
       let { sutta_uid, lang, author_uid:author } = mld || {};
       let suttaRef = SuttaRef.create({sutta_uid, lang, author});
@@ -52,22 +72,19 @@ export const useVolatileStore = defineStore('volatile', {
     },
     async fetch(url, options={}) {
       let res;
-      let { waitingDelay=100 } = options;
       try {
-        setTimeout(()=>this.waiting++, waitingDelay);
-
-        logger.info('volatile.fetch() url:', url);
+        this.waitBegin();
+        logger.info('volatile.fetch()', url);
         let fetchOpts = Object.assign({
     //      mode: 'no-cors',
         }, options);
         res = await fetch(url, fetchOpts);
-        logger.debug('volatile()', res);
-        return res;
+        logger.debug('volatile.fetch() =>', res);
       } catch(e) {
         logger.error("volatile.fetch() ERROR:", res, e);
         res = { error: `ERROR: ${url.value} ${e.message}` };
       } finally {
-        this.waiting--;
+        this.waitEnd();
       }
       return res;
     },
