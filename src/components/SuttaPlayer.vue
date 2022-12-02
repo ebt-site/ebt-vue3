@@ -35,7 +35,7 @@
         </v-btn>
       </div><!-- play-row -->
     </div><!-- play-col -->
-    <template v-for="(audioUrl,i) in audioUrls">
+    <!--template v-for="(audioUrl,i) in audioUrls">
       <audio :ref="el => {audioElts[i] = el}" 
         @emptied = "audioEmptied"
         @ended = "audioEnded"
@@ -43,7 +43,23 @@
         <source type="audio/mp3" :src="audioUrl" />
         <p>{{ $t('ebt.noHTML5') }}</p>
       </audio>
-    </template>
+    </template-->
+    <audio :ref="el => {pliAudioElt = el}" 
+      @emptied = "audioEmptied"
+      @ended = "audioEnded"
+      :src="pliAudioUrl"
+      preload=auto >
+      <source type="audio/mp3" :src="pliAudioUrl" />
+      <p>{{ $t('ebt.noHTML5') }}</p>
+    </audio>
+    <audio :ref="el => {transAudioElt = el}" 
+      @emptied = "audioEmptied"
+      @ended = "audioEnded"
+      :src="transAudioUrl"
+      preload=auto >
+      <source type="audio/mp3" :src="transAudioUrl" />
+      <p>{{ $t('ebt.noHTML5') }}</p>
+    </audio>
     <audio :ref="el => {bellAudioElt = el}" 
       @emptied = "audioEmptied"
       @ended = "audioEnded"
@@ -86,7 +102,10 @@
         audioUrls: ref([]),
         audioElts: ref([null,null,null]),
         audioElt: ref(undefined),
-        audioUrl: ref(URL_NOAUDIO),
+        pliAudioElt: ref(undefined),
+        pliAudioUrl: ref(URL_NOAUDIO),
+        transAudioElt: ref(undefined),
+        transAudioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
         progressDuration: ref(0),
         progressTime: ref(0),
@@ -101,18 +120,30 @@
       logger.info("SuttaPlayer.mounted", this);
     },
     methods: {
+      async playOne() {
+        let { bellAudioElt, audioPlaying, audioScid } = this;
+
+        logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
+        let completed = await this.playSegment(AUDIO_PLAY1);
+        if (!completed) {
+          logger.info("SuttaPlayer.playOne() INTERRUPTED");
+        } else if (await this.clickNext()) {
+          logger.info("SuttaPlayer.playOne() OK");
+        } else {
+          logger.info("SuttaPlayer.playOne() END");
+          await this.playAudio(bellAudioElt, AUDIO_PLAY1);
+        }
+        this.stopAudio(true);
+      },
       async clickPlayPause() {
         let { audioPlaying, audioScid } = this;
 
         if (audioPlaying) {
           logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
+          this.stopAudio(true);
         } else {
-          logger.info("SuttaPlayer.clickPlayPause() PLAY", audioScid);
-          let completed = await this.playSegment(AUDIO_PLAY1);
-          completed && this.clickNext(); 
+          this.playOne();
         } 
-
-        this.stopAudio(true);
       },
       async playToEnd() {
         let { bellAudioElt, audioPlaying, audioScid } = this;
@@ -123,7 +154,7 @@
           completed = await this.playSegment(AUDIO_PLAYALL);
         } while(completed && (await this.clickNext()));
         if (completed) {
-          logger.info("SuttaPlayer.playToEnd() DONE");
+          logger.info("SuttaPlayer.playToEnd() END");
           await this.playAudio(bellAudioElt, AUDIO_PLAY1);
         }
         this.stopAudio(true);
@@ -203,31 +234,89 @@
         }
         return stopped;
       },
-      async playSegment(audioPlaying=AUDIO_PLAY1) {
-        await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
+      async bindSegmentAudio() {
+        let { volatile, settings, routeCard } = this;
+        let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
+        let [ scid, lang, author ] = routeCard.location;
+        let suttaRef = SuttaRef.create(scid, langTrans);
+        let { sutta_uid, segnum } = suttaRef;
 
-        var { 
+        let url = [ 
+          serverUrl, 
+          'play', 
+          'segment', 
+          sutta_uid,
+          lang,
+          author,
+          encodeURIComponent(scid), 
+          vnameTrans,
+        ].join('/'); 
+
+        let playJson = await volatile.fetchJson(url);
+        let { audio } = playJson.segment;
+
+        let audioUrls = [];
+        if (settings.showPali) {
+          this.pliAudioUrl = [
+            serverUrl,
+            'audio',
+            sutta_uid,
+            'pli',
+            author,
+            vnameRoot,
+            audio.pli,
+          ].join('/');
+          audioUrls.push(this.pliiAudioUrl);
+        }
+        if (settings.showTrans) {
+          this.transAudioUrl = [
+            serverUrl,
+            'audio',
+            sutta_uid,
+            lang,
+            author,
+            vnameTrans,
+            audio[lang],
+          ].join('/');
+          audioUrls.push(this.tansAudioUrl);
+        }
+        logger.info("SuttaPlay.bindSegmentAudio()", audioUrls);
+
+        return audioUrls;
+      },
+      async playSegment(audioPlaying=AUDIO_PLAY1) {
+        let { 
           audioElts, 
-          audioScid, 
           routeCard, 
           audioSegments:segments, 
           settings, 
+          volatile,
           bellAudioElt,
+          pliAudioElt,
+          transAudioElt,
         } = this;
+        let audioScid = routeCard.location[0]; // avoid Vue sync lag
+
+        let audioUrls = await this.bindSegmentAudio();
 
         // TODO
-        this.audioUrls = audioPlaying === AUDIO_PLAY1
-          ? [ URL_NOAUDIO ]
-          : [ URL_NOAUDIO ]
+        this.audioUrls = audioUrls;
 
-        logger.info(`SuttaPlayer.playSegment() ${audioScid})`);
+        logger.info(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
-        for (let i=0; this.segmentPlaying && i < audioElts.length; i++) {
-          let audioElt = audioElts[i];
-          if (audioElt) {
-            await this.playAudio(audioElt, audioPlaying);
-          }
+        //for (let i=0; this.segmentPlaying && i < audioElts.length; i++) {
+          //let audioElt = audioElts[i];
+          //if (audioElt) {
+            //await this.playAudio(audioElt, audioPlaying);
+          //}
+        //}
+        if (this.segmentPlaying && settings.showPali) {
+          await this.playAudio(pliAudioElt, audioPlaying);
+        }
+
+        if (this.segmentPlaying && settings.showTrans) {
+          await this.playAudio(transAudioElt, audioPlaying);
         }
 
         if (!this.segmentPlaying) {
