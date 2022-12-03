@@ -1,6 +1,9 @@
 <template>
-  <v-dialog v-model="processing" class="ebt-processing-overlay">
-    <v-card loading class="ebt-processing" v-if="volatile.showWaiting">
+  <v-dialog v-if="volatile.showWaiting"  
+    v-model="processing" 
+    class="ebt-processing-overlay"
+  >
+    <v-card loading class="ebt-processing" >
       <v-card-title>
         {{volatile.waitingMsg}}
       </v-card-title>

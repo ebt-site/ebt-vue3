@@ -2,13 +2,17 @@
   <v-bottom-navigation v-if="audioScid" 
     hide-on-scroll
     dense
+    dark
+    bg-color="audiobar"
     class="audio-nav"
   >
     <div class="play-col">
-      <v-progress-linear v-if="audioElt"
-        v-model="progressTime"
-        :buffer-value="progressDuration"
-        color="progress1" height="2px" />
+      <v-progress-linear 
+        :model-value="segmentPercent"
+        :buffer-value="100"
+        color="progress1" 
+        bg-color="progress2"
+        height="2px" />
       <div class="play-row">
         <v-btn icon @click="clickBack" density="compact">
           <v-icon size="small" icon="mdi-skip-previous" />
@@ -18,13 +22,9 @@
         </v-btn>
         <div class="play-scid" >
           <div>{{audioScid}}</div>
-          <div v-if="audioPlaying === AUDIO_PLAY1" class="progressTime">
-            {{ (progressTime/1000).toFixed(1) }} / 
-            {{ (progressDuration/1000).toFixed(1) }}
-          </div>
-          <div v-if="audioPlaying === AUDIO_PLAYALL" class="progressTime">
-            {{ progressTime }} / 
-            {{ progressDuration }}
+          <div v-if="audioPlaying" class="audioElapsed">
+            {{ audioElapsed.toFixed(1) }} / 
+            {{ audioDuration.toFixed(1) }}
           </div>
         </div>
         <v-btn icon @click="clickPlay" density="compact">
@@ -36,7 +36,6 @@
       </div><!-- play-row -->
     </div><!-- play-col -->
     <audio :ref="el => {pliAudioElt = el}" 
-      @emptied = "audioEmptied"
       @ended = "audioEnded"
       :src="pliAudioUrl"
       preload=auto >
@@ -44,7 +43,6 @@
       <p>{{ $t('ebt.noHTML5') }}</p>
     </audio>
     <audio :ref="el => {transAudioElt = el}" 
-      @emptied = "audioEmptied"
       @ended = "audioEnded"
       :src="transAudioUrl"
       preload=auto >
@@ -52,8 +50,8 @@
       <p>{{ $t('ebt.noHTML5') }}</p>
     </audio>
     <audio :ref="el => {bellAudioElt = el}" 
-      @emptied = "audioEmptied"
       @ended = "audioEnded"
+      :src="bellUrl"
       preload=auto >
       <source type="audio/mp3" :src="bellUrl" />
       <p>{{ $t('ebt.noHTML5') }}</p>
@@ -84,20 +82,20 @@
       audioScid: { type: String, },
       audioSegments: { type: Object, },
       routeCard: { type: Object, },
+      iSegment: { type: Number },
     },
     setup() {
       return {
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        audioElt: ref(undefined),
         pliAudioElt: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioElt: ref(undefined),
         transAudioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
-        progressDuration: ref(0),
-        progressTime: ref(0),
+        audioDuration: ref(0),
+        audioElapsed: ref(0),
         segmentPlaying: ref(false),
         bellAudioElt: ref(null),
         AUDIO_INACTIVE,
@@ -194,22 +192,20 @@
         if (incRes == null) {
           return false; // at end
         }
-        let { location, iSegment } = incRes;
         window.location.hash = routeCard.routeHash();
 
         return true; // incremented
       },
       audioEnded(evt) {
         this.stopAudio(false);
-      },
-      audioEmptied(evt) {
-        logger.info('SuttaPlayer.audioEmptied', {evt});
+        logger.debug('SuttaPlayer.audioEnded', {evt});
       },
       stopAudio(stopSegment) {
         let { audioElts } = this;
         logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
         let stopped = !!this.audioPlaying;
         this.audioPlaying = AUDIO_INACTIVE;
+        this.audioElapsed = 0;
         stopSegment && (this.segmentPlaying = false);
         audioElts.forEach(elt => {
           if (elt) {
@@ -332,6 +328,7 @@
 
         let res;
         logger.debug("SuttaPlayer.playAudio()", {audioElt});
+        let audioInterval = null;
         try {
           await audioElt.play();
           await new Promise((resolve,reject)=>{
@@ -340,28 +337,24 @@
             }
             that.audioResolve = resolve;
             that.audioPlaying = audioPlaying;
-            that.progressDuration = audioPlaying === AUDIO_PLAY1
-              ? (audioElt.duration*1000).toFixed()
-              : segments.length-1;
-            let updateProgressTime = ()=>{
-              that.progressTime = audioPlaying === AUDIO_PLAY1
-                ? (audioElt.currentTime*1000).toFixed()
-                : iSegment;
-              if (that.audioPlaying) {
-                setTimeout(updateProgressTime, 100);
-              } else {
-                that.progressTime = 0;
-              }
-            };
-            updateProgressTime();
+            that.audioDuration = audioElt.duration;
+            audioInterval = setInterval(()=>{
+              that.audioElapsed = audioElt.currentTime;
+            });
           });
           logger.debug("SuttaPlayer.playAudio() DONE");
         } catch(e) {
           alert(e.message);
+        } finally {
+          audioInterval && clearInterval(audioInterval);
         }
       }, // playAudio
     },
     computed: {
+      segmentPercent(ctx) {
+        let { iSegment, audioSegments } = ctx;
+        return (iSegment+1)*100 / audioSegments.length+1;
+      },
       audioElts(ctx) {
         let { transAudioElt, pliAudioElt, bellAudioElt } = ctx;
         return [ transAudioElt, pliAudioElt, bellAudioElt ]
@@ -404,14 +397,14 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
-  .progressTime {
+  .audioElapsed {
     font-weight: 400;
   }
   .audio-nav {
     padding-top: 2px;
-    background: rgba(var(--v-theme-audiobar), 0.80);
+    opacity:0.8;
   }
   .audio-nav:hover {
-    background: rgba(var(--v-theme-audiobar), 1);
+    opacity: 1;
   }
 </style>

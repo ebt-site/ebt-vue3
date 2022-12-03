@@ -7,6 +7,7 @@
       :audioSegments="audioSegments"
       :routeCard="routeCard"
       :audioScid="audioScid"
+      :iSegment="iSegment"
     />
   </v-sheet>
 </template>
@@ -28,6 +29,7 @@
         settings: useSettingsStore(),
         audioScid: ref(undefined),
         audioSegments: ref(undefined),
+        iSegment: ref(0),
         routeCard: ref(undefined),
       }
     },
@@ -72,10 +74,14 @@
           let suttaRef = this.routeSuttaRef(route);
           let idbSutta = await suttas.loadIdbSutta(suttaRef);
           let { sutta_uid, segnum } = suttaRef;
+          let { segments } = idbSutta;
+          let { iSegment } = routeCard.incrementLocation({segments, delta:0});
           this.audioScid =  segnum ? `${sutta_uid}:${segnum}` : sutta_uid;
-          this.audioSegments = idbSutta.segments;
+          this.audioSegments = segments;
+          this.iSegment = iSegment;
         } else {
           this.audioScid = null;
+          this.iSegment = 0;
           this.audioSegments = null;
         }
       },

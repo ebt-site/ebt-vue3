@@ -46,7 +46,7 @@ const vuetifyOpts = {
           placeholder: "#00FFFF",
           expansion: colors.grey.darken2,
           progress1: COLOR_SAFFRON,
-          progress2: "#eeeeee",
+          progress2: "#ffffff",
           audiobar: colors.brown.darken4,
         },
       },
