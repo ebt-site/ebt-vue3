@@ -363,7 +363,7 @@
       bellUrl(ctx) {
         let { ips } = ctx.settings;
         let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
-        return ipsChoice?.url;
+        return ipsChoice?.url?.substring(1);
       },
     },
     components: {
