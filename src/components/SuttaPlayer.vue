@@ -273,7 +273,7 @@
               this.transAudioUrl = URL_NOAUDIO;
             }
           }
-          logger.info("SuttaPlay.bindSegmentAudio()");
+          logger.debug("SuttaPlay.bindSegmentAudio()");
         } finally {
           volatile.waitEnd();
         }
@@ -292,7 +292,7 @@
 
         await this.bindSegmentAudio();
 
-        logger.info(`SuttaPlayer.playSegment() ${audioScid}`);
+        logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
         if (this.segmentPlaying && settings.showPali) {

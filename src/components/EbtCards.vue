@@ -75,8 +75,9 @@
           let idbSutta = await suttas.loadIdbSutta(suttaRef);
           let { sutta_uid, segnum } = suttaRef;
           let { segments } = idbSutta;
-          let { iSegment } = routeCard.incrementLocation({segments, delta:0});
-          this.audioScid =  segnum ? `${sutta_uid}:${segnum}` : sutta_uid;
+          let incRes = routeCard.incrementLocation({segments, delta:0});
+          let { iSegment=0 } = incRes || {};
+          this.audioScid =  segments[iSegment].scid;
           this.audioSegments = segments;
           this.iSegment = iSegment;
         } else {

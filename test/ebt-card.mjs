@@ -373,4 +373,56 @@ logger.logLevel = 'warn';
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
     should.deepEqual(card.location, [ scids[0], lang, author, ]);
   });
+  it('TESTTESTincrementLocation() ranged sutta', ()=>{
+    let context = 'sutta';
+    let suid = 'sn34.1';
+    let scids = [ 
+      'dhp1:1.0', 
+      'dhp1:1.1', 
+      'dhp2:1.0', 
+      'dhp2:1.1', 
+    ];
+    let segments = scids.map(scid => ({scid}));
+    let lang = "en";
+    let author = "sujato";
+    let location = [ segments[0].scid, lang, author ];
+    let card = new EbtCard({context, location});
+
+    // forward
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:1}), {
+      location: [ scids[1], lang, author, ],
+      iSegment: 1,
+    });
+    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments}), {
+      location: [ scids[2], lang, author, ],
+      iSegment: 2,
+    });
+    should.deepEqual(card.location, [ scids[2], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments}), {
+      location: [ scids[3], lang, author, ],
+      iSegment: 3,
+    });
+    should.deepEqual(card.incrementLocation({segments}), null);
+    should.deepEqual(card.location, [ scids[3], lang, author, ]);
+
+    // backward
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), {
+      location: [ scids[2], lang, author, ],
+      iSegment: 2,
+    });
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), {
+      location: [ scids[1], lang, author, ],
+      iSegment: 1,
+    });
+    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), {
+      location: [ scids[0], lang, author, ],
+      iSegment: 0,
+    });
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
+    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+  });
 });

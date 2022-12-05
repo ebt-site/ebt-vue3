@@ -244,7 +244,7 @@ const TESTMLDOC = {
     );
     should(dstSutta.segments.length).equal(4);
   });
-  it("TESTTESThighlightExamples()", ()=>{
+  it("highlightExamples()", ()=>{
     let suttaBefore = IdbSutta.create(TESTMLDOC);
     let suttaAfter = IdbSutta.create(TESTMLDOC);
     suttaAfter.highlightExamples({lang:'en'});

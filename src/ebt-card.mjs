@@ -269,15 +269,11 @@ export default class EbtCard {
     let { location, context } = this;
 
     if (context === CONTEXT_SUTTA) {
-      let [ id, lang, author ] = location;
-      let suttaRef = SuttaRef.create({sutta_uid:id, lang, author});
-      if (suttaRef == null) {
-        logger.warn("no suttaref");
-        return null;
-      }
-      let { sutta_uid, segnum=segments[0].scid } = suttaRef;
-      let scid = `${sutta_uid}:${segnum}`;
+      let [ scid, lang, author ] = location;
       let iSeg = segments.findIndex(seg=>seg.scid === scid);
+      if (iSeg < 0) {
+        iSeg = 0;
+      }
       let iSegNext = iSeg + delta;
       if (iSeg<0 || iSegNext<0 || segments.length<=iSegNext) {
         logger.debug("next segment out of bounds", {iSeg, iSegNext, delta});

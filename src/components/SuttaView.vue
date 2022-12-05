@@ -190,12 +190,7 @@
       },
       currentScid(ctx) {
         let { card } = ctx;
-        let suttaRef = SuttaRef.create(card.location[0]);
-        if (suttaRef == null) {
-          return 'currentScid?'
-        }
-        let { sutta_uid, segnum } = suttaRef;
-        return `${sutta_uid}:${segnum}`;
+        return card.location[0];
       },
       suttaClass(ctx) {
         let { nCols, volatile } = ctx;
