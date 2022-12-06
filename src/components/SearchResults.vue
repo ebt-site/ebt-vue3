@@ -92,6 +92,11 @@
     },
     methods: {
       matchedSegments(result) {
+        let segments = result?.segments;
+        if (segments == null) {
+          console.log("DEBUG matchedSegments");
+          return [];
+        }
         return result.segments
           .filter(seg=>seg.matched)
           .slice(0,result.showMatched);

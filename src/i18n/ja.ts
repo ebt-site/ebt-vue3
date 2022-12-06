@@ -227,6 +227,7 @@ export default {
     "inspireMe": "心に響く経典を！",
     "languageCode": "日本語 / JA",
     "languages": "言語",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "Home",

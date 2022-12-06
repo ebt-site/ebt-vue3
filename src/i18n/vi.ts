@@ -227,6 +227,7 @@ export default {
     "inspireMe": "Truyền linh cảm cho tôi!",
     "languageCode": "Tiếng Việt / VI",
     "languages": "Ngôn ngữ",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

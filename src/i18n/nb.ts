@@ -224,6 +224,7 @@ export default {
     "inspireMe": "Inspirer meg!",
     "languageCode": "Norsk / NB",
     "languages": "Språk",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

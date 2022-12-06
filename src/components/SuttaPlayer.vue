@@ -61,13 +61,15 @@
 
 <script>
   import { ref, nextTick } from "vue";
-  import { SuttaRef } from 'scv-esm';
+  import { Examples, SuttaRef } from 'scv-esm';
+  import { default as IdbSutta } from '../idb-sutta.mjs';
   import { default as EbtSettings } from "../ebt-settings.mjs";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { logger } from "log-instance";
+  const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
   // TODO: Apple doesn't support AudioContext symbol
   const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"
@@ -188,11 +190,17 @@
       },
       incrementSegment(delta) {
         let { routeCard, audioSegments:segments, } = this;
+        let [ scid, lang, author ] = routeCard.location;
         let incRes = routeCard.incrementLocation({ segments, delta, });
         if (incRes == null) {
           return false; // at end
         }
         window.location.hash = routeCard.routeHash();
+
+        nextTick(()=>{
+          let segment = segments[incRes.iSegment];
+          IdbSutta.highlightExamples(segment, lang);
+        });
 
         return true; // incremented
       },
@@ -259,7 +267,8 @@
             }
           }
           if (settings.showTrans) {
-            if (segment[lang]) {
+            let langText = segment[lang];
+            if (langText) {
               this.transAudioUrl = [
                 serverUrl,
                 'audio',

@@ -226,6 +226,7 @@ export default {
     "inspireMe": "मुझे प्रेरित करे!",
     "languageCode": "हिंदी / HI",
     "languages": "भाषाएँ",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

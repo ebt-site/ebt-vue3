@@ -226,6 +226,7 @@ export default {
     "inspireMe": "Inspirer Mig!",
     "languageCode": "Dansk / DA",
     "languages": "Sprog",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "Home",

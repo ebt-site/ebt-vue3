@@ -223,6 +223,7 @@ export default {
     "inspireMe": "Inspire Moi!",
     "languageCode": "Français / FR",
     "languages": "Langues",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

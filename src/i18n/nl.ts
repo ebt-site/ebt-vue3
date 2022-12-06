@@ -227,6 +227,7 @@ export default {
     "inspireMe": "Inspireer mij!",
     "languageCode": "Nederlands / NL",
     "languages": "Talen",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

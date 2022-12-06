@@ -229,6 +229,7 @@ export default {
     "inspireMe": "Inspire Me!",
     "languageCode": "English / EN",
     "languages": "Languages",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "",

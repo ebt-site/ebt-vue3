@@ -227,6 +227,7 @@ export default {
     "inspireMe": "Hvetja mig",
     "languageCode": "Íslenska / IS",
     "languages": "Tungumál",
+    "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
     "no-location-home": "Home",

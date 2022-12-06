@@ -56,10 +56,11 @@
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { logger } from "log-instance";
-  import { Tipitaka, SuttaRef } from "scv-esm";
+  import { Examples, Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from "idb-keyval";
+  const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
   var hello = 0;
 
@@ -133,6 +134,7 @@
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
           window.location.hash = hash;
+          IdbSutta.highlightExamples(seg, lang);
         }
       },
       segId(seg) {

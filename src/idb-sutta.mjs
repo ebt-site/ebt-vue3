@@ -24,6 +24,24 @@ export default class IdbSutta {
     });
   }
 
+  static get EXAMPLE_TEMPLATE() {
+    return EXAMPLE_TEMPLATE;
+  }
+
+  static highlightExamples(seg, lang, template=EXAMPLE_TEMPLATE) {
+    let langText = seg[lang];
+    let updated = false;
+    if (langText && Examples.test(langText, lang)) {
+      let langText2 = Examples.replaceAll(langText, template, lang);
+      if (langText2 !== langText) {
+        seg[lang] = langText2;
+        console.log("IdbSutta.highlightExamples", langText2);
+        updated = true;
+      }
+    }
+    return updated;
+  }
+
   static create(opts = {}) {
     let { 
       sutta_uid, 
@@ -125,6 +143,7 @@ export default class IdbSutta {
   highlightExamples(opts={}) {
     let { segments } = this;
     let { 
+      seg,
       lang=this.lang, 
       template=EXAMPLE_TEMPLATE,
     } = opts;
