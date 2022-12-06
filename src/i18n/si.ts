@@ -220,6 +220,7 @@ export default {
     "exploreBuddhasTeaching": "බුද්ධ දේශනාව ගවේෂණයට",
     "foundSuttas": "සූත්‍ර A_RESULTCOUNT ක් සම්බ වුනි",
     "general": "පොදු",
+    "highlightExamples": "Show example links (slow)",
     "inspireMe": "සොයන්න!",
     "languageCode": "සිංහල / SI",
     "languages": "භාෂා",

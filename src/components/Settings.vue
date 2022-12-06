@@ -179,6 +179,9 @@
             </div>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
+            <v-checkbox v-model="settings.highlightExamples" density="compact"
+              :label="$t('ebt.highlightExamples')"
+            />
             <v-select v-model="settings.serverUrl" :items="servers" 
               :menu-icon="selectIcon"
               :label="$t('ebt.server')"

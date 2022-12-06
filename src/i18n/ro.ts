@@ -221,6 +221,7 @@ export default {
     "exploreBuddhasTeaching": "Explorează învățăturile budiste",
     "foundSuttas": "A_RESULTCOUNT sutta găsite",
     "general": "General",
+    "highlightExamples": "Show example links (slow)",
     "inspireMe": "Vreau o sugestie!",
     "languageCode": "Română / RO",
     "languages": "Limbi",

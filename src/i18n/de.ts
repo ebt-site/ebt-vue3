@@ -219,6 +219,7 @@ export default {
     "exploreBuddhasTeaching": "Die Lehren des Buddha erkunden",
     "foundSuttas": "\"A_SEARCH\" in A_RESULTCOUNT Suttas gefunden",
     "general": "Allgemein",
+    "highlightExamples": "Show example links (slow)",
     "inspireMe": "Such mir etwas aus!",
     "languageCode": "Deutsch / DE",
     "languages": "Sprachen",

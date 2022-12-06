@@ -74,7 +74,7 @@ export default class IdbSutta {
   }
 
   merge(opts={}) {
-    let { mlDoc, refLang, highlightExamples=true } = opts;
+    let { mlDoc, refLang, highlightExamples=false } = opts;
     if (mlDoc == null) {
       throw new Error(`IdbSutta.merge({mlDoc?}) mlDoc is required`);
     }
@@ -129,12 +129,14 @@ export default class IdbSutta {
       template=EXAMPLE_TEMPLATE,
     } = opts;
 
+    let msStart2 = Date.now();
     segments.forEach(seg => {
       let langText = seg[lang];
-      if (langText) {
+      if (langText && Examples.test(langText, lang)) {
         seg[lang] = Examples.replaceAll(langText, template, lang);
       }
     });
+    logger.info("IdbSutta.highlightExamples() msElapsed:", Date.now() - msStart2);
   }
 
 

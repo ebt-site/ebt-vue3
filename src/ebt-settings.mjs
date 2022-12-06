@@ -25,6 +25,7 @@ const SERVERS = [{
 const INITIAL_STATE = {
   // from scv-server
   audioSuffix: 'mp3',
+  highlightExamples: false,
   id: 1,
   showGdpr: true,
   langRoot: 'pli',
@@ -67,6 +68,7 @@ export default class EbtSettings {
       audio = EbtSettings.AUDIO.OGG,
       iCursor = 0,
       fullLine = false,
+      highightExamples = false,
       history = [],
       ips = 6,
       lang = 'en',

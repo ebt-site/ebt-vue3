@@ -84,7 +84,8 @@
         search && this.onSearch();
       },
       async onSearch() {
-        let { $t, volatile, url, search, card, suttas, } = this;
+        let { settings, $t, volatile, url, search, card, suttas, } = this;
+        let { highlightExamples } = settings;
         let res;
         if (!search) {
           return;
@@ -112,12 +113,14 @@
               let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
               let idbData = await Idb.get(idbKey);
               let idbSutta;
+              let msStart2 = Date.now();
               if (idbData) {
                 idbSutta = IdbSutta.create(idbData);
-                idbSutta.merge({mlDoc});
+                idbSutta.merge({mlDoc, highlightExamples});
               } else {
                 idbSutta = IdbSutta.create(mlDoc);
               }
+
               suttas.saveIdbSutta(idbSutta);
               let result = card.data[i];
               result.segsMatched = idbSutta.segments.reduce((a,v)=>{

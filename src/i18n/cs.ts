@@ -221,6 +221,7 @@ export default {
     "exploreBuddhasTeaching": "Prozkoumat Učení Buddhy",
     "foundSuttas": "Nalezeno A_RESULTCOUNT rozprav",
     "general": "Všeobecný",
+    "highlightExamples": "Show example links (slow)",
     "inspireMe": "Inspiruj Mě!",
     "languageCode": "Čeština / CS",
     "languages": "Jazyky",

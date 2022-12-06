@@ -223,6 +223,7 @@ export default {
     "exploreBuddhasTeaching": "Odkrywaj nauki Buddy",
     "foundSuttas": "Znaleziono A_RESULTCOUNT sutt",
     "general": "Ustawienia ogólne",
+    "highlightExamples": "Show example links (slow)",
     "inspireMe": "Zainspiruj mnie!",
     "languageCode": "Polski / PL",
     "languages": "Języki",
