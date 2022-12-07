@@ -82,7 +82,7 @@
   export default {
     props: {
       audioScid: { type: String, },
-      audioSegments: { type: Object, },
+      audioSutta: { type: Object, },
       routeCard: { type: Object, },
       iSegment: { type: Number },
     },
@@ -168,12 +168,13 @@
         }
       },
       async clickNext() {
-        let { audioPlaying } = this;
+        let { audioPlaying, audioSutta } = this;
         let incremented = false;
         if (audioPlaying) {
           this.stopAudio(true);
         } else {
           incremented = this.incrementSegment(1);
+          console.log("DEBUG clickNext", incremented, audioSutta.segments[8].en);
         }
         await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
 
@@ -189,20 +190,18 @@
         });
       },
       incrementSegment(delta) {
-        let { routeCard, audioSegments:segments, } = this;
+        let { routeCard, audioSutta, } = this;
+        let { segments } = audioSutta;
         let [ scid, lang, author ] = routeCard.location;
         let incRes = routeCard.incrementLocation({ segments, delta, });
-        if (incRes == null) {
-          return false; // at end
-        }
-        window.location.hash = routeCard.routeHash();
-
-        nextTick(()=>{
+        let incremented = !!incRes;
+        if (incremented) {
+          window.location.hash = routeCard.routeHash();
           let segment = segments[incRes.iSegment];
           IdbSutta.highlightExamples(segment, lang);
-        });
+        }
 
-        return true; // incremented
+        return incremented;
       },
       audioEnded(evt) {
         this.stopAudio(false);
@@ -290,7 +289,7 @@
       async playSegment(audioPlaying=AUDIO_PLAY1) {
         let { 
           routeCard, 
-          audioSegments:segments, 
+          audioSutta,
           settings, 
           volatile,
           bellAudioElt,
@@ -321,7 +320,8 @@
       },
       async playAudio(audioElt, audioPlaying=AUDIO_PLAY1) {
         let that = this;
-        let { audioSegments:segments, routeCard } = this;
+        let { audioSutta, routeCard } = this;
+        let { segments } = audioSutta;
         let { iSegment } = routeCard.incrementLocation({ segments, delta: 0, });
 
         if (!audioElt) {
@@ -361,8 +361,8 @@
     },
     computed: {
       segmentPercent(ctx) {
-        let { iSegment, audioSegments } = ctx;
-        return (iSegment+1)*100 / audioSegments.length+1;
+        let { iSegment, audioSutta } = ctx;
+        return (iSegment+1)*100 / audioSutta.segments.length+1;
       },
       audioElts(ctx) {
         let { transAudioElt, pliAudioElt, bellAudioElt } = ctx;

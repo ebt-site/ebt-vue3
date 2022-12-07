@@ -4,7 +4,7 @@
       <ebt-card-vue :card="card" :routeCard="routeCard"/>
     </div><!-- v-for card -->
     <sutta-player 
-      :audioSegments="audioSegments"
+      :audioSutta="audioSutta"
       :routeCard="routeCard"
       :audioScid="audioScid"
       :iSegment="iSegment"
@@ -28,7 +28,7 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         audioScid: ref(undefined),
-        audioSegments: ref(undefined),
+        audioSutta: ref(undefined),
         iSegment: ref(0),
         routeCard: ref(undefined),
       }
@@ -53,7 +53,7 @@
         this.routeCard = card;
         nextTick(() => {
           settings.scrollToCard(card);
-          this.bindAudioSegments(window.location.hash);
+          this.bindAudioSutta(window.location.hash);
         });
       }
     },
@@ -68,7 +68,7 @@
           ? SuttaRef.create({sutta_uid, lang, author})
           : null;
       },
-      async bindAudioSegments(route) {
+      async bindAudioSutta(route) {
         let { routeCard, suttas } = this;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
           let suttaRef = this.routeSuttaRef(route);
@@ -78,12 +78,12 @@
           let incRes = routeCard.incrementLocation({segments, delta:0});
           let { iSegment=0 } = incRes || {};
           this.audioScid =  segments[iSegment].scid;
-          this.audioSegments = segments;
+          this.audioSutta = idbSutta;
           this.iSegment = iSegment;
         } else {
           this.audioScid = null;
           this.iSegment = 0;
-          this.audioSegments = null;
+          this.audioSutta = null;
         }
       },
       routeScid(route) {
@@ -111,7 +111,7 @@
           defaultLang: settings.langTrans,
         });
         this.routeCard = card;
-        this.bindAudioSegments(to.href);
+        this.bindAudioSutta(to.href);
         if (card == null) {
           window.location.hash = '';
           logger.warn(`${msg} => invalid card route`, {$route, to, from});
