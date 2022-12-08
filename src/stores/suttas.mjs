@@ -50,13 +50,14 @@ export const useSuttasStore = defineStore('suttas', {
         this.nFetch++;
         let { mlDocs, results } = json;
         idbSutta = IdbSutta.create(mlDocs[0]);
-        logger.debug(`suttas.loadIdbSutta()`,
+        logger.info(`suttas.loadIdbSutta()`,
           url,
           '=>',
           `segments:${idbSutta.segments.length}`,
           );
         await this.saveIdbSutta(idbSutta);
       } else {
+        console.log("loadIdbSutta");
         logger.debug(`suttas.loadIdbSutta() idb(${idbKey})`);
         idbSutta = IdbSutta.create(idbData);
       } 
@@ -73,7 +74,7 @@ export const useSuttasStore = defineStore('suttas', {
         vueRef.value = idbSutta;
       }
       idbSutta.saved = Date.now();
-      logger.debug(`suttas.saveIdbSutta()`, idbSutta.saved);
+      logger.info(`suttas.saveIdbSutta()`, idbSutta.saved);
       await Idb.set(idbKey, idbSutta);
       this.nSet++;
       return vueRef;

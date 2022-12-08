@@ -192,13 +192,12 @@
       incrementSegment(delta) {
         let { routeCard, audioSutta, } = this;
         let { segments } = audioSutta;
-        let [ scid, lang, author ] = routeCard.location;
         let incRes = routeCard.incrementLocation({ segments, delta, });
         let incremented = !!incRes;
         if (incremented) {
+          let seg = segments[incRes.iSegment];
           window.location.hash = routeCard.routeHash();
-          let segment = segments[incRes.iSegment];
-          IdbSutta.highlightExamples(segment, lang);
+          audioSutta.highlightExamples({seg});
         }
 
         return incremented;

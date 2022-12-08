@@ -3,7 +3,9 @@ import { Examples, SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
 import * as Idb from "idb-keyval";
 
 const OPTIONAL_PROPS = ['saved', 'refAuthor', 'refLang'];
-const EXAMPLE_TEMPLATE = '<span class="ebt-example">$&</span>';
+const EXAMPLE_CLASS = 'ebt-example';
+const RE_EXAMPLE_CLASS = new RegExp(EXAMPLE_CLASS);
+const EXAMPLE_TEMPLATE = `<span class="${EXAMPLE_CLASS}">\$&</span>`;
 
 export default class IdbSutta {
   static #privateCtor;
@@ -26,20 +28,6 @@ export default class IdbSutta {
 
   static get EXAMPLE_TEMPLATE() {
     return EXAMPLE_TEMPLATE;
-  }
-
-  static highlightExamples(seg, lang, template=EXAMPLE_TEMPLATE) {
-    let langText = seg[lang];
-    let updated = false;
-    if (langText && Examples.test(langText, lang)) {
-      let langText2 = Examples.replaceAll(langText, template, lang);
-      if (langText2 !== langText) {
-        seg[lang] = langText2;
-        console.log("IdbSutta.highlightExamples", langText2);
-        updated = true;
-      }
-    }
-    return updated;
   }
 
   static create(opts = {}) {
@@ -147,15 +135,34 @@ export default class IdbSutta {
       lang=this.lang, 
       template=EXAMPLE_TEMPLATE,
     } = opts;
+    let updated = 0;
 
-    let msStart2 = Date.now();
-    segments.forEach(seg => {
+    let msStart = Date.now();
+    if (seg) { // one segment
       let langText = seg[lang];
-      if (langText && Examples.test(langText, lang)) {
-        seg[lang] = Examples.replaceAll(langText, template, lang);
+      if (RE_EXAMPLE_CLASS.test(langText)) {
+        // already highlighted examples
+      } else {
+        let langText2 = Examples.replaceAll(langText, template, lang);
+        if (langText2 === langText) {
+          // no examples to highlight
+        } else {
+          seg[lang] = langText2;
+          updated = 1;
+        }
       }
-    });
-    logger.info("IdbSutta.highlightExamples() msElapsed:", Date.now() - msStart2);
+    } else { // all segments
+      segments.forEach(seg => {
+        let langText = seg[lang];
+        if (langText && Examples.test(langText, lang)) {
+          seg[lang] = Examples.replaceAll(langText, template, lang);
+          updated++;
+        }
+      });
+    }
+    let msElapsed = Date.now() - msStart;
+    logger.info("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
+    return updated;
   }
 
 

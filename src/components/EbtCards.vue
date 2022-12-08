@@ -1,7 +1,10 @@
 <template>
   <v-sheet id="ebt-cards" color="background" :class="cardsClass" >
     <div v-for="card in settings.cards">
-      <ebt-card-vue :card="card" :routeCard="routeCard"/>
+      <ebt-card-vue 
+        :card="card" 
+        :routeCard="routeCard"
+      />
     </div><!-- v-for card -->
     <sutta-player 
       :audioSutta="audioSutta"
@@ -72,7 +75,8 @@
         let { routeCard, suttas } = this;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
           let suttaRef = this.routeSuttaRef(route);
-          let idbSutta = await suttas.loadIdbSutta(suttaRef);
+          let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
+          let idbSutta = idbSuttaRef.value;
           let { sutta_uid, segnum } = suttaRef;
           let { segments } = idbSutta;
           let incRes = routeCard.incrementLocation({segments, delta:0});

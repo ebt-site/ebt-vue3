@@ -118,7 +118,7 @@
     },
     methods: {
       clickSeg(seg, evt) {
-        let { routeCard, currentScid, card } = this;
+        let { idbSuttaRef, routeCard, currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
@@ -134,7 +134,7 @@
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
           window.location.hash = hash;
-          IdbSutta.highlightExamples(seg, lang);
+          idbSuttaRef.highlightExamples({seg});
         }
       },
       segId(seg) {
