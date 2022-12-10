@@ -331,6 +331,7 @@
 .seg-current {
   border: 2px dotted rgba(var(--v-theme-matched), 0.5);
   border-radius: 5px;
+  font-size: larger;
 }
 .seg-current .seg-text {
   opacity: 1;
