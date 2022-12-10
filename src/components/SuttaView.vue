@@ -29,7 +29,6 @@
         :idbSuttaRef="idbSuttaRef"
         :card="card"
         :routeCard="routeCard"
-        :isCurrent="audioScid === seg.scid"
       />
     </template>
   </v-sheet>
@@ -105,6 +104,7 @@
     methods: {
       clickSeg(seg, evt) {
         let { idbSuttaRef, routeCard, currentScid, card, volatile } = this;
+        let { segments } = idbSuttaRef;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
@@ -119,6 +119,8 @@
           let [ scidHash, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
+          let audioIndex = segments.indexOf(seg);
+          volatile.setAudioSutta(idbSuttaRef, audioIndex);
           window.location.hash = hash;
           idbSuttaRef.highlightExamples({seg});
         }

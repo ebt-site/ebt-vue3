@@ -45,7 +45,6 @@
       idbSuttaRef: { type: Object, required:true },
       card: { type: Object, required:true },
       routeCard: { type: Object, required:true },
-      isCurrent: { type: Boolean, required:true },
     },
     setup() {
       const settings = useSettingsStore();
@@ -159,15 +158,8 @@
         return location[1] || settings.langTrans;
       },
       langText(ctx) {
-        let { isCurrent, segment, langTrans, volatile } = ctx;
+        let { segment, langTrans, volatile } = ctx;
         let text = segment[langTrans] || EMPTY_TEXT;
-        if (isCurrent) {
-          const instance = getCurrentInstance();
-          nextTick(()=>{
-            instance?.proxy?.$forceUpdate();
-            console.log(`langText isCurrent`, segment, volatile.audioSutta.segments[8]);
-          });
-        }
         return text;
       },
       layout(ctx) {
