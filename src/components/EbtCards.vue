@@ -4,14 +4,10 @@
       <ebt-card-vue 
         :card="card" 
         :routeCard="routeCard"
+        :audioScid="audioScid"
       />
     </div><!-- v-for card -->
-    <sutta-player 
-      :audioSutta="audioSutta"
-      :routeCard="routeCard"
-      :audioScid="audioScid"
-      :iSegment="iSegment"
-    />
+    <sutta-player :routeCard="routeCard" />
   </v-sheet>
 </template>
 
@@ -21,6 +17,7 @@
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { default as SuttaPlayer } from './SuttaPlayer.vue';
+  import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { logger } from "log-instance";
@@ -30,9 +27,8 @@
       return {
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
+        volatile: useVolatileStore(),
         audioScid: ref(undefined),
-        audioSutta: ref(undefined),
-        iSegment: ref(0),
         routeCard: ref(undefined),
       }
     },
@@ -72,7 +68,7 @@
           : null;
       },
       async bindAudioSutta(route) {
-        let { routeCard, suttas } = this;
+        let { routeCard, suttas, volatile } = this;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
           let suttaRef = this.routeSuttaRef(route);
           let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
@@ -82,13 +78,15 @@
           let incRes = routeCard.incrementLocation({segments, delta:0});
           let { iSegment=0 } = incRes || {};
           this.audioScid =  segments[iSegment].scid;
-          this.audioSutta = idbSutta;
-          this.iSegment = iSegment;
+          volatile.audioScid = segments[iSegment].scid;
+          volatile.audioSutta = idbSutta;
+          volatile.audioIndex = iSegment;
         } else {
-          this.audioScid = null;
-          this.iSegment = 0;
-          this.audioSutta = null;
+          volatile.audioScid = null;
+          volatile.audioSutta = null;
+          volatile.audioIndex = 0;
         }
+        console.log("DEBUG bindAudioSutta", this.audioScid);
       },
       routeScid(route) {
         let { sutta_uid, segnum } = this.routeSuttaRef(route);

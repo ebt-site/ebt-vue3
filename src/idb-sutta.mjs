@@ -142,7 +142,7 @@ export default class IdbSutta {
       let langText = seg[lang];
       if (RE_EXAMPLE_CLASS.test(langText)) {
         // already highlighted examples
-      } else {
+      } else if (langText) {
         let langText2 = Examples.replaceAll(langText, template, lang);
         if (langText2 === langText) {
           // no examples to highlight
@@ -161,7 +161,7 @@ export default class IdbSutta {
       });
     }
     let msElapsed = Date.now() - msStart;
-    logger.info("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
+    updated && logger.info("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
     return updated;
   }
 

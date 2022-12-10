@@ -13,6 +13,8 @@ const INITIAL_STATE = {
   waitingMsg: ref('...'),
   waitingDelay: ref(500),
   showWaiting: ref(false),
+  audioSutta: ref(null),
+  audioScid: ref(''),
   delayedWaiting: 0,
   suttas,
   showSettings,

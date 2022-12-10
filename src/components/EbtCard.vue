@@ -62,6 +62,7 @@
     props: {
       card: { type: Object, },
       routeCard: { type: Object },
+      audioScid: { type: String },
     },
     setup() {
       const settings = useSettingsStore();

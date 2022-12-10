@@ -81,10 +81,8 @@
 
   export default {
     props: {
-      audioScid: { type: String, },
-      audioSutta: { type: Object, },
       routeCard: { type: Object, },
-      iSegment: { type: Number },
+      audioIndex: { type: Number },
     },
     setup() {
       return {
@@ -125,7 +123,7 @@
         this.stopAudio(true);
       },
       async clickPlayPause() {
-        let { audioPlaying, audioScid } = this;
+        let { audioScid, audioPlaying, } = this;
 
         if (audioPlaying) {
           logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
@@ -168,13 +166,18 @@
         }
       },
       async clickNext() {
-        let { audioPlaying, audioSutta } = this;
+        let { audioPlaying, } = this;
         let incremented = false;
         if (audioPlaying) {
           this.stopAudio(true);
         } else {
-          incremented = this.incrementSegment(1);
-          console.log("DEBUG clickNext", incremented, audioSutta.segments[8].en);
+          let incRes = this.incrementSegment(1);
+          if (incRes) {
+            let { iSegment } = incRes;
+            incremented = true;
+          } else {
+            logger.info("SuttaPlayer.clickNext() END");
+          }
         }
         await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
 
@@ -190,17 +193,22 @@
         });
       },
       incrementSegment(delta) {
-        let { routeCard, audioSutta, } = this;
+        let { routeCard, volatile, audioSutta, } = this;
         let { segments } = audioSutta;
         let incRes = routeCard.incrementLocation({ segments, delta, });
-        let incremented = !!incRes;
-        if (incremented) {
-          let seg = segments[incRes.iSegment];
+        if (incRes) {
+          let { iSegment } = incRes;
+          let seg = segments[iSegment];
           window.location.hash = routeCard.routeHash();
-          audioSutta.highlightExamples({seg});
+          let updated = audioSutta.highlightExamples({seg});
+          if (updated) {
+            seg.examples = updated;
+            let vas = volatile.audioSutta;
+            console.log("DEBUG incrementSegment", {updated, seg}, vas===audioSutta);
+          }
         }
 
-        return incremented;
+        return incRes;
       },
       audioEnded(evt) {
         this.stopAudio(false);
@@ -288,15 +296,12 @@
       async playSegment(audioPlaying=AUDIO_PLAY1) {
         let { 
           routeCard, 
-          audioSutta,
+          audioScid,
           settings, 
-          volatile,
           bellAudioElt,
           pliAudioElt,
           transAudioElt,
         } = this;
-        let audioScid = routeCard.location[0]; // avoid Vue sync lag
-
         await this.bindSegmentAudio();
 
         logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
@@ -359,9 +364,16 @@
       }, // playAudio
     },
     computed: {
+      audioScid(ctx) {
+        return ctx.volatile.audioScid;
+      },
+      audioSutta(ctx) {
+        return ctx.volatile.audioSutta;
+      },
       segmentPercent(ctx) {
-        let { iSegment, audioSutta } = ctx;
-        return (iSegment+1)*100 / audioSutta.segments.length+1;
+        let { volatile, audioSutta } = ctx;
+        let { audioIndex } = volatile;
+        return (audioIndex+1)*100 / audioSutta.segments.length+1;
       },
       audioElts(ctx) {
         let { transAudioElt, pliAudioElt, bellAudioElt } = ctx;

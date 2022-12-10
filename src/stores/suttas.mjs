@@ -91,9 +91,9 @@ export const useSuttasStore = defineStore('suttas', {
         idbSutta = await this.loadIdbSutta(suttaRef);
         vueRef = shallowRef(idbSutta);
         VUEREFS.set(idbKey, vueRef);
-        //console.log("DEBUG idbSuttaRef loaded", {idbKey});
+        console.log("Suttas.getIdbSuttaRef()", {idbKey, vueRef});
       } else {
-        //console.log("DEBUG idbSuttaRef found", {idbKey, idbSutta});
+        //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
       }
 
       return vueRef;

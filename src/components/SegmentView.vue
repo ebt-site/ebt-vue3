@@ -1,38 +1,28 @@
 <template>
-  <v-sheet :class="suttaClass">
-    <div class="tipitaka-nav">
-      <div>
-        <v-icon icon="mdi-menu-left" />
-        <a :href="`#/sutta/${prevSuid}`" v-if="prevSuid" tabindex=-1>
-          {{prevSuid}}
-        </a>
-      </div>
-      <div>
-        <a :href="hrefSuttaCentral(sutta_uid)" target="_blank" tabindex=-1>
-          suttacentral/{{sutta_uid}}
-        </a>
-      </div>
-      <div>
-        <a :href="`#/sutta/${nextSuid}`" v-if="nextSuid" tabindex=-1>
-          {{nextSuid}}
-        </a>
-        <v-icon icon="mdi-menu-right" />
-      </div>
-    </div><!-- tipitaka-nav -->
-    <div class="sutta-title">
-      <div v-for="t in title"> {{t}} </div>
-      <div class="debug">{{audioScid}}</div>
-    </div> <!-- sutta-title -->
-    <template v-for="seg in idbSuttaSegments">
-      <segment-view 
-        :segment="seg"
-        :idbSuttaRef="idbSuttaRef"
-        :card="card"
-        :routeCard="routeCard"
-        :isCurrent="audioScid === seg.scid"
-      />
-    </template>
-  </v-sheet>
+  <div :id="segId(segment)" class="seg-anchor" >
+    <span class="debug" v-if="logger.logLevel==='debug'">
+      {{segment.scid}}
+    </span>
+  </div>
+  <div :class="segMatchedClass(segment)">
+    <div class="seg-id" v-if="settings.showId"> 
+      {{segment.scid}} 
+    </div>
+    <div class="seg-text" 
+      @click="clickSeg(segment, $event)"
+      :title="segment.scid"
+    >
+      <div :class="langClass('root')" 
+        v-if="settings.showPali"
+        v-html="segment.pli" />
+      <div :class="langClass('trans')" 
+        v-if="settings.showTrans"
+        v-html="langText" />
+      <div :class="langClass('ref')" 
+        v-if="settings.showReference"
+        v-html="segment[settings.refLang]" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -40,71 +30,46 @@
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { logger } from "log-instance";
-  import { Examples, Tipitaka, SuttaRef } from "scv-esm";
-  import { nextTick, ref } from "vue";
+  import { Examples, SuttaRef } from "scv-esm";
+  import { getCurrentInstance, nextTick, ref } from "vue";
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from "idb-keyval";
-  import { default as SegmentView } from './SegmentView.vue';
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
+  const EMPTY_TEXT = '<div class="empty-text">&#8211;&#8709;&#8211;</div>'
 
   var hello = 0;
 
   export default {
     props: {
-      card: { type: Object, required: true, },
-      routeCard: { type: Object, required: true },
+      segment: { type: Object, required:true },
+      idbSuttaRef: { type: Object, required:true },
+      card: { type: Object, required:true },
+      routeCard: { type: Object, required:true },
+      isCurrent: { type: Boolean, required:true },
     },
     setup() {
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
       const suttas = useSuttasStore();
-      const idbSuttaRef = ref(null);
       const showTakaNav = ref(false);
       return {
         settings,
         volatile,
         suttas,
-        idbSuttaRef,
-        taka: new Tipitaka(),
-        showTakaNav,
         logger,
       }
     },
     components: {
-      SegmentView,
     },
     async mounted() {
-      let { $route, suttas, settings, volatile, card, } = this;
-      let { location, data } = card;
-      let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
-      let suttaRef = SuttaRef.create(ref);
-      if (suttaRef == null) {
-        alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        return;
-      }
-      let { sutta_uid, lang, author, segnum } = suttaRef;
-      let idbKey = IdbSutta.idbKey({sutta_uid, lang, author});
-      let idbSuttaRef = await suttas.getIdbSuttaRef({sutta_uid, lang, author});
-      let { langTrans:defaultLang } = settings;
-      this.idbSuttaRef = idbSuttaRef?.value;
-
-      logger.info('SuttaView.mounted()', {suttaRef});
-
-      if (card.matchPath({path:$route.fullPath, defaultLang})) {
-        nextTick(()=>{
-          let routeHash = card.routeHash();
-          settings.scrollToElementId(routeHash);
-          if (window.location.hash !== routeHash) {
-            logger.info(`SuttaView.mounted() route => `, 
-              card.routeHash(), $route, window.location.hash);
-            window.location.hash = routeHash;
-          }
-        });
+      let { segment } = this;
+      if (segment.scid === 'an4.58:2.5') {
+        console.log("SegmentView.mounted", segment);
       }
     },
     methods: {
       clickSeg(seg, evt) {
-        let { idbSuttaRef, routeCard, currentScid, card, volatile } = this;
+        let { idbSuttaRef, routeCard, currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
@@ -121,25 +86,6 @@
           card.location[0] = scid;
           window.location.hash = hash;
           idbSuttaRef.highlightExamples({seg});
-        }
-      },
-      async bindAudioSutta(route) {
-        let { idbSuttaRef, routeCard, volatile } = this;
-        if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
-          let suttaRef = this.routeSuttaRef(route);
-          let idbSutta = idbSuttaRef.value;
-          let { sutta_uid, segnum } = suttaRef;
-          let { segments } = idbSutta;
-          let incRes = routeCard.incrementLocation({segments, delta:0});
-          let { iSegment=0 } = incRes || {};
-          volatile.audioScid =  segments[iSegment].scid;
-          console.log("DEBUG bindAudioSutta", this.audioScid);
-          volatile.audioSutta = idbSuttaRef;
-          volatile.audioIndex = iSegment;
-        } else {
-          volatile.audioScid = null;
-          volatile.audioSutta = null;
-          volatile.audioIndex = 0;
         }
       },
       segId(seg) {
@@ -176,20 +122,6 @@
       },
     },
     computed: {
-      audioScid(ctx) {
-        return ctx.volatile.audioScid;
-      },
-      idbSuttaSegments(ctx) {
-        return ctx.idbSuttaRef?.segments || [];
-      },
-      nextSuid(ctx) {
-        let { sutta_uid, taka } = ctx;
-        return taka.nextSuid(sutta_uid);
-      },
-      prevSuid(ctx) {
-        let { sutta_uid, taka } = ctx;
-        return taka.previousSuid(sutta_uid);
-      },
       sutta_uid(ctx) {
         let { card } = ctx;
         let suttaRef = SuttaRef.create(card.location[0]);
@@ -201,14 +133,6 @@
       currentScid(ctx) {
         let { card } = ctx;
         return card.location[0];
-      },
-      suttaClass(ctx) {
-        let { nCols, volatile } = ctx;
-        switch (nCols) {
-          case 3: return "sutta-3col";
-          case 2: return "sutta-2col";
-          default: return "sutta-1col";
-        }
       },
       nCols(ctx) {
         let { volatile, settings } = ctx;
@@ -234,52 +158,26 @@
         let { location } = card;
         return location[1] || settings.langTrans;
       },
-      title(ctx) {
-        let { idbSuttaRef } = ctx;
-        let title = idbSuttaRef?.title || '(no-title)';
-        return title.split('\n');
+      langText(ctx) {
+        let { isCurrent, segment, langTrans, volatile } = ctx;
+        let text = segment[langTrans] || EMPTY_TEXT;
+        if (isCurrent) {
+          const instance = getCurrentInstance();
+          nextTick(()=>{
+            instance?.proxy?.$forceUpdate();
+            console.log(`langText isCurrent`, segment, volatile.audioSutta.segments[8]);
+          });
+        }
+        return text;
       },
       layout(ctx) {
         return ctx.volatile.layout.value;
-      },
-      takaNavIcon(ctx) {
-        let { showTakaNav } = ctx;
-        return showTakaNav 
-          ? 'mdi-arrow-collapse-horizontal' 
-          : 'mdi-arrow-expand-horizontal'
       },
     },
   }
 </script>
 
 <style >
-.sutta {
-  margin-left: auto;
-  margin-right: auto;
-}
-.sutta-1col {
-  max-width: 40em;
-}
-.sutta-2col {
-  max-width: 60em;
-}
-.sutta-3col {
-  max-width: 100em;
-}
-.sutta-title {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  font-family: var(--ebt-sc-sans-font);
-  font-size: larger;
-  font-weight: 600;
-  line-height: 1.5em;
-  margin-bottom: 1em;
-}
-.sutta-title div:first-child {
-  font-size: smaller;
-  font-weight: 400;
-}
 .seg-match {
   display: flex;
   justify-content: space-between;
@@ -361,16 +259,10 @@
 .seg-route.seg-current .ebt-example:hover {
   cursor: pointer;
 }
-.tipitaka-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  opacity: 0.4;
-  margin-bottom: 0.5rem;
-}
-.tipitaka-nav:focus-within,
-.tipitaka-nav:hover {
-  opacity: 1;
+.empty-text {
+  color: #888;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 </style>
 
