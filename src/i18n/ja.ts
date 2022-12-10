@@ -187,6 +187,7 @@ export default {
     "ariaSettings": "設定",
     "ariaSuttaCentralNewTab": "suttacentral.net を新しいタブで開く",
     "audio": "音声ファイル",
+    "author": "Author",
     "bellIndian": "インドのお鈴",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "瞑想終了時のお鈴　改訂版",

@@ -185,6 +185,7 @@ export default {
     "ariaSettings": "Indstillinger",
     "ariaSuttaCentralNewTab": "suttacentral.net åbner på ny fane",
     "audio": "Audio",
+    "author": "Author",
     "bellIndian": "Indisk Klokke",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "Ren Meditationsklokke",

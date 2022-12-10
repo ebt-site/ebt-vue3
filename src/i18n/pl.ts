@@ -186,6 +186,7 @@ export default {
     "ariaSettings": "Ustawienia",
     "ariaSuttaCentralNewTab": "suttacentral.net otwiera się w nowej karcie",
     "audio": "Audio",
+    "author": "Author",
     "bellIndian": "Indyjski dzwonek",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "Czysty dzwonek medytacyjny",

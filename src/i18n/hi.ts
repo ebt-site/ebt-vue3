@@ -186,6 +186,7 @@ export default {
     "ariaSettings": "सेटिंग",
     "ariaSuttaCentralNewTab": "suttacentral.net नए टैब में खुलता है",
     "audio": "Audio",
+    "author": "Author",
     "bellIndian": "भारतीय घंटी",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "ध्यान की घंटी हटाई गई",

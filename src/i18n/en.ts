@@ -190,6 +190,7 @@ export default {
     "ariaSettings": "Settings",
     "ariaSuttaCentralNewTab": "suttacentral.net opens in new tab",
     "audio": "Audio",
+    "author": "Author",
     "bellIndian": "Indian Bell",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "Bell Meditation Cleaned",

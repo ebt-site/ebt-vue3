@@ -21,8 +21,15 @@
     </div><!-- tipitaka-nav -->
     <div class="sutta-title">
       <div v-for="t in title"> {{t}} </div>
-      <div class="debug">{{audioScid}}</div>
     </div> <!-- sutta-title -->
+    <template v-if="idbSuttaRef">
+      <segment-header 
+        :segment="headerSeg"
+        :idbSuttaRef="idbSuttaRef"
+        :card="card"
+        :routeCard="routeCard"
+      />
+    </template>
     <template v-for="seg in idbSuttaSegments">
       <segment-view 
         :segment="seg"
@@ -39,11 +46,12 @@
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { logger } from "log-instance";
-  import { Examples, Tipitaka, SuttaRef } from "scv-esm";
+  import { Authors, Examples, Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from "idb-keyval";
   import { default as SegmentView } from './SegmentView.vue';
+  import { default as SegmentHeader } from './SegmentHeader.vue';
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
   var hello = 0;
@@ -71,6 +79,7 @@
     },
     components: {
       SegmentView,
+      SegmentHeader,
     },
     async mounted() {
       let { $route, suttas, settings, volatile, card, } = this;
@@ -102,66 +111,11 @@
       }
     },
     methods: {
-      clickSeg(seg, evt) {
-        let { idbSuttaRef, routeCard, currentScid, card, volatile } = this;
-        let { segments } = idbSuttaRef;
-        let { srcElement } = evt;
-        let { className, innerText } = srcElement;
-        let { scid } = seg;
-        if (currentScid === scid && routeCard === card) {
-          if (className === 'ebt-example') {
-            let pattern = encodeURIComponent(innerText);
-            let hash = `#/search/${pattern}`
-            window.location.hash = hash;
-            return;
-          } 
-        } else {
-          let [ scidHash, lang, author ] = card.location;
-          let hash = `#/sutta/${scid}/${lang}/${author}`
-          card.location[0] = scid;
-          let audioIndex = segments.indexOf(seg);
-          volatile.setAudioSutta(idbSuttaRef, audioIndex);
-          window.location.hash = hash;
-          idbSuttaRef.highlightExamples({seg});
-        }
-      },
-      segId(seg) {
-        let { card } = this;
-        let [ suidSeg, lang, author ] = card.location;
-        return `#/sutta/${seg.scid}/${lang}/${author}`;
-      },
-      langClass(langType) {
-        let { layout, volatile, nCols } = this;
-        let colw = "lg";
-        switch (nCols) {
-          case 3:
-            colw = layout.w < 1132 ? "sm" : "lg";
-            break;
-          case 1:
-            colw = layout.w < 600 ? "sm" : "lg";
-            break;
-          default:
-            colw = "lg";
-            break;
-        }
-        return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
-      },
-      segMatchedClass(seg) {
-        let { layout, card, currentScid, routeCard } = this;
-        let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
-        let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
-        let currentClass = seg.scid === currentScid ? "seg-current" : '';
-        let routeClass = card === routeCard ? "seg-route" : "";
-        return `${matchedClass} ${idClass} ${currentClass} ${routeClass}`;
-      },
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
       },
     },
     computed: {
-      audioScid(ctx) {
-        return ctx.volatile.audioScid;
-      },
       idbSuttaSegments(ctx) {
         return ctx.idbSuttaRef?.segments || [];
       },
@@ -230,6 +184,20 @@
         return showTakaNav 
           ? 'mdi-arrow-collapse-horizontal' 
           : 'mdi-arrow-expand-horizontal'
+      },
+      headerSeg(ctx) {
+        let { $t, idbSuttaRef, settings } = ctx;
+        let { refLang, showReference } = settings;
+        let { author, lang  } = idbSuttaRef;
+        let info = Authors.authorInfo(author);
+        let refAuthor = Authors.langAuthor(refLang);
+        let refInfo = Authors.authorInfo(refAuthor);
+        return {
+          scid: $t('ebt.author'),
+          pli: 'Mahasangiti',
+          [lang]: info?.name,
+          [refLang]:  refInfo?.name,
+        }
       },
     },
   }
