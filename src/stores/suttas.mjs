@@ -57,7 +57,6 @@ export const useSuttasStore = defineStore('suttas', {
           );
         await this.saveIdbSutta(idbSutta);
       } else {
-        console.log("loadIdbSutta");
         logger.debug(`suttas.loadIdbSutta() idb(${idbKey})`);
         idbSutta = IdbSutta.create(idbData);
       } 
