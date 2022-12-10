@@ -82,7 +82,6 @@
   export default {
     props: {
       routeCard: { type: Object, },
-      audioIndex: { type: Number },
     },
     setup() {
       return {
