@@ -123,25 +123,6 @@
           idbSuttaRef.highlightExamples({seg});
         }
       },
-      async bindAudioSutta(route) {
-        let { idbSuttaRef, routeCard, volatile } = this;
-        if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
-          let suttaRef = this.routeSuttaRef(route);
-          let idbSutta = idbSuttaRef.value;
-          let { sutta_uid, segnum } = suttaRef;
-          let { segments } = idbSutta;
-          let incRes = routeCard.incrementLocation({segments, delta:0});
-          let { iSegment=0 } = incRes || {};
-          volatile.audioScid =  segments[iSegment].scid;
-          console.log("DEBUG bindAudioSutta", this.audioScid);
-          volatile.audioSutta = idbSuttaRef;
-          volatile.audioIndex = iSegment;
-        } else {
-          volatile.audioScid = null;
-          volatile.audioSutta = null;
-          volatile.audioIndex = 0;
-        }
-      },
       segId(seg) {
         let { card } = this;
         let [ suidSeg, lang, author ] = card.location;

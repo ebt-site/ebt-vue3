@@ -78,15 +78,10 @@
           let incRes = routeCard.incrementLocation({segments, delta:0});
           let { iSegment=0 } = incRes || {};
           this.audioScid =  segments[iSegment].scid;
-          volatile.audioScid = segments[iSegment].scid;
-          volatile.audioSutta = idbSutta;
-          volatile.audioIndex = iSegment;
+          volatile.setAudioSutta(idbSutta, iSegment);
         } else {
-          volatile.audioScid = null;
-          volatile.audioSutta = null;
-          volatile.audioIndex = 0;
+          volatile.setAudioSutta(null);
         }
-        console.log("DEBUG bindAudioSutta", this.audioScid);
       },
       routeScid(route) {
         let { sutta_uid, segnum } = this.routeSuttaRef(route);

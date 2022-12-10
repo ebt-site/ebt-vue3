@@ -72,6 +72,17 @@ export const useVolatileStore = defineStore('volatile', {
       let key = suttaRef.toString();
       return suttas[key];
     },
+    async setAudioSutta(audioSutta, audioIndex=0) {
+      this.audioSutta = audioSutta;
+      this.audioIndex = audioIndex;
+      let segments = audioSutta?.segments;
+      let audioScid = null;
+      this.audioScid = segments
+        ? segments[audioIndex].scid
+        : null;
+
+      console.log("volatile.setAudioSutta()", {audioSutta, audioIndex, audioScid});
+    },
     async fetch(url, options={}) {
       let res;
       try {
