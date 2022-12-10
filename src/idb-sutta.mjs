@@ -137,8 +137,10 @@ export default class IdbSutta {
     } = opts;
     let updated = 0;
 
+
     let msStart = Date.now();
     if (seg) { // one segment
+      let iSeg = segments.findIndex(s=>s.scid === seg.scid);
       let langText = seg[lang];
       if (RE_EXAMPLE_CLASS.test(langText)) {
         // already highlighted examples

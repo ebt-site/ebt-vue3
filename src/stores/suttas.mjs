@@ -67,7 +67,7 @@ export const useSuttasStore = defineStore('suttas', {
       let { idbKey } = idbSutta;
       let vueRef = VUEREFS.get(idbKey);
       if (vueRef == null) {
-        vueRef = shallowRef(idbSutta);
+        vueRef = ref(idbSutta);
         VUEREFS.set(idbKey, vueRef);
       } else if (vueRef.value !== idbSutta) {
         vueRef.value = idbSutta;
@@ -87,11 +87,17 @@ export const useSuttasStore = defineStore('suttas', {
         if (!opts.refresh) {
           return null;
         }
-        idbSutta = await this.loadIdbSutta(suttaRef);
-        vueRef = shallowRef(idbSutta);
+        let promise = this.loadIdbSutta(suttaRef);
+        vueRef = ref(promise);
         VUEREFS.set(idbKey, vueRef);
-        console.log("Suttas.getIdbSuttaRef()", {idbKey, vueRef});
+
+        idbSutta = await this.loadIdbSutta(suttaRef);
+        vueRef.value = idbSutta;
+        VUEREFS.set(idbKey, vueRef);
       } else {
+        if (vueRef.value instanceof Promise) {
+          vueRef.value = await vueRef.value;
+        }
         //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
       }
 

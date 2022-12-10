@@ -199,12 +199,6 @@
           let { iSegment } = incRes;
           let seg = segments[iSegment];
           window.location.hash = routeCard.routeHash();
-          let updated = audioSutta.highlightExamples({seg});
-          if (updated) {
-            seg.examples = updated;
-            let vas = volatile.audioSutta;
-            console.log("DEBUG incrementSegment", {updated, seg}, vas===audioSutta);
-          }
         }
 
         return incRes;

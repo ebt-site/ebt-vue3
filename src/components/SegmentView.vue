@@ -61,10 +61,6 @@
     components: {
     },
     async mounted() {
-      let { segment } = this;
-      if (segment.scid === 'an4.58:2.5') {
-        console.log("SegmentView.mounted", segment);
-      }
     },
     methods: {
       clickSeg(seg, evt) {
