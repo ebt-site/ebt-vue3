@@ -1,5 +1,6 @@
 import { logger } from 'log-instance';
-import { default as EbtCard } from "./ebt-card.mjs";
+import { default as EbtCard } from './ebt-card.mjs';
+import { default as VOICES } from './auto/voices.mjs';
 
 const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 
@@ -22,74 +23,30 @@ const SERVERS = [{
   dev: true,
 }];
 
-const NAV_LANG = typeof navigator === 'undefined'
-  ? 'en'
-  : navigator.languages[0].split('-')[0];
-
-const INITIAL_STATE = {
-  // from scv-server
-  audioSuffix: 'mp3',
-  highlightExamples: false,
-  id: 1,
-  showGdpr: true,
-  langRoot: 'pli',
-  langs: 'pli+en',
-  langTrans: NAV_LANG,
-  logLevel: 'warn',
-  maxDuration: 3*60*60,
-  scid: undefined,
-  serverUrl: SERVERS[0].value,
-  sutta_uid: undefined,
-  theme: 'dark',
-  translator: 'sujato',
-
-  // from ebt-vue
-  audio: AUDIO.OGG,
-  fullLine: false,
-  history: [],
-  iCursor: 0,
-  ips: 6,
-  lang: NAV_LANG,
-  locale: NAV_LANG,
-  maxHistory: 2000,
-  maxResults: 5,
-  refLang: 'en',
-  saveSettingsExamples: false,
-  saveSettings: false,
-  showId: false,
-  showPali: true,
-  showReference: false,
-  showTrans: true,
-  vnameRoot: 'Aditi',
-  vnameTrans: 'Amy',
-  cards: [new EbtCard()],
-
-};
-
 export default class EbtSettings {
   constructor(opts = {}) {
     let {
-      audio = EbtSettings.AUDIO.OGG,
-      iCursor = 0,
-      fullLine = false,
-      highightExamples = false,
-      history = [],
-      ips = 6,
-      lang = 'en',
-      locale = 'en',
-      maxHistory = 2000,
-      maxResults = 5,
-      refLang = 'en',
-      saveSettingsExamples = false,
-      saveSettings = false,
-      showId = false,
-      showPali = true,
-      showTrans = true,
-      showReference = false,
-      vnameRoot = 'Aditi',
-      vnameTrans = 'Amy',
+      audio,
+      iCursor,
+      fullLine,
+      highightExamples,
+      history,
+      ips,
+      lang,
+      locale,
+      maxHistory,
+      maxResults,
+      refLang,
+      saveSettingsExamples,
+      saveSettings,
+      showId,
+      showPali,
+      showTrans,
+      showReference,
+      vnameRoot,
+      vnameTrans,
 
-    } = opts;
+    } = Object.assign({}, EbtSettings.INITIAL_STATE, opts);
     (opts.logger || logger).logInstance(this, opts);
 
     this.audio = audio;
@@ -113,8 +70,8 @@ export default class EbtSettings {
       return l.code === locale ? locale : a;
     }, 'en');
     this.maxResults = maxResults;
-    this.maxHistory = maxHistory,
-      this.refLang = refLang;
+    this.maxHistory = maxHistory;
+    this.refLang = refLang;
     this.saveSettingsExamples = saveSettingsExamples;
     this.saveSettings = saveSettings;
     this.showId = showId;
@@ -143,7 +100,51 @@ export default class EbtSettings {
   }
 
   static get INITIAL_STATE() {
-    return INITIAL_STATE;
+    let NAV_LANG = typeof navigator === 'undefined'
+      ? 'en'
+      : navigator.languages[0].split('-')[0];
+    let vnameTrans = VOICES.reduce((a,v)=>{
+      return !a && v.langTrans === NAV_LANG ? v.name : a;
+    }, undefined) || 'Amy';
+
+    return {
+      // from scv-server
+      audioSuffix: 'mp3',
+      highlightExamples: false,
+      id: 1,
+      showGdpr: true,
+      langRoot: 'pli',
+      langs: `pli+${NAV_LANG}`,
+      langTrans: NAV_LANG,
+      logLevel: 'warn',
+      maxDuration: 3*60*60,
+      scid: undefined,
+      serverUrl: SERVERS[0].value,
+      sutta_uid: undefined,
+      theme: 'dark',
+      translator: 'sujato',
+
+      // from ebt-vue
+      audio: AUDIO.OGG,
+      fullLine: false,
+      history: [],
+      iCursor: 0,
+      ips: 6,
+      lang: NAV_LANG,
+      locale: NAV_LANG,
+      maxHistory: 2000,
+      maxResults: 5,
+      refLang: NAV_LANG,
+      saveSettingsExamples: false,
+      saveSettings: false,
+      showId: false,
+      showPali: true,
+      showReference: false,
+      showTrans: true,
+      vnameRoot: 'Aditi',
+      vnameTrans,
+      cards: [new EbtCard()],
+    }
   }
 
   static get REF_LANGUAGES() {

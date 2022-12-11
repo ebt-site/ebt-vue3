@@ -3,7 +3,8 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("default ctor", async () => {
+  it("default ctor en", async () => {
+    global.navigator = { languages: ['en-US'] };
     var ebt = new Settings();
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
@@ -25,6 +26,34 @@ import should from "should";
       vnameTrans: 'Amy',
 
     });
+  });
+  it("TESTTESTdefault ctor de-de", async () => {
+    try {
+      global.navigator = { languages: ['de-de'] };
+      should(global.navigator.languages[0]).equal('de-de');
+      let ebt = new Settings();
+      should(ebt).properties({
+        audio: Settings.AUDIO.OGG,
+        iCursor: 0,
+        fullLine: false,
+        history: [],
+        ips: 6,
+        lang: 'de',
+        maxResults: 5,
+        maxHistory: 2000,  // half a cookie
+        refLang: 'de',
+        saveSettings: false,
+        saveSettingsExamples: false,
+        showId: false,
+        showPali: true,
+        showReference: false,
+        showTrans: true,
+        vnameRoot: 'Aditi',
+        vnameTrans: 'Vicki',
+      });
+    } finally {
+      global.navigator = { languages: ['en-us'] };
+    }
   });
   it("INITIAL_STATE", async () => {
     should(Settings.INITIAL_STATE).properties({
