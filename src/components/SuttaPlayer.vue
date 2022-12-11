@@ -21,7 +21,9 @@
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
-          <div>{{audioScid}}</div>
+          <div @click="onClickPlayScid">
+            {{audioScid}}
+          </div>
           <div v-if="audioPlaying" class="audioElapsed">
             {{ audioElapsed.toFixed(1) }} / 
             {{ audioDuration.toFixed(1) }}
@@ -190,6 +192,11 @@
             elt.currentTime = 0;
           }
         });
+      },
+      onClickPlayScid() {
+        let { routeCard, settings, } = this;
+        let eltId = routeCard.routeHash();
+        settings.scrollToElementId(eltId);
       },
       incrementSegment(delta) {
         let { routeCard, volatile, audioSutta, } = this;
@@ -401,6 +408,7 @@
     max-width: 54px;
   }
   .play-scid {
+    cursor: pointer;
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -415,9 +423,6 @@
   }
   .audio-nav {
     padding-top: 2px;
-    opacity:0.8;
-  }
-  .audio-nav:hover {
     opacity: 1;
   }
 </style>
