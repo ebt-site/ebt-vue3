@@ -1,21 +1,22 @@
 <template>
   <v-app>
     <v-main >
-      <v-app-bar color="toolbar" flat 
+      <v-app-bar flat 
         :extension-height="collapsed ? 0 : 40"
-        class="nav-bar"
         :collapse="collapsed"
+        density="compact"
       >
         <template v-if="collapsed">
-          <v-btn icon @click="collapsed=false">
-            <v-icon icon="mdi-arrow-expand-right" />
+          <v-btn icon @click="collapsed=false" class="pr-5">
+            <v-icon icon="mdi-arrow-expand-left" />
           </v-btn>
         </template> <!-- collapsed -->
         <template v-if="!collapsed">
-          <v-app-bar-title > 
+          <v-app-bar-title 
+                @click="collapsed=true"
+          > 
             <div class="ebt-title">
               <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
-                @click="collapsed=true"
                 class="ebt-nav-img"
               />
               <div>EBT-Vue3</div>
@@ -157,9 +158,17 @@
   margin-left: 0px;
   min-width: 13em;
 }
+.v-toolbar--collapse {
+  width: 50px !important;
+  left: unset !important;
+  right: 0px;
+  border: 1pt solid rgba(var(--v-theme-toolbar), 0.5);
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 24px;
+}
 .ebt-nav-img {
   display: relative;
-  height: 56px;
+  height: 35px;
   cursor: pointer;
   margin-right: 5px;
   border: 1pt solid rgb(0,0,0);
@@ -177,8 +186,8 @@
   font-size: 1.5rem !important;
   border: 1pt dashed rgb(var(--v-theme-chip));
 }
-.nav-bar {
-  background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar))) !important;
+.v-app-bar.v-toolbar {
+  background: linear-gradient(130deg, #000, rgb(var(--v-theme-toolbar)));
 }
 .app-menu-activator {
   padding-right: 10px;
