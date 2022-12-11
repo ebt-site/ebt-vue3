@@ -22,6 +22,10 @@ const SERVERS = [{
   dev: true,
 }];
 
+const NAV_LANG = typeof navigator === 'undefined'
+  ? 'en'
+  : navigator.languages[0].split('-')[0];
+
 const INITIAL_STATE = {
   // from scv-server
   audioSuffix: 'mp3',
@@ -30,7 +34,7 @@ const INITIAL_STATE = {
   showGdpr: true,
   langRoot: 'pli',
   langs: 'pli+en',
-  langTrans: 'en',
+  langTrans: NAV_LANG,
   logLevel: 'warn',
   maxDuration: 3*60*60,
   scid: undefined,
@@ -45,8 +49,8 @@ const INITIAL_STATE = {
   history: [],
   iCursor: 0,
   ips: 6,
-  lang: 'en',
-  locale: 'en',
+  lang: NAV_LANG,
+  locale: NAV_LANG,
   maxHistory: 2000,
   maxResults: 5,
   refLang: 'en',

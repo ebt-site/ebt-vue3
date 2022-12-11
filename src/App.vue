@@ -125,8 +125,8 @@
       $i18n.locale = settings.locale;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-        logger.debug("App.mounted() App.mounted() subscribe =>", {mutation, state});
-        settings.saveSettings();
+        logger.warn("App.mounted() subscribe =>", {mutation, state, });
+        typeof settings.saveSettings === 'function' && settings.saveSettings();
         $i18n.locale = settings.locale;
       });
     },
