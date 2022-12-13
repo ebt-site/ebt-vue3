@@ -95,9 +95,9 @@ export const useVolatileStore = defineStore('volatile', {
         if (updated) {
           seg.examples = updated;
         }
-        console.log("volatile.updateAudioExamples()", {updated, seg, audioIndex});
+        logger.debug("volatile.updateAudioExamples()", {updated, seg, audioIndex});
       } else {
-        console.log("volatile.updateAudioExamples() SKIP", 
+        logger.debug("volatile.updateAudioExamples() SKIP", 
           {audioSutta, audioIndex, segments});
       }
     },

@@ -17,7 +17,9 @@
         <v-btn icon @click="clickBack" density="compact">
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
-        <v-btn icon @click="clickPlayPause" density="compact">
+        <v-btn id="audio-focus" icon 
+          @keydown="audioKey"
+          @click="clickPlayPause" density="compact">
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
@@ -104,10 +106,21 @@
         AUDIO_PLAYALL,
       }
     },
-    mounted() {
-      logger.info("SuttaPlayer.mounted", this);
+    updated() {
+      let audioFocus = document.getElementById('audio-focus');
+      audioFocus?.focus();
+      logger.info("SuttaPlayer.updated() audioFocus", audioFocus);
     },
     methods: {
+      audioKey(evt) {
+        if (evt.code === "ArrowDown") {
+          this.incrementSegment(1);
+          evt.preventDefault();
+        } else if (evt.code === "ArrowUp") {
+          this.incrementSegment(-1);
+          evt.preventDefault();
+        }
+      },
       async playOne() {
         let { bellAudioElt, audioPlaying, audioScid } = this;
 

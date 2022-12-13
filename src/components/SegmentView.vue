@@ -1,5 +1,5 @@
 <template>
-  <div :id="segId(segment)" class="seg-anchor" >
+  <div :id="segId" class="seg-anchor" >
     <span class="debug" v-if="logger.logLevel==='debug'">
       {{segment.scid}}
     </span>
@@ -9,7 +9,7 @@
       {{segment.scid}} 
     </div>
     <div class="seg-text" 
-      @click="clickSeg(segment, $event)"
+      @click="clickSeg($event)"
       :title="segment.scid"
     >
       <div :class="langClass('root')" 
@@ -63,11 +63,13 @@
     async mounted() {
     },
     methods: {
-      clickSeg(seg, evt) {
-        let { idbSuttaRef, routeCard, currentScid, card } = this;
+      clickSeg(evt) {
+        let { segment:seg, idbSuttaRef, routeCard, currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
+        let audioFocus = document.getElementById('audio-focus');
+        audioFocus?.focus();
         if (currentScid === scid && routeCard === card) {
           if (className === 'ebt-example') {
             let pattern = encodeURIComponent(innerText);
@@ -82,11 +84,6 @@
           window.location.hash = hash;
           idbSuttaRef.highlightExamples({seg});
         }
-      },
-      segId(seg) {
-        let { card } = this;
-        let [ suidSeg, lang, author ] = card.location;
-        return `#/sutta/${seg.scid}/${lang}/${author}`;
       },
       langClass(langType) {
         let { layout, volatile, nCols } = this;
@@ -117,6 +114,11 @@
       },
     },
     computed: {
+      segId(ctx) {
+        let { segment, card } = ctx;
+        let [ suidSeg, lang, author ] = card.location;
+        return `#/sutta/${segment.scid}/${lang}/${author}`;
+      },
       sutta_uid(ctx) {
         let { card } = ctx;
         let suttaRef = SuttaRef.create(card.location[0]);
@@ -235,6 +237,9 @@
   border: 2px dotted rgba(var(--v-theme-matched), 0.5);
   border-radius: 5px;
 }
+.seg-current:focus {
+  color: red !important;
+}
 .seg-current .seg-text {
   opacity: 1;
 }
@@ -243,6 +248,9 @@
 }
 .seg-route.seg-current {
   border: 2px dotted rgba(var(--v-theme-matched), 1);
+}
+.seg-route.seg-current .ebt-example{
+  text-decoration: underline;
 }
 .seg-route.seg-current .ebt-example:hover {
   cursor: pointer;
