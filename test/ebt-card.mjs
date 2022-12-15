@@ -335,7 +335,7 @@ logger.logLevel = 'warn';
       .equal(`#/${context}/${suid}/${lang}/${author}`);
     should.deepEqual(cardSuidSeg.location, [suid, lang, author]);
   });
-  it('TESTTESTincrementLocation() sutta', ()=>{
+  it('incrementLocation() sutta', ()=>{
     let context = 'sutta';
     let suid = 'sn34.1';
     let scids = [ '1.0', '1.1', '2.1'].map(id=>`${suid}:${id}`);
@@ -373,7 +373,7 @@ logger.logLevel = 'warn';
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
     should.deepEqual(card.location, [ scids[0], lang, author, ]);
   });
-  it('TESTTESTincrementLocation() ranged sutta', ()=>{
+  it('incrementLocation() ranged sutta', ()=>{
     let context = 'sutta';
     let suid = 'sn34.1';
     let scids = [ 

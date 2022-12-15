@@ -240,43 +240,4 @@ const MSDAY = 24*3600*MSSEC;
       should(eCaught?.message).match(/invalid suttaRef.*xyz/);
     }
   });
-  it("postIdbSuttaRef()", async () => {
-    let suttas = useSuttasStore();
-    let suttaRef = SuttaRef.create(`thig1.1/en/test-author`);
-    let { sutta_uid, lang, author } = suttaRef;
-    let mlDoc = {
-      sutta_uid,
-      lang,
-      author_uid: author,
-      segMap: {
-        "thig1.1:0.1": {
-          scid: "thig1.1:0.1", 
-          en: "test-segment",
-        },
-      },
-    }
-
-    // create a new indexedDb record
-    let idbSuttaRef = await suttas.postIdbSuttaRef(mlDoc);
-    let idbSutta = idbSuttaRef?.value;
-    should(idbSutta).properties({sutta_uid, lang, author});
-    should.deepEqual(idbSutta.segments, [
-      mlDoc.segMap['thig1.1:0.1'],
-    ]);
-    let idbKey = idbSutta.idbKey;
-    let idbObj = await Idb.get(idbKey);
-    should(idbObj).properties({sutta_uid, lang, author});
-
-    // update idbSutta
-    let mlDoc2 = JSON.parse(JSON.stringify(mlDoc));
-    mlDoc2.segMap['thig1.1:0.1'].marked = true;
-    let idbSuttaRef2 = await suttas.postIdbSuttaRef(mlDoc2);
-    let idbSutta2 = idbSuttaRef2?.value;
-    should(idbSutta2).properties({sutta_uid, lang, author});
-    should.deepEqual(idbSutta.segments, [
-      mlDoc2.segMap['thig1.1:0.1'],
-    ]);
-    should(await suttas.getIdbSuttaRef(suttaRef)).equal(idbSuttaRef2);
-
-  });
 })

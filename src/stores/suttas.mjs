@@ -69,11 +69,13 @@ export const useSuttasStore = defineStore('suttas', {
       if (vueRef == null) {
         vueRef = ref(idbSutta);
         VUEREFS.set(idbKey, vueRef);
+        idbSutta.saved = Date.now();
+        logger.warn(`suttas.saveIdbSutta() ADD`, idbKey, idbSutta.saved);
       } else if (vueRef.value !== idbSutta) {
         vueRef.value = idbSutta;
+        idbSutta.saved = Date.now();
+        logger.warn(`suttas.saveIdbSutta() UPDATE`, idbKey, idbSutta.saved);
       }
-      idbSutta.saved = Date.now();
-      logger.info(`suttas.saveIdbSutta()`, idbSutta.saved);
       await Idb.set(idbKey, idbSutta);
       this.nSet++;
       return vueRef;
@@ -99,21 +101,6 @@ export const useSuttasStore = defineStore('suttas', {
           vueRef.value = await vueRef.value;
         }
         //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
-      }
-
-      return vueRef;
-    },
-    async postIdbSuttaRef(opts) {// get/post API
-      let idbKey = IdbSutta.idbKey(opts);
-      let vueRef = VUEREFS.get(idbKey);
-      let idbSutta = vueRef?.value;
-
-      if (idbSutta == null) {
-        idbSutta = IdbSutta.create(opts);
-        vueRef = await this.saveIdbSutta(idbSutta);
-      } else {
-        idbSutta.merge({mlDoc:opts});
-        vueRef = await this.saveIdbSutta(idbSutta);
       }
 
       return vueRef;

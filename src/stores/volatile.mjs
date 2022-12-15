@@ -73,7 +73,7 @@ export const useVolatileStore = defineStore('volatile', {
       return suttas[key];
     },
     async setAudioSutta(audioSutta, audioIndex=0) {
-      console.log("volatile.setAudioSutta()", {audioSutta, audioIndex});
+      logger.debug("volatile.setAudioSutta()", {audioSutta, audioIndex});
       this.audioSutta = audioSutta;
       this.audioIndex = audioIndex;
 

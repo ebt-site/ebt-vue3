@@ -94,7 +94,6 @@
       matchedSegments(result) {
         let segments = result?.segments;
         if (segments == null) {
-          console.log("DEBUG matchedSegments");
           return [];
         }
         return result.segments

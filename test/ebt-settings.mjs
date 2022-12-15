@@ -27,7 +27,7 @@ import should from "should";
 
     });
   });
-  it("TESTTESTdefault ctor de-de", async () => {
+  it("default ctor de-de", async () => {
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');

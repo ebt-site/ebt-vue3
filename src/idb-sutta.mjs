@@ -167,5 +167,4 @@ export default class IdbSutta {
     return updated;
   }
 
-
 }
