@@ -250,9 +250,9 @@
   opacity: 1;
 }
 .seg-route.seg-current .ebt-example{
-  text-decoration: underline;
 }
 .seg-route.seg-current .ebt-example:hover {
+  text-decoration: underline;
   cursor: pointer;
 }
 .empty-text {

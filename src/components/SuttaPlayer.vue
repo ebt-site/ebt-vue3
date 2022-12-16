@@ -85,7 +85,11 @@
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
   // TODO: Apple doesn't support AudioContext symbol
-  const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const SAMPLE_RATE = 48000;
+
+  const URL_CLICK = "audio/click.mp3";
+  const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3";
   const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
   const LENGTH_NOAUDIO = 5000; // actually 3761
   const AUDIO_INACTIVE = 0;
@@ -110,6 +114,7 @@
         audioElapsed: ref(0),
         segmentPlaying: ref(false),
         bellAudioElt: ref(null),
+        audioContext: ref(null),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
         AUDIO_PLAYALL,
@@ -157,8 +162,66 @@
         }
         this.stopAudio(true);
       },
+      async playClick() {
+        let url = URL_CLICK;
+        try {
+          let { audioContext } = this;
+          if (audioContext == null) {
+            this.audioContext = audioContext = new AudioContext();
+          }
+
+          let headers = new Headers();
+          headers.append('Accept',  'audio/mpeg');
+          let resClick = await fetch(URL_CLICK, { headers });
+          if (!resClick.ok) {
+            let e = new Error(`playClick(${url}) ERROR => HTTP${res.status}`);
+            e.url = url;
+            logger.warn(msg);
+            return;
+          }
+          let urlBuf = await resClick.arrayBuffer();
+          let audioSource = audioContext.createBufferSource();
+          let urlAudio = await new Promise((resolve, reject)=>{
+            audioContext.decodeAudioData(urlBuf, resolve, reject);
+          });
+          let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
+          let length = urlAudio.length;
+          let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
+          console.debug(`playClick(${url})`, {sampleRate, length, numberOfChannels});
+          let audioBuffer = audioContext.createBuffer(
+            numberOfChannels, length, sampleRate);
+          for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
+            let offset = 0;
+            let channelData = new Float32Array(length);
+            channelData.set(urlAudio.getChannelData(channelNumber), offset);
+            offset += urlAudio.length;
+            audioBuffer.getChannelData(channelNumber).set(channelData);
+          }
+
+          audioSource.buffer = audioBuffer;
+          audioSource.connect(audioContext.destination);
+          return new Promise((resolve, reject) => { try {
+            audioSource.onended = evt => {
+              console.log(`playClick(${url}) => OK`);
+              resolve();
+            };
+            audioSource.start();
+          } catch(e) {
+            let msg = `playClick(ERROR) ${url} could not start() => ${e.message}`;
+            console.error(msg);
+            alert(msg);
+            reject(e);
+          }}); // Promise
+        } catch(e) {
+          let msg = `playURL(ERROR) ${url} => ${e.message}`;
+          console.debug(msg);
+          throw e;
+        }
+      },
       async clickPlayPause() {
-        let { audioScid, audioPlaying, } = this;
+        let { audioScid, audioPlaying, audioContext } = this;
+
+        this.playClick();
 
         if (audioPlaying) {
           logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
