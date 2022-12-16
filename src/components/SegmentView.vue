@@ -102,12 +102,14 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       segMatchedClass(seg) {
-        let { layout, card, currentScid, routeCard } = this;
+        let { layout, card, currentScid, volatile, routeCard } = this;
+        let { audioFocused } = volatile;
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
         let currentClass = seg.scid === currentScid ? "seg-current" : '';
+        let focusClass = seg.scid === currentScid && audioFocused ? "seg-focus" : '';
         let routeClass = card === routeCard ? "seg-route" : "";
-        return `${matchedClass} ${idClass} ${currentClass} ${routeClass}`;
+        return `${matchedClass} ${idClass} ${currentClass} ${routeClass} ${focusClass}`;
       },
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
@@ -234,20 +236,18 @@
   height: 1px;
 }
 .seg-current {
-  border: 2px dotted rgba(var(--v-theme-matched), 0.5);
+  border: 2px dotted rgba(var(--v-theme-on-surface), 0.5);
   border-radius: 5px;
-}
-.seg-current:focus {
-  color: red !important;
 }
 .seg-current .seg-text {
   opacity: 1;
+  font-size: larger;
+}
+.seg-focus {
+  border: 2px dotted rgba(var(--v-theme-matched), 1);
 }
 .seg-route .seg-text{
   opacity: 1;
-}
-.seg-route.seg-current {
-  border: 2px dotted rgba(var(--v-theme-matched), 1);
 }
 .seg-route.seg-current .ebt-example{
   text-decoration: underline;

@@ -63,6 +63,7 @@ a:focus {
 }
 .ebt-example {
   font-weight: 600;
+  color: rgb(var(--v-theme-example));
 }
 .ebt-example:hover {
   text-decoration: underline;

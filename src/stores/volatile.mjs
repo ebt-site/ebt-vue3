@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   showWaiting: ref(false),
   audioSutta: ref(null),
   audioScid: ref(''),
+  audioFocused: ref(false),
   delayedWaiting: 0,
   suttas,
   showSettings,

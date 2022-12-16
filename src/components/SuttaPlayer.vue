@@ -6,6 +6,7 @@
     bg-color="audiobar"
     class="audio-nav"
   >
+  {{volatile.audioFocus}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -14,12 +15,15 @@
         bg-color="progress2"
         height="2px" />
       <div class="play-row">
-        <v-btn icon @click="clickBack" density="compact">
+        <v-btn icon @click="clickBack" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
-        <v-btn id="audio-focus" icon 
+        <v-btn id="audio-focus" icon density="compact"
           @keydown="audioKey"
-          @click="clickPlayPause" density="compact">
+          @click="clickPlayPause" 
+          @blur="onAudioBlur"
+          @focus="onAudioFocus"
+        >
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
@@ -31,10 +35,15 @@
             {{ audioDuration.toFixed(1) }}
           </div>
         </div>
-        <v-btn icon @click="clickPlay" density="compact">
+        <v-btn icon density="compact"
+          @click="clickPlay" 
+          @keydown="audioKey"
+          @blur="onAudioBlur"
+          @focus="onAudioFocus"
+        >
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
         </v-btn>
-        <v-btn icon @click="clickNext" density="compact">
+        <v-btn icon @click="clickNext" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-next" />
         </v-btn>
       </div><!-- play-row -->
@@ -107,11 +116,23 @@
       }
     },
     updated() {
-      let audioFocus = document.getElementById('audio-focus');
-      audioFocus?.focus();
-      logger.info("SuttaPlayer.updated() audioFocus", audioFocus);
+      this.setAudioFocus();
     },
     methods: {
+      onAudioBlur() {
+        let { volatile } = this;
+        volatile.audioFocused = false;
+      },
+      onAudioFocus() {
+        let { volatile, audioScid } = this;
+        volatile.audioFocused = true;
+      },
+      setAudioFocus() {
+        let { volatile, audioScid } = this;
+        let audioFocus = document.getElementById('audio-focus');
+        audioFocus?.focus();
+        logger.debug("SuttaPlayer.setAudioFocus() audioFocus", audioFocus);
+      },
       audioKey(evt) {
         if (evt.code === "ArrowDown") {
           this.incrementSegment(1);
@@ -127,7 +148,7 @@
         logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
         let completed = await this.playSegment(AUDIO_PLAY1);
         if (!completed) {
-          logger.info("SuttaPlayer.playOne() INTERRUPTED");
+          // interrupted
         } else if (await this.clickNext()) {
           logger.info("SuttaPlayer.playOne() OK");
         } else {
@@ -210,6 +231,7 @@
         let { routeCard, settings, } = this;
         let eltId = routeCard.routeHash();
         settings.scrollToElementId(eltId);
+        this.setAudioFocus();
       },
       incrementSegment(delta) {
         let { routeCard, volatile, audioSutta, } = this;
@@ -230,13 +252,18 @@
       stopAudio(stopSegment) {
         let { audioElts } = this;
         logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
-        let stopped = !!this.audioPlaying;
+        let stopped = false;
         this.audioPlaying = AUDIO_INACTIVE;
         this.audioElapsed = 0;
         stopSegment && (this.segmentPlaying = false);
         audioElts.forEach(elt => {
           if (elt) {
-            elt.pause();
+            if (!elt.paused) {
+              stopped = true;
+              this.segmentPlaying = false;
+              elt.pause();
+              logger.info("SuttaPlayer.stopAudio() PAUSE");
+            }
             elt.currentTime = 0;
           }
         });
@@ -347,9 +374,7 @@
           throw new Error(msg);
         } 
         if (this.stopAudio()) {
-          let msg = `SuttaPlayer.playAudio() stopAudio?`;
-          logger.warn(msg);
-          throw new Error(msg);
+          return;
         }
 
         let res;

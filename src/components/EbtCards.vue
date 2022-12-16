@@ -5,6 +5,7 @@
         :card="card" 
         :routeCard="routeCard"
         :audioScid="audioScid"
+        @focusin="onFocusIn(card)"
       />
     </div><!-- v-for card -->
     <sutta-player :routeCard="routeCard" />
@@ -57,6 +58,21 @@
       }
     },
     methods: {
+      onFocusIn(card) {
+        let { settings } = this;
+        let { cards } = settings;
+        let { context, location } = card;
+        let routeHash = window.location.hash;
+        let routeCard = EbtCard.pathToCard({
+          path: routeHash,
+          cards, 
+          addCard: (opts) => {},
+          defaultLang: settings.langTrans,
+        });
+        if (routeCard !== card) {
+          window.location.hash = card.routeHash();
+        }
+      },
       routeSuttaRef(route) {
         let hashParts = route.split("/");
         if (hashParts[0] === '#') {

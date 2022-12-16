@@ -12,9 +12,11 @@
         <v-btn icon="mdi-trash-can-outline" flat
           v-if="isClosable"
           @click="settings.removeCard(card)"
+          @focus="focusTop"
         />
         <v-btn icon="mdi-close" flat 
           @click="closeCard(card, settings.cards)"
+          @focus="focusTop"
         />
       </template>
       <v-card-text>
@@ -93,6 +95,12 @@
       this.addIntersectionObserver();
     },
     methods: {
+      focusTop() {
+        let { settings, card } = this;
+        let topId = card.topAnchor;
+        settings.scrollToElementId(topId);
+        console.log("DEBUG focusTop", topId);
+      },
       closeCard: (card, cards) => {
         card.isOpen = false;
         if (window.location.hash === card.routeHash()) {
@@ -240,7 +248,7 @@
     }
   }
   .debug {
-    color: rgb(var(--v-theme-placeholder));
+    color: rgb(var(--v-theme-debug));
   }
   .v-card-text {
     min-width: 20em;
