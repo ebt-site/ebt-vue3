@@ -134,7 +134,7 @@
             }
           }
         } catch(e) {
-          console.error("onSearch() ERROR:", res, e);
+          logger.warn("onSearch() ERROR:", res, e);
           this.results = `ERROR: ${url} ${e.message}`;
         } finally {
           volatile.waitEnd();

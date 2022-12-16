@@ -99,7 +99,6 @@
         let { settings, card } = this;
         let topId = card.topAnchor;
         settings.scrollToElementId(topId);
-        console.log("DEBUG focusTop", topId);
       },
       closeCard: (card, cards) => {
         card.isOpen = false;
