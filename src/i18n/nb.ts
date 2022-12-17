@@ -186,6 +186,7 @@ export default {
     "ariaSettings": "Innstillinger",
     "ariaSuttaCentralNewTab": "suttacentral.net åpnes i en ny fane",
     "audio": "Audio",
+    "audioError": "Audio Error",
     "author": "Author",
     "bellIndian": "Indisk bjelle",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",

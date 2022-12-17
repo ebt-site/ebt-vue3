@@ -186,6 +186,7 @@ export default {
     "ariaSettings": "Thiết lập",
     "ariaSuttaCentralNewTab": "mở suttacentral.net trong tab mới",
     "audio": "Audio",
+    "audioError": "Audio Error",
     "author": "Author",
     "bellIndian": "Indian Bell",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",

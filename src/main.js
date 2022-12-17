@@ -34,6 +34,7 @@ const vuetifyOpts = {
           progress2: "#333333",
           audiobar: colors.brown.darken4,
           example: COLOR_SAFFRON,
+          alert: colors.red.darken4,
         },
       },
       dark: {
@@ -52,6 +53,7 @@ const vuetifyOpts = {
           progress2: "#ffffff",
           audiobar: colors.brown.darken4,
           example: COLOR_SAFFRON,
+          alert: colors.red.darken4,
         },
       },
     },

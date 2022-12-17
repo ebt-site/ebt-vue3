@@ -185,6 +185,7 @@ export default {
     "ariaSettings": "Setări",
     "ariaSuttaCentralNewTab": "suttacentral.net se deschide într-o filă nouă",
     "audio": "Audio",
+    "audioError": "Audio Error",
     "author": "Author",
     "bellIndian": "Clopot Indian",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",

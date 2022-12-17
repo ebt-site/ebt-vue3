@@ -70,6 +70,20 @@
           @click="onClickGdrp"/>
       </v-sheet>
 
+      <v-snackbar v-model="volatile.showAlertMsg" 
+        color="alert" 
+        height="300px"
+        timeout=-1
+      >
+        <div class="alert-title"> {{ alertTitle }}</div>
+        <div class="alert-msg"> {{ alertMsg }}</div>
+        <template v-slot:actions>
+          <v-btn
+            icon="mdi-close-circle"
+            @click="volatile.alert(null)"
+          />
+        </template>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>
@@ -110,18 +124,20 @@
         logger.debug("allowLocalStorage()", settings);
       },
       onClickGdrp(evt) {
-        let { settings } = this;
+        let { volatile, settings } = this;
         logger.debug('onClickGdrp', evt);
+        volatile.playClick();
         settings.showGdpr = false;
         evt.preventDefault();
       },
       onClickSettings(evt) {
         let { volatile } = this;
+        volatile.playClick();
         volatile.showSettings = true;
       },
     },
     mounted() {
-      let { $vuetify, settings, $i18n, } = this;
+      let { $vuetify, settings, $i18n, volatile } = this;
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
@@ -132,6 +148,14 @@
       });
     },
     computed: {
+      alertTitle(ctx) {
+        let { $t } = ctx;
+        let titleKey = ctx.volatile.alertMsg?.context || 'ebt.applicationError';
+        return $t(titleKey);
+      },
+      alertMsg(ctx) {
+        return ctx.volatile.alertMsg?.msg;
+      },
       layout(ctx) {
         return ctx.volatile.layout.value;
       },
@@ -142,7 +166,7 @@
     },
   }
 </script>
-<style scoped>
+<style>
 .gdrp {
   position: fixed;
   color: rgb(var(--v-theme-chip));
@@ -153,6 +177,9 @@
   border-top: 1pt solid rgb(var(--v-theme-chip));
   border-left: 1pt solid rgb(var(--v-theme-chip));
   border-radius: 3pt;
+}
+div.v-overlay__content {
+  bottom: 50% !important;
 }
 .v-toolbar-title {
   margin-left: 0px;
@@ -199,6 +226,16 @@
   border-radius: 10px !important;
   border-top-right-radius: 0px !important;
   background: rgba(var(--v-theme-surface), 0.5);
+}
+.alert-title {
+  font-size: larger;
+  font-variant-caps: all-small-caps;
+  font-weight: 600;
+  border-bottom: 1pt solid rgba(var(--v-theme-on-surface), 0.5);
+}
+.alert-msg {
+  margin-top: 1em;
+  min-height: 40px;
 }
 </style>
 

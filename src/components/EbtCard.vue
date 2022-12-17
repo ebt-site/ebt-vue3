@@ -11,11 +11,11 @@
       <template v-slot:append>
         <v-btn icon="mdi-trash-can-outline" flat
           v-if="isClosable"
-          @click="settings.removeCard(card)"
+          @click="clickDelete"
           @focus="focusTop"
         />
         <v-btn icon="mdi-close" flat 
-          @click="closeCard(card, settings.cards)"
+          @click="clickClose"
           @focus="focusTop"
         />
       </template>
@@ -95,6 +95,16 @@
       this.addIntersectionObserver();
     },
     methods: {
+      clickDelete() {
+        let { volatile, card, settings } = this;
+        volatile.playClick();
+        settings.removeCard(card);
+      },
+      clickClose() {
+        let { volatile, card, settings } = this;
+        volatile.playClick();
+        this.closeCard(card, settings.cards);
+      },
       focusTop() {
         let { settings, card } = this;
         let topId = card.topAnchor;

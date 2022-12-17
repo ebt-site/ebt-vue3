@@ -5,7 +5,7 @@
         <v-toolbar-title>
           <div>{{$t('ebt.settingsTitle')}}</div>
         </v-toolbar-title>
-        <v-btn icon @click="volatile.showSettings = false">
+        <v-btn icon @click="clickClose">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
@@ -305,6 +305,11 @@ export default {
     logger.debug("Settings.mounted()", this.host);
   },
   methods: {
+    clickClose() {
+      let { volatile } = this;
+      volatile.playClick();
+      volatile.showSettings = false;
+    },
     openClearSettings() {
       this.isClearSettings = !this.isClearSettings;
     },

@@ -8,7 +8,11 @@ import * as Idb from "idb-keyval";
 const suttas = new Map();
 const layout = ref();
 const showSettings = ref(false);
+const URL_CLICK = "audio/click.mp3";
+const SAMPLE_RATE = 48000;
 const INITIAL_STATE = {
+  alertMsg: ref(null),
+  showAlertMsg: ref(false),
   waiting: 0,
   waitingMsg: ref('...'),
   waitingDelay: ref(500),
@@ -44,6 +48,67 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
+    async playClick() {
+      return this.playUrl(URL_CLICK);
+    },
+    async playUrl(url=URL_CLICK) {
+      try {
+        let { audioContext } = this;
+        if (audioContext == null) {
+          this.audioContext = audioContext = new AudioContext();
+        }
+
+        let headers = new Headers();
+        headers.append('Accept',  'audio/mpeg');
+        let resClick = await fetch(URL_CLICK, { headers });
+        if (!resClick.ok) {
+          let e = new Error(`playClick(${url}) ERROR => HTTP${res.status}`);
+          e.url = url;
+          logger.warn(msg);
+          return;
+        }
+        let urlBuf = await resClick.arrayBuffer();
+        let audioSource = audioContext.createBufferSource();
+        let urlAudio = await new Promise((resolve, reject)=>{
+          audioContext.decodeAudioData(urlBuf, resolve, reject);
+        });
+        let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
+        let length = urlAudio.length;
+        let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
+        console.debug(`playClick(${url})`, {sampleRate, length, numberOfChannels});
+        let audioBuffer = audioContext.createBuffer(
+          numberOfChannels, length, sampleRate);
+        for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
+          let offset = 0;
+          let channelData = new Float32Array(length);
+          channelData.set(urlAudio.getChannelData(channelNumber), offset);
+          offset += urlAudio.length;
+          audioBuffer.getChannelData(channelNumber).set(channelData);
+        }
+
+        audioSource.buffer = audioBuffer;
+        audioSource.connect(audioContext.destination);
+        return new Promise((resolve, reject) => { try {
+          audioSource.onended = evt => {
+            console.log(`playClick(${url}) => OK`);
+            resolve();
+          };
+          audioSource.start();
+        } catch(e) {
+          let msg = `playClick(ERROR) ${url} could not start() => ${e.message}`;
+          console.error(msg);
+          alert(msg);
+          reject(e);
+        }}); // Promise
+      } catch(e) {
+        this.alert(`volatile.playURL(${url}) => ${e.message}`, 'ebt.audioError');
+        throw e;
+      }
+    },
+    alert(msg, context) {
+      this.alertMsg = msg && { msg, context };
+      this.showAlertMsg = !!msg;
+    },
     waitBegin(msg) {
       msg && (this.waitingMsg = msg);
       if (this.waiting === 0) {
