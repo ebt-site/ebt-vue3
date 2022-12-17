@@ -48,18 +48,19 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    async playClick() {
-      return this.playUrl(URL_CLICK);
-    },
-    async playUrl(url=URL_CLICK) {
-      try {
-        let { audioContext } = this;
-        if (audioContext == null) {
-          this.audioContext = audioContext = new AudioContext();
-        }
+    playClick() {
+      let { audioContext } = this;
+      if (audioContext == null) {
+        this.audioContext = audioContext = new AudioContext();
+      }
 
+      return this.playUrl(URL_CLICK, {audioContext});
+    },
+    async playUrl(url=URL_CLICK, opts={}) {
+      try {
+        let { audioContext } = opts;
         let headers = new Headers();
-        headers.append('Accept',  'audio/mpeg');
+        headers.append('Accept', 'audio/mpeg');
         let resClick = await fetch(URL_CLICK, { headers });
         if (!resClick.ok) {
           let e = new Error(`playClick(${url}) ERROR => HTTP${res.status}`);

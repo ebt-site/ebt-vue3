@@ -161,7 +161,7 @@
         }
         this.stopAudio(true);
       },
-      async clickPlayPause() {
+      clickPlayPause() {
         let { volatile, audioScid, audioPlaying, audioContext } = this;
 
         volatile.playClick();
@@ -207,7 +207,7 @@
           this.incrementSegment(-1);
         }
       },
-      async clickBack() {
+      clickBack() {
         let { volatile } = this;
         volatile.playClick();
         return this.back();
@@ -230,7 +230,7 @@
 
         return incremented;
       },
-      async clickNext() {
+      clickNext() {
         let { volatile } = this;
         volatile.playClick();
         return this.next();

@@ -178,9 +178,6 @@
   border-left: 1pt solid rgb(var(--v-theme-chip));
   border-radius: 3pt;
 }
-div.v-overlay__content {
-  bottom: 50% !important;
-}
 .v-toolbar-title {
   margin-left: 0px;
   min-width: 13em;
@@ -221,6 +218,7 @@ div.v-overlay__content {
 }
 .app-menu-items {
   display: flex;
+  height: 50px !important;
   flex-flow: row nowrap ;
   border: 1px solid rgb(var(--v-theme-on-surface));
   border-radius: 10px !important;
