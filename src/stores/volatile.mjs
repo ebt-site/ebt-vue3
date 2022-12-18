@@ -9,7 +9,7 @@ import * as Idb from "idb-keyval";
 const suttas = new Map();
 const layout = ref();
 const showSettings = ref(false);
-const URL_CLICK = "audio/click.mp3";
+const URL_CLICK = "audio/click1.mp3";
 const SAMPLE_RATE = 48000;
 const INITIAL_STATE = {
   alertMsg: ref(null),
