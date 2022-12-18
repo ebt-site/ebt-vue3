@@ -205,6 +205,7 @@ export default {
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "Audiodatei wird erstellt...",
     "clearSettings": "Einstellungen zurücksetzen?",
+    "clickOnTap": "Click on tap",
     "clickRefresh": "In der Web-Anwendung ist ein Fehler aufgetreten. Klicken Sie „Seite neu laden“, um fortzufahren.",
     "closeCard": "Close",
     "confirm": "Bestätigen",

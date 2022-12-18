@@ -154,6 +154,9 @@
               :hint="ipsItem.hint"
               >
             </v-select>
+            <v-checkbox v-model="settings.clickOnTap" density="compact"
+              :label="$t('ebt.clickOnTap')"
+            />
             <template v-for="bell,i in ipsChoices">
               <audio v-if="bell.value" 
                 :ref="el => {bellAudio[bell.value] = el}" preload=auto>

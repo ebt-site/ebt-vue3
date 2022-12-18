@@ -70,11 +70,11 @@ export const useSuttasStore = defineStore('suttas', {
         vueRef = ref(idbSutta);
         VUEREFS.set(idbKey, vueRef);
         idbSutta.saved = Date.now();
-        logger.warn(`suttas.saveIdbSutta() ADD`, idbKey, idbSutta.saved);
+        logger.info(`suttas.saveIdbSutta() ADD`, idbKey, idbSutta.saved);
       } else if (vueRef.value !== idbSutta) {
         vueRef.value = idbSutta;
         idbSutta.saved = Date.now();
-        logger.warn(`suttas.saveIdbSutta() UPDATE`, idbKey, idbSutta.saved);
+        logger.info(`suttas.saveIdbSutta() UPDATE`, idbKey, idbSutta.saved);
       }
       await Idb.set(idbKey, idbSutta);
       this.nSet++;

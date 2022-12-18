@@ -3,11 +3,12 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("default ctor en", async () => {
+  it("TESTTESTdefault ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
     var ebt = new Settings();
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
+      clickOnTap: true,
       iCursor: 0,
       fullLine: false,
       history: [],
@@ -55,10 +56,11 @@ import should from "should";
       global.navigator = { languages: ['en-us'] };
     }
   });
-  it("INITIAL_STATE", async () => {
+  it("TESTTESTINITIAL_STATE", async () => {
     should(Settings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
+      clickOnTap: true,
       fullLine: false,
       history: [],
       iCursor: 0,
@@ -94,17 +96,19 @@ import should from "should";
     should(cards.length).equal(1);
     should(cards[0]).instanceOf(EbtCard);
   });
-  it("custom ctor", async () => {
+  it("TESTTESTcustom ctor", async () => {
     let dates = [
       new Date(2021, 1, 1),
       new Date(2021, 2, 2),
       new Date(2021, 3, 3),
     ];
     let history = dates.map(d => ({ date: d }));
+    let clickOnTap = false;
     let maxHistory = 1000;
     let showId = true;
     let showPali = false;
     var ebt = new Settings({
+      clickOnTap,
       history,
       maxHistory,
       showId,
@@ -115,6 +119,7 @@ import should from "should";
     should(ebt.history).not.equal(history);
 
     should(ebt).properties({
+      clickOnTap,
       maxHistory,
       showId,
       showPali,

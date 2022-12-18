@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { SuttaRef } from "scv-esm/main.mjs";
 import { logger } from "log-instance";
 import { ref } from "vue";
+import { useSettingsStore } from "./settings.mjs";
 import Utils from "../utils.mjs";
 import * as Idb from "idb-keyval";
 
@@ -48,14 +49,20 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    playClick() {
-      let { audioContext } = this;
-      if (audioContext == null) {
-        this.audioContext = audioContext = new AudioContext();
+    getAudioContext() {
+      let audioContext = new AudioContext();
+      audioContext.resume();
+      return audioContext;
+    },
+    playClick(audioContext=this.getAudioContext()) {
+      let settings = useSettingsStore();
+
+      if (settings.clickOnTap) {
         audioContext.resume();
+        return this.playUrl(URL_CLICK, {audioContext});
       }
 
-      return this.playUrl(URL_CLICK, {audioContext});
+      return null;
     },
     async playUrl(url=URL_CLICK, opts={}) {
       try {
@@ -64,9 +71,10 @@ export const useVolatileStore = defineStore('volatile', {
         headers.append('Accept', 'audio/mpeg');
         let resClick = await fetch(URL_CLICK, { headers });
         if (!resClick.ok) {
-          let e = new Error(`playClick(${url}) ERROR => HTTP${res.status}`);
+          let e = new Error(`playUrl(${url}) ERROR => HTTP${res.status}`);
           e.url = url;
           logger.warn(msg);
+          this.alert(msg, 'ebt.audioError');
           return;
         }
         let urlBuf = await resClick.arrayBuffer();
@@ -77,7 +85,7 @@ export const useVolatileStore = defineStore('volatile', {
         let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
         let length = urlAudio.length;
         let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        console.debug(`playClick(${url})`, {sampleRate, length, numberOfChannels});
+        logger.debug(`playUrl(${url})`, {sampleRate, length, numberOfChannels});
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
@@ -92,18 +100,18 @@ export const useVolatileStore = defineStore('volatile', {
         audioSource.connect(audioContext.destination);
         return new Promise((resolve, reject) => { try {
           audioSource.onended = evt => {
-            console.log(`playClick(${url}) => OK`);
+            logger.debug(`playUrl(${url}) => OK`);
             resolve();
           };
           audioSource.start();
         } catch(e) {
-          let msg = `playClick(ERROR) ${url} could not start() => ${e.message}`;
-          console.error(msg);
+          let msg = `playUrl(ERROR) ${url} could not start() => ${e.message}`;
+          logger.warn(msg);
           alert(msg);
           reject(e);
         }}); // Promise
       } catch(e) {
-        this.alert(`volatile.playURL(${url}) => ${e.message}`, 'ebt.audioError');
+        this.alert(`volatile.playUrl(${url}) => ${e.message}`, 'ebt.audioError');
         throw e;
       }
     },
