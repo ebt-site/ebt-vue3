@@ -180,7 +180,7 @@
 }
 .v-toolbar-title {
   margin-left: 0px;
-  min-width: 12em;
+  min-width: 10em;
 }
 .v-toolbar--collapse {
   width: 50px !important;
