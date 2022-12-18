@@ -52,6 +52,7 @@ export const useVolatileStore = defineStore('volatile', {
       let { audioContext } = this;
       if (audioContext == null) {
         this.audioContext = audioContext = new AudioContext();
+        audioContext.resume();
       }
 
       return this.playUrl(URL_CLICK, {audioContext});
