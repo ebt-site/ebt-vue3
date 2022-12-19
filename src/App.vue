@@ -75,14 +75,14 @@
         height="300px"
         timeout=-1
       >
-        <div class="alert-title"> {{ alertTitle }}</div>
-        <div class="alert-msg"> {{ alertMsg }}</div>
-        <template v-slot:actions>
-          <v-btn
-            icon="mdi-close-circle"
+        <div class="alert-title"> 
+          {{ alertTitle }}
+          <v-btn color="alert"
+            icon="mdi-close"
             @click="volatile.alert(null)"
           />
-        </template>
+        </div>
+        <div class="alert-msg"> {{ alertMsg }}</div>
       </v-snackbar>
     </v-main>
   </v-app>
@@ -226,6 +226,9 @@
   background: rgba(var(--v-theme-surface), 0.5);
 }
 .alert-title {
+  displaY: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: larger;
   font-variant-caps: all-small-caps;
   font-weight: 600;
@@ -234,6 +237,8 @@
 .alert-msg {
   margin-top: 1em;
   min-height: 40px;
+  max-width: 300px;
+  text-overflow: '';
 }
 </style>
 

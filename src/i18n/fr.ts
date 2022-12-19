@@ -203,7 +203,7 @@ export default {
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "Building audio file...",
     "clearSettings": "Clear all settings and reset to defaults?",
-    "clickOnTap": "Click on tap",
+    "click": "Click",
     "clickRefresh": "An application error has occurred. Click Refresh Page to continue",
     "closeCard": "Close",
     "confirm": "Confirm",

@@ -33,6 +33,11 @@ export const useVolatileStore = defineStore('volatile', {
     return s;
   },
   getters: {
+    urlClick() {
+      let settings = useSettingsStore();
+      let volume = settings.clickVolume;
+      return volume ? `audio/click${volume}.mp3` : null;
+    },
     layout() {
       let root = document.documentElement;
       let onresize = ()=>{
@@ -55,23 +60,30 @@ export const useVolatileStore = defineStore('volatile', {
       return audioContext;
     },
     playClick(audioContext=this.getAudioContext()) {
-      let settings = useSettingsStore();
-
-      if (settings.clickOnTap) {
+      return this.playUrl(this.urlClick, {audioContext});
+    },
+    playUrl(url, opts={}) {
+      let { audioContext=this.getAudioContext() } = opts;
+      if (url) {
         audioContext.resume();
-        return this.playUrl(URL_CLICK, {audioContext});
+        return this.playUrlAsync(url, {audioContext});
       }
 
       return null;
     },
-    async playUrl(url=URL_CLICK, opts={}) {
+    async playUrlAsync(url, opts={}) {
       try {
+        if (url == null) {
+          logger.debug("volatile.playUrlAsync(null)");
+          return;
+        }
         let { audioContext } = opts;
         let headers = new Headers();
         headers.append('Accept', 'audio/mpeg');
-        let resClick = await fetch(URL_CLICK, { headers });
+        let resClick = await fetch(url, { headers });
         if (!resClick.ok) {
-          let e = new Error(`playUrl(${url}) ERROR => HTTP${res.status}`);
+          let msg = `volatile.playUrlAsync() ${url} => HTTP${resClick.status}`;
+          let e = new Error(msg);
           e.url = url;
           logger.warn(msg);
           this.alert(msg, 'ebt.audioError');
@@ -85,7 +97,8 @@ export const useVolatileStore = defineStore('volatile', {
         let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
         let length = urlAudio.length;
         let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        logger.debug(`playUrl(${url})`, {sampleRate, length, numberOfChannels});
+        logger.debug(`volatile.playUrlAsync(${url})`, 
+          {sampleRate, length, numberOfChannels});
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
@@ -100,18 +113,18 @@ export const useVolatileStore = defineStore('volatile', {
         audioSource.connect(audioContext.destination);
         return new Promise((resolve, reject) => { try {
           audioSource.onended = evt => {
-            logger.debug(`playUrl(${url}) => OK`);
+            logger.debug(`volatile.playUrlAsync(${url}) => OK`);
             resolve();
           };
           audioSource.start();
         } catch(e) {
-          let msg = `playUrl(ERROR) ${url} could not start() => ${e.message}`;
+          let msg = `volatile.playUrlAsync(${url}) => ${e.message}`;
           logger.warn(msg);
           alert(msg);
           reject(e);
         }}); // Promise
       } catch(e) {
-        this.alert(`volatile.playUrl(${url}) => ${e.message}`, 'ebt.audioError');
+        this.alert(`volatile.playUrlAsync(${url}) => ${e.message}`, 'ebt.audioError');
         throw e;
       }
     },

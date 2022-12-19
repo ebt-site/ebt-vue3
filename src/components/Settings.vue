@@ -154,9 +154,11 @@
               :hint="ipsItem.hint"
               >
             </v-select>
-            <v-checkbox v-model="settings.clickOnTap" density="compact"
-              :label="$t('ebt.clickOnTap')"
-            />
+            <v-slider v-model="settings.clickVolume" min=0 max=4 step=1 
+              :label="$t('ebt.click')"
+              @update:modelValue="onClickVolume"
+              prepend-icon="mdi-volume-high"
+            ></v-slider>
             <template v-for="bell,i in ipsChoices">
               <audio v-if="bell.value" 
                 :ref="el => {bellAudio[bell.value] = el}" preload=auto>
@@ -308,6 +310,10 @@ export default {
     logger.debug("Settings.mounted()", this.host);
   },
   methods: {
+    onClickVolume() {
+      let { volatile } = this;
+      volatile.playClick();
+    },
     clickClose() {
       let { volatile } = this;
       volatile.playClick();

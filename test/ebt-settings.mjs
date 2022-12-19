@@ -8,7 +8,7 @@ import should from "should";
     var ebt = new Settings();
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
-      clickOnTap: true,
+      clickVolume: 2,
       iCursor: 0,
       fullLine: false,
       history: [],
@@ -60,7 +60,7 @@ import should from "should";
     should(Settings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
-      clickOnTap: true,
+      clickVolume: 2,
       fullLine: false,
       history: [],
       iCursor: 0,
@@ -103,12 +103,12 @@ import should from "should";
       new Date(2021, 3, 3),
     ];
     let history = dates.map(d => ({ date: d }));
-    let clickOnTap = false;
+    let clickVolume = 4;
     let maxHistory = 1000;
     let showId = true;
     let showPali = false;
     var ebt = new Settings({
-      clickOnTap,
+      clickVolume,
       history,
       maxHistory,
       showId,
@@ -119,7 +119,7 @@ import should from "should";
     should(ebt.history).not.equal(history);
 
     should(ebt).properties({
-      clickOnTap,
+      clickVolume,
       maxHistory,
       showId,
       showPali,

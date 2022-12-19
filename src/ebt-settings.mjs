@@ -27,7 +27,7 @@ export default class EbtSettings {
   constructor(opts = {}) {
     let {
       audio,
-      clickOnTap,
+      clickVolume,
       iCursor,
       fullLine,
       highightExamples,
@@ -51,7 +51,7 @@ export default class EbtSettings {
     (opts.logger || logger).logInstance(this, opts);
 
     this.audio = audio;
-    this.clickOnTap = clickOnTap;
+    this.clickVolume = clickVolume;
     this.iCursor = iCursor;
     this.fullLine = fullLine;
     this.history = history.reduce((a, h) => {
@@ -112,7 +112,7 @@ export default class EbtSettings {
     return {
       // from scv-server
       audioSuffix: 'mp3',
-      clickOnTap: true,
+      clickVolume: 2,
       highlightExamples: false,
       id: 1,
       showGdpr: true,
