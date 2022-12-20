@@ -187,23 +187,7 @@
             <v-checkbox v-model="settings.highlightExamples" density="compact"
               :label="$t('ebt.highlightExamples')"
             />
-            <v-select v-model="settings.serverUrl" :items="servers" 
-              :menu-icon="selectIcon"
-              :label="$t('ebt.server')"
-              :hint='serverHint'
-            />
-            <v-select v-model="settings.logLevel" :items="logLevels" 
-              :menu-icon="selectIcon"
-              :label="$t('ebt.logLevel')"
-              :hint="settings.logLevel || 'info'"
-            />
-            <v-sheet class="settings-link">
-              <a :href="githubUrl" target="_blank">
-                {{$t('ebt.showGithub')}}
-              </a>
-            </v-sheet>
-            <v-dialog 
-              v-model="isClearSettings">
+            <v-dialog v-model="isClearSettings" class="pb-5">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn class="settings-clear" 
                   @click="openClearSettings"
@@ -229,6 +213,21 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+            <v-select v-model="settings.serverUrl" :items="servers" 
+              :menu-icon="selectIcon"
+              :label="$t('ebt.server')"
+              :hint='serverHint'
+            />
+            <v-select v-model="settings.logLevel" :items="logLevels" 
+              :menu-icon="selectIcon"
+              :label="$t('ebt.logLevel')"
+              :hint="settings.logLevel || 'info'"
+            />
+            <v-sheet class="settings-link">
+              <a :href="githubUrl" target="_blank">
+                {{$t('ebt.showGithub')}}
+              </a>
+            </v-sheet>
           </v-expansion-panel-text>
         </v-expansion-panel><!--Advanced-->
       </v-expansion-panels>
@@ -327,6 +326,7 @@ export default {
       settings.clear();
       volatile.showSettings = false;
       logger.info("Settings.resetDefaults()", settings);
+      window.location.hash = "#/home";
       window.location.reload();
     },
     langVoices(lang, vnameKey) {
@@ -407,7 +407,7 @@ export default {
 
 <style scoped>
 .settings-clear {
-  margin-top: 4pt;
+  margin-bottom: 1em;
   text-align: "center";
 }
 .settings-caption {

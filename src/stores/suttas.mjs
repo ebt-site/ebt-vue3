@@ -27,12 +27,13 @@ export const useSuttasStore = defineStore('suttas', {
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
       let search = `${sutta_uid}/${lang}/${author}`;
-      return [ 
+      let url =  [ 
         serverUrl, 
         'search', 
         encodeURIComponent(search), 
-        lang,
+        lang === 'pli' ? langTrans : lang,
       ].join('/'); 
+      return url;
     },
     async loadIdbSutta(suttaRef, opts={}) { // low-level API
       let { maxAge } = this;
@@ -66,6 +67,7 @@ export const useSuttasStore = defineStore('suttas', {
     async saveIdbSutta(idbSutta) { // low-level API
       let { idbKey } = idbSutta;
       let vueRef = VUEREFS.get(idbKey);
+      console.log("saveIdbSutta", idbKey);
       if (vueRef == null) {
         vueRef = ref(idbSutta);
         VUEREFS.set(idbKey, vueRef);

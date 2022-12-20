@@ -228,7 +228,7 @@ export default {
     "exploreBuddhasTeaching": "Explore the Buddha's Teaching",
     "foundSuttas": "Found A_RESULTCOUNT suttas",
     "general": "General",
-    "highlightExamples": "Show example links (slow)",
+    "highlightExamples": "Show all example links (slow)",
     "inspireMe": "Inspire Me!",
     "languageCode": "English / EN",
     "languages": "Languages",

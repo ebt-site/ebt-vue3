@@ -12,6 +12,8 @@ export default class Utils {
           dst[k] = new Date(value);
         } else if (type === 'boolean') {
           dst[k] = `${value}` !== 'false' && value != null;
+        } else if (initial[k] instanceof Array) {
+          dst[k] = [...value];
         } else {
           dst[k] = `${value}`;
         }
