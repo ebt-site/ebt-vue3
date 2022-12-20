@@ -51,7 +51,9 @@ export default class IdbSutta {
       // opts is MlDoc
       let { segMap } = opts;
       if (segMap == null) {
-        throw new Error(`IdbSutta.create() required: segMap or segments`);
+        let msg = `IdbSutta.create() required: segMap or segments`;
+        console.log("DEBUG", msg);
+        throw new Error(msg);
       }
       let idbSutta = new IdbSutta({
         sutta_uid, lang, author, title, segments:[],

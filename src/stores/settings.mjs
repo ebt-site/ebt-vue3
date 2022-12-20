@@ -5,6 +5,9 @@ import Utils from "../utils.mjs";
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { default as Settings } from "../../src/ebt-settings.mjs";
 import { default as EbtCard } from "../../src/ebt-card.mjs";
+import * as Idb from "idb-keyval"; 
+
+const SETTINGS_KEY = "settings";
 
 var id = 1;
 
@@ -64,14 +67,23 @@ export const useSettingsStore = defineStore('settings', {
   actions: {
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
-      saved.cards = this.cards;
+      //saved.cards = this.cards;
       logger.logLevel = saved.logLevel;
       let json = JSON.stringify(saved);
       localStorage.settings = json;
+      Idb.set(SETTINGS_KEY, JSON.parse(json));
       logger.debug("SettingsStore.saveSettings() localStorage.settings");
     },
     removeCard(card) {
-      this.cards = this.cards.filter(c => c !== card);
+      let { cards, langTrans:defaultLang } = this;
+      let path = window.location.hash;
+      cards = this.cards = cards.filter(c => c !== card);
+      if (card.matchPath({path, defaultLang})) {
+        let openCard = cards.filter(c => c.isOpen)[0];
+        window.location.hash = openCard 
+          ? openCard.routeHash()
+          : "#/home";
+      }
     },
     addCard(opts) {
       let { cards, langTrans } = this;

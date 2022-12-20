@@ -26,7 +26,8 @@ export const useSuttasStore = defineStore('suttas', {
       let { langTrans, serverUrl } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
-      let search = `${sutta_uid}/${lang}/${author}`;
+      let search = `${sutta_uid}/${lang}`;
+      author && (search += `/${author}`);
       let url =  [ 
         serverUrl, 
         'search', 
@@ -50,6 +51,11 @@ export const useSuttasStore = defineStore('suttas', {
         let json = await volatile.fetchJson(url);
         this.nFetch++;
         let { mlDocs, results } = json;
+        if (mlDocs.length < 1) {
+          let msg = `sutta not found: ${url}`;
+          volatile.alert(msg);
+          return null;
+        }
         idbSutta = IdbSutta.create(mlDocs[0]);
         logger.info(`suttas.loadIdbSutta()`,
           url,
@@ -67,7 +73,6 @@ export const useSuttasStore = defineStore('suttas', {
     async saveIdbSutta(idbSutta) { // low-level API
       let { idbKey } = idbSutta;
       let vueRef = VUEREFS.get(idbKey);
-      console.log("saveIdbSutta", idbKey);
       if (vueRef == null) {
         vueRef = ref(idbSutta);
         VUEREFS.set(idbKey, vueRef);
