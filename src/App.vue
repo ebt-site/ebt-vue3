@@ -226,7 +226,7 @@
   background: rgba(var(--v-theme-surface), 0.5);
 }
 .alert-title {
-  displaY: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: larger;
