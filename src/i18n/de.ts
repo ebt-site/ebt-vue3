@@ -229,6 +229,7 @@ export default {
     "loadingAudio": "Audio laden...",
     "loadingSutta": "A_SUTTA wird geladen...",
     "logLevel": "Konsolen-Info",
+    "no-location-debug": "Debug",
     "no-location-home": "",
     "no-location-search": "Suche...",
     "no-location-sutta": "Sutta...",

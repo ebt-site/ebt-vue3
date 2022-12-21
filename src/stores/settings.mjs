@@ -65,6 +65,11 @@ export const useSettingsStore = defineStore('settings', {
     return s;
   },
   actions: {
+    async loadSettings() {
+      let settings = await Idb.get(SETTINGS_KEY);
+      console.log("DEBUG loadSettings", settings);
+      return settings;
+    },
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
       //saved.cards = this.cards;
@@ -89,6 +94,7 @@ export const useSettingsStore = defineStore('settings', {
       let { cards, langTrans } = this;
       let { context, location } = opts;
       switch (context) {
+        case EbtCard.CONTEXT_DEBUG:
         case EbtCard.CONTEXT_SEARCH:
         case EbtCard.CONTEXT_SUTTA:
         case EbtCard.CONTEXT_HOME:

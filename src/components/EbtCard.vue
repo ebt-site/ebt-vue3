@@ -20,6 +20,7 @@
         />
       </template>
       <v-card-text>
+        <debug-view v-if="card.context===CONTEXT_DEBUG"/>
         <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
         <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
         <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+  import { default as DebugView } from './DebugView.vue';
   import { default as HomeView } from './HomeView.vue';
   import { default as SearchView } from './SearchView.vue';
   import { default as WikiView } from './WikiView.vue';
@@ -80,6 +82,7 @@
       }
     },
     components: {
+      DebugView,
       HomeView,
       SearchView,
       SuttaView,
@@ -189,6 +192,7 @@
         let link = `/${context}/${location}`;
         return link;
       },
+      CONTEXT_DEBUG: (ctx)=>EbtCard.CONTEXT_DEBUG,
       CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
       CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
@@ -207,6 +211,9 @@
         },{
           title: $t('ebt.context-wiki'),
           value: EbtCard.CONTEXT_WIKI,
+        },{
+          title: $t('ebt.context-debug'),
+          value: EbtCard.CONTEXT_DEBUG,
         }];
       },
     },

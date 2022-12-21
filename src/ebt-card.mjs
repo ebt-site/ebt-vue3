@@ -6,6 +6,7 @@ const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
 const CONTEXT_WIKI = "wiki";
+const CONTEXT_DEBUG = "debug";
 const CONTEXTS = {
   [CONTEXT_HOME]: {
     icon: "mdi-home",
@@ -18,6 +19,9 @@ const CONTEXTS = {
   },
   [CONTEXT_SUTTA]: {
     icon: "mdi-file-document-outline",
+  },
+  [CONTEXT_DEBUG]: {
+    icon: "mdi-tools",
   },
 }
 
@@ -44,6 +48,11 @@ export default class EbtCard {
       throw new Error('Expected location array');
     }
     switch (context) {
+      case CONTEXT_DEBUG: 
+        if (location[0] == null) {
+          location[0] = 'Debug';
+        }
+        break;
       case CONTEXT_SEARCH:
         if (location[0] == null) {
           location[0] = '';
@@ -71,6 +80,7 @@ export default class EbtCard {
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
+  static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
 
   static routeSuttaRef(route) {
     let hashParts = route.split("/");

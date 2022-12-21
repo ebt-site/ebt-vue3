@@ -233,6 +233,7 @@ export default {
     "loadingAudio": "loading audio...",
     "loadingSutta": "Loading A_SUTTA...",
     "logLevel": "Console messages",
+    "no-location-debug": "Debug",
     "no-location-home": "",
     "no-location-search": "Search...",
     "no-location-sutta": "Sutta",
