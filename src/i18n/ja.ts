@@ -275,7 +275,6 @@ export default {
     "showTextSegmentIds": "SuttaCentral セグメントIDを表示",
     "showTransText": "訳文の表示",
     "speakSearchText": "検索テキストを音声化",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "ウェブブラウザのクッキーに設定を保存",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

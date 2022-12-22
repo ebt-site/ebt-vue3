@@ -32,6 +32,7 @@
     },
     computed: {
       testLinks: (ctx) => [
+        "#/debug",
         "#/",
         "#/wiki",
         "#/sutta",

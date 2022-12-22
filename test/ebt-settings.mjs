@@ -9,16 +9,11 @@ import should from "should";
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
       clickVolume: 2,
-      iCursor: 0,
       fullLine: false,
-      history: [],
       ips: 6,
       lang: 'en',
       maxResults: 5,
-      maxHistory: 2000,  // half a cookie
       refLang: 'en',
-      saveSettings: false,
-      saveSettingsExamples: false,
       showId: false,
       showPali: true,
       showReference: false,
@@ -35,16 +30,11 @@ import should from "should";
       let ebt = new Settings();
       should(ebt).properties({
         audio: Settings.AUDIO.OGG,
-        iCursor: 0,
         fullLine: false,
-        history: [],
         ips: 6,
         lang: 'de',
         maxResults: 5,
-        maxHistory: 2000,  // half a cookie
         refLang: 'de',
-        saveSettings: false,
-        saveSettingsExamples: false,
         showId: false,
         showPali: true,
         showReference: false,
@@ -62,8 +52,6 @@ import should from "should";
       audioSuffix: 'mp3',
       clickVolume: 2,
       fullLine: false,
-      history: [],
-      iCursor: 0,
       id: 1,
       ips: 6,
       showGdpr: true,
@@ -73,11 +61,8 @@ import should from "should";
       langTrans: 'en',
       locale: 'en',
       maxDuration: 3*60*60,
-      maxHistory: 2000,
       maxResults: 5,
       refLang: 'en',
-      saveSettings: false,
-      saveSettingsExamples: false,
       showId: false,
       showPali: true,
       showReference: false,
@@ -102,50 +87,20 @@ import should from "should";
       new Date(2021, 2, 2),
       new Date(2021, 3, 3),
     ];
-    let history = dates.map(d => ({ date: d }));
     let clickVolume = 4;
-    let maxHistory = 1000;
     let showId = true;
     let showPali = false;
     var ebt = new Settings({
       clickVolume,
-      history,
-      maxHistory,
       showId,
       showPali,
     });
-
-    should.deepEqual(ebt.history, history);
-    should(ebt.history).not.equal(history);
 
     should(ebt).properties({
       clickVolume,
-      maxHistory,
       showId,
       showPali,
-      history,
     });
-  });
-  it("stringify() fits a cookie", () => {
-    let dates = [
-      new Date(2021, 1, 1),
-      new Date(2021, 2, 2),
-      new Date(2021, 3, 3),
-    ];
-    let history = dates.map(d => ({ date: d }));
-    let json1 = JSON.parse(JSON.stringify({ history }));
-
-    // ctor doesn't change options
-    should(typeof json1.history[0].date).equal('string');
-    var ebt = new Settings(json1);
-    should(typeof json1.history[0].date).equal('string');
-
-    // toJSON() truncates history as needed
-    let cookie = JSON.stringify(ebt);
-    should(cookie.length).below(4000);
-    let json2 = JSON.parse(cookie);
-    let settings2 = new Settings(json2);
-    should.deepEqual(settings2.history, history);
   });
   it("REF_LANGUAGES => reference languages", () => {
     should.deepEqual(Settings.REF_LANGUAGES.map(tl => tl.code).sort(), [

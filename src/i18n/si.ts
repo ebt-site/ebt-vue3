@@ -272,7 +272,6 @@ export default {
     "showTextSegmentIds": "SuttaCentral හි කොටස් හැඳුනුම් අංක පෙන්වන්න",
     "showTransText": "පරිවර්තන පෙළ පෙන්වන්න",
     "speakSearchText": "සෙවුම් පෙළ පවසන්න",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "වෙබ් බ්‍රව්සර් කුකී තුළ සැකසුම් ගබඩා කරන්න",
     "text": "Sutta ID or text",
     "textLayout": "පෙළ පිරිසැලසුම",

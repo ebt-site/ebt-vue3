@@ -274,7 +274,6 @@ export default {
     "showTextSegmentIds": "Zobraz čísla SuttaCentral segmentů",
     "showTransText": "Zobraz překlad",
     "speakSearchText": "Řekni hledaný text",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "Uchovej nastavení v cookies webového prohlížeče",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

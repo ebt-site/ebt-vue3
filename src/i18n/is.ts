@@ -275,7 +275,6 @@ export default {
     "showTextSegmentIds": "Sýna SuttaCentral auðkenni hlutans",
     "showTransText": "Sýna þýðingu",
     "speakSearchText": "Speak search text",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "Geyma stillingar í vafrakökum",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

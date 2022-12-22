@@ -273,7 +273,6 @@ export default {
     "showTextSegmentIds": "SuttaCentral-ID zeigen",
     "showTransText": "Zeige lokale Übersetzung",
     "speakSearchText": "Suchtext vorlesen",
-    "storeSettingsHistory": "Einstellungen und Chronik erlauben (werden in Webbrowser-Cookies gespeichert)",
     "storeSettingsInCookies": "Einstellungen erlauben (werden in Webbrowser-Cookies gespeichert)",
     "text": "Sutta-ID oder Suchtext eingeben",
     "textLayout": "Textgestaltung",

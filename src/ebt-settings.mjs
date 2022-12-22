@@ -28,18 +28,13 @@ export default class EbtSettings {
     let {
       audio,
       clickVolume,
-      iCursor,
       fullLine,
       highightExamples,
-      history,
       ips,
       lang,
       locale,
-      maxHistory,
       maxResults,
       refLang,
-      saveSettingsExamples,
-      saveSettings,
       showId,
       showPali,
       showTrans,
@@ -52,18 +47,7 @@ export default class EbtSettings {
 
     this.audio = audio;
     this.clickVolume = clickVolume;
-    this.iCursor = iCursor;
     this.fullLine = fullLine;
-    this.history = history.reduce((a, h) => {
-      if (h != null) {
-        let date = typeof h.date === 'string'
-          ? new Date(h.date)
-          : h.date;
-        a.push(Object.assign({}, h, { date }));
-      }
-      return a;
-    }, []);
-    this.history.sort((a, b) => a.date - b.date);
     this.ips = 6;
     this.lang = EbtSettings.TRANS_LANGUAGES.reduce((a, l) => {
       return l.code === lang ? lang : a;
@@ -72,10 +56,7 @@ export default class EbtSettings {
       return l.code === locale ? locale : a;
     }, 'en');
     this.maxResults = maxResults;
-    this.maxHistory = maxHistory;
     this.refLang = refLang;
-    this.saveSettingsExamples = saveSettingsExamples;
-    this.saveSettings = saveSettings;
     this.showId = showId;
     this.showPali = showPali;
     this.showReference = showReference;
@@ -83,18 +64,6 @@ export default class EbtSettings {
     this.vnameRoot = vnameRoot;
     this.vnameTrans = vnameTrans;
 
-  }
-
-  toJSON() {
-    let { maxHistory, history, iCursor } = this;
-    let json = Object.assign({}, this);
-    let trimHistory = history.slice();
-    iCursor = Math.min(trimHistory.length - 1, iCursor);
-    while (JSON.stringify(trimHistory).length > maxHistory) {
-      trimHistory.pop();
-    }
-    json.history = trimHistory;
-    return json;
   }
 
   static get SERVERS() {
@@ -130,16 +99,11 @@ export default class EbtSettings {
       // from ebt-vue
       audio: AUDIO.OGG,
       fullLine: false,
-      history: [],
-      iCursor: 0,
       ips: 6,
       lang: NAV_LANG,
       locale: NAV_LANG,
-      maxHistory: 2000,
       maxResults: 5,
       refLang: NAV_LANG,
-      saveSettingsExamples: false,
-      saveSettings: false,
       showId: false,
       showPali: true,
       showReference: false,

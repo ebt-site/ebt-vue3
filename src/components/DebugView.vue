@@ -3,9 +3,15 @@
     <div>
       <h3>DEBUG VIEW</h3>
 
-      <v-btn @click="clickTestLoadSettings" variant="outlined">
-        Test Load Settings
-      </v-btn>
+      <div class="buttons">
+        <v-btn @click="clickTestLoadSettings" variant="outlined">
+          Test Load Settings
+        </v-btn>
+        <v-btn @click="clickCards" variant="outlined">
+          Cards
+        </v-btn>
+      </div>
+
 
       <div style="width: 20em">
         <div v-for="link in testLinks">
@@ -34,11 +40,16 @@
         let { settings } = this;
         settings.loadSettings();
       },
+      clickCards() {
+        let { settings } = this;
+        console.log("DEBUG clickCards()", JSON.stringify(settings.cards, null, 2));
+      },
     },
     mounted() {
     },
     computed: {
       testLinks: (ctx) => [
+        "#/debug",
         "#/",
         "#/wiki",
         "#/sutta",
@@ -62,6 +73,13 @@
   max-width: 40em;
   margin-left: auto;
   margin-right: auto;
+}
+.buttons {
+  display: flex;
+  flex-flow: column;
+}
+.buttons .v-btn {
+  margin: 1em;
 }
 </style>
 

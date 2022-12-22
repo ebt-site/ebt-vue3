@@ -37,47 +37,39 @@ function elementInViewport(elt, root = document.documentElement) {
 
 export const useSettingsStore = defineStore('settings', {
   state: () => {
-    let s = Object.assign({}, Settings.INITIAL_STATE);
-    s.id = id++;
-    let savedState = localStorage.settings;
-    if (savedState) {
-      try {
-        savedState = JSON.parse(savedState);
-        let { cards, logLevel } = savedState;
-        logger.logLevel = logLevel;
-        if (cards == null) {
-          cards = savedState.cards = [{}];
-        }
-        cards.forEach((card,i) => {
-          cards[i] = new EbtCard(card);
-        });
-      } catch(e) {
-        logger.error(`SettingsStore.state() corrupt localStorage`, 
-          savedState, e.message);
-        savedState = null;
-      }
-    }
-    if (savedState) {
-      Utils.assignTyped(s, savedState, Settings.INITIAL_STATE);
-      s.cards = savedState.cards;
-    }
-    logger.debug(`SettingsStore.state() => `, s);
-    return s;
+    let settings = Utils.assignTyped({}, Settings.INITIAL_STATE);
+    return settings;
   },
   actions: {
     async loadSettings() {
-      let settings = await Idb.get(SETTINGS_KEY);
-      console.log("DEBUG loadSettings", settings);
-      return settings;
+      let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
+      let savedState = await Idb.get(SETTINGS_KEY);
+      if (savedState) {
+        try {
+          let { cards, logLevel } = savedState;
+          logger.logLevel = logLevel;
+          if (cards == null) {
+            cards = savedState.cards = [{}];
+          }
+          cards.forEach((card,i) => {
+            cards[i] = new EbtCard(card);
+          });
+        } catch(e) {
+          logger.warn(`SettingsStore.loadSettings()`, savedState, e.message);
+          savedState = null;
+        }
+      }
+      if (savedState) {
+        Utils.assignTyped(this, savedState, Settings.INITIAL_STATE);
+      }
+      return this;
     },
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
-      //saved.cards = this.cards;
       logger.logLevel = saved.logLevel;
       let json = JSON.stringify(saved);
-      localStorage.settings = json;
       Idb.set(SETTINGS_KEY, JSON.parse(json));
-      logger.debug("SettingsStore.saveSettings() localStorage.settings");
+      logger.debug("SettingsStore.saveSettings()");
     },
     removeCard(card) {
       let { cards, langTrans:defaultLang } = this;
@@ -102,6 +94,7 @@ export const useSettingsStore = defineStore('settings', {
           logger.info("addCard", {context, location, langTrans});
           let card = new EbtCard(Object.assign({langTrans}, opts));
           this.cards.push(card);
+          this.saveSettings();
           return card;
         default:
           logger.info("addCard => null [INVALID CONTEXT]", opts);
@@ -146,8 +139,9 @@ export const useSettingsStore = defineStore('settings', {
       return true; // element originally not in viewport
     },
     clear() {
-      delete localStorage.settings;
+      delete localStorage.settings; // legacy
       Utils.assignTyped(this, Settings.INITIAL_STATE);
+      this.saveSettings();
       logger.debug(`SettingsStore.clear()`, this);
     },
     suttaUrl(idOrRef) {

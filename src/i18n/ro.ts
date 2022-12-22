@@ -272,7 +272,6 @@ export default {
     "showTextSegmentIds": "Arată identificatori de segmente folosiți de SuttaCentral",
     "showTransText": "Arată versiunea tradusă",
     "speakSearchText": "Speak search text",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "Salvează setările în browser, folosind cookie-uri",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

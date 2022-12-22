@@ -271,7 +271,6 @@ export default {
     "showTextSegmentIds": "Montrer les segments ids SuttaCentral",
     "showTransText": "Montrer les textes traduits",
     "speakSearchText": "Speak search text",
-    "storeSettingsHistory": "Store settings and history in web browser cookies",
     "storeSettingsInCookies": "Enregistrer les paramètres dans les cookies du moteur de recherche",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
