@@ -275,6 +275,7 @@ export default {
     "showTransText": "Zobraz překlad",
     "speakPali": "Speak Pali",
     "speakSearchText": "Řekni hledaný text",
+    "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Uchovej nastavení v cookies webového prohlížeče",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

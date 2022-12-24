@@ -38,6 +38,7 @@ export default class EbtSettings {
       showId,
       showPali,
       speakPali,
+      speakTranslation,
       showTrans,
       showReference,
       vnameRoot,
@@ -61,6 +62,7 @@ export default class EbtSettings {
     this.showId = showId;
     this.showPali = showPali;
     this.speakPali = speakPali;
+    this.speakTranslation = speakTranslation;
     this.showReference = showReference;
     this.showTrans = showTrans;
     this.vnameRoot = vnameRoot;
@@ -109,6 +111,7 @@ export default class EbtSettings {
       showId: false,
       showPali: true,
       speakPali: true,
+      speakTranslation: true,
       showReference: false,
       showTrans: true,
       vnameRoot: 'Aditi',

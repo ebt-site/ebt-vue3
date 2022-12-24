@@ -314,7 +314,7 @@
           let playJson = await volatile.fetchJson(url);
           let { segment } = playJson;
 
-          if (settings.showPali) {
+          if (settings.speakPali) {
             if (segment.pli) {
               this.pliAudioUrl = [
                 serverUrl,
@@ -329,7 +329,7 @@
               this.pliAudioUrl = URL_NOAUDIO;
             }
           }
-          if (settings.showTrans) {
+          if (settings.speakTranslation) {
             let langText = segment[lang];
             if (langText) {
               this.transAudioUrl = [
@@ -364,11 +364,11 @@
         logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
-        if (this.segmentPlaying && settings.showPali && settings.speakPali) {
+        if (this.segmentPlaying && settings.speakPali) {
           await this.playAudio(pliAudioElt, audioPlaying);
         }
 
-        if (this.segmentPlaying && settings.showTrans) {
+        if (this.segmentPlaying && settings.speakTranslation) {
           await this.playAudio(transAudioElt, audioPlaying);
         }
 

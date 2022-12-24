@@ -274,6 +274,7 @@ export default {
     "showTransText": "Zeige lokale Übersetzung",
     "speakPali": "Speak Pali",
     "speakSearchText": "Suchtext vorlesen",
+    "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Einstellungen erlauben (werden in Webbrowser-Cookies gespeichert)",
     "text": "Sutta-ID oder Suchtext eingeben",
     "textLayout": "Textgestaltung",

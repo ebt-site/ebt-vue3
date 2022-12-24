@@ -272,6 +272,7 @@ export default {
     "showTransText": "Montrer les textes traduits",
     "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
+    "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Enregistrer les paramètres dans les cookies du moteur de recherche",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

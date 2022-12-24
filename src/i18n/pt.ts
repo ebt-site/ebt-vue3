@@ -275,6 +275,7 @@ export default {
     "showTransText": "Mostar tradução",
     "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
+    "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Armazenar configurações em cookies do navegador da web",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

@@ -274,6 +274,7 @@ export default {
     "showTransText": "Hiển thị bản dịch",
     "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
+    "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Lưu thiết lập với cookies",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",

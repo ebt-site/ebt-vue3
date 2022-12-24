@@ -154,6 +154,9 @@
               :hint="ipsItem.hint"
               >
             </v-select>
+            <v-checkbox v-model="settings.speakTranslation" density="compact"
+              :label="$t('ebt.speakTranslation')"
+            />
             <v-checkbox v-model="settings.speakPali" density="compact"
               :label="$t('ebt.speakPali')"
             />
