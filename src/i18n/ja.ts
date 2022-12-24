@@ -274,6 +274,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "SuttaCentral セグメントIDを表示",
     "showTransText": "訳文の表示",
+    "speakPali": "Speak Pali",
     "speakSearchText": "検索テキストを音声化",
     "storeSettingsInCookies": "ウェブブラウザのクッキーに設定を保存",
     "text": "Sutta ID or text",

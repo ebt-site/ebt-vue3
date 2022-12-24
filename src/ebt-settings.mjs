@@ -37,6 +37,7 @@ export default class EbtSettings {
       refLang,
       showId,
       showPali,
+      speakPali,
       showTrans,
       showReference,
       vnameRoot,
@@ -59,6 +60,7 @@ export default class EbtSettings {
     this.refLang = refLang;
     this.showId = showId;
     this.showPali = showPali;
+    this.speakPali = speakPali;
     this.showReference = showReference;
     this.showTrans = showTrans;
     this.vnameRoot = vnameRoot;
@@ -106,6 +108,7 @@ export default class EbtSettings {
       refLang: NAV_LANG,
       showId: false,
       showPali: true,
+      speakPali: true,
       showReference: false,
       showTrans: true,
       vnameRoot: 'Aditi',

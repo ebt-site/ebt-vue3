@@ -270,6 +270,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Montrer les segments ids SuttaCentral",
     "showTransText": "Montrer les textes traduits",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Enregistrer les paramètres dans les cookies du moteur de recherche",
     "text": "Sutta ID or text",

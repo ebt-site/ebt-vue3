@@ -16,6 +16,7 @@ import should from "should";
       refLang: 'en',
       showId: false,
       showPali: true,
+      speakPali: true,
       showReference: false,
       showTrans: true,
       vnameRoot: 'Aditi',
@@ -23,7 +24,7 @@ import should from "should";
 
     });
   });
-  it("default ctor de-de", async () => {
+  it("TESTTESTdefault ctor de-de", async () => {
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');
@@ -46,7 +47,7 @@ import should from "should";
       global.navigator = { languages: ['en-us'] };
     }
   });
-  it("TESTTESTINITIAL_STATE", async () => {
+  it("INITIAL_STATE", async () => {
     should(Settings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
@@ -81,7 +82,7 @@ import should from "should";
     should(cards.length).equal(1);
     should(cards[0]).instanceOf(EbtCard);
   });
-  it("TESTTESTcustom ctor", async () => {
+  it("custom ctor", async () => {
     let dates = [
       new Date(2021, 1, 1),
       new Date(2021, 2, 2),

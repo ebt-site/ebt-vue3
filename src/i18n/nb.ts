@@ -271,6 +271,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Vis SuttaCentral segmentidentifikasjon",
     "showTransText": "Vis oversatt tekst",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Lagre innstillinger i nettleser informasjonskapsler",
     "text": "Sutta ID or text",

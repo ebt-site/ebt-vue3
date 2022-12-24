@@ -274,6 +274,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Pokazuj segmentacje tekstów SuttaCentral",
     "showTransText": "Pokaż tłumaczenie",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Zachowaj ustawienia w ciasteczkach internetowej przeglądarki",
     "text": "Sutta ID or text",

@@ -364,7 +364,7 @@
         logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
-        if (this.segmentPlaying && settings.showPali) {
+        if (this.segmentPlaying && settings.showPali && settings.speakPali) {
           await this.playAudio(pliAudioElt, audioPlaying);
         }
 

@@ -271,6 +271,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "SuttaCentral सेगमेंट आयडी दिखाए",
     "showTransText": "अनुवाद ही दिखाए",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "वेब ब्राउज़र कुकीज़ में सेटिंग स्टोर करे।",
     "text": "Sutta ID or text",

@@ -273,6 +273,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Toon SuttaCentral segment-identificatiecodes",
     "showTransText": "Toon vertaalde tekst",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Bewaar instellingen in webbrowser-cookies",
     "text": "Sutta ID or text",

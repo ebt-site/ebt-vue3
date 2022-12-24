@@ -154,6 +154,9 @@
               :hint="ipsItem.hint"
               >
             </v-select>
+            <v-checkbox v-model="settings.speakPali" density="compact"
+              :label="$t('ebt.speakPali')"
+            />
             <v-slider v-model="settings.clickVolume" min=0 max=4 step=1 
               :label="$t('ebt.click')"
               @update:modelValue="onClickVolume"

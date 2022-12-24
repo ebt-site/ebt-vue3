@@ -272,6 +272,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Hiển thị SuttaCentral segment IDs",
     "showTransText": "Hiển thị bản dịch",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Lưu thiết lập với cookies",
     "text": "Sutta ID or text",

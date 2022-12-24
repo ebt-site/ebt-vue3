@@ -271,6 +271,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Arată identificatori de segmente folosiți de SuttaCentral",
     "showTransText": "Arată versiunea tradusă",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Salvează setările în browser, folosind cookie-uri",
     "text": "Sutta ID or text",

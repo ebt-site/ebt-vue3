@@ -274,6 +274,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Sýna SuttaCentral auðkenni hlutans",
     "showTransText": "Sýna þýðingu",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "storeSettingsInCookies": "Geyma stillingar í vafrakökum",
     "text": "Sutta ID or text",

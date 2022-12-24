@@ -273,6 +273,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Zobraz čísla SuttaCentral segmentů",
     "showTransText": "Zobraz překlad",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Řekni hledaný text",
     "storeSettingsInCookies": "Uchovej nastavení v cookies webového prohlížeče",
     "text": "Sutta ID or text",

@@ -20,7 +20,7 @@ logger.logLevel = 'warn';
     should(card2.id).not.equal(card1.id);
     should(card2).properties(defaultProps);
   });
-  it("TESTTESTconstants", ()=>{
+  it("constants", ()=>{
     should(EbtCard.CONTEXT_DEBUG).equal('debug');
     should(EbtCard.CONTEXT_HOME).equal('home');
     should(EbtCard.CONTEXT_SEARCH).equal('search');
