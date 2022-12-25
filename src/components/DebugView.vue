@@ -10,6 +10,9 @@
         <v-btn @click="clickCards" variant="outlined">
           Cards
         </v-btn>
+        <v-btn @click="clickPlayArrayBuffer" variant="outlined">
+          Play ArrayBuffer
+        </v-btn>
       </div>
 
 
@@ -24,18 +27,37 @@
 
 <script>
   import { useSettingsStore } from '../stores/settings.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
+  import { SuttaRef } from 'scv-esm';
+  import { logger } from 'log-instance';
   import { ref } from "vue";
 
   export default {
     setup() {
-      const settings = useSettingsStore();
       return {
-        settings,
+        settings: useSettingsStore(),
+        audio: useAudioStore(),
+        volatile: useVolatileStore(),
       }
     },
     components: {
     },
     methods: {
+      async clickPlayArrayBuffer() {
+        let { audio, volatile } = this;
+        let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
+        let segAudio = await audio.fetchSegmentAudio(suttaRef);
+        let audioContext = new AudioContext();
+        let paliUrl = await audio.langAudioUrl(suttaRef, 'pli');
+        try {
+          let arrayBuffer = await audio.fetchAudioBuffer(paliUrl);
+          await audio.playArrayBuffer({arrayBuffer, audioContext});
+        } catch(e) {
+          logger.warn(e.message);
+          volatile.alert(e.message);
+        }
+      },
       clickTestLoadSettings() {
         let { settings } = this;
         settings.loadSettings();

@@ -139,14 +139,11 @@
     async mounted() {
       let { $vuetify, settings, $i18n, volatile } = this;
       let loaded = await settings.loadSettings();
-      console.log("DEBUG App.mounted() loaded:", 
-        loaded.locale, "settings:", settings.locale);
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
       this.unsubscribe = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-        console.log("DEBUG settings changed", loaded.locale, "settings:", settings.locale);
-        logger.info("App.mounted() subscribe =>", {mutation, state, settings});
+        logger.debug("App.mounted() settings.subscribe()", {mutation, state, settings});
         settings.saveSettings();
         $i18n.locale = settings.locale;
       });

@@ -118,5 +118,35 @@ import should from "should";
       'pt',
     ]);
   });
+  it("TESTTESTsegmentRef()", ()=>{
+    let lang = 'de';
+    let author = 'sabbamitta';
+    let settings = new Settings({lang});
+    let segnum = '1.0';
+    should(Settings.segmentRef("thig1.1", settings)).properties({
+      sutta_uid: 'thig1.1',
+      lang,
+      author, 
+      segnum,
+    });
+    should(Settings.segmentRef("thig1.1:2.3/en/soma", settings)).properties({
+      sutta_uid: 'thig1.1',
+      lang: 'en',
+      author: 'soma', 
+      segnum: '2.3',
+    });
+    should(Settings.segmentRef("thig1.1:2.3/en", settings)).properties({
+      sutta_uid: 'thig1.1',
+      lang: 'en',
+      author: 'sujato', 
+      segnum: '2.3',
+    });
+    should(Settings.segmentRef("thig1.1:2.3/pli", settings)).properties({
+      sutta_uid: 'thig1.1',
+      lang: 'pli',
+      author: 'ms', 
+      segnum: '2.3',
+    });
+  });
 
 });

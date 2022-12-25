@@ -1,6 +1,7 @@
 import should from "should";
 import { setActivePinia, createPinia } from 'pinia';
 import { SuttaRef } from 'scv-esm/main.mjs';
+import { default as EbtSettings } from '../src/ebt-settings.mjs';
 import { logger } from "log-instance";
 import fetch from "node-fetch";
 logger.logLevel = 'warn';
@@ -34,7 +35,6 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       nFetch: 0,
       nGet: 0,
       nSet: 0,
-      maxAge: MSDAY,
     });
   });
   it("TESTTESTsegmentAudioUrl()", ()=>{
@@ -44,7 +44,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       `${SERVER_ROOT}/play/segment/thig1.1/en/sujato/thig1.1:0.1/Amy`
     );
   });
-  it("TESTTESTrootAudioUrl()", ()=>{
+  it("TESTTESTlangAudioUrl() pli", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -52,19 +52,18 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let langRoot = 'pli';
     let translator = 'ms';
     let guid = "56e190c8cde4e769f5458eab81949bc0";
-    let audioSeg = { // unused fields omitted
+    should(await audio.langAudioUrl(scid, 'pli')).equal([
+      SERVER_ROOT,
+      'audio',
       sutta_uid,
-      scid,
+      langRoot,
+      translator,
       vnameRoot,
-      segment: {
-        scid,
-        "pli": "Therīgāthā 1.1 ",
-        audio: {
-          "pli": guid,
-        }
-      }
-    }
-    should(audio.rootAudioUrl(audioSeg)).equal([
+      guid,
+    ].join('/'));
+
+    // Pali audio for English translation
+    should(await audio.langAudioUrl(`${scid}/en/sujato`, 'pli')).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
@@ -74,37 +73,48 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTtranslationAudioUrl()", ()=>{
+  it("TESTTESTlangAudioUrl() en", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
-    let vnameTrans = "Amy";
-    let langTrans = 'en';
+    let vname = "Amy";
+    let lang = 'en';
     let translator = 'sujato';
-    let guid = '84df812bf23b0203e0181e83b2a51dc4';
-    let audioSeg = { // unused fields omitted
-      sutta_uid,
-      scid,
-      langTrans,
-      translator,
-      "section": 0,
-      vnameTrans,
-      segment: {
-        scid,
-        "en": "Verses of the Senior Nuns 1.1 ",
-        audio: {
-          en: guid,
-        }
-      }
-    }
-    should(audio.translationAudioUrl(audioSeg)).equal([
+    let guid = "84df812bf23b0203e0181e83b2a51dc4";
+    should(await audio.langAudioUrl(scid, lang)).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
-      langTrans,
+      lang,
+      translator,
+      vname,
+      guid,
+    ].join('/'));
+  });
+  it("TESTTESTlangAudioUrl() de", async()=>{
+    let audio = useAudioStore();
+    let sutta_uid = "thig1.1";
+    let scid = `${sutta_uid}:0.1`;
+    let vnameTrans = "Vicki";
+    let lang = 'de';
+    let translator = 'sabbamitta';
+    let settings = new EbtSettings({lang, vnameTrans});
+    let guid = "288ac06596ee8aa4f2e010eb6a895c46";
+    should(await audio.langAudioUrl(scid, lang, settings)).equal([
+      SERVER_ROOT,
+      'audio',
+      sutta_uid,
+      lang,
       translator,
       vnameTrans,
       guid,
     ].join('/'));
+  });
+  it("TESTTESTfetchAudioBuffer()", async()=>{
+    let audio = useAudioStore();
+    let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
+    let url = await audio.langAudioUrl(suttaRef, 'pli');
+    let audioBuf = await audio.fetchAudioBuffer(url);
+    should(audioBuf.byteLength).above(11640).below(11650);
   });
 })

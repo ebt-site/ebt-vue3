@@ -1,6 +1,7 @@
 import { logger } from 'log-instance';
 import { default as EbtCard } from './ebt-card.mjs';
 import { default as VOICES } from './auto/voices.mjs';
+import { SuttaRef, Authors } from 'scv-esm/main.mjs';
 
 const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 
@@ -23,7 +24,7 @@ const SERVERS = [{
   dev: true,
 }];
 
-export default class EbtSettings {
+export default class Settings {
   constructor(opts = {}) {
     let {
       audio,
@@ -35,6 +36,7 @@ export default class EbtSettings {
       locale,
       maxResults,
       refLang,
+      serverUrl,
       showId,
       showPali,
       speakPali,
@@ -44,21 +46,22 @@ export default class EbtSettings {
       vnameRoot,
       vnameTrans,
 
-    } = Object.assign({}, EbtSettings.INITIAL_STATE, opts);
+    } = Object.assign({}, Settings.INITIAL_STATE, opts);
     (opts.logger || logger).logInstance(this, opts);
 
     this.audio = audio;
     this.clickVolume = clickVolume;
     this.fullLine = fullLine;
     this.ips = 6;
-    this.lang = EbtSettings.TRANS_LANGUAGES.reduce((a, l) => {
+    this.lang = Settings.TRANS_LANGUAGES.reduce((a, l) => {
       return l.code === lang ? lang : a;
     }, 'en');
-    this.locale = EbtSettings.WEB_LANGUAGES.reduce((a, l) => {
+    this.locale = Settings.WEB_LANGUAGES.reduce((a, l) => {
       return l.code === locale ? locale : a;
     }, 'en');
     this.maxResults = maxResults;
     this.refLang = refLang;
+    this.serverUrl = serverUrl,
     this.showId = showId;
     this.showPali = showPali;
     this.speakPali = speakPali;
@@ -269,7 +272,7 @@ export default class EbtSettings {
   }
 
   static langLabel(lang) {
-    let info = EbtSettings.WEB_LANGUAGES.find(l => l.code === lang) || {
+    let info = Settings.WEB_LANGUAGES.find(l => l.code === lang) || {
       label: `unknown language:${lang}`
     };
     return info.label;
@@ -277,6 +280,16 @@ export default class EbtSettings {
 
   static get AUDIO() {
     return AUDIO;
+  }
+
+  static segmentRef(idOrRef, settings=Settings.INITIAL_STATE) {
+    let { lang:langTrans} = settings;
+    let { sutta_uid, author, lang, segnum='1.0' } = 
+      SuttaRef.create(idOrRef, langTrans);
+    if (author == null) {
+      author = Authors.langAuthor(lang)
+    }
+    return SuttaRef.create({ sutta_uid, author, lang, segnum });
   }
 
 }
