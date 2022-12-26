@@ -19,9 +19,13 @@ div.v-theme--light {
 div.v-theme--dark {
   --v-high-emphasis-opacity: 1;
 }
+.v-btn:hover {
+  color: rgb(var(--v-theme-link));
+}
 .v-btn:focus-within {
   border: var(--focus-border) var(--focus-color);
   border-radius: 8pt;
+  color: rgb(var(--v-theme-link));
 }
 .v-btn--icon:focus-within {
   border: var(--focus-border) var(--focus-color);
@@ -68,4 +72,13 @@ a:focus {
 .ebt-example:hover {
   text-decoration: underline;
   cursor: zoom-in;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }

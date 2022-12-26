@@ -1,5 +1,6 @@
 <template>
-  <v-sheet v-if="card.isOpen || observer" :class="cardClass">
+<Transition>
+  <v-sheet v-if="card.isOpen " :class="cardClass">
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
@@ -9,13 +10,13 @@
         <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
-        <v-btn icon="mdi-trash-can-outline" flat
-          v-if="isClosable"
-          @click="clickDelete"
+        <v-btn icon="mdi-window-minimize" flat 
+          @click="clickMinimize"
           @focus="focusTop"
         />
-        <v-btn icon="mdi-close" flat 
-          @click="clickClose"
+        <v-btn icon="mdi-close-thick" flat 
+          v-if="isClosable"
+          @click="clickDelete"
           @focus="focusTop"
         />
       </template>
@@ -48,6 +49,7 @@
       </div>
     </v-card>
   </v-sheet>
+</Transition>
 </template>
 
 <script>
@@ -100,10 +102,12 @@
     methods: {
       clickDelete() {
         let { volatile, card, settings } = this;
-        volatile.playClick();
-        settings.removeCard(card);
+        this.clickMinimize();
+        setTimeout(()=>{
+          settings.removeCard(card);
+        }, 500);
       },
-      clickClose() {
+      clickMinimize() {
         let { volatile, card, settings } = this;
         volatile.playClick();
         this.closeCard(card, settings.cards);
