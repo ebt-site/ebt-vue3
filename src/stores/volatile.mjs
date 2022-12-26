@@ -129,6 +129,7 @@ export const useVolatileStore = defineStore('volatile', {
       }
     },
     alert(msg, context) {
+      msg && console.trace(`volatile.alert() ${msg} ${context}`);
       this.alertMsg = msg && { msg, context };
       this.showAlertMsg = !!msg;
     },

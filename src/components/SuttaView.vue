@@ -87,7 +87,9 @@
       let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
       let suttaRef = SuttaRef.create(ref);
       if (suttaRef == null) {
-        alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
+        volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
+        window.location.hash = '#/home';
+        settings.removeCard(card);
         return;
       }
       let { sutta_uid, lang, author, segnum } = suttaRef;

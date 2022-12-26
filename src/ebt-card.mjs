@@ -132,7 +132,7 @@ export default class EbtCard {
     let { context, location } = this;
     switch (context) {
       case CONTEXT_SUTTA:
-        return location[0].includes(':')
+        return location.length>0 && location[0].includes(':')
           ? this.routeHash()
           : this.titleAnchor;
       default:
