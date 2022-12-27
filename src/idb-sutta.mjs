@@ -165,7 +165,7 @@ export default class IdbSutta {
       });
     }
     let msElapsed = Date.now() - msStart;
-    updated && logger.info("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
+    updated && logger.debug("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
     return updated;
   }
 

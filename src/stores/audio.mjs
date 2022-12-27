@@ -14,6 +14,14 @@ const HEADERS_JSON = { ["Accept"]: "application/json", };
 const HEADERS_MPEG = { ["Accept"]: "audio/mpeg", };
 const URL_CLICK = "audio/click1.mp3";
 const SAMPLE_RATE = 48000;
+var audioDb;
+
+function AUDIO_STORE() {
+  if (audioDb === undefined) {
+    audioDb = Idb.createStore('audio-db', 'audio-store')
+  }
+  return audioDb;
+}
 
 export const useAudioStore = defineStore('audio', {
   state: () => {
@@ -24,32 +32,38 @@ export const useAudioStore = defineStore('audio', {
     }
   },
   actions: {
-    async getSegmentAudioBuffer(idOrRef, lang) {
-      let volatile = useVolatileStore();
+    segAudioKey(idOrRef) {
       let settings = useSettingsStore();
-      let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
-      let url = await this.langAudioUrl(idOrRef, lang);
-      try {
-        let audioContext = new AudioContext();
-        let arrayBuffer = await this.fetchAudioBuffer(url);
-        await this.playArrayBuffer({arrayBuffer, audioContext});
-      } catch(e) {
-        logger.warn(e.message);
-        volatile.alert(e.message);
+      let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
+      let suttaRef = SuttaRef.create(idOrRef, langTrans);
+      let { sutta_uid, lang, author, segnum } = suttaRef;
+      author = author || Authors.langAuthor(lang);
+      if (author == null) {
+        let msg = `audio.segmentAudioUrl() author is required: ` +
+          JSON.stringify(idOrRef);
+        console.trace(msg);
+        throw new Error(msg);
       }
+      let key = `${sutta_uid}:${segnum}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
+      return key;
     },
     async fetchSegmentAudio(idOrRef) {
       let settings = useSettingsStore();
       let audioUrl = this.segmentAudioUrl(idOrRef);
       let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
-      return await resAudio.json();
+      let segAudio = await resAudio.json();
+      return segAudio;
     },
     async getSegmentAudio(idOrRef) {
-      return this.fetchSegmentAudio(idOrRef);
+      let segAudio = await this.fetchSegmentAudio(idOrRef);
+      let segAudioKey = this.segAudioKey(idOrRef);
+      await Idb.set(segAudioKey, segAudio, AUDIO_STORE());
+      logger.debug("audio.fetchSegmentAudio()", segAudioKey);
+      return segAudio;
     },
     segmentAudioUrl(idOrRef) {
       let settings = useSettingsStore();
-      let { langTrans, serverUrl, vnameTrans } = settings;
+      let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
       author = author || Authors.langAuthor(lang);
@@ -57,7 +71,6 @@ export const useAudioStore = defineStore('audio', {
         let msg = `segmentAudioUrl() author is required ${JSON.stringify(idOrRef)}`;
         throw new Error(msg);
       }
-      let segSpec = `${sutta_uid}/${lang}/${author}`;
       let url =  [ 
         serverUrl, 
         'play', 
@@ -67,26 +80,35 @@ export const useAudioStore = defineStore('audio', {
         author,
         `${sutta_uid}:${segnum}`,
         vnameTrans,
+        vnameRoot,
       ].join('/'); 
       return url;
     },
     async fetchAudioBuffer(url, opts={}) {
+      const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
       logger.info(`audio.fetchAudioBuffer()`, url);
-      let res = await fetch(url, { headers });
-      logger.info(`audio.fetchAudioBuffer(${url})`, res);
-      let abuf = await res.arrayBuffer();
-      logger.info(`audio.fetchAudioBuffer() => ${abuf.byteLength}B`);
-      return abuf;
+      try {
+        let res = await fetch(url, { headers });
+        logger.info(`audio.fetchAudioBuffer(${url})`, res);
+        let abuf = await res.arrayBuffer();
+        logger.info(`audio.fetchAudioBuffer() => ${abuf.byteLength}B`);
+        return abuf;
+      } catch(e) {
+        let msg = `audio.fetchAudioBuffer() ${url} => ${e.message}`;
+        console.trace(msg);
+        volatile.alert(msg, 'ebt.audioError');
+        throw new Error(msg);
+      }
     },
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
-      let { serverUrl, vnameRoot, vnameTrans, lang:langTrans } = settings;
+      let { serverUrl, lang:langTrans } = settings;
       let suttaRef = SuttaRef.create(segRef, lang);
       let { author } = suttaRef;
       author = author || Authors.langAuthor(lang);
       let segAudio = await this.getSegmentAudio(segRef);
-      let { sutta_uid, translator, segment, } = segAudio;
+      let { sutta_uid, translator, segment, vnameRoot, vnameTrans } = segAudio;
       let { audio } = segment;
       let guid = segment.audio[lang];
       let text = segment[lang];
@@ -105,8 +127,16 @@ export const useAudioStore = defineStore('audio', {
       return url;
     },
     async playArrayBuffer({arrayBuffer, audioContext, }) {
-      const size = `${arrayBuffer.byteLength}B`;
+      const size = arrayBuffer instanceof ArrayBuffer
+        ? `${arrayBuffer.byteLength}B`
+        : 0;
       const volatile = useVolatileStore();
+      if (size < 500) {
+        let msg = `audio.playArrayBuffer(${size}) invalid arrayBuffer`;
+        console.trace(msg);
+        volatile.alert(msg, 'ebt.audioError');
+        throw new Error(msg);
+      }
       try {
         let audioData = await new Promise((resolve, reject)=>{
           audioContext.decodeAudioData(arrayBuffer, resolve, reject);
@@ -137,13 +167,14 @@ export const useAudioStore = defineStore('audio', {
           audioSource.start();
         } catch(e) {
           let msg = `audio.playArrayBuffer(${size}) => ${e.message}`;
-          logger.warn(msg);
-          alert(msg);
+          console.trace(msg);
+          volatile.alert(msg, 'ebt.audioError');
           reject(e);
         }}); // Promise
       } catch(e) {
-        volatile.alert(`audio.playArrayBuffer(${size}) => ${e.message}`, 
-          'ebt.audioError');
+        let msg = `audio.playArrayBuffer(${size}) => ${e.message}`; 
+        console.trace(msg);
+        volatile.alert(msg, 'ebt.audioError');
         throw e;
       }
     },

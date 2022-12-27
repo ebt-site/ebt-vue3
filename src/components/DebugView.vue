@@ -10,9 +10,10 @@
         <v-btn @click="clickCards" variant="outlined">
           Cards
         </v-btn>
-        <v-btn @click="clickPlayArrayBuffer" variant="outlined">
-          Play ArrayBuffer
+        <v-btn @click="clickPlayScid" variant="outlined">
+          Play {{scid}}
         </v-btn>
+        <v-text-field label="scid" v-model="scid" />
       </div>
 
 
@@ -39,15 +40,15 @@
         settings: useSettingsStore(),
         audio: useAudioStore(),
         volatile: useVolatileStore(),
+        scid: ref('sn1.1:0.1'),
       }
     },
     components: {
     },
     methods: {
-      async clickPlayArrayBuffer() {
-        let { audio, volatile } = this;
-        let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
-        let segAudio = await audio.fetchSegmentAudio(suttaRef);
+      async clickPlayScid() {
+        let { audio, volatile, scid } = this;
+        let suttaRef = SuttaRef.create(`${scid}/en/sujato`);
         let audioContext = new AudioContext();
         let paliUrl = await audio.langAudioUrl(suttaRef, 'pli');
         try {
