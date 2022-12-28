@@ -3,6 +3,7 @@
     <div>
       <h3>DEBUG VIEW</h3>
 
+      {{message}}
       <div class="buttons">
         <v-btn @click="clickTestLoadSettings" variant="outlined">
           Test Load Settings
@@ -43,23 +44,34 @@
         volatile: useVolatileStore(),
         scid: ref('sn1.1:0.1'),
         lang: ref('pli'),
+        message: ref(''),
       }
     },
     components: {
     },
     methods: {
-      async clickPlayScid() {
-        let { audio, volatile, scid, lang } = this;
-        let suttaRef = SuttaRef.create(`${scid}/en/sujato`);
-        let audioContext = new AudioContext();
-        let paliUrl = await audio.langAudioUrl(suttaRef, lang);
+      async playScid(audioContext) {
+        let { audio, volatile, scid, lang, $t } = this;
         try {
-          let arrayBuffer = await audio.fetchAudioBuffer(paliUrl);
+          volatile.waitBegin($t('ebt.loadingAudio'));
+          let suttaRef = SuttaRef.create(`${scid}/en/sujato`);
+          this.message = `playScid() langAudioUrl(${suttaRef.toString}, ${lang})`;
+          let url = await audio.langAudioUrl(suttaRef, lang);
+          this.message = `playScid() fetchAudioBuffer() url:${url}`;
+          let arrayBuffer = await audio.fetchAudioBuffer(url);
+          volatile.waitEnd();
+          this.message = `playScid() playArrayBuffer ${arrayBuffer.byteLength}B`;
           await audio.playArrayBuffer({arrayBuffer, audioContext});
+          this.message = "playScid() DONE";
         } catch(e) {
+          this.message = e.message;
           logger.warn(e.message);
           volatile.alert(e.message);
         }
+      },
+      clickPlayScid() {
+        let audioContext = new AudioContext();
+        this.playScid(audioContext);
       },
       clickTestLoadSettings() {
         let { settings } = this;
