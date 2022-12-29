@@ -32,8 +32,7 @@ export const useAudioStore = defineStore('audio', {
     }
   },
   actions: {
-    segAudioKey(idOrRef) {
-      let settings = useSettingsStore();
+    segAudioKey(idOrRef, settings=useSettingsStore()) {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
@@ -47,22 +46,20 @@ export const useAudioStore = defineStore('audio', {
       let key = `${sutta_uid}:${segnum}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
       return key;
     },
-    async fetchSegmentAudio(idOrRef) {
-      let settings = useSettingsStore();
-      let audioUrl = this.segmentAudioUrl(idOrRef);
+    async fetchSegmentAudio(idOrRef, settings=useSettingsStore()) {
+      let audioUrl = this.segmentAudioUrl(idOrRef, settings);
       let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
       let segAudio = await resAudio.json();
       return segAudio;
     },
-    async getSegmentAudio(idOrRef) {
-      let segAudio = await this.fetchSegmentAudio(idOrRef);
-      let segAudioKey = this.segAudioKey(idOrRef);
+    async getSegmentAudio(idOrRef, settings=useSettingsStore()) {
+      let segAudio = await this.fetchSegmentAudio(idOrRef, settings);
+      let segAudioKey = this.segAudioKey(idOrRef, settings);
       await Idb.set(segAudioKey, segAudio, AUDIO_STORE());
       logger.debug("audio.fetchSegmentAudio()", segAudioKey);
       return segAudio;
     },
-    segmentAudioUrl(idOrRef) {
-      let settings = useSettingsStore();
+    segmentAudioUrl(idOrRef, settings=useSettingsStore()) {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
@@ -102,12 +99,13 @@ export const useAudioStore = defineStore('audio', {
       }
     },
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
+      let { serverUrl, langTrans } = settings;
+      lang = lang || langTrans;
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
-      let { serverUrl, lang:langTrans } = settings;
       let suttaRef = SuttaRef.create(segRef, lang);
       let { author } = suttaRef;
       author = author || Authors.langAuthor(lang);
-      let segAudio = await this.getSegmentAudio(segRef);
+      let segAudio = await this.getSegmentAudio(segRef, settings);
       let { sutta_uid, translator, segment, vnameRoot, vnameTrans } = segAudio;
       let { audio } = segment;
       let guid = segment.audio[lang];
@@ -124,6 +122,7 @@ export const useAudioStore = defineStore('audio', {
           guid,
         ].join('/');
       }
+      //console.log("DEBUG langAudioUrl", {url,segment});
       return url;
     },
     async playArrayBuffer({arrayBuffer, audioContext, }) {

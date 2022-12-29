@@ -29,7 +29,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("TESTTESTdefault state", ()=>{
+  it("default state", ()=>{
     let audio = useAudioStore();
     should(audio).properties({
       nFetch: 0,
@@ -37,14 +37,34 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       nSet: 0,
     });
   });
-  it("TESTTESTsegmentAudioUrl()", ()=>{
+  it("segmentAudioUrl() en", ()=>{
     let audio = useAudioStore();
     let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
     should(audio.segmentAudioUrl(suttaRef)).equal(
-      `${SERVER_ROOT}/play/segment/thig1.1/en/sujato/thig1.1:0.1/Amy`
+      `${SERVER_ROOT}/play/segment/thig1.1/en/sujato/thig1.1:0.1/Amy/Aditi`
     );
   });
-  it("TESTTESTlangAudioUrl() pli", async()=>{
+  it("segmentAudioUrl() de", ()=>{
+    let audio = useAudioStore();
+    let sutta_uid = 'thig1.1';
+    let scid = `${sutta_uid}:0.1`;
+    let lang = 'de';
+    let author = 'sabbamitta';
+    let vnameTrans = 'Marlene';
+    let vnameRoot = 'sujato_pli';
+    let settings = new EbtSettings({lang,vnameTrans, vnameRoot});
+    let suttaRef = SuttaRef.create(`${scid}/${lang}/${author}`);
+    should(audio.segmentAudioUrl(suttaRef, settings)).equal([
+      `${SERVER_ROOT}/play/segment`,
+      sutta_uid,
+      lang,
+      author,
+      scid,
+      vnameTrans,
+      vnameRoot,
+    ].join('/'));
+  });
+  it("langAudioUrl() pli", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -73,7 +93,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTlangAudioUrl() en", async()=>{
+  it("langAudioUrl() en", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -96,21 +116,23 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
     let vnameTrans = "Vicki";
-    let lang = 'de';
+    let vnameRoot = 'sujato_pli';
+    let langTrans = 'de';
     let translator = 'sabbamitta';
-    let settings = new EbtSettings({lang, vnameTrans});
-    let guid = "288ac06596ee8aa4f2e010eb6a895c46";
-    should(await audio.langAudioUrl(scid, lang, settings)).equal([
+    let settings = new EbtSettings({langTrans, vnameTrans, vnameRoot});
+    should(settings.vnameTrans).equal(vnameTrans);
+    let guid = "293c41636392500b0e85a1e8061f36ab";
+    should(await audio.langAudioUrl(scid, langTrans, settings)).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
-      lang,
+      langTrans,
       translator,
       vnameTrans,
       guid,
     ].join('/'));
   });
-  it("TESTTESTfetchAudioBuffer()", async()=>{
+  it("fetchAudioBuffer()", async()=>{
     let audio = useAudioStore();
     let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
     let url = await audio.langAudioUrl(suttaRef, 'pli');

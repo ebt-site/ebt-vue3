@@ -11,7 +11,7 @@ import should from "should";
       clickVolume: 2,
       fullLine: false,
       ips: 6,
-      lang: 'en',
+      langTrans: 'en',
       maxResults: 5,
       refLang: 'en',
       showId: false,
@@ -33,7 +33,7 @@ import should from "should";
         audio: Settings.AUDIO.OGG,
         fullLine: false,
         ips: 6,
-        lang: 'de',
+        langTrans: 'de',
         maxResults: 5,
         refLang: 'de',
         showId: false,
@@ -56,7 +56,7 @@ import should from "should";
       id: 1,
       ips: 6,
       showGdpr: true,
-      lang: 'en',
+      langTrans: 'en',
       langRoot: 'pli',
       langs: 'pli+en',
       langTrans: 'en',
@@ -119,13 +119,13 @@ import should from "should";
     ]);
   });
   it("TESTTESTsegmentRef()", ()=>{
-    let lang = 'de';
+    let langTrans = 'de';
     let author = 'sabbamitta';
-    let settings = new Settings({lang});
+    let settings = new Settings({langTrans});
     let segnum = '1.0';
     should(Settings.segmentRef("thig1.1", settings)).properties({
       sutta_uid: 'thig1.1',
-      lang,
+      lang: langTrans,
       author, 
       segnum,
     });

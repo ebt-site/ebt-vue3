@@ -51,22 +51,29 @@
     },
     methods: {
       async playScid(audioContext) {
-        let { audio, volatile, scid, lang, $t } = this;
+        let { audio, volatile, settings, scid, lang, $t } = this;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
-          let suttaRef = SuttaRef.create(`${scid}/en/sujato`);
-          this.message = `playScid() langAudioUrl(${suttaRef.toString}, ${lang})`;
+          let { lang } = settings;
+          let suttaRef = SuttaRef.create(scid, lang);
+          this.message = `playScid() langAudioUrl(${scid}, ${lang})`;
           let url = await audio.langAudioUrl(suttaRef, lang);
-          this.message = `playScid() fetchAudioBuffer() url:${url}`;
-          let arrayBuffer = await audio.fetchAudioBuffer(url);
-          volatile.waitEnd();
-          this.message = `playScid() playArrayBuffer ${arrayBuffer.byteLength}B`;
-          await audio.playArrayBuffer({arrayBuffer, audioContext});
-          this.message = "playScid() DONE";
+          if (url) {
+            console.log("DEBUG playScid", url, suttaRef), scid;
+            this.message = `playScid() fetchAudioBuffer() url:${url}`;
+            let arrayBuffer = await audio.fetchAudioBuffer(url);
+            this.message = `playScid() playArrayBuffer ${arrayBuffer.byteLength}B`;
+            await audio.playArrayBuffer({arrayBuffer, audioContext});
+            this.message = "playScid() DONE";
+          } else {
+            this.message = `playScid() langAudioUrl(${scid}, ${lang}) => null`;
+          }
         } catch(e) {
           this.message = e.message;
           logger.warn(e.message);
           volatile.alert(e.message);
+        } finally {
+          volatile.waitEnd();
         }
       },
       clickPlayScid() {

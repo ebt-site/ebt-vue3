@@ -276,6 +276,7 @@ export default {
     "showReference": "Show alternate reference",
     "showTextSegmentIds": "Show SuttaCentral segment ids",
     "showTransText": "Show local translation text",
+    "speakPali": "Speak Pali",
     "speakSearchText": "Speak search text",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Enable settings (store in web browser cookies)",

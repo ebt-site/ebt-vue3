@@ -32,7 +32,7 @@ export default class Settings {
       fullLine,
       highightExamples,
       ips,
-      lang,
+      langTrans,
       locale,
       maxResults,
       refLang,
@@ -53,8 +53,8 @@ export default class Settings {
     this.clickVolume = clickVolume;
     this.fullLine = fullLine;
     this.ips = 6;
-    this.lang = Settings.TRANS_LANGUAGES.reduce((a, l) => {
-      return l.code === lang ? lang : a;
+    this.langTrans = Settings.TRANS_LANGUAGES.reduce((a, l) => {
+      return l.code === langTrans ? langTrans : a;
     }, 'en');
     this.locale = Settings.WEB_LANGUAGES.reduce((a, l) => {
       return l.code === locale ? locale : a;
@@ -107,7 +107,6 @@ export default class Settings {
       audio: AUDIO.OGG,
       fullLine: false,
       ips: 6,
-      lang: NAV_LANG,
       locale: NAV_LANG,
       maxResults: 5,
       refLang: NAV_LANG,
@@ -283,13 +282,12 @@ export default class Settings {
   }
 
   static segmentRef(idOrRef, settings=Settings.INITIAL_STATE) {
-    let { lang:langTrans} = settings;
-    let { sutta_uid, author, lang, segnum='1.0' } = 
-      SuttaRef.create(idOrRef, langTrans);
+    let { sutta_uid, author, lang:langTrans, segnum='1.0' } = 
+      SuttaRef.create(idOrRef, settings.langTrans);
     if (author == null) {
-      author = Authors.langAuthor(lang)
+      author = Authors.langAuthor(langTrans)
     }
-    return SuttaRef.create({ sutta_uid, author, lang, segnum });
+    return SuttaRef.create({ sutta_uid, author, lang:langTrans, segnum });
   }
 
 }

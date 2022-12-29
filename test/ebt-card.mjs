@@ -168,7 +168,7 @@ logger.logLevel = 'warn';
     let locSutta = "sn35.1";
     let locSegA = `${locSutta}:1.10`;
     let locSegB = `${locSutta}:2.3`;
-    let lang = 'de';
+    let langTrans = 'de';
     let context = 'sutta';
     let author = 'sabbamitta';
     let notSutta = "thig1.1";
@@ -176,9 +176,9 @@ logger.logLevel = 'warn';
     let notAuthor = 'sujato';
 
     // create fully specified cards
-    let cardSutta = new EbtCard({ context, location: [locSutta, lang, author]});
-    let cardSegA = new EbtCard({ context, location: [locSegA, lang, author]});
-    let cardSegB = new EbtCard({ context, location: [locSegB, lang, author]});
+    let cardSutta = new EbtCard({ context, location: [locSutta, langTrans, author]});
+    let cardSegA = new EbtCard({ context, location: [locSegA, langTrans, author]});
+    let cardSegB = new EbtCard({ context, location: [locSegB, langTrans, author]});
 
     let dbg = 0;
     if (dbg) {
@@ -191,23 +191,23 @@ logger.logLevel = 'warn';
       `sutta/thig1.1`,
       `/wiki`,
       `/search/${locSutta}`,
-      `/search/${locSutta}/${lang}`,
-      `/search/${locSutta}/${lang}/${author}`,
+      `/search/${locSutta}/${langTrans}`,
+      `/search/${locSutta}/${langTrans}/${author}`,
 
       `/sutta/${notSutta}`, 
-      `/sutta/${notSutta}/${lang}`,
-      `/sutta/${notSutta}/${lang}/${author}`,
+      `/sutta/${notSutta}/${langTrans}`,
+      `/sutta/${notSutta}/${langTrans}/${author}`,
       `/sutta/${locSutta}`, // defaultLang is pli
       `/sutta/${locSegA}`, // defaultLang is pli
       `/sutta/${locSegB}`, // defaultLang is pli
       `/sutta/${locSutta}/${notLang}`,
       `/sutta/${locSutta}/${notLang}/${notAuthor}`,
       `/sutta/${locSutta}/${notLang}/${author}`,
-      `/sutta/${locSutta}/${lang}/${notAuthor}`,
+      `/sutta/${locSutta}/${langTrans}/${notAuthor}`,
       `/sutta/${locSegA}/${notLang}`,
       `/sutta/${locSegA}/${notLang}/${notAuthor}`,
       `/sutta/${locSegA}/${notLang}/${author}`,
-      `/sutta/${locSegA}/${lang}/${notAuthor}`,
+      `/sutta/${locSegA}/${langTrans}/${notAuthor}`,
       `sutta/mn1`,
       `/sutta`,
     ];
@@ -219,12 +219,12 @@ logger.logLevel = 'warn';
 
     // match without segment number
     let suttaPaths = [
-      { path: `/sutta/${locSutta}`, defaultLang: lang },
-      { path: `#/sutta/${locSutta}`, defaultLang: lang },
-      `/sutta/${locSutta}/${lang}`,
-      `#/sutta/${locSutta}/${lang}`,
-      `/sutta/${locSutta}/${lang}/${author}`,
-      `#/sutta/${locSutta}/${lang}/${author}`,
+      { path: `/sutta/${locSutta}`, defaultLang: langTrans },
+      { path: `#/sutta/${locSutta}`, defaultLang: langTrans },
+      `/sutta/${locSutta}/${langTrans}`,
+      `#/sutta/${locSutta}/${langTrans}`,
+      `/sutta/${locSutta}/${langTrans}/${author}`,
+      `#/sutta/${locSutta}/${langTrans}/${author}`,
     ];
     suttaPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -234,13 +234,13 @@ logger.logLevel = 'warn';
 
     // match with segment number
     let segPaths = [
-      { path: `#/sutta/${locSegA}`, defaultLang: lang},
-      { path: `/sutta/${locSegA}`, defaultLang: lang},
-      { path: `/sutta/${locSegB}`, defaultLang: lang},
-      `/sutta/${locSegA}/${lang}`,
-      `#/sutta/${locSegA}/${lang}`,
-      `/sutta/${locSegA}/${lang}/${author}`,
-      `#/sutta/${locSegA}/${lang}/${author}`,
+      { path: `#/sutta/${locSegA}`, defaultLang: langTrans},
+      { path: `/sutta/${locSegA}`, defaultLang: langTrans},
+      { path: `/sutta/${locSegB}`, defaultLang: langTrans},
+      `/sutta/${locSegA}/${langTrans}`,
+      `#/sutta/${locSegA}/${langTrans}`,
+      `/sutta/${locSegA}/${langTrans}/${author}`,
+      `#/sutta/${locSegA}/${langTrans}/${author}`,
     ];
     segPaths.forEach(path => {
       should(cardSutta.matchPath(path)).equal(true);
@@ -314,65 +314,65 @@ logger.logLevel = 'warn';
     let suid = 'sn34.1';
     let suidSeg = `${suid}:2.3`;
     let suidSeg2 = `${suid}:4.1`;
-    let lang = "de";
+    let langTrans = "de";
     let author = "sabbamitta";
-    let cardSuid = new EbtCard({context, location:[suid, lang, author]});
-    let cardSuidSeg = new EbtCard({context, location:[suidSeg, lang, author]});
+    let cardSuid = new EbtCard({context, location:[suid, langTrans, author]});
+    let cardSuidSeg = new EbtCard({context, location:[suidSeg, langTrans, author]});
 
     // no arguments uses existing card location
-    should(cardSuid.routeHash()).equal(`#/${context}/${suid}/${lang}/${author}`);
-    should(cardSuidSeg.routeHash()).equal(`#/${context}/${suidSeg}/${lang}/${author}`);
+    should(cardSuid.routeHash()).equal(`#/${context}/${suid}/${langTrans}/${author}`);
+    should(cardSuidSeg.routeHash()).equal(`#/${context}/${suidSeg}/${langTrans}/${author}`);
 
     // update location segment id
     should(cardSuid.routeHash(`/${context}/${suidSeg2}`))
-      .equal(`#/${context}/${suidSeg2}/${lang}/${author}`);
-    should.deepEqual(cardSuid.location, [suidSeg2, lang, author]);
+      .equal(`#/${context}/${suidSeg2}/${langTrans}/${author}`);
+    should.deepEqual(cardSuid.location, [suidSeg2, langTrans, author]);
     should(cardSuidSeg.routeHash(`/${context}/${suidSeg2}`))
-      .equal(`#/${context}/${suidSeg2}/${lang}/${author}`);
-    should.deepEqual(cardSuidSeg.location, [suidSeg2, lang, author]);
+      .equal(`#/${context}/${suidSeg2}/${langTrans}/${author}`);
+    should.deepEqual(cardSuidSeg.location, [suidSeg2, langTrans, author]);
     
     // remove segment id
     should(cardSuidSeg.routeHash(`/${context}/${suid}`))
-      .equal(`#/${context}/${suid}/${lang}/${author}`);
-    should.deepEqual(cardSuidSeg.location, [suid, lang, author]);
+      .equal(`#/${context}/${suid}/${langTrans}/${author}`);
+    should.deepEqual(cardSuidSeg.location, [suid, langTrans, author]);
   });
   it('incrementLocation() sutta', ()=>{
     let context = 'sutta';
     let suid = 'sn34.1';
     let scids = [ '1.0', '1.1', '2.1'].map(id=>`${suid}:${id}`);
     let segments = scids.map(scid => ({scid}));
-    let lang = "de";
+    let langTrans = "de";
     let author = "sabbamitta";
-    let location = [ segments[0].scid, lang, author ];
+    let location = [ segments[0].scid, langTrans, author ];
     let card = new EbtCard({context, location});
 
     // forward
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:1}), {
-      location: [ scids[1], lang, author, ],
+      location: [ scids[1], langTrans, author, ],
       iSegment: 1,
     });
-    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments}), {
-      location: [ scids[2], lang, author, ],
+      location: [ scids[2], langTrans, author, ],
       iSegment: 2,
     });
     should.deepEqual(card.incrementLocation({segments}), null);
-    should.deepEqual(card.location, [ scids[2], lang, author, ]);
+    should.deepEqual(card.location, [ scids[2], langTrans, author, ]);
 
     // backward
     should.deepEqual(card.incrementLocation({segments, delta:-1}), {
-      location: [ scids[1], lang, author, ],
+      location: [ scids[1], langTrans, author, ],
       iSegment: 1,
     });
-    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), {
-      location: [ scids[0], lang, author, ],
+      location: [ scids[0], langTrans, author, ],
       iSegment: 0,
     });
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
   });
   it('incrementLocation() ranged sutta', ()=>{
     let context = 'sutta';
@@ -384,46 +384,46 @@ logger.logLevel = 'warn';
       'dhp2:1.1', 
     ];
     let segments = scids.map(scid => ({scid}));
-    let lang = "en";
+    let langTrans = "en";
     let author = "sujato";
-    let location = [ segments[0].scid, lang, author ];
+    let location = [ segments[0].scid, langTrans, author ];
     let card = new EbtCard({context, location});
 
     // forward
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:1}), {
-      location: [ scids[1], lang, author, ],
+      location: [ scids[1], langTrans, author, ],
       iSegment: 1,
     });
-    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments}), {
-      location: [ scids[2], lang, author, ],
+      location: [ scids[2], langTrans, author, ],
       iSegment: 2,
     });
-    should.deepEqual(card.location, [ scids[2], lang, author, ]);
+    should.deepEqual(card.location, [ scids[2], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments}), {
-      location: [ scids[3], lang, author, ],
+      location: [ scids[3], langTrans, author, ],
       iSegment: 3,
     });
     should.deepEqual(card.incrementLocation({segments}), null);
-    should.deepEqual(card.location, [ scids[3], lang, author, ]);
+    should.deepEqual(card.location, [ scids[3], langTrans, author, ]);
 
     // backward
     should.deepEqual(card.incrementLocation({segments, delta:-1}), {
-      location: [ scids[2], lang, author, ],
+      location: [ scids[2], langTrans, author, ],
       iSegment: 2,
     });
     should.deepEqual(card.incrementLocation({segments, delta:-1}), {
-      location: [ scids[1], lang, author, ],
+      location: [ scids[1], langTrans, author, ],
       iSegment: 1,
     });
-    should.deepEqual(card.location, [ scids[1], lang, author, ]);
+    should.deepEqual(card.location, [ scids[1], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), {
-      location: [ scids[0], lang, author, ],
+      location: [ scids[0], langTrans, author, ],
       iSegment: 0,
     });
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
-    should.deepEqual(card.location, [ scids[0], lang, author, ]);
+    should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
   });
 });
