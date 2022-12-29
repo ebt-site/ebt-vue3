@@ -32,6 +32,12 @@ export const useAudioStore = defineStore('audio', {
     }
   },
   actions: {
+    getAudioContext() {
+      // IMPORTANT! Call this from a user-initiated non-async context
+      let audioContext = new AudioContext();
+      audioContext.resume(); // required for iOS
+      return audioContext;
+    },
     segAudioKey(idOrRef, settings=useSettingsStore()) {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);

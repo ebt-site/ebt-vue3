@@ -52,10 +52,12 @@
     methods: {
       async playScid(audioContext) {
         let { audio, volatile, settings, scid, lang, $t } = this;
+        let { waiting } = volatile;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
           this.message = `playScid() langAudioUrl(${scid}, ${lang})`;
           let url = await audio.langAudioUrl(scid, lang);
+          volatile.waitEnd();
           if (url) {
             this.message = `playScid() fetchAudioBuffer() url:${url}`;
             let arrayBuffer = await audio.fetchAudioBuffer(url);
@@ -70,11 +72,12 @@
           logger.warn(e.message);
           volatile.alert(e.message);
         } finally {
-          volatile.waitEnd();
+          volatile.waiting > waiting && volatile.waitEnd();
         }
       },
       clickPlayScid() {
-        let audioContext = new AudioContext();
+        let { volatile } = this;
+        let audioContext = volatile.getAudioContext();
         this.playScid(audioContext);
       },
       clickTestLoadSettings() {
