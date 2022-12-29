@@ -48,16 +48,16 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let audio = useAudioStore();
     let sutta_uid = 'thig1.1';
     let scid = `${sutta_uid}:0.1`;
-    let lang = 'de';
+    let langTrans = 'de';
     let author = 'sabbamitta';
     let vnameTrans = 'Marlene';
     let vnameRoot = 'sujato_pli';
-    let settings = new EbtSettings({lang,vnameTrans, vnameRoot});
-    let suttaRef = SuttaRef.create(`${scid}/${lang}/${author}`);
+    let settings = new EbtSettings({langTrans,vnameTrans, vnameRoot});
+    let suttaRef = SuttaRef.create(`${scid}/${langTrans}/${author}`);
     should(audio.segmentAudioUrl(suttaRef, settings)).equal([
       `${SERVER_ROOT}/play/segment`,
       sutta_uid,
-      lang,
+      langTrans,
       author,
       scid,
       vnameTrans,
@@ -98,14 +98,14 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
     let vname = "Amy";
-    let lang = 'en';
+    let langTrans = 'en';
     let translator = 'sujato';
     let guid = "84df812bf23b0203e0181e83b2a51dc4";
-    should(await audio.langAudioUrl(scid, lang)).equal([
+    should(await audio.langAudioUrl(scid, langTrans)).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
-      lang,
+      langTrans,
       translator,
       vname,
       guid,

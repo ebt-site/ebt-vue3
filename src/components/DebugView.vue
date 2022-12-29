@@ -54,10 +54,10 @@
         let { audio, volatile, settings, scid, lang, $t } = this;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
-          let { lang } = settings;
-          let suttaRef = SuttaRef.create(scid, lang);
-          this.message = `playScid() langAudioUrl(${scid}, ${lang})`;
-          let url = await audio.langAudioUrl(suttaRef, lang);
+          let { langTrans } = settings;
+          let suttaRef = SuttaRef.create(scid, langTrans);
+          this.message = `playScid() langAudioUrl(${scid}, ${langTrans})`;
+          let url = await audio.langAudioUrl(suttaRef, langTrans);
           if (url) {
             console.log("DEBUG playScid", url, suttaRef), scid;
             this.message = `playScid() fetchAudioBuffer() url:${url}`;
@@ -66,7 +66,7 @@
             await audio.playArrayBuffer({arrayBuffer, audioContext});
             this.message = "playScid() DONE";
           } else {
-            this.message = `playScid() langAudioUrl(${scid}, ${lang}) => null`;
+            this.message = `playScid() langAudioUrl(${scid}, ${langTrans}) => null`;
           }
         } catch(e) {
           this.message = e.message;
