@@ -100,9 +100,11 @@ export const useAudioStore = defineStore('audio', {
     },
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
       let { serverUrl, langTrans } = settings;
-      lang = lang || langTrans;
+      if (lang == null) {
+        throw new Error("audio.langAudioUrl() lang is required");
+      }
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
-      let suttaRef = SuttaRef.create(segRef, lang);
+      let suttaRef = SuttaRef.create(segRef, langTrans);
       let { author } = suttaRef;
       author = author || Authors.langAuthor(lang);
       let segAudio = await this.getSegmentAudio(segRef, settings);
@@ -122,7 +124,6 @@ export const useAudioStore = defineStore('audio', {
           guid,
         ].join('/');
       }
-      //console.log("DEBUG langAudioUrl", {url,segment});
       return url;
     },
     async playArrayBuffer({arrayBuffer, audioContext, }) {
