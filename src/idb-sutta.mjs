@@ -52,7 +52,6 @@ export default class IdbSutta {
       let { segMap } = opts;
       if (segMap == null) {
         let msg = `IdbSutta.create() required: segMap or segments`;
-        console.log("DEBUG", msg);
         throw new Error(msg);
       }
       let idbSutta = new IdbSutta({
