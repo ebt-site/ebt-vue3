@@ -212,7 +212,7 @@ const MSDAY = 24*3600*MSSEC;
       stop();
     }
   });
-  it("getIdbSuttaRef()", async () => {
+  it("TESTTESTgetIdbSuttaRef()", async () => {
     let suttas = useSuttasStore();
     let suttaRef = SuttaRef.create("thig1.1/en/soma");
     let { sutta_uid, lang, author } = suttaRef;

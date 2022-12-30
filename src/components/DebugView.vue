@@ -50,27 +50,29 @@
     components: {
     },
     methods: {
+      updateMessage(msg) {
+        this.message = msg;
+        logger.info(msg);
+      },
       async playScid(audioContext) {
         let { audio, volatile, settings, scid, lang, $t } = this;
         let { waiting } = volatile;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
-          this.message = `playScid() langAudioUrl(${scid}, ${lang})`;
+          this.updateMessage(`playScid() langAudioUrl(${scid}, ${lang})`);
           let url = await audio.langAudioUrl(scid, lang);
           volatile.waitEnd();
           if (url) {
-            this.message = `playScid() fetchAudioBuffer() url:${url}`;
+            this.updateMessage(`playScid() fetchAudioBuffer() url:${url}`);
             let arrayBuffer = await audio.fetchAudioBuffer(url);
-            this.message = `playScid() playArrayBuffer ${arrayBuffer.byteLength}B`;
+            this.updateMessage(`playScid() playArrayBuffer ${arrayBuffer.byteLength}B`);;
             await audio.playArrayBuffer({arrayBuffer, audioContext});
-            this.message = "playScid() DONE";
+            this.updateMessage("playScid() DONE");
           } else {
-            this.message = `playScid() langAudioUrl(${scid}, ${lang}) => null`;
+            this.updateMessage(`playScid() langAudioUrl(${scid}, ${lang}) => null`);
           }
         } catch(e) {
-          this.message = e.message;
-          logger.warn(e.message);
-          volatile.alert(e.message);
+          volatile.alert(e);
         } finally {
           volatile.waiting > waiting && volatile.waitEnd();
         }

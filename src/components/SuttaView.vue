@@ -196,7 +196,7 @@
         let refInfo = Authors.authorInfo(refAuthor);
         return {
           scid: $t('ebt.author'),
-          pli: 'Mahasangiti',
+          pli: 'Mahāsaṅgīti',
           [lang]: info?.name,
           [refLang]:  refInfo?.name,
         }

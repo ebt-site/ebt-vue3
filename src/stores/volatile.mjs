@@ -128,7 +128,12 @@ export const useVolatileStore = defineStore('volatile', {
         throw e;
       }
     },
-    alert(msg, context) {
+    alert(eOrMsg, context) {
+      let msg = eOrMsg;
+      if (msg instanceof Error) {
+        msg = eOrMsg.message;
+        console.warn('volatile.alert()', eOrMsg);
+      }
       msg && console.trace(`volatile.alert() ${msg} ${context}`);
       this.alertMsg = msg && { msg, context };
       this.showAlertMsg = !!msg;

@@ -53,9 +53,20 @@ export const useAudioStore = defineStore('audio', {
       return key;
     },
     async fetchSegmentAudio(idOrRef, settings=useSettingsStore()) {
-      let audioUrl = this.segmentAudioUrl(idOrRef, settings);
-      let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
-      let segAudio = await resAudio.json();
+      const volatile = useVolatileStore();
+      let segAudio;
+      try {
+        volatile.waitBegin("ebt.loadingAudio");
+        let audioUrl = this.segmentAudioUrl(idOrRef, settings);
+        let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
+        segAudio = await resAudio.json();
+        logger.info("fetchSegmentAudio()", audioUrl);
+      } catch(e) {
+        volatile.alert(e);
+        throw e;
+      } finally {
+        volatile.waitEnd();
+      }
       return segAudio;
     },
     async getSegmentAudio(idOrRef, settings=useSettingsStore()) {
@@ -99,16 +110,16 @@ export const useAudioStore = defineStore('audio', {
         return abuf;
       } catch(e) {
         let msg = `audio.fetchAudioBuffer() ${url} => ${e.message}`;
-        console.trace(msg);
         volatile.alert(msg, 'ebt.audioError');
         throw new Error(msg);
       }
     },
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
       let { serverUrl, langTrans } = settings;
-      if (lang == null) {
-        throw new Error("audio.langAudioUrl() lang is required");
+      if (typeof lang !== 'string') {
+        throw new Error(`audio.langAudioUrl() lang is required: ${lang}`);
       }
+      lang = lang.toLowerCase();
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
       let suttaRef = SuttaRef.create(segRef, langTrans);
       let { author } = suttaRef;
@@ -133,13 +144,10 @@ export const useAudioStore = defineStore('audio', {
       return url;
     },
     async playArrayBuffer({arrayBuffer, audioContext, }) {
-      const size = arrayBuffer instanceof ArrayBuffer
-        ? `${arrayBuffer.byteLength}B`
-        : 0;
+      const msgPrefix = `audio.playArrayBuffer(${arrayBuffer.byteLength}B)`;
       const volatile = useVolatileStore();
-      if (size < 500) {
-        let msg = `audio.playArrayBuffer(${size}) invalid arrayBuffer`;
-        console.trace(msg);
+      if (arrayBuffer.byteLength < 500) {
+        let msg = `${msgPrefix} invalid arrayBuffer`;
         volatile.alert(msg, 'ebt.audioError');
         throw new Error(msg);
       }
@@ -150,8 +158,7 @@ export const useAudioStore = defineStore('audio', {
         let numberOfChannels = Math.min(2, audioData.numberOfChannels);
         let length = audioData.length;
         let sampleRate = Math.max(SAMPLE_RATE, audioData.sampleRate);
-        logger.debug(`audio.playArrayBuffer(${size})`, 
-          {sampleRate, length, numberOfChannels});
+        logger.debug(`${msgPrefix}`, {sampleRate, length, numberOfChannels});
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
@@ -167,24 +174,21 @@ export const useAudioStore = defineStore('audio', {
         audioSource.connect(audioContext.destination);
         return new Promise((resolve, reject) => { try {
           audioSource.onended = evt => {
-            logger.debug(`audio.playArrayBuffer(${size}) => OK`);
+            logger.debug(`${msgPrefix} => OK`);
             resolve();
           };
           audioSource.start();
         } catch(e) {
-          let msg = `audio.playArrayBuffer(${size}) => ${e.message}`;
-          console.trace(msg);
-          volatile.alert(msg, 'ebt.audioError');
+          volatile.alert(e, 'ebt.audioError');
           reject(e);
         }}); // Promise
       } catch(e) {
-        let msg = `audio.playArrayBuffer(${size}) => ${e.message}`; 
-        console.trace(msg);
-        volatile.alert(msg, 'ebt.audioError');
+        volatile.alert(e, 'ebt.audioError');
         throw e;
       }
     },
     async playUrlAsync(url, opts={}) {
+      let volatile = useVolatileStore();
       try {
         if (url == null) {
           logger.debug("volatile.playUrlAsync(null)");
@@ -196,8 +200,7 @@ export const useAudioStore = defineStore('audio', {
           let msg = `volatile.playUrlAsync() ${url} => HTTP${resClick.status}`;
           let e = new Error(msg);
           e.url = url;
-          logger.warn(msg);
-          this.alert(msg, 'ebt.audioError');
+          volatile.alert(e, 'ebt.audioError');
           return;
         }
         let urlBuf = await resClick.arrayBuffer();
@@ -229,13 +232,11 @@ export const useAudioStore = defineStore('audio', {
           };
           audioSource.start();
         } catch(e) {
-          let msg = `volatile.playUrlAsync(${url}) => ${e.message}`;
-          logger.warn(msg);
-          alert(msg);
+          volatile.alert(e);
           reject(e);
         }}); // Promise
       } catch(e) {
-        this.alert(`volatile.playUrlAsync(${url}) => ${e.message}`, 'ebt.audioError');
+        volatile.alert(e, 'ebt.audioError');
         throw e;
       }
     },
