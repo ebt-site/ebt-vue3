@@ -124,15 +124,15 @@
         logger.debug("allowLocalStorage()", settings);
       },
       onClickGdrp(evt) {
-        let { volatile, settings } = this;
+        let { audio, settings } = this;
         logger.debug('onClickGdrp', evt);
-        volatile.playClick();
+        audio.playClick();
         settings.showGdpr = false;
         evt.preventDefault();
       },
       onClickSettings(evt) {
-        let { volatile } = this;
-        volatile.playClick();
+        let { audio } = this;
+        audio.playClick();
         volatile.showSettings = true;
       },
     },

@@ -316,12 +316,12 @@ export default {
   },
   methods: {
     onClickVolume() {
-      let { volatile } = this;
-      volatile.playClick();
+      let { audio } = this;
+      audio.playClick();
     },
     clickClose() {
-      let { volatile } = this;
-      volatile.playClick();
+      let { audio, volatile } = this;
+      audio.playClick();
       volatile.showSettings = false;
     },
     openClearSettings() {

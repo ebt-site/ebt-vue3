@@ -9,7 +9,6 @@ import * as Idb from "idb-keyval";
 const suttas = new Map();
 const layout = ref();
 const showSettings = ref(false);
-const URL_CLICK = "audio/click1.mp3";
 const SAMPLE_RATE = 48000;
 const INITIAL_STATE = {
   alertMsg: ref(null),
@@ -18,9 +17,6 @@ const INITIAL_STATE = {
   waitingMsg: ref('...'),
   waitingDelay: ref(500),
   showWaiting: ref(false),
-  audioSutta: ref(null),
-  audioScid: ref(''),
-  audioFocused: ref(false),
   delayedWaiting: 0,
   suttas,
   showSettings,
@@ -33,11 +29,6 @@ export const useVolatileStore = defineStore('volatile', {
     return s;
   },
   getters: {
-    urlClick() {
-      let settings = useSettingsStore();
-      let volume = settings.clickVolume;
-      return volume ? `audio/click${volume}.mp3` : null;
-    },
     layout() {
       let root = document.documentElement;
       let onresize = ()=>{
@@ -54,80 +45,6 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    getAudioContext() {
-      let audioContext = new AudioContext();
-      audioContext.resume();
-      return audioContext;
-    },
-    playClick(audioContext=this.getAudioContext()) {
-      return this.playUrl(this.urlClick, {audioContext});
-    },
-    playUrl(url, opts={}) {
-      let { audioContext=this.getAudioContext() } = opts;
-      if (url) {
-        audioContext.resume();
-        return this.playUrlAsync(url, {audioContext});
-      }
-
-      return null;
-    },
-    async playUrlAsync(url, opts={}) {
-      try {
-        if (url == null) {
-          logger.debug("volatile.playUrlAsync(null)");
-          return;
-        }
-        let { audioContext } = opts;
-        let headers = new Headers();
-        headers.append('Accept', 'audio/mpeg');
-        let resClick = await fetch(url, { headers });
-        if (!resClick.ok) {
-          let msg = `volatile.playUrlAsync() ${url} => HTTP${resClick.status}`;
-          let e = new Error(msg);
-          e.url = url;
-          logger.warn(msg);
-          this.alert(msg, 'ebt.audioError');
-          return;
-        }
-        let urlBuf = await resClick.arrayBuffer();
-        let audioSource = audioContext.createBufferSource();
-        let urlAudio = await new Promise((resolve, reject)=>{
-          audioContext.decodeAudioData(urlBuf, resolve, reject);
-        });
-        let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
-        let length = urlAudio.length;
-        let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        logger.debug(`volatile.playUrlAsync(${url})`, 
-          {sampleRate, length, numberOfChannels});
-        let audioBuffer = audioContext.createBuffer(
-          numberOfChannels, length, sampleRate);
-        for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
-          let offset = 0;
-          let channelData = new Float32Array(length);
-          channelData.set(urlAudio.getChannelData(channelNumber), offset);
-          offset += urlAudio.length;
-          audioBuffer.getChannelData(channelNumber).set(channelData);
-        }
-
-        audioSource.buffer = audioBuffer;
-        audioSource.connect(audioContext.destination);
-        return new Promise((resolve, reject) => { try {
-          audioSource.onended = evt => {
-            logger.debug(`volatile.playUrlAsync(${url}) => OK`);
-            resolve();
-          };
-          audioSource.start();
-        } catch(e) {
-          let msg = `volatile.playUrlAsync(${url}) => ${e.message}`;
-          logger.warn(msg);
-          alert(msg);
-          reject(e);
-        }}); // Promise
-      } catch(e) {
-        this.alert(`volatile.playUrlAsync(${url}) => ${e.message}`, 'ebt.audioError');
-        throw e;
-      }
-    },
     alert(eOrMsg, context) {
       let msg = eOrMsg;
       if (msg instanceof Error) {
@@ -166,35 +83,6 @@ export const useVolatileStore = defineStore('volatile', {
       let suttaRef = SuttaRef.create(suttaRefArg);
       let key = suttaRef.toString();
       return suttas[key];
-    },
-    async setAudioSutta(audioSutta, audioIndex=0) {
-      logger.debug("volatile.setAudioSutta()", {audioSutta, audioIndex});
-      this.audioSutta = audioSutta;
-      this.audioIndex = audioIndex;
-
-      let segments = audioSutta?.segments;
-      let audioScid = segments
-        ? segments[audioIndex].scid
-        : null;
-      this.audioScid = audioScid;
-      if (audioScid) {
-        this.updateAudioExamples();
-      }
-    },
-    updateAudioExamples() {
-      let { audioSutta, audioIndex } = this;
-      let segments = audioSutta?.segments;
-      if (segments) {
-        let seg = segments[audioIndex];
-        let updated = audioSutta.highlightExamples({seg});
-        if (updated) {
-          seg.examples = updated;
-        }
-        logger.debug("volatile.updateAudioExamples()", {updated, seg, audioIndex});
-      } else {
-        logger.debug("volatile.updateAudioExamples() SKIP", 
-          {audioSutta, audioIndex, segments});
-      }
     },
     async fetch(url, options={}) {
       let res;

@@ -6,7 +6,7 @@
     bg-color="audiobar"
     class="audio-nav"
   >
-  {{volatile.audioFocus}}
+    {{audio.audioFocus}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -81,6 +81,7 @@
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from "log-instance";
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
@@ -101,6 +102,7 @@
     },
     setup() {
       return {
+        audio: useAudioStore(),
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
@@ -124,15 +126,15 @@
     },
     methods: {
       onAudioBlur() {
-        let { volatile } = this;
-        volatile.audioFocused = false;
+        let { audio } = this;
+        audio.audioFocused = false;
       },
       onAudioFocus() {
-        let { volatile, audioScid } = this;
-        volatile.audioFocused = true;
+        let { audio, } = this;
+        audio.audioFocused = true;
       },
       setAudioFocus() {
-        let { volatile, audioScid } = this;
+        let { audioScid } = this;
         let audioFocus = document.getElementById('audio-focus');
         audioFocus?.focus();
         logger.debug("SuttaPlayer.setAudioFocus() audioFocus", audioFocus);
@@ -162,9 +164,9 @@
         this.stopAudio(true);
       },
       clickPlayPause() {
-        let { volatile, audioScid, audioPlaying, audioContext } = this;
+        let { audio, audioScid, audioPlaying, audioContext } = this;
 
-        volatile.playClick();
+        audio.playClick();
 
         if (audioPlaying) {
           logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
@@ -174,11 +176,11 @@
         } 
       },
       async playToEnd() {
-        let { volatile, bellAudioElt, audioPlaying, audioScid } = this;
+        let { audio, bellAudioElt, audioPlaying, audioScid } = this;
 
         logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
-        volatile.playClick();
+        audio.playClick();
         do {
           completed = await this.playSegment(AUDIO_PLAYALL);
         } while(completed && (await this.next()));
@@ -208,8 +210,8 @@
         }
       },
       clickBack() {
-        let { volatile } = this;
-        volatile.playClick();
+        let { audio } = this;
+        audio.playClick();
         return this.back();
       },
       async next() {
@@ -231,8 +233,8 @@
         return incremented;
       },
       clickNext() {
-        let { volatile } = this;
-        volatile.playClick();
+        let { audio } = this;
+        audio.playClick();
         return this.next();
       },
 
@@ -251,7 +253,7 @@
         this.setAudioFocus();
       },
       incrementSegment(delta) {
-        let { routeCard, volatile, audioSutta, } = this;
+        let { routeCard, audioSutta, } = this;
         let { segments } = audioSutta;
         let incRes = routeCard.incrementLocation({ segments, delta, });
         if (incRes) {
@@ -420,14 +422,14 @@
     },
     computed: {
       audioScid(ctx) {
-        return ctx.volatile.audioScid;
+        return ctx.audio.audioScid;
       },
       audioSutta(ctx) {
-        return ctx.volatile.audioSutta;
+        return ctx.audio.audioSutta;
       },
       segmentPercent(ctx) {
-        let { volatile, audioSutta } = ctx;
-        let { audioIndex } = volatile;
+        let { audio, audioSutta } = ctx;
+        let { audioIndex } = audio;
         return (audioIndex+1)*100 / audioSutta.segments.length+1;
       },
       audioElts(ctx) {

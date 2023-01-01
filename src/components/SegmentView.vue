@@ -29,6 +29,7 @@
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from "log-instance";
   import { Examples, SuttaRef } from "scv-esm";
   import { getCurrentInstance, nextTick, ref } from "vue";
@@ -52,6 +53,7 @@
       const suttas = useSuttasStore();
       const showTakaNav = ref(false);
       return {
+        audio: useAudioStore(),
         settings,
         volatile,
         suttas,
@@ -102,8 +104,8 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       segMatchedClass(seg) {
-        let { layout, card, currentScid, volatile, routeCard } = this;
-        let { audioFocused } = volatile;
+        let { layout, card, currentScid, audio, routeCard } = this;
+        let { audioFocused } = audio;
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
         let currentClass = seg.scid === currentScid ? "seg-current" : '';

@@ -93,8 +93,8 @@
     },
     methods: {
       onClick() {
-        let { volatile } = this;
-        volatile.playClick();
+        let { audio } = this;
+        audio.playClick();
       },
       matchedSegments(result) {
         let segments = result?.segments;

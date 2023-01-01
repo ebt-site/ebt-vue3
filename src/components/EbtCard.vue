@@ -61,6 +61,7 @@
   import { default as EbtCard } from '../ebt-card.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from 'log-instance';
   import { nextTick, ref } from "vue";
 
@@ -70,16 +71,12 @@
       routeCard: { type: Object },
     },
     setup() {
-      const settings = useSettingsStore();
-      const volatile = useVolatileStore();
-      const showDebug = ref(false);
-      const observer = undefined;
-
       return {
-        settings,
-        showDebug,
-        volatile,
-        observer,
+        audio: useAudioStore(),
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
+        showDebug: ref(false),
+        observer: ref(undefined),
       }
     },
     components: {
@@ -107,8 +104,8 @@
         }, 500);
       },
       clickMinimize() {
-        let { volatile, card, settings } = this;
-        volatile.playClick();
+        let { audio, card, settings } = this;
+        audio.playClick();
         this.closeCard(card, settings.cards);
       },
       focusTop() {

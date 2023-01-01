@@ -78,8 +78,8 @@
         }
       },
       clickPlayScid() {
-        let { volatile } = this;
-        let audioContext = volatile.getAudioContext();
+        let { audio } = this;
+        let audioContext = audio.getAudioContext();
         this.playScid(audioContext);
       },
       clickTestLoadSettings() {

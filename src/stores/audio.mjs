@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance';
 import { SuttaRef, Authors } from 'scv-esm/main.mjs';
@@ -13,7 +12,6 @@ const MSDAY = 24 * 3600 * 1000;
 const VUEREFS = new Map();
 const HEADERS_JSON = { ["Accept"]: "application/json", };
 const HEADERS_MPEG = { ["Accept"]: "audio/mpeg", };
-const URL_CLICK = "audio/click1.mp3";
 const SAMPLE_RATE = 48000;
 var audioDb;
 
@@ -36,7 +34,15 @@ export const useAudioStore = defineStore('audio', {
       audioFocused: ref(false),
     }
   },
+  getters: {
+  },
   actions: {
+    playClick(audioContext=this.getAudioContext()) {
+      let settings = useSettingsStore();
+      let volume = settings.clickVolume;
+      let url =  volume ? `audio/click${volume}.mp3` : null;
+      return this.playUrl(url, {audioContext});
+    },
     async setAudioSutta(audioSutta, audioIndex=0) {
       logger.debug("audio.setAudioSutta()", {audioSutta, audioIndex});
       this.audioSutta = audioSutta;
@@ -131,6 +137,20 @@ export const useAudioStore = defineStore('audio', {
         vnameRoot,
       ].join('/'); 
       return url;
+    },
+    playUrl(url, opts={}) {
+      let { audioContext=this.getAudioContext() } = opts;
+      console.log("DEBUG playUrl", url);
+      return this.playUrlAsync(url, {audioContext});
+    },
+    async playUrlAsync(url, opts) {
+      if (url == null) {
+        return null;
+      }
+      let arrayBuffer = await this.fetchAudioBuffer(url, opts);
+      console.log("DEBUG0101 playUrlAsync", arrayBuffer.byteLength);
+      let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
+      return promise;
     },
     async fetchAudioBuffer(url, opts={}) {
       const volatile = useVolatileStore();
@@ -231,7 +251,7 @@ export const useAudioStore = defineStore('audio', {
         let { audioContext, headers=HEADERS_MPEG } = opts;
         let resClick = await fetch(url, { headers });
         if (!resClick.ok) {
-          let msg = `volatile.playUrlAsync() ${url} => HTTP${resClick.status}`;
+          let msg = `audio.playUrlAsync() ${url} => HTTP${resClick.status}`;
           let e = new Error(msg);
           e.url = url;
           volatile.alert(e, 'ebt.audioError');
@@ -245,7 +265,7 @@ export const useAudioStore = defineStore('audio', {
         let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
         let length = urlAudio.length;
         let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        logger.debug(`volatile.playUrlAsync(${url})`, 
+        logger.debug(`audio.playUrlAsync(${url})`, 
           {sampleRate, length, numberOfChannels});
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
@@ -261,7 +281,7 @@ export const useAudioStore = defineStore('audio', {
         audioSource.connect(audioContext.destination);
         return new Promise((resolve, reject) => { try {
           audioSource.onended = evt => {
-            logger.debug(`volatile.playUrlAsync(${url}) => OK`);
+            logger.debug(`audio.playUrlAsync(${url}) => OK`);
             resolve();
           };
           audioSource.start();

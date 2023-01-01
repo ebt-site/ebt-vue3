@@ -20,11 +20,13 @@
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from "log-instance";
 
   export default {
     setup() {
       return {
+        audio: useAudioStore(),
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
@@ -83,7 +85,7 @@
           : null;
       },
       async bindAudioSutta(route) {
-        let { routeCard, suttas, volatile } = this;
+        let { routeCard, suttas, audio, } = this;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
           let suttaRef = this.routeSuttaRef(route);
           let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
@@ -92,9 +94,9 @@
           let { segments } = idbSutta;
           let incRes = routeCard.incrementLocation({segments, delta:0});
           let { iSegment=0 } = incRes || {};
-          volatile.setAudioSutta(idbSutta, iSegment);
+          audio.setAudioSutta(idbSutta, iSegment);
         } else {
-          volatile.setAudioSutta(null);
+          audio.setAudioSutta(null);
         }
       },
       routeScid(route) {
