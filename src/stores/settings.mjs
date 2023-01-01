@@ -110,12 +110,14 @@ export const useSettingsStore = defineStore('settings', {
     async scrollToElementId(idShow, idScroll) {
       let eltShow = document.getElementById(idShow);
       let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
+      let dbg = 0;
+      let msgBase = `settings.scrollToElementId`;
       if (eltShow == null) {
-        logger.debug(`[1]settings.scrollToElementId(${idShow}) no element`);
+        dbg && console.log(`DBG1 ${msgBase}(${idShow}) no element`);
         return false;
       }
       if (eltScroll == null) {
-        logger.debug(`[2]settings.scrollToElementId(${idScroll}) no scroll element`);
+        dbg && console.log(`DBG2 ${msgBase}(${idScroll}) no scroll element`);
         return false;
       }
       let idShowInView = elementInViewport(eltShow);
@@ -123,12 +125,12 @@ export const useSettingsStore = defineStore('settings', {
         ? idShowInView
         : elementInViewport(eltScroll);
       if (idShowInView && idScrollInView) {
-        logger.debug(`[3]settings.scrollToElementId(${idShow}) no scroll`, 
+        dbg && console.log(`DBG3 ${msgBase}(${idShow}) no scroll`, 
           {eltShow, idShow, idScroll} );
         return false; // element already visible (no scrolling)
       }
 
-      logger.debug(`[4]settings.scrollToElementId(${idShow}) scrolling to`, 
+      dbg && console.log(`DBG4 ${msgBase}(${idShow}) scrolling to`, 
         {eltScroll, idShow, idScroll, idShowInView, idScrollInView});
       setTimeout(()=>{ // scroll after Vue is done refreshing
         eltScroll.scrollIntoView({
