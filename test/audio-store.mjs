@@ -29,12 +29,15 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("default state", ()=>{
+  it("TESTTESTdefault state", ()=>{
     let audio = useAudioStore();
     should(audio).properties({
       nFetch: 0,
       nGet: 0,
       nSet: 0,
+      audioIndex: 0,
+      audioSutta: null,
+      audioScid: '',
     });
   });
   it("segmentAudioUrl() en", ()=>{

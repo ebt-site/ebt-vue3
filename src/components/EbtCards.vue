@@ -4,7 +4,6 @@
       <ebt-card-vue 
         :card="card" 
         :routeCard="routeCard"
-        :audioScid="audioScid"
         @focusin="onFocusIn(card)"
       />
     </div><!-- v-for card -->
@@ -29,7 +28,6 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        audioScid: ref(undefined),
         routeCard: ref(undefined),
       }
     },
@@ -94,7 +92,6 @@
           let { segments } = idbSutta;
           let incRes = routeCard.incrementLocation({segments, delta:0});
           let { iSegment=0 } = incRes || {};
-          this.audioScid =  segments[iSegment].scid;
           volatile.setAudioSutta(idbSutta, iSegment);
         } else {
           volatile.setAudioSutta(null);

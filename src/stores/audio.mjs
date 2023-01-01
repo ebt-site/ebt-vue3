@@ -6,6 +6,7 @@ import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';
 import { default as EbtSettings } from '../ebt-settings.mjs';
 import { default as IdbSutta } from '../idb-sutta.mjs';
+import { ref } from 'vue';
 import * as Idb from 'idb-keyval';
 
 const MSDAY = 24 * 3600 * 1000;
@@ -29,9 +30,42 @@ export const useAudioStore = defineStore('audio', {
       nFetch: 0,
       nGet: 0,
       nSet: 0,
+      audioIndex: ref(0),
+      audioSutta: ref(null),
+      audioScid: ref(''),
+      audioFocused: ref(false),
     }
   },
   actions: {
+    async setAudioSutta(audioSutta, audioIndex=0) {
+      logger.debug("audio.setAudioSutta()", {audioSutta, audioIndex});
+      this.audioSutta = audioSutta;
+      this.audioIndex = audioIndex;
+
+      let segments = audioSutta?.segments;
+      let audioScid = segments
+        ? segments[audioIndex].scid
+        : null;
+      this.audioScid = audioScid;
+      if (audioScid) {
+        this.updateAudioExamples();
+      }
+    },
+    updateAudioExamples() {
+      let { audioSutta, audioIndex } = this;
+      let segments = audioSutta?.segments;
+      if (segments) {
+        let seg = segments[audioIndex];
+        let updated = audioSutta.highlightExamples({seg});
+        if (updated) {
+          seg.examples = updated;
+        }
+        logger.debug("audio.updateAudioExamples()", {updated, seg, audioIndex});
+      } else {
+        logger.debug("audio.updateAudioExamples() SKIP", 
+          {audioSutta, audioIndex, segments});
+      }
+    },
     getAudioContext() {
       // IMPORTANT! Call this from a user-initiated non-async context
       let audioContext = new AudioContext();
