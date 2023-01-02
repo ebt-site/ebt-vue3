@@ -63,7 +63,7 @@
         const settings = await useSettingsStore();
         let cardHash = card.routeHash();
         if (cardHash !== window.location.hash) {
-          window.location.hash = cardHash;
+          settings.setRoute(cardHash);
           return;
         }
         let scrolled = await settings.scrollToCard(card);

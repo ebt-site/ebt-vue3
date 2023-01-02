@@ -100,7 +100,7 @@
             ? await res.json()
             : res;
 
-          window.location.hash = card.routeHash();
+          settings.setRoute(card.routeHash());
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mlDoc=>volatile.addMlDoc(mlDoc));

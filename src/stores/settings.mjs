@@ -41,6 +41,11 @@ export const useSettingsStore = defineStore('settings', {
     return settings;
   },
   actions: {
+    setRoute(route) {
+      if (window.location.hash !== route) {
+        window.location.hash = route;
+      }
+    },
     async loadSettings() {
       let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
@@ -77,9 +82,7 @@ export const useSettingsStore = defineStore('settings', {
       cards = this.cards = cards.filter(c => c !== card);
       if (card.matchPath({path, defaultLang})) {
         let openCard = cards.filter(c => c.isOpen)[0];
-        window.location.hash = openCard 
-          ? openCard.routeHash()
-          : "#/home";
+        this.setRoute(openCard ? openCard.routeHash() : "#/home");
       }
     },
     addCard(opts) {

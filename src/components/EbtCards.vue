@@ -70,7 +70,7 @@
           defaultLang: settings.langTrans,
         });
         if (routeCard !== card) {
-          window.location.hash = card.routeHash();
+          settings.setRoute(card.routeHash());
         }
       },
       routeSuttaRef(route) {
@@ -126,7 +126,7 @@
         this.routeCard = card;
         this.bindAudioSutta(to.href);
         if (card == null) {
-          window.location.hash = '';
+          settings.setRoute('');
           logger.warn(`${msg} => invalid card route`, {$route, to, from});
           return;
         }

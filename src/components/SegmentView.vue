@@ -48,15 +48,11 @@
       routeCard: { type: Object, required:true },
     },
     setup() {
-      const settings = useSettingsStore();
-      const volatile = useVolatileStore();
-      const suttas = useSuttasStore();
-      const showTakaNav = ref(false);
       return {
         audio: useAudioStore(),
-        settings,
-        volatile,
-        suttas,
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
+        suttas: useSuttasStore(),
         logger,
       }
     },
@@ -66,7 +62,7 @@
     },
     methods: {
       clickSeg(evt) {
-        let { segment:seg, idbSuttaRef, routeCard, currentScid, card } = this;
+        let { settings, segment:seg, idbSuttaRef, routeCard, currentScid, card } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
@@ -76,14 +72,14 @@
           if (className === 'ebt-example') {
             let pattern = encodeURIComponent(innerText);
             let hash = `#/search/${pattern}`
-            window.location.hash = hash;
+            settings.setRoute(hash);
             return;
           } 
         } else {
           let [ scidHash, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
-          window.location.hash = hash;
+          settings.setRoute(hash);
           idbSuttaRef.highlightExamples({seg});
         }
       },

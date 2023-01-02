@@ -88,7 +88,7 @@
       let suttaRef = SuttaRef.create(ref);
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        window.location.hash = '#/home';
+        settings.setRoute('#/home');
         settings.removeCard(card);
         return;
       }
@@ -105,9 +105,7 @@
           let routeHash = card.routeHash();
           settings.scrollToElementId(routeHash);
           if (window.location.hash !== routeHash) {
-            logger.info(`SuttaView.mounted() route => `, 
-              card.routeHash(), $route, window.location.hash);
-            window.location.hash = routeHash;
+            settings.setRoute(routeHash);
           }
         });
       }

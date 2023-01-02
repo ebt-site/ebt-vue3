@@ -253,13 +253,13 @@
         this.setAudioFocus();
       },
       incrementSegment(delta) {
-        let { routeCard, audioSutta, } = this;
+        let { settings, routeCard, audioSutta, } = this;
         let { segments } = audioSutta;
         let incRes = routeCard.incrementLocation({ segments, delta, });
         if (incRes) {
           let { iSegment } = incRes;
           let seg = segments[iSegment];
-          window.location.hash = routeCard.routeHash();
+          settings.setRoute(routeCard.routeHash());
         }
 
         return incRes;

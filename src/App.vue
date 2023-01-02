@@ -95,6 +95,7 @@
   import EbtProcessing from './components/EbtProcessing.vue';
   import { useSettingsStore } from './stores/settings.mjs';
   import { useVolatileStore } from './stores/volatile.mjs';
+  import { useAudioStore } from './stores/audio.mjs';
   import { logger } from "log-instance";
   import { nextTick, ref } from "vue";
 
@@ -106,6 +107,7 @@
       }
     },
     data: ()=>({
+      audio: useAudioStore(),
       settings: useSettingsStore(),
       volatile: useVolatileStore(),
       unsubscribe: undefined,
@@ -131,7 +133,7 @@
         evt.preventDefault();
       },
       onClickSettings(evt) {
-        let { audio } = this;
+        let { volatile, audio } = this;
         audio.playClick();
         volatile.showSettings = true;
       },

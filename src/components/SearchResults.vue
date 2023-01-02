@@ -61,6 +61,7 @@
 <script>
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { SuttaRef } from 'scv-esm';
   import { ref } from "vue";
 
@@ -75,11 +76,10 @@
       },
     },
     setup() {
-      const settings = useSettingsStore();
-      const volatile = useVolatileStore();
       return {
-        settings,
-        volatile,
+        audio: useAudioStore(),
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
       }
     },
     data: () => {

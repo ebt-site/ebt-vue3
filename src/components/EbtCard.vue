@@ -97,7 +97,7 @@
     },
     methods: {
       clickDelete() {
-        let { volatile, card, settings } = this;
+        let { card, settings } = this;
         this.clickMinimize();
         setTimeout(()=>{
           settings.removeCard(card);
@@ -106,14 +106,15 @@
       clickMinimize() {
         let { audio, card, settings } = this;
         audio.playClick();
-        this.closeCard(card, settings.cards);
+        this.closeCard(card, settings);
       },
       focusTop() {
         let { settings, card } = this;
         let topId = card.topAnchor;
         settings.scrollToElementId(topId);
       },
-      closeCard: (card, cards) => {
+      closeCard: (card, settings) => {
+        let { cards } = settings;
         card.isOpen = false;
         if (window.location.hash === card.routeHash()) {
           let openCard = cards.reduce((a,c)=>{
@@ -129,7 +130,7 @@
               c.context === EbtCard.CONTEXT_HOME ? c : a
             ), null);
           }
-          window.location.hash = openCard.routeHash();
+          settings.setRoute(openCard.routeHash());
         }
       },
       addIntersectionObserver() {

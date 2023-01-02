@@ -140,7 +140,6 @@ export const useAudioStore = defineStore('audio', {
     },
     playUrl(url, opts={}) {
       let { audioContext=this.getAudioContext() } = opts;
-      console.log("DEBUG playUrl", url);
       return this.playUrlAsync(url, {audioContext});
     },
     async playUrlAsync(url, opts) {

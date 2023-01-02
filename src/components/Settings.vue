@@ -245,6 +245,7 @@
 import { ref, reactive, onMounted, computed, } from 'vue';
 import { useSettingsStore } from "../stores/settings.mjs";
 import { useVolatileStore } from "../stores/volatile.mjs";
+import { useAudioStore } from "../stores/audio.mjs";
 import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
@@ -268,13 +269,6 @@ const maxResultsItems = [{
 
 export default {
   setup() {
-    const refLogger = ref(logger);
-    const bellAudio = ref({});
-    const ipsChoices = EbtSettings.IPS_CHOICES;
-    const settings = useSettingsStore();
-    const volatile = useVolatileStore();
-    const host = ref(undefined);
-    const isClearSettings = ref(false);
     const logLevels = [{
       title: 'Errors only',
       value: 'error',
@@ -289,26 +283,23 @@ export default {
       value: 'debug',
     }];
 
-    logger.debug("Settings.setup()", settings);
-
-    return {
-      bellAudio,
-      isClearSettings,
-      host,
-      ipsChoices,
+    let data = {
+      bellAudio: ref({}),
+      isClearSettings: ref(false),
+      host: ref(undefined),
+      ipsChoices: EbtSettings.IPS_CHOICES,
       languages,
       logLevels,
       maxResultsItems,
-      refLogger,
-      settings,
-      volatile,
+      audio: useAudioStore(),
+      settings: useSettingsStore(),
+      volatile: useVolatileStore(),
     }
+    logger.debug("Settings.setup()", data.settings);
+    return data;
   },
   components: {
     Version,
-  },
-  data: function() {
-    return {};
   },
   mounted() {
     this.host = window.location.host;
@@ -332,7 +323,7 @@ export default {
       settings.clear();
       volatile.showSettings = false;
       logger.info("Settings.resetDefaults()", settings);
-      window.location.hash = "#/home";
+      settings.setRoute("#/home");
       window.location.reload();
     },
     langVoices(lang, vnameKey) {
