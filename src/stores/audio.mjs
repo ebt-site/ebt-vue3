@@ -154,12 +154,11 @@ export const useAudioStore = defineStore('audio', {
     async fetchAudioBuffer(url, opts={}) {
       const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
-      logger.info(`audio.fetchAudioBuffer()`, url);
       try {
         let res = await fetch(url, { headers });
-        logger.info(`audio.fetchAudioBuffer(${url})`, res);
+        logger.debug(`audio.fetchAudioBuffer(${url}) => HTTP${res.status}:`);
         let abuf = await res.arrayBuffer();
-        logger.info(`audio.fetchAudioBuffer() => ${abuf.byteLength}B`);
+        logger.info(`audio.fetchAudioBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
       } catch(e) {
         let msg = `audio.fetchAudioBuffer() ${url} => ${e.message}`;

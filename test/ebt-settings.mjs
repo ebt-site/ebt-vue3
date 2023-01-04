@@ -3,7 +3,7 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("TESTTESTdefault ctor en", async () => {
+  it("default ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
     var ebt = new Settings();
     should(ebt).properties({
@@ -24,7 +24,7 @@ import should from "should";
 
     });
   });
-  it("TESTTESTdefault ctor de-de", async () => {
+  it("default ctor de-de", async () => {
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');
@@ -118,7 +118,7 @@ import should from "should";
       'pt',
     ]);
   });
-  it("TESTTESTsegmentRef()", ()=>{
+  it("segmentRef()", ()=>{
     let langTrans = 'de';
     let author = 'sabbamitta';
     let settings = new Settings({langTrans});

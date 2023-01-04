@@ -14,6 +14,9 @@
         <v-btn @click="clickPlayScid" variant="outlined">
           Play {{scid}}/{{lang}}
         </v-btn>
+        <v-btn @click="clickPause" variant="outlined">
+          Pause {{audioContextState}} {{audioContextCurrentTime.toFixed(2)}}
+        </v-btn>
         <v-text-field label="scid" v-model="scid" />
         <v-text-field label="lang" v-model="lang" />
       </div>
@@ -45,6 +48,9 @@
         scid: ref('sn1.1:0.1'),
         lang: ref('pli'),
         message: ref(''),
+        audioContext: ref(undefined),
+        audioContextState: ref('unknown'),
+        audioContextCurrentTime: ref(-1),
       }
     },
     components: {
@@ -66,7 +72,13 @@
             this.updateMessage(`playScid() fetchAudioBuffer() url:${url}`);
             let arrayBuffer = await audio.fetchAudioBuffer(url);
             this.updateMessage(`playScid() playArrayBuffer ${arrayBuffer.byteLength}B`);;
+            console.log("DBG0104 audioContext.state before playArrayBuffer", 
+              audioContext.state);
             await audio.playArrayBuffer({arrayBuffer, audioContext});
+            console.log("DBG0104 audioContext.state after playArrayBuffer", 
+              audioContext.state);
+            this.audioContextState = audioContext.state;
+            this.audioContextCurrentTime = audioContext.currentTime;
             this.updateMessage("playScid() DONE");
           } else {
             this.updateMessage(`playScid() langAudioUrl(${scid}, ${lang}) => null`);
@@ -77,9 +89,29 @@
           volatile.waiting > waiting && volatile.waitEnd();
         }
       },
+      async clickPause() {
+        let { audioContext } = this;
+        switch (audioContext.state) {
+          case 'suspended':
+            await audioContext.resume();
+            break;
+          case 'running':
+            await audioContext.suspend();
+            break;
+          default:
+          case 'closed':
+            logger.warn("IdbAudio.clickPause() IGNORED:", audioContext.state); 
+            break;
+        }
+        this.audioContextState = audioContext.state;
+        this.audioContextCurrentTime = audioContext.currentTime;
+      },
       clickPlayScid() {
         let { audio } = this;
-        let audioContext = audio.getAudioContext();
+        let audioContext = new AudioContext();
+        this.audioContext = audioContext;
+        console.log("DBG0104 audioContext.state", audioContext.state);
+        audioContext.resume();
         this.playScid(audioContext);
       },
       clickTestLoadSettings() {

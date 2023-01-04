@@ -29,7 +29,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("TESTTESTdefault state", ()=>{
+  it("default state", ()=>{
     let audio = useAudioStore();
     should(audio).properties({
       nFetch: 0,
@@ -114,7 +114,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTlangAudioUrl() de", async()=>{
+  it("langAudioUrl() de", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
