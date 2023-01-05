@@ -17,13 +17,13 @@
     "merkle-json": "^2.4.0",
     "pinia": "^2.0.16",
     "roboto-fontface": "*",
-    "scv-esm": "^1.60.18",
+    "scv-esm": "^1.60.19",
     "serve-favicon": "^2.5.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.37",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.5",
-    "vuetify": "^3.0.7",
+    "vuetify": "^3.1.0",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
