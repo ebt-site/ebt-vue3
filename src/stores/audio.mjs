@@ -268,10 +268,8 @@ export const useAudioStore = defineStore('audio', {
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
-          let offset = 0;
           let channelData = new Float32Array(length);
-          channelData.set(urlAudio.getChannelData(channelNumber), offset);
-          offset += urlAudio.length;
+          channelData.set(urlAudio.getChannelData(channelNumber), 0);
           audioBuffer.getChannelData(channelNumber).set(channelData);
         }
 
