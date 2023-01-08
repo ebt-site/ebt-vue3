@@ -195,45 +195,63 @@ export const useAudioStore = defineStore('audio', {
       }
       return url;
     },
-    async playArrayBuffer({arrayBuffer, audioContext, }) {
-      const msgPrefix = `audio.playArrayBuffer(${arrayBuffer.byteLength}B)`;
+    async createAudioBuffer({audioContext, arrayBuffer}) {
+      let msgPrefix = 'audio.createAudioBuffer()';
       const volatile = useVolatileStore();
       if (arrayBuffer.byteLength < 500) {
         let msg = `${msgPrefix} invalid arrayBuffer`;
         volatile.alert(msg, 'ebt.audioError');
         throw new Error(msg);
       }
-      try {
-        let audioData = await new Promise((resolve, reject)=>{
-          audioContext.decodeAudioData(arrayBuffer, resolve, reject);
-        });
-        let numberOfChannels = Math.min(2, audioData.numberOfChannels);
-        let length = audioData.length;
-        let sampleRate = Math.max(SAMPLE_RATE, audioData.sampleRate);
-        logger.debug(`${msgPrefix}`, {sampleRate, length, numberOfChannels});
-        let audioBuffer = audioContext.createBuffer(
-          numberOfChannels, length, sampleRate);
-        for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
-          let offset = 0;
-          let channelData = new Float32Array(length);
-          channelData.set(audioData.getChannelData(channelNumber), offset);
-          offset += audioData.length;
-          audioBuffer.getChannelData(channelNumber).set(channelData);
-        }
+      let audioData = await new Promise((resolve, reject)=>{
+        audioContext.decodeAudioData(arrayBuffer, resolve, reject);
+      });
+      let numberOfChannels = Math.min(2, audioData.numberOfChannels);
+      let length = audioData.length;
+      let sampleRate = Math.max(SAMPLE_RATE, audioData.sampleRate);
+      logger.debug(`${msgPrefix}`, {sampleRate, length, numberOfChannels});
+      let audioBuffer = audioContext.createBuffer(
+        numberOfChannels, length, sampleRate);
+      for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
+        let offset = 0;
+        let channelData = new Float32Array(length);
+        channelData.set(audioData.getChannelData(channelNumber), offset);
+        offset += audioData.length;
+        audioBuffer.getChannelData(channelNumber).set(channelData);
+      }
 
-        let audioSource = audioContext.createBufferSource();
-        audioSource.buffer = audioBuffer;
-        audioSource.connect(audioContext.destination);
-        return new Promise((resolve, reject) => { try {
-          audioSource.onended = evt => {
-            logger.debug(`${msgPrefix} => OK`);
-            resolve();
-          };
-          audioSource.start();
-        } catch(e) {
-          volatile.alert(e, 'ebt.audioError');
-          reject(e);
-        }}); // Promise
+      return audioBuffer;
+    },
+    async createAudioSource({audioContext, audioBuffer}) {
+      let msgPrefix = 'IdbAudio.createAudioSource';
+      const volatile = useVolatileStore();
+      let audioSource = audioContext.createBufferSource();
+      audioSource.buffer = audioBuffer;
+      audioSource.connect(audioContext.destination);
+      return audioSource;
+    },
+    async playAudioSource({audioContext, audioSource}) {
+      let msgPrefix = 'IdbAudio.playAudioSource';
+      const volatile = useVolatileStore();
+      return new Promise((resolve, reject) => { try {
+        audioSource.onended = evt => {
+          logger.debug(`${msgPrefix} => OK`);
+          resolve();
+        };
+        audioSource.start();
+      } catch(e) {
+        volatile.alert(e, 'ebt.audioError');
+        reject(e);
+      }}); // Promise
+    },
+    async playArrayBuffer({arrayBuffer, audioContext, }) {
+      const msgPrefix = `audio.playArrayBuffer(${arrayBuffer.byteLength}B)`;
+      const volatile = useVolatileStore();
+      try {
+        let audioBuffer = await this.createAudioBuffer({audioContext, arrayBuffer});
+        let audioSource = await this.createAudioSource({audioBuffer, audioContext});
+        console.log("DBG0107 duration", audioBuffer.duration);
+        return this.playAudioSource({audioContext, audioSource});
       } catch(e) {
         volatile.alert(e, 'ebt.audioError');
         throw e;
