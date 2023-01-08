@@ -94,14 +94,14 @@ export default class IdbAudio {
     }
   }
 
-  async createAudioSource() {
+  async xcreateAudioSource() {
     const audio = useAudioStore();
     let { audioContext, src } = this;
     let that = this;
     let msgPrefix = 'IdbAudio.createAudioSource()';
 
     this.msStart = Date.now(); // temporarily use fetch time as playing time
-    let arrayBuffer = await audio.fetchAudioBuffer(src);
+    let arrayBuffer = await audio.fetchArrayBuffer(src);
     this.#arrayBuffer = arrayBuffer;
 
     let audioSource = audioContext.createBufferSource();
@@ -138,7 +138,14 @@ export default class IdbAudio {
           this.msStart = Date.now(); // activate currentTime
           return;
         case 'running': {
-          let audioSource = await this.createAudioSource();
+          this.msStart = Date.now(); // temporarily use fetch time as playing time
+          let arrayBuffer = await audio.fetchArrayBuffer(src);
+          this.#arrayBuffer = arrayBuffer;
+          this.msStart = Date.now(); // actual playing time
+          let audioBuffer = await audio.createAudioBuffer({audioContext, arrayBuffer});
+          console.log(`DBG0108 ${msgPrefix} duration`, audioBuffer.duration);
+          let audioSource = await audio.createAudioSource({audioContext, audioBuffer});
+          console.log(`DBG0108 ${msgPrefix} audioSource created`);
           break;
         }
         case 'closed': {

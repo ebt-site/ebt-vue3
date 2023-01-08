@@ -146,22 +146,22 @@ export const useAudioStore = defineStore('audio', {
       if (url == null) {
         return null;
       }
-      let arrayBuffer = await this.fetchAudioBuffer(url, opts);
+      let arrayBuffer = await this.fetchArrayBuffer(url, opts);
       console.log("DEBUG0101 playUrlAsync", arrayBuffer.byteLength);
       let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
       return promise;
     },
-    async fetchAudioBuffer(url, opts={}) {
+    async fetchArrayBuffer(url, opts={}) {
       const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
       try {
         let res = await fetch(url, { headers });
-        logger.debug(`audio.fetchAudioBuffer(${url}) => HTTP${res.status}:`);
+        logger.debug(`audio.fetchArrayBuffer(${url}) => HTTP${res.status}:`);
         let abuf = await res.arrayBuffer();
-        logger.info(`audio.fetchAudioBuffer() ${url}=> ${abuf.byteLength}B`);
+        logger.info(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
       } catch(e) {
-        let msg = `audio.fetchAudioBuffer() ${url} => ${e.message}`;
+        let msg = `audio.fetchArrayBuffer() ${url} => ${e.message}`;
         volatile.alert(msg, 'ebt.audioError');
         throw new Error(msg);
       }

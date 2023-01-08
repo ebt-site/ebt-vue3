@@ -69,8 +69,8 @@
           let url = await audio.langAudioUrl(scid, lang);
           volatile.waitEnd();
           if (url) {
-            this.updateMessage(`playScid() fetchAudioBuffer() url:${url}`);
-            let arrayBuffer = await audio.fetchAudioBuffer(url);
+            this.updateMessage(`playScid() fetchArrayBuffer() url:${url}`);
+            let arrayBuffer = await audio.fetchArrayBuffer(url);
             this.updateMessage(`playScid() playArrayBuffer ${arrayBuffer.byteLength}B`);;
             console.log("DBG0104 audioContext.state before playArrayBuffer", 
               audioContext.state);

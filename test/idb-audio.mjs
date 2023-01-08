@@ -7,6 +7,17 @@ import fetch from "node-fetch";
 
 logger.logLevel = 'warn';
 
+class MockAudioData {
+  constructor() {
+  }
+}
+
+class MockBuffer {
+  constructor(numberOfChannels, length, sampleRate) {
+    Object.assign(this, {numberOfChannels, length, sampleRate})
+  }
+}
+
 class MockBufferSource {
   constructor() {
     this.onended = evt => {
@@ -46,8 +57,18 @@ class MockAudioContext {
     return Date.now() - this.msStart;
   }
 
+  createBuffer(numberOfChannels, length, sampleRate) {
+    return new MockBuffer(numberOfChannels, length, sampleRate);
+  }
+
   createBufferSource() {
+    console.log("DBG0108 MockAudioContext.createBufferSource()");
     return new MockBufferSource();
+  }
+
+  async decodeAudioData(arrayBuffer, resolve, reject) {
+    console.log("DBG0108 MockAudioContext.decodeAudioData()");
+    resolve(new MockAudioData());
   }
 
   resume() {
