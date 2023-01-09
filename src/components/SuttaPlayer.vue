@@ -397,7 +397,7 @@
         }
 
         let res;
-        logger.debug("SuttaPlayer.playAudio()", {audioElt});
+        logger.info("SuttaPlayer.playAudio()", {audioElt});
         let audioInterval = null;
         try {
           await audioElt.play();

@@ -135,7 +135,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTfetchArrayBuffer()", async()=>{
+  it("fetchArrayBuffer()", async()=>{
     let audio = useAudioStore();
     let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
     let url = await audio.langAudioUrl(suttaRef, 'pli');

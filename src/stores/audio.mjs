@@ -196,31 +196,37 @@ export const useAudioStore = defineStore('audio', {
       return url;
     },
     async createAudioBuffer({audioContext, arrayBuffer}) {
-      let msgPrefix = 'audio.createAudioBuffer()';
+      const msgPrefix = 'audio.createAudioBuffer()';
       const volatile = useVolatileStore();
-      if (arrayBuffer.byteLength < 500) {
-        let msg = `${msgPrefix} invalid arrayBuffer`;
-        volatile.alert(msg, 'ebt.audioError');
-        throw new Error(msg);
-      }
-      let audioData = await new Promise((resolve, reject)=>{
-        audioContext.decodeAudioData(arrayBuffer, resolve, reject);
-      });
-      let numberOfChannels = Math.min(2, audioData.numberOfChannels);
-      let length = audioData.length;
-      let sampleRate = Math.max(SAMPLE_RATE, audioData.sampleRate);
-      logger.debug(`${msgPrefix}`, {sampleRate, length, numberOfChannels});
-      let audioBuffer = audioContext.createBuffer(
-        numberOfChannels, length, sampleRate);
-      for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
-        let offset = 0;
-        let channelData = new Float32Array(length);
-        channelData.set(audioData.getChannelData(channelNumber), offset);
-        offset += audioData.length;
-        audioBuffer.getChannelData(channelNumber).set(channelData);
-      }
+      try {
+        if (arrayBuffer.byteLength < 500) {
+          let msg = `${msgPrefix} invalid arrayBuffer`;
+          volatile.alert(msg, 'ebt.audioError');
+          throw new Error(msg);
+        }
+        let audioData = await new Promise((resolve, reject)=>{
+          audioContext.decodeAudioData(arrayBuffer, resolve, reject);
+        });
+        let numberOfChannels = Math.min(2, audioData.numberOfChannels);
+        let length = audioData.length;
+        let sampleRate = Math.max(SAMPLE_RATE, audioData.sampleRate);
+        logger.debug(`${msgPrefix}`, {sampleRate, length, numberOfChannels});
+        let audioBuffer = audioContext.createBuffer(
+          numberOfChannels, length, sampleRate);
+        for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
+          let rawData = new Float32Array(length);
+          console.log("DBG0108 createAUdioBuffer() length", length);
+          rawData.set(audioData.getChannelData(channelNumber), 0);
+          audioBuffer.getChannelData(channelNumber).set(rawData);
+        }
 
-      return audioBuffer;
+        return audioBuffer;
+      } catch(e) {
+        let msg = `${msgPrefix} ERROR`;
+        logger.warn(msg);
+        console.trace(msg, e);
+        throw e;
+      }
     },
     async createAudioSource({audioContext, audioBuffer}) {
       let msgPrefix = 'IdbAudio.createAudioSource';

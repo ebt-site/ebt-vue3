@@ -16,13 +16,15 @@ export default class IdbAudio {
     let {
       src=URL_NO_AUDIO,
       audioContext,
+      preload=false,
     } = opts;
     if (audioContext == null) {
       audioContext = new AudioContext();
       audioContext.resume(); // for iOS
     }
-    this.#src = src;
     Object.assign(this, {
+      audio: useAudioStore(),
+      preload,
       audioContext,
       msStart: null,
       msPlay: 0,
@@ -30,20 +32,34 @@ export default class IdbAudio {
         console.log("IdbAudio.ended()");
       },
     });
+    this.src = src;
   }
 
   static get URL_NO_AUDIO() { return URL_NO_AUDIO; }
 
   get duration() {
-    return 0;
+    let { audioBuffer } = this;
+    return audioBuffer?.duration || 0;
   }
 
   get src() {
     return this.#src;
   }
 
-  get currentSrc() {
-    return this.#src;
+  set src(value) {
+    const msgPrefix = "IdbAudio.src.set()";
+    let that = this;
+    let { preload } = this;
+    this.#src = value;
+    return preload && value
+      ? new Promise((resolve,reject)=>{
+          console.log(`${msgPrefix} preload`, value);
+          that.fetchAudioBuffer(value).then(()=>{
+            console.log(`${msgPrefix} preload OK`);
+            resolve(value);
+          }).catch(e=>reject(e));
+        })
+      : value;
   }
 
   get currentTime() {
@@ -73,7 +89,6 @@ export default class IdbAudio {
 
   pause() {
     let { audioContext, msStart, msPlay } = this;
-    console.log("DBG0107 IdbAudio.pause() audioContext", audioContext.state);
     switch(audioContext.state) {
       case 'running':
         audioContext.suspend();
@@ -81,7 +96,6 @@ export default class IdbAudio {
           msPlay += Date.now() - msStart;
           logger.debug("IdbAudio.pause() msStart");
           this.msPlay = msPlay;
-          this.msStart = null;
         } else {
           logger.debug("IdbAudio.pause() !msStart");
         }
@@ -92,57 +106,43 @@ export default class IdbAudio {
         // no action required
         break;
     }
+    this.msStart = null;
+    console.log("DBG0107 IdbAudio.pause() audioContext", audioContext.state);
   }
 
-  async xcreateAudioSource() {
-    const audio = useAudioStore();
-    let { audioContext, src } = this;
-    let that = this;
-    let msgPrefix = 'IdbAudio.createAudioSource()';
-
-    this.msStart = Date.now(); // temporarily use fetch time as playing time
-    let arrayBuffer = await audio.fetchArrayBuffer(src);
-    this.#arrayBuffer = arrayBuffer;
-
-    let audioSource = audioContext.createBufferSource();
-    let promise = new Promise((resolve, reject) => { try {
-      console.log(`DBG0107 ${msgPrefix} onended...`, this.src);
-      audioSource.onended = evt => {
-        console.log(`DBG0107 ${msgPrefix} => onended`, this.src);
-        if (that.ended) {
-          let evt = new Event('idb-audio');
-          that.ended(evt)
-        }
-        resolve(); 
-      };
+  async fetchAudioBuffer() {
+    const msgPrefix = 'IdbAudio.fetchAudioBuffer()';
+    try {
+      let { audioContext, audio, src } = this;
+      this.msStart = Date.now(); // temporarily use fetch time as playing time
+      let arrayBuffer = await audio.fetchArrayBuffer(src);
+      this.#arrayBuffer = arrayBuffer;
+      let audioBuffer = await audio.createAudioBuffer({audioContext, arrayBuffer});
+      this.audioBuffer = audioBuffer;
+      return audioBuffer;
     } catch(e) {
-      volatile.alert(e, 'ebt.audioError');
-      reject(e);
-    }}); // Promise
-
-    this.msStart = Date.now(); // actual playing time
-    console.log(`${msgPrefix} DBG0`, this.currentTime);
-    audioSource.start();
-    return audioSource;
+      let msg = `${msgPrefix} ERROR ${e.message}`;
+      logger.warn(msg);
+      console.trace(msg,e);
+    }
   }
 
   async play() {
+    const msgPrefix = 'IdbAudio.play()';
     try {
-      let { audioContext, src, msStart } = this;
-      const audio = useAudioStore();
-      let msgPrefix = 'IdbAudio.play()';
+      let { audioContext, src, msStart, audio } = this;
 
       switch (audioContext.state) {
         case 'suspended':
           audioContext.resume();
           this.msStart = Date.now(); // activate currentTime
+          console.log(`DBG0109 ${msgPrefix} resume()`);
           return;
         case 'running': {
-          this.msStart = Date.now(); // temporarily use fetch time as playing time
-          let arrayBuffer = await audio.fetchArrayBuffer(src);
-          this.#arrayBuffer = arrayBuffer;
-          this.msStart = Date.now(); // actual playing time
-          let audioBuffer = await audio.createAudioBuffer({audioContext, arrayBuffer});
+          let audioBuffer = this.audioBuffer || (await this.fetchAudioBuffer());
+          if (msStart == null) { // paused
+            this.msStart = Date.now(); // actual playing time
+          }
           console.log(`DBG0108 ${msgPrefix} duration`, audioBuffer.duration);
           let audioSource = await audio.createAudioSource({audioContext, audioBuffer});
           console.log(`DBG0108 ${msgPrefix} audioSource created`);
@@ -161,7 +161,6 @@ export default class IdbAudio {
           throw new DOMException(msg, INVALID_STATE_ERROR);
         }
       }
-
     } catch (e) {
       logger.warn("IdbAudio.play()", e.message);
       console.trace("ERROR", e.message);

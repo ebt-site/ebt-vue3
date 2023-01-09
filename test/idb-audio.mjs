@@ -7,14 +7,52 @@ import fetch from "node-fetch";
 
 logger.logLevel = 'warn';
 
+const MOCK_DURATION = 1234;
+const MOCK_AUDIO_DATA_LENGTH = 411;
+const MOCK_NUMBER_OF_CHANNELS = 2;
+const MOCK_SAMPLE_RATE = 22000;
+
+class MockChannelData {
+  constructor() {
+    this.data = "MockChannelData";
+    this.length = this.data.length;
+  }
+
+  set(value, offset) {
+    this.data = {value,offset};
+  }
+}
+
 class MockAudioData {
   constructor() {
+    this.sampleRate = MOCK_SAMPLE_RATE;
+    this.numberOfChannels = MOCK_NUMBER_OF_CHANNELS;
+    this.channels = [
+      new Float32Array(MOCK_AUDIO_DATA_LENGTH),
+      new Float32Array(MOCK_AUDIO_DATA_LENGTH),
+    ];
+    this.length = MOCK_AUDIO_DATA_LENGTH;
+    console.log("DBG0108 MockAudioData()");
+  }
+
+  getChannelData(channelNumber) {
+    return this.channels[channelNumber];
   }
 }
 
 class MockBuffer {
   constructor(numberOfChannels, length, sampleRate) {
-    Object.assign(this, {numberOfChannels, length, sampleRate})
+    Object.assign(this, {
+      numberOfChannels, 
+      length, 
+      sampleRate,
+      duration: MOCK_DURATION,
+    })
+    console.log("DBG0108 MockBuffer()");
+  }
+
+  getChannelData() {
+    return new MockChannelData();
   }
 }
 
@@ -106,13 +144,13 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     setActivePinia(createPinia());
     global.fetch = global.fetch || fetch;
   });
-  it("TESTTESTdefault ctor", ()=>{
+  it("default ctor", ()=>{
     let audio = new IdbAudio();
     should(audio.src).equal(IdbAudio.URL_NO_AUDIO);
-    should(audio.currentSrc).equal(IdbAudio.URL_NO_AUDIO);
     should(audio.currentTime).equal(0);
     should(audio.duration).equal(0);
     should(audio.paused).equal(false);
+    should(audio.preload).equal(false);
     
     // mock verification
     let mockAudioContext = audio.audioContext;
@@ -151,7 +189,17 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let currentTime = audio.currentTime;
     should(audio.currentTime).equal(currentTime);
   });
-  it("TESTTESTplay()", async ()=>{
+  it("duration", async ()=>{
+    let src = IdbAudio.URL_NO_AUDIO;
+    let preload = true;
+    let audio = new IdbAudio({src, preload});
+    should(audio.preload).equal(true);
+    should(audio.duration).equal(0);
+    await new Promise(r=>setTimeout(r,1000));
+    console.log("DBG0108 test duration", audio.audioBuffer);
+    should(audio.duration).equal(MOCK_DURATION);
+  });
+  it("play()", async ()=>{
     let audio = new IdbAudio();
 
     // play resolves when playing has started
@@ -174,7 +222,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(abuf.byteLength).above(138490).below(139510);
     should(abuf).instanceOf(ArrayBuffer);
   });
-  it("currentTime", async ()=>{
+  it("TESTTESTcurrentTime", async ()=>{
     let audio = new IdbAudio();
 
     // Initial state
@@ -194,13 +242,11 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.currentTime).equal(pauseTime);
 
     // currentTime increases while playing
-    /* TODO
     let play2 = audio.play();
     let play2Time = audio.currentTime;
-    should(play2Time).above(pauseTime);
     await new Promise(resolve=>setTimeout(resolve,5));
+    should(audio.currentTime).above(pauseTime);
     should(audio.currentTime).above(play1Time);
     should(audio.currentTime).above(play2Time);
-    */
   });
 });
