@@ -19,8 +19,13 @@
         </v-btn>
         <v-text-field label="scid" v-model="scid" />
         <v-text-field label="lang" v-model="lang" />
+        <v-btn @click="clickPlayIdbAudio" variant="outlined">
+          IdbAudio Play {{scid}}/{{lang}}
+        </v-btn>
+        <v-btn @click="clickPauseIdbAudio" variant="outlined">
+          IdbAudio Pause {{audioContextState}} {{audioContextCurrentTime.toFixed(2)}}
+        </v-btn>
       </div>
-
 
       <div style="width: 20em">
         <div v-for="link in testLinks">
@@ -35,6 +40,7 @@
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useAudioStore } from '../stores/audio.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
+  import { default as IdbAudio } from '../idb-audio.mjs';
   import { SuttaRef } from 'scv-esm';
   import { logger } from 'log-instance';
   import { ref } from "vue";
@@ -51,6 +57,7 @@
         audioContext: ref(undefined),
         audioContextState: ref('unknown'),
         audioContextCurrentTime: ref(-1),
+        idbAudio: undefined,
       }
     },
     components: {
@@ -100,7 +107,7 @@
             break;
           default:
           case 'closed':
-            logger.warn("IdbAudio.clickPause() IGNORED:", audioContext.state); 
+            logger.warn("Debug.clickPause() IGNORED:", audioContext.state); 
             break;
         }
         this.audioContextState = audioContext.state;
@@ -113,6 +120,33 @@
         console.log("DBG0104 audioContext.state", audioContext.state);
         audioContext.resume();
         this.playScid(audioContext);
+      },
+      async playIdbAudio(audioContext) {
+        let { audio, volatile, settings, scid, lang, $t } = this;
+        try {
+          let src = await audio.langAudioUrl(scid, lang);
+          console.log("DBG0109 playIdbAudio()", src);
+          let idbAudio = new IdbAudio({src, audioContext});
+          this.idbAudio = idbAudio;
+          console.log("DBG0109 playIdbAudio() play()");
+          await idbAudio.play();
+          console.log("DBG0109 playIdbAudio() done");
+        } catch(e) {
+          console.log(e);
+        }
+      },
+      clickPlayIdbAudio() {
+        let audioContext = new AudioContext();
+        this.audioContext = audioContext;
+        this.playIdbAudio(audioContext);
+      },
+      clickPauseIdbAudio() {
+        let { idbAudio } = this;
+        if (idbAudio.paused) {
+          idbAudio.play();
+        } else {
+          idbAudio.pause();
+        }
       },
       clickTestLoadSettings() {
         let { settings } = this;

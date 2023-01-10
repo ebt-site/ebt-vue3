@@ -107,7 +107,6 @@ export default class IdbAudio {
         break;
     }
     this.msStart = null;
-    console.log("DBG0107 IdbAudio.pause() audioContext", audioContext.state);
   }
 
   async fetchAudioBuffer() {
@@ -136,16 +135,14 @@ export default class IdbAudio {
         case 'suspended':
           audioContext.resume();
           this.msStart = Date.now(); // activate currentTime
-          console.log(`DBG0109 ${msgPrefix} resume()`);
           return;
         case 'running': {
           let audioBuffer = this.audioBuffer || (await this.fetchAudioBuffer());
           if (msStart == null) { // paused
             this.msStart = Date.now(); // actual playing time
           }
-          console.log(`DBG0108 ${msgPrefix} duration`, audioBuffer.duration);
           let audioSource = await audio.createAudioSource({audioContext, audioBuffer});
-          console.log(`DBG0108 ${msgPrefix} audioSource created`);
+          await audio.playAudioSource({audioContext, audioSource});
           break;
         }
         case 'closed': {

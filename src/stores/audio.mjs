@@ -215,7 +215,6 @@ export const useAudioStore = defineStore('audio', {
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
           let rawData = new Float32Array(length);
-          console.log("DBG0108 createAUdioBuffer() length", length);
           rawData.set(audioData.getChannelData(channelNumber), 0);
           audioBuffer.getChannelData(channelNumber).set(rawData);
         }
@@ -256,7 +255,6 @@ export const useAudioStore = defineStore('audio', {
       try {
         let audioBuffer = await this.createAudioBuffer({audioContext, arrayBuffer});
         let audioSource = await this.createAudioSource({audioBuffer, audioContext});
-        console.log("DBG0107 duration", audioBuffer.duration);
         return this.playAudioSource({audioContext, audioSource});
       } catch(e) {
         volatile.alert(e, 'ebt.audioError');

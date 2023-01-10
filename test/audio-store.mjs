@@ -23,6 +23,7 @@ const MSSEC = 1000;
 const MSDAY = 24*3600*MSSEC;
 const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
 
+
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
   beforeEach(() => {
     window.localStorage = global.localStorage
@@ -48,6 +49,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     );
   });
   it("segmentAudioUrl() de", ()=>{
+    this.timeout(5*1000);
     let audio = useAudioStore();
     let sutta_uid = 'thig1.1';
     let scid = `${sutta_uid}:0.1`;
