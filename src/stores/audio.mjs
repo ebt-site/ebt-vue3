@@ -43,6 +43,14 @@ export const useAudioStore = defineStore('audio', {
       let url =  volume ? `audio/click${volume}.mp3` : null;
       return this.playUrl(url, {audioContext});
     },
+    playBell(audioContext=this.getAudioContext()) {
+      let settings = useSettingsStore();
+      let { ips } = settings;
+      let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
+      let url = ipsChoice?.url?.substring(1);
+      console.log("DBG0111 bellUrl", {ipsChoice, ips, url});
+      return this.playUrl(url, {audioContext});
+    },
     async setAudioSutta(audioSutta, audioIndex=0) {
       logger.debug("audio.setAudioSutta()", {audioSutta, audioIndex});
       this.audioSutta = audioSutta;

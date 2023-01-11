@@ -48,27 +48,6 @@
         </v-btn>
       </div><!-- play-row -->
     </div><!-- play-col -->
-    <audio :ref="el => {pliAudioElt = el}" 
-      @ended = "audioEnded"
-      :src="pliAudioUrl"
-      preload=auto >
-      <source type="audio/mp3" :src="pliAudioUrl" />
-      <p>{{ $t('ebt.noHTML5') }}</p>
-    </audio>
-    <audio :ref="el => {transAudioElt = el}" 
-      @ended = "audioEnded"
-      :src="transAudioUrl"
-      preload=auto >
-      <source type="audio/mp3" :src="transAudioUrl" />
-      <p>{{ $t('ebt.noHTML5') }}</p>
-    </audio>
-    <audio :ref="el => {bellAudioElt = el}" 
-      @ended = "audioEnded"
-      :src="bellUrl"
-      preload=auto >
-      <source type="audio/mp3" :src="bellUrl" />
-      <p>{{ $t('ebt.noHTML5') }}</p>
-    </audio>
   </v-bottom-navigation>
 </template>
 
@@ -108,15 +87,12 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         audioContext: ref(undefined),
-        pliAudioElt: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
-        transAudioElt: ref(undefined),
         transAudioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
         audioDuration: ref(0),
         audioElapsed: ref(0),
         segmentPlaying: ref(false),
-        bellAudioElt: ref(null),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
         AUDIO_PLAYALL,
@@ -150,7 +126,7 @@
         }
       },
       async playOne() {
-        let { bellAudioElt, audioPlaying, audioScid } = this;
+        let { audio, audioPlaying, audioScid } = this;
 
         logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
         let completed = await this.playSegment(AUDIO_PLAY1);
@@ -160,7 +136,7 @@
           logger.info("SuttaPlayer.playOne() OK");
         } else {
           logger.info("SuttaPlayer.playOne() END");
-          await this.playAudio(bellAudioElt, AUDIO_PLAY1);
+          audio.playBell();
         }
         this.stopAudio(true);
       },
@@ -181,7 +157,7 @@
         } 
       },
       async playToEnd() {
-        let { audio, bellAudioElt, audioPlaying, audioScid } = this;
+        let { audio, audioPlaying, audioScid } = this;
 
         logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
@@ -191,7 +167,7 @@
         } while(completed && (await this.next()));
         if (completed) {
           logger.info("SuttaPlayer.playToEnd() END");
-          await this.playAudio(bellAudioElt, AUDIO_PLAY1);
+          await audio.playBell();
         }
         this.stopAudio(true);
       },
@@ -209,8 +185,6 @@
       async back() {
         let { audioPlaying } = this;
         if (audioPlaying) {
-          this.resetSegmentAudio();
-        } else {
           this.incrementSegment(-1);
         }
       },
@@ -242,15 +216,6 @@
         audio.playClick();
         return this.next();
       },
-
-      resetSegmentAudio() {
-        let { audioElts } = this;
-        audioElts.forEach(elt => {
-          if (elt) {
-            elt.currentTime = 0;
-          }
-        });
-      },
       onClickPlayScid() {
         let { routeCard, settings, } = this;
         let eltId = routeCard.routeHash();
@@ -274,23 +239,11 @@
         logger.debug('SuttaPlayer.audioEnded', {evt});
       },
       stopAudio(stopSegment) {
-        let { audioElts } = this;
         logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
         let stopped = false;
         this.audioPlaying = AUDIO_INACTIVE;
         this.audioElapsed = 0;
         stopSegment && (this.segmentPlaying = false);
-        audioElts.forEach(elt => {
-          if (elt) {
-            if (!elt.paused) {
-              stopped = true;
-              this.segmentPlaying = false;
-              elt.pause();
-              logger.info("SuttaPlayer.stopAudio() PAUSE");
-            }
-            elt.currentTime = 0;
-          }
-        });
         if (this.audioResolve) {
           this.audioResolve();
           this.audioResolve = undefined;
@@ -364,9 +317,6 @@
           routeCard, 
           audioScid,
           settings, 
-          bellAudioElt,
-          pliAudioElt,
-          transAudioElt,
         } = this;
         await this.bindSegmentAudio();
         const IDB_AUDIO = 1;
@@ -375,23 +325,15 @@
 
         this.segmentPlaying = true;
         if (this.segmentPlaying && settings.speakPali) {
-          if (IDB_AUDIO) {
-            let src = await audio.langAudioUrl(audioScid, 'pli');
-            let idbAudio = new IdbAudio({audioContext, src});
-            await idbAudio.play();
-          } else {
-            await this.playAudio(pliAudioElt, audioPlaying);
-          }
+          let src = await audio.langAudioUrl(audioScid, 'pli');
+          let idbAudio = new IdbAudio({audioContext, src});
+          await idbAudio.play();
         }
 
         if (this.segmentPlaying && settings.speakTranslation) {
-          if (IDB_AUDIO) {
-            let src = await audio.langAudioUrl(audioScid, settings.langTrans);
-            let idbAudio = new IdbAudio({audioContext, src});
-            await idbAudio.play();
-          } else {
-            await this.playAudio(transAudioElt, audioPlaying);
-          }
+          let src = await audio.langAudioUrl(audioScid, settings.langTrans);
+          let idbAudio = new IdbAudio({audioContext, src});
+          await idbAudio.play();
         }
 
         if (!this.segmentPlaying) {
@@ -401,44 +343,6 @@
         this.segmentPlaying = false;
         return true; // completed
       },
-      async playAudio(audioElt, audioPlaying=AUDIO_PLAY1) {
-        let that = this;
-        let { audioSutta, routeCard } = this;
-        let { segments } = audioSutta;
-        let { iSegment } = routeCard.incrementLocation({ segments, delta: 0, });
-
-        if (!audioElt) {
-          let msg = `SuttaPlayer.playAudio() audioElt?`;
-          logger.warn(msg);
-          throw new Error(msg);
-        } 
-        if (this.stopAudio()) {
-          return;
-        }
-
-        let res;
-        logger.info("SuttaPlayer.playAudio()", {audioElt});
-        let audioInterval = null;
-        try {
-          await audioElt.play();
-          await new Promise((resolve,reject)=>{
-            if (that.audioResolve) {
-              throw new Error(`SuttaPlayer.playAudio() audioResolve in progress`);
-            }
-            that.audioResolve = resolve;
-            that.audioPlaying = audioPlaying;
-            that.audioDuration = audioElt.duration;
-            audioInterval = setInterval(()=>{
-              that.audioElapsed = audioElt.currentTime;
-            });
-          });
-          logger.debug("SuttaPlayer.playAudio() DONE");
-        } catch(e) {
-          alert(e.message);
-        } finally {
-          audioInterval && clearInterval(audioInterval);
-        }
-      }, // playAudio
     },
     computed: {
       audioScid(ctx) {
@@ -451,16 +355,6 @@
         let { audio, audioSutta } = ctx;
         let { audioIndex } = audio;
         return (audioIndex+1)*100 / audioSutta.segments.length+1;
-      },
-      audioElts(ctx) {
-        let { transAudioElt, pliAudioElt, bellAudioElt } = ctx;
-        return [ transAudioElt, pliAudioElt, bellAudioElt ]
-          .filter(e=>!!e);
-      },
-      bellUrl(ctx) {
-        let { ips } = ctx.settings;
-        let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
-        return ipsChoice?.url?.substring(1);
       },
     },
     components: {

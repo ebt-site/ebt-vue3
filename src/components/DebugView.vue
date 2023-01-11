@@ -25,6 +25,9 @@
         <v-btn @click="clickPauseIdbAudio" variant="outlined">
           IdbAudio Pause {{audioContextState}} {{audioContextCurrentTime.toFixed(2)}}
         </v-btn>
+        <v-btn @click="clickBell" variant="outlined">
+          Audio Bell 
+        </v-btn>
       </div>
 
       <div style="width: 20em">
@@ -95,6 +98,13 @@
         } finally {
           volatile.waiting > waiting && volatile.waitEnd();
         }
+      },
+      clickBell() {
+        let { audio } = this;
+        console.log("DBG0111 clickBell() start");
+        audio.playBell().then(()=>{
+          console.log("DBG0111 clickBell() end");
+        });
       },
       async clickPause() {
         let { audioContext } = this;
