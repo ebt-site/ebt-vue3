@@ -78,6 +78,7 @@
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import { default as EbtSettings } from "../ebt-settings.mjs";
   import { default as EbtCard } from '../ebt-card.mjs';
+  import { default as IdbAudio } from '../idb-audio.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
@@ -106,6 +107,7 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
+        audioContext: ref(undefined),
         pliAudioElt: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioElt: ref(undefined),
@@ -115,7 +117,6 @@
         audioElapsed: ref(0),
         segmentPlaying: ref(false),
         bellAudioElt: ref(null),
-        audioContext: ref(null),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
         AUDIO_PLAYALL,
@@ -164,7 +165,11 @@
         this.stopAudio(true);
       },
       clickPlayPause() {
-        let { audio, audioScid, audioPlaying, audioContext } = this;
+        let { audio, audioScid, audioPlaying, audioContext, } = this;
+
+        if (audioContext == null) {
+          this.audioContext = audioContext = audio.getAudioContext();
+        }
 
         audio.playClick();
 
@@ -354,6 +359,8 @@
       },
       async playSegment(audioPlaying=AUDIO_PLAY1) {
         let { 
+          audio,
+          audioContext,
           routeCard, 
           audioScid,
           settings, 
@@ -362,16 +369,29 @@
           transAudioElt,
         } = this;
         await this.bindSegmentAudio();
+        const IDB_AUDIO = 1;
 
         logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
 
         this.segmentPlaying = true;
         if (this.segmentPlaying && settings.speakPali) {
-          await this.playAudio(pliAudioElt, audioPlaying);
+          if (IDB_AUDIO) {
+            let src = await audio.langAudioUrl(audioScid, 'pli');
+            let idbAudio = new IdbAudio({audioContext, src});
+            await idbAudio.play();
+          } else {
+            await this.playAudio(pliAudioElt, audioPlaying);
+          }
         }
 
         if (this.segmentPlaying && settings.speakTranslation) {
-          await this.playAudio(transAudioElt, audioPlaying);
+          if (IDB_AUDIO) {
+            let src = await audio.langAudioUrl(audioScid, settings.langTrans);
+            let idbAudio = new IdbAudio({audioContext, src});
+            await idbAudio.play();
+          } else {
+            await this.playAudio(transAudioElt, audioPlaying);
+          }
         }
 
         if (!this.segmentPlaying) {

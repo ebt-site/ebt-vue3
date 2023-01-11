@@ -115,7 +115,7 @@
       },
       clickPlayScid() {
         let { audio } = this;
-        let audioContext = new AudioContext();
+        let audioContext = audio.getAudioContext();
         this.audioContext = audioContext;
         console.log("DBG0104 audioContext.state", audioContext.state);
         audioContext.resume();

@@ -169,7 +169,10 @@ export const useAudioStore = defineStore('audio', {
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
       let { serverUrl, langTrans } = settings;
       if (typeof lang !== 'string') {
-        throw new Error(`audio.langAudioUrl() lang is required: ${lang}`);
+        if (lang) {
+          throw new Error(`audio.langAudioUrl() lang is required: ${lang}`);
+        }
+        lang = settings.langTrans;
       }
       lang = lang.toLowerCase();
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
