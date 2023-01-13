@@ -6,9 +6,6 @@ const HEADERS_MPEG = { ["Accept"]: "audio/mpeg", };
 const URL_NO_AUDIO = "https://github.com/ebt-site/ebt-vue3/blob/04a335368ebd751d1caf56312d6599f367eaa21f/public/audio/no_audio.mp3";
 
 export default class IdbAudio {
-  #src;
-  #arrayBuffer;
-
   constructor(opts={}) {
     if (typeof(opts) === 'string') {
       opts = { src: opts };
@@ -23,43 +20,49 @@ export default class IdbAudio {
       audioContext.resume(); // for iOS
     }
     Object.assign(this, {
-      audio: useAudioStore(),
-      preload,
+      audioBuffer: null,
       audioContext,
-      msStart: null,
+      audioSource: null,
+      audio: useAudioStore(),
+      ended: ()=>{ console.log("IdbAudio.ended()"); },
       msPlay: 0,
-      ended: ()=>{
-        console.log("IdbAudio.ended()");
-      },
+      msStart: null,
+      preload,
     });
     this.src = src;
   }
 
   static get URL_NO_AUDIO() { return URL_NO_AUDIO; }
 
-  get duration() {
-    let { audioBuffer } = this;
-    return audioBuffer?.duration || 0;
-  }
-
   get src() {
-    return this.#src;
+    return this.currentSrc;
   }
 
   set src(value) {
-    const msgPrefix = "IdbAudio.src.set()";
-    let that = this;
+    var msg = `IdbAudio.src.set() ${value} `;
     let { preload } = this;
-    this.#src = value;
-    return preload && value
-      ? new Promise((resolve,reject)=>{
-          console.log(`${msgPrefix} preload`, value);
-          that.fetchAudioBuffer(value).then(()=>{
-            console.log(`${msgPrefix} preload OK`);
-            resolve(value);
-          }).catch(e=>reject(e));
-        })
-      : value;
+
+    if (this.currentSrc !== value) {
+      this.currentSrc = value;
+      this.audioBuffer = null;
+      if (preload) {
+        let promise = this.fetchAudioBuffer();
+        promise.then(()=>{
+          msg += `fetchAudioBuffer() OK`;
+          logger.info(msg);
+        }).catch(e=>{
+          msg += e.message;
+          logger.warn(msg);
+          console.trace(e);
+        });
+      }
+    }
+    return this;
+  }
+
+  get duration() {
+    let { audioBuffer } = this;
+    return audioBuffer?.duration || 0;
   }
 
   get currentTime() {
@@ -110,24 +113,24 @@ export default class IdbAudio {
   }
 
   async fetchAudioBuffer() {
-    const msgPrefix = 'IdbAudio.fetchAudioBuffer()';
+    const msgPfx = 'IdbAudio.fetchAudioBuffer()';
     try {
       let { audioContext, audio, src } = this;
       this.msStart = Date.now(); // temporarily use fetch time as playing time
       let arrayBuffer = await audio.fetchArrayBuffer(src);
-      this.#arrayBuffer = arrayBuffer;
+      this.arrayBuffer = arrayBuffer;
       let audioBuffer = await audio.createAudioBuffer({audioContext, arrayBuffer});
       this.audioBuffer = audioBuffer;
       return audioBuffer;
     } catch(e) {
-      let msg = `${msgPrefix} ERROR ${e.message}`;
+      let msg = `${msgPfx} ERROR ${e.message}`;
       logger.warn(msg);
       console.trace(msg,e);
     }
   }
 
   async play() {
-    const msgPrefix = 'IdbAudio.play()';
+    const msgPfx = 'IdbAudio.play()';
     try {
       let { audioContext, src, msStart, audio } = this;
 
@@ -137,22 +140,31 @@ export default class IdbAudio {
           this.msStart = Date.now(); // activate currentTime
           return;
         case 'running': {
-          let audioBuffer = this.audioBuffer || (await this.fetchAudioBuffer());
+          if (this.audioBuffer == null) {
+            this.audioBuffer = this.fetchAudioBuffer();
+          }
+          if (this.audioBuffer instanceof Promise) {
+            this.audioBuffer = await this.audioBuffer;
+          }
+          let audioBuffer = this.audioBuffer;
           if (msStart == null) { // paused
             this.msStart = Date.now(); // actual playing time
           }
           let audioSource = await audio.createAudioSource({audioContext, audioBuffer});
+          this.audioSource = audioSource;
           await audio.playAudioSource({audioContext, audioSource});
+          this.audioSource = null;
+          this.audioBuffer = null;
           break;
         }
         case 'closed': {
-          let msg = `${msgPrefix} audioContext is closed`;
+          let msg = `${msgPfx} audioContext is closed`;
           logger.warn(msg);
           console.trace(msg);
           throw new DOMException(msg, INVALID_STATE_ERROR);
         }
         default: {
-          let msg = `${msgPrefix} unknown state:${audioContext.state}`;
+          let msg = `${msgPfx} unknown state:${audioContext.state}`;
           logger.warn(msg);
           console.trace(msg);
           throw new DOMException(msg, INVALID_STATE_ERROR);
@@ -164,7 +176,7 @@ export default class IdbAudio {
       return null;
     }
 
-    return this.#arrayBuffer;
+    return this.arrayBuffer;
   }
 
   static get URL_NO_AUDIO() {

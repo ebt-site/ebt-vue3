@@ -247,11 +247,11 @@ export const useAudioStore = defineStore('audio', {
       return audioSource;
     },
     async playAudioSource({audioContext, audioSource}) {
-      let msgPrefix = 'IdbAudio.playAudioSource';
+      let msg = 'IdbAudio.playAudioSource() ';
       const volatile = useVolatileStore();
       return new Promise((resolve, reject) => { try {
         audioSource.onended = evt => {
-          logger.debug(`${msgPrefix} => OK`);
+          logger.debug(`${msg} => OK`);
           resolve();
         };
         audioSource.start();
@@ -261,7 +261,7 @@ export const useAudioStore = defineStore('audio', {
       }}); // Promise
     },
     async playArrayBuffer({arrayBuffer, audioContext, }) {
-      const msgPrefix = `audio.playArrayBuffer(${arrayBuffer.byteLength}B)`;
+      let msg = `audio.playArrayBuffer(${arrayBuffer.byteLength}B)`;
       const volatile = useVolatileStore();
       try {
         let audioBuffer = await this.createAudioBuffer({audioContext, arrayBuffer});
@@ -273,16 +273,17 @@ export const useAudioStore = defineStore('audio', {
       }
     },
     async playUrlAsync(url, opts={}) {
+      let msg = `audio.playUrlAsync() `;
       let volatile = useVolatileStore();
       try {
         if (url == null) {
-          logger.debug("volatile.playUrlAsync(null)");
+          logger.debug(`${msg} url:null`);
           return;
         }
         let { audioContext, headers=HEADERS_MPEG } = opts;
         let resClick = await fetch(url, { headers });
         if (!resClick.ok) {
-          let msg = `audio.playUrlAsync() ${url} => HTTP${resClick.status}`;
+          msg += ` ${url} => HTTP${resClick.status}`;
           let e = new Error(msg);
           e.url = url;
           volatile.alert(e, 'ebt.audioError');
@@ -296,8 +297,7 @@ export const useAudioStore = defineStore('audio', {
         let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
         let length = urlAudio.length;
         let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        logger.debug(`audio.playUrlAsync(${url})`, 
-          {sampleRate, length, numberOfChannels});
+        logger.debug(msg + url, {sampleRate, length, numberOfChannels});
         let audioBuffer = audioContext.createBuffer(
           numberOfChannels, length, sampleRate);
         for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {

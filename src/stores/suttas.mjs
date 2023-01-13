@@ -88,29 +88,34 @@ export const useSuttasStore = defineStore('suttas', {
       return vueRef;
     },
     async getIdbSuttaRef(suttaRef, opts={refresh:true}) { // get/post API
-      let idbKey = IdbSutta.idbKey(suttaRef);
-      let vueRef = VUEREFS.get(idbKey);
-      let idbSutta = vueRef?.value;
+      try {
+        let idbKey = IdbSutta.idbKey(suttaRef);
+        let vueRef = VUEREFS.get(idbKey);
+        let idbSutta = vueRef?.value;
 
-      if (idbSutta == null) {
-        if (!opts.refresh) {
-          return null;
-        }
-        let promise = this.loadIdbSutta(suttaRef);
-        vueRef = ref(promise);
-        VUEREFS.set(idbKey, vueRef);
+        if (idbSutta == null) {
+          if (!opts.refresh) {
+            return null;
+          }
+          let promise = this.loadIdbSutta(suttaRef);
+          vueRef = ref(promise);
+          VUEREFS.set(idbKey, vueRef);
 
-        idbSutta = await this.loadIdbSutta(suttaRef);
-        vueRef.value = idbSutta;
-        VUEREFS.set(idbKey, vueRef);
-      } else {
-        if (vueRef.value instanceof Promise) {
-          vueRef.value = await vueRef.value;
+          idbSutta = await this.loadIdbSutta(suttaRef);
+          vueRef.value = idbSutta;
+          VUEREFS.set(idbKey, vueRef);
+        } else {
+          if (vueRef.value instanceof Promise) {
+            vueRef.value = await vueRef.value;
+          }
+          //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
         }
-        //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
+
+        return vueRef;
+      } catch(e) {
+        logger.warn(e);
+        throw e;
       }
-
-      return vueRef;
     },
   },
   getters: {

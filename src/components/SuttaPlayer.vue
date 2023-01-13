@@ -6,7 +6,8 @@
     bg-color="audiobar"
     class="audio-nav"
   >
-    {{audio.audioFocus}}
+    audioContext:{{audioContext?.state}}
+    idbAudio:{{idbAudio?.paused}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -87,6 +88,7 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         audioContext: ref(undefined),
+        idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
         audioPlaying: ref(AUDIO_INACTIVE),
@@ -140,21 +142,45 @@
         }
         this.stopAudio(true);
       },
-      clickPlayPause() {
-        let { audio, audioScid, audioPlaying, audioContext, } = this;
-
-        if (audioContext == null) {
-          this.audioContext = audioContext = audio.getAudioContext();
-        }
-
+      createIdbAudio() {
+        // NOTE: Caller must UI callback (iOS restriction)
+        let { audio } = this;
+        let audioContext =  this.audioContext = audio.getAudioContext();
+        let idbAudio = this.idbAudio = new IdbAudio({audioContext});
+        return idbAudio;
+      },
+      playPause() {
+        let { audio, audioContext } = this;
         audio.playClick();
 
-        if (audioPlaying) {
-          logger.info("SuttaPlayer.clickPlayPause() PAUSE", audioScid);
-          this.stopAudio(true);
-        } else {
-          this.playOne();
-        } 
+        let toggled = true;
+        switch(audioContext?.state) {
+          case 'running':
+            audioContext.suspend();
+            break;
+          case 'suspended':
+            audioContext.resume();
+            break;
+          default:
+            audioContext && audioContext.close();
+            this.audioContext = audioContext = audio.getAudioContext();
+            toggled = false;
+            break;
+        }
+        return toggled;
+      },
+      clickPlayPause() {
+        let msg = 'SuttaPlayer.clickPlayPause() ';
+        let { audio } = this;
+
+        if (this.playPause()) {
+          logger.info(msg + 'toggled');
+          return;
+        }
+
+        logger.info(msg + 'toggled');
+        this.idbAudio = this.createIdbAudio();
+        this.playOne();
       },
       async playToEnd() {
         let { audio, audioPlaying, audioScid } = this;
@@ -311,30 +337,36 @@
         }
       },
       async playSegment(audioPlaying=AUDIO_PLAY1) {
+        const msgPfx = `SuttaPlayer.playSegment()`;
         let { 
           audio,
           audioContext,
           routeCard, 
           audioScid,
           settings, 
+          idbAudio,
         } = this;
         await this.bindSegmentAudio();
         const IDB_AUDIO = 1;
 
-        logger.debug(`SuttaPlayer.playSegment() ${audioScid}`);
+        logger.info(`${msgPfx} ${audioScid}`);
 
         this.segmentPlaying = true;
         if (this.segmentPlaying && settings.speakPali) {
           let src = await audio.langAudioUrl(audioScid, 'pli');
-          let idbAudio = new IdbAudio({audioContext, src});
+          idbAudio.src = src;
+          logger.info(`${msgPfx} pliUrl:`, src);
           await idbAudio.play();
         }
 
         if (this.segmentPlaying && settings.speakTranslation) {
           let src = await audio.langAudioUrl(audioScid, settings.langTrans);
-          let idbAudio = new IdbAudio({audioContext, src});
+          idbAudio.src = src;
+          logger.info(`${msgPfx} transUrl:`, src);
           await idbAudio.play();
         }
+
+        logger.info(`${msgPfx} segmentPlaying`, this.segmentPlaying);
 
         if (!this.segmentPlaying) {
           return false; // interrupted

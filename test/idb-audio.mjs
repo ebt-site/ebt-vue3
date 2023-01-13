@@ -143,6 +143,8 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.duration).equal(0);
     should(audio.paused).equal(false);
     should(audio.preload).equal(false);
+    should(audio.audioBuffer).equal(null);
+    should(audio.audioSource).equal(null);
     
     // mock verification
     let mockAudioContext = audio.audioContext;
@@ -190,13 +192,14 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     await new Promise(r=>setTimeout(r,1000));
     should(audio.duration).equal(MOCK_DURATION);
   });
-  it("TESTTESTplay()", async ()=>{
+  it("play()", async ()=>{
     let audio = new IdbAudio();
 
     // play resolves when playing has started
     should(audio.currentTime).equal(0);
     let promise = audio.play();
     await new Promise(resolve=>setTimeout(resolve,5));
+    should(audio.audioBuffer).not.equal(null);
     should(audio.currentTime).above(0);
     should(promise).instanceOf(Promise);
     should(audio.paused).equal(false);
@@ -204,6 +207,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let playTime = audio.currentTime;
     should(audio.paused).equal(false);
     should(playTime).above(-1).below(100);
+    should(audio.audioBuffer).equal(null);
 
     // while playing, currentTime should increase
     await new Promise(resolve=>setTimeout(resolve,5));

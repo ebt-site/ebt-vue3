@@ -70,6 +70,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
   });
   it("langAudioUrl() pli", async()=>{
+    this.timeout(5*1000);
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -99,6 +100,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
   });
   it("langAudioUrl() en", async()=>{
+    this.timeout(5*1000);
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -117,6 +119,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
   });
   it("langAudioUrl() de", async()=>{
+    this.timeout(5*1000);
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
