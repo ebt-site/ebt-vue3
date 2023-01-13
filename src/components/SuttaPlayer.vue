@@ -7,7 +7,7 @@
     class="audio-nav"
   >
     audioContext:{{audioContext?.state}}
-    idbAudio:{{idbAudio?.paused}}
+    idbAudio:{{idbAudio?.paused}} {{!!idbAudio?.audioSource}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -150,24 +150,21 @@
         return idbAudio;
       },
       playPause() {
-        let { audio, audioContext } = this;
+        let { audio, audioContext, idbAudio } = this;
         audio.playClick();
 
-        let toggled = true;
-        switch(audioContext?.state) {
-          case 'running':
+        if (idbAudio?.audioSource) {
+          if (audioContext.state === 'running') {
             audioContext.suspend();
-            break;
-          case 'suspended':
+          } else {
             audioContext.resume();
-            break;
-          default:
-            audioContext && audioContext.close();
-            this.audioContext = audioContext = audio.getAudioContext();
-            toggled = false;
-            break;
+          }
+          return true;
         }
-        return toggled;
+
+        audioContext && audioContext.close();
+        this.audioContext = audioContext = audio.getAudioContext();
+        return false;
       },
       clickPlayPause() {
         let msg = 'SuttaPlayer.clickPlayPause() ';
