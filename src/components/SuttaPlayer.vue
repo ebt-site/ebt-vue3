@@ -91,8 +91,6 @@
         idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
-        audioPlaying: ref(AUDIO_INACTIVE),
-        audioDuration: ref(0),
         audioElapsed: ref(0),
         segmentPlaying: ref(false),
         AUDIO_INACTIVE,
@@ -128,7 +126,7 @@
         }
       },
       async playOne() {
-        let { audio, audioPlaying, audioScid } = this;
+        let { audio, audioScid } = this;
 
         logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
         let completed = await this.playSegment(AUDIO_PLAY1);
@@ -180,7 +178,7 @@
         this.playOne();
       },
       async playToEnd() {
-        let { audio, audioPlaying, audioScid } = this;
+        let { audio, audioScid } = this;
 
         logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
@@ -333,7 +331,7 @@
           volatile.waitEnd();
         }
       },
-      async playSegment(audioPlaying=AUDIO_PLAY1) {
+      async playSegment() {
         const msgPfx = `SuttaPlayer.playSegment()`;
         let { 
           audio,
@@ -374,6 +372,12 @@
       },
     },
     computed: {
+      audioDuration(ctx) {
+        return ctx.idbAudio?.audioBuffer?.duration || 0;
+      },
+      audioPlaying(ctx) {
+        return !!ctx.idbAudio?.audioSource;
+      },
       audioScid(ctx) {
         return ctx.audio.audioScid;
       },

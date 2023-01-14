@@ -45,6 +45,10 @@ export default class IdbAudio {
     if (this.currentSrc !== value) {
       this.currentSrc = value;
       this.audioBuffer = null;
+      if (this.audioSource) {
+        this.audioSource.stop();
+        this.audioSource = null;
+      }
       if (preload) {
         let promise = this.fetchAudioBuffer();
         promise.then(()=>{
