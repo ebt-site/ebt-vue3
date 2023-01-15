@@ -6,8 +6,6 @@
     bg-color="audiobar"
     class="audio-nav"
   >
-    audioContext:{{audioContext?.state}}
-    idbAudio:{{idbAudio?.paused}} {{!!idbAudio?.audioSource}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -91,7 +89,7 @@
         idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
-        audioElapsed: ref(0),
+        audioElapsed: ref(undefined),
         segmentPlaying: ref(false),
         AUDIO_INACTIVE,
         AUDIO_PLAY1,
@@ -133,9 +131,9 @@
         if (!completed) {
           // interrupted
         } else if (await this.next()) {
-          logger.info("SuttaPlayer.playOne() OK");
+          logger.debug("SuttaPlayer.playOne() OK");
         } else {
-          logger.info("SuttaPlayer.playOne() END");
+          logger.debug("SuttaPlayer.playOne() END");
           audio.playBell();
         }
         this.stopAudio(true);
@@ -152,10 +150,10 @@
         audio.playClick();
 
         if (idbAudio?.audioSource) {
-          if (audioContext.state === 'running') {
-            audioContext.suspend();
+          if (idbAudio.paused) {
+            idbAudio.play();
           } else {
-            audioContext.resume();
+            idbAudio.pause();
           }
           return true;
         }
@@ -169,39 +167,41 @@
         let { audio } = this;
 
         if (this.playPause()) {
-          logger.info(msg + 'toggled');
+          logger.debug(msg + 'toggled');
           return;
         }
 
-        logger.info(msg + 'toggled');
+        logger.debug(msg + 'playing');
         this.idbAudio = this.createIdbAudio();
         this.playOne();
       },
       async playToEnd() {
         let { audio, audioScid } = this;
 
-        logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
+        logger.debug("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
         audio.playClick();
         do {
           completed = await this.playSegment(AUDIO_PLAYALL);
         } while(completed && (await this.next()));
         if (completed) {
-          logger.info("SuttaPlayer.playToEnd() END");
+          logger.debug("SuttaPlayer.playToEnd() END");
           await audio.playBell();
         }
         this.stopAudio(true);
       },
       clickPlay() {
-        let that = this;
-        let { audioPlaying, audioScid } = this;
+        let msg = 'SuttaPlayer.clickPlay() ';
+        let { audio } = this;
 
-        if (audioPlaying) {
-          logger.info("SuttaPlayer.clickPlay() PAUSE", {audioScid});
-          this.stopAudio(true);
-        } else {
-          nextTick(()=>that.playToEnd());
+        if (this.playPause()) {
+          logger.debug(msg + 'toggled');
+          return;
         }
+
+        logger.debug(msg + 'playing');
+        this.idbAudio = this.createIdbAudio();
+        this.playToEnd();
       },
       async back() {
         let { audioPlaying } = this;
@@ -225,7 +225,7 @@
             let { iSegment } = incRes;
             incremented = true;
           } else {
-            logger.info("SuttaPlayer.next() END");
+            logger.debug("SuttaPlayer.next() END");
           }
         }
         await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
@@ -262,8 +262,6 @@
       stopAudio(stopSegment) {
         logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
         let stopped = false;
-        this.audioPlaying = AUDIO_INACTIVE;
-        this.audioElapsed = 0;
         stopSegment && (this.segmentPlaying = false);
         if (this.audioResolve) {
           this.audioResolve();
@@ -341,27 +339,39 @@
           settings, 
           idbAudio,
         } = this;
+        let that = this;
         await this.bindSegmentAudio();
         const IDB_AUDIO = 1;
 
-        logger.info(`${msgPfx} ${audioScid}`);
+        logger.debug(`${msgPfx} ${audioScid}`);
 
-        this.segmentPlaying = true;
-        if (this.segmentPlaying && settings.speakPali) {
-          let src = await audio.langAudioUrl(audioScid, 'pli');
-          idbAudio.src = src;
-          logger.info(`${msgPfx} pliUrl:`, src);
-          await idbAudio.play();
+        try {
+          this.audioElapsed = -2;
+          var interval = setInterval( ()=>{
+            let currentTime = this.idbAudio?.currentTime || -1;
+            this.audioElapsed = currentTime/1000;
+          }, 100);
+          this.segmentPlaying = true;
+
+          if (this.segmentPlaying && settings.speakPali) {
+            let src = await audio.langAudioUrl(audioScid, 'pli');
+            idbAudio.src = src;
+            logger.debug(`${msgPfx} pliUrl:`, src);
+            await idbAudio.play();
+          }
+
+          if (this.segmentPlaying && settings.speakTranslation) {
+            let src = await audio.langAudioUrl(audioScid, settings.langTrans);
+            idbAudio.src = src;
+            logger.debug(`${msgPfx} transUrl:`, src);
+            await idbAudio.play();
+          }
+        } finally {
+          clearInterval(interval);
+          this.audioElapsed = -1;
         }
 
-        if (this.segmentPlaying && settings.speakTranslation) {
-          let src = await audio.langAudioUrl(audioScid, settings.langTrans);
-          idbAudio.src = src;
-          logger.info(`${msgPfx} transUrl:`, src);
-          await idbAudio.play();
-        }
-
-        logger.info(`${msgPfx} segmentPlaying`, this.segmentPlaying);
+        logger.debug(`${msgPfx} segmentPlaying`, this.segmentPlaying);
 
         if (!this.segmentPlaying) {
           return false; // interrupted

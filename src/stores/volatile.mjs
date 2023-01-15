@@ -76,7 +76,7 @@ export const useVolatileStore = defineStore('volatile', {
       let { sutta_uid, lang, author_uid:author } = mld || {};
       let suttaRef = SuttaRef.create({sutta_uid, lang, author});
       let key = suttaRef.toString();
-      logger.info("volatile.addMlDoc", {key, mld});
+      logger.debug("volatile.addMlDoc", {key, mld});
       suttas[key] = mld;
     },
     mlDocFromSuttaRef(suttaRefArg) {
@@ -88,7 +88,7 @@ export const useVolatileStore = defineStore('volatile', {
       let res;
       try {
         this.waitBegin();
-        logger.info('volatile.fetch()', url);
+        logger.debug('volatile.fetch()', url);
         let fetchOpts = Object.assign({
     //      mode: 'no-cors',
         }, options);

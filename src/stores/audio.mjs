@@ -108,7 +108,7 @@ export const useAudioStore = defineStore('audio', {
         let audioUrl = this.segmentAudioUrl(idOrRef, settings);
         let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
         segAudio = await resAudio.json();
-        logger.info("fetchSegmentAudio()", audioUrl);
+        logger.debug("fetchSegmentAudio()", audioUrl);
       } catch(e) {
         volatile.alert(e);
         throw e;
@@ -166,7 +166,7 @@ export const useAudioStore = defineStore('audio', {
         let res = await fetch(url, { headers });
         logger.debug(`audio.fetchArrayBuffer(${url}) => HTTP${res.status}:`);
         let abuf = await res.arrayBuffer();
-        logger.info(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
+        logger.debug(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
       } catch(e) {
         let msg = `audio.fetchArrayBuffer() ${url} => ${e.message}`;

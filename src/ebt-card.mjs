@@ -275,8 +275,9 @@ export default class EbtCard {
     return match;
   }
 
-  incrementLocation({segments, delta=1}) {
-    let { location, context } = this;
+  nextLocation({segments, delta=1}) {
+    let { context } = this;
+    let [...location] = this.location;
 
     if (context === CONTEXT_SUTTA) {
       let [ scid, lang, author ] = location;
@@ -295,6 +296,21 @@ export default class EbtCard {
         iSegment: iSegNext,
       };
     }
+  }
+
+  incrementLocation({segments, delta=1}) {
+    let { context } = this;
+    let result = this.nextLocation({segments, delta});
+
+    if (result) {
+      let { location:nextLocation, iSegment } = result;
+
+      if (this.location.join('/') !== nextLocation.join('/')) {
+        this.location = nextLocation;
+      }
+    }
+
+    return result;
   }
 
 }
