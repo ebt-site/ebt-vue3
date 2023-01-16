@@ -217,6 +217,24 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(abuf.byteLength).above(138490).below(139510);
     should(abuf).instanceOf(ArrayBuffer);
   });
+  it("TESTTESTclear()", async()=>{
+    let audio = new IdbAudio();
+    await new Promise(resolve=>setTimeout(resolve,5));
+
+    // false if nothing cleared
+    audio.clear();
+    should(audio.audioBuffer).equal(null);
+    should(audio.audioSource).equal(null);
+
+    // true if audio playing
+    let promise = audio.play();
+    should(audio.audioBuffer).not.equal(null);
+    await new Promise(resolve=>setTimeout(resolve,5));
+    audio.clear();
+    should(audio.audioBuffer).equal(null);
+    should(audio.audioSource).equal(null);
+    should(audio.currentTime).equal(0);
+  });
   it("currentTime", async ()=>{
     let audio = new IdbAudio();
 

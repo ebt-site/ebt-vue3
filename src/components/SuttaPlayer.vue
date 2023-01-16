@@ -270,6 +270,7 @@
         return stopped;
       },
       async bindSegmentAudio() {
+        const msg = 'SuttaPlayer.bindSegmentAudio() ';
         let { $t, volatile, settings, routeCard } = this;
         let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
         let [ scid, lang, author ] = routeCard.location;
@@ -287,6 +288,7 @@
           vnameTrans,
         ].join('/'); 
 
+        let result;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
 
@@ -324,13 +326,17 @@
               this.transAudioUrl = URL_NOAUDIO;
             }
           }
-          logger.debug("SuttaPlay.bindSegmentAudio()");
+          logger.info(msg + segment.scid);
+          result = playJson;
         } finally {
           volatile.waitEnd();
         }
+        return result;
       },
       async playSegment() {
-        const msgPfx = `SuttaPlayer.playSegment()`;
+        const msg = `SuttaPlayer.playSegment() `;
+        let playJson = await this.bindSegmentAudio();
+        let { segment:seg, langTrans } = playJson;
         let { 
           audio,
           audioContext,
@@ -340,38 +346,50 @@
           idbAudio,
         } = this;
         let that = this;
-        await this.bindSegmentAudio();
         const IDB_AUDIO = 1;
 
-        logger.debug(`${msgPfx} ${audioScid}`);
+        logger.debug(`${msg} ${audioScid}`);
 
+        let interval;
         try {
           this.audioElapsed = -2;
-          var interval = setInterval( ()=>{
+          interval = setInterval( ()=>{
             let currentTime = this.idbAudio?.currentTime || -1;
             this.audioElapsed = currentTime/1000;
+            if (this.audioScid !== audioScid) {
+              clearInterval(interval);
+              logger.info(msg + `interval${interval} interrupt`, 
+                `${audioScid}=>${this.audioScid}`);
+              this.segmentPlaying = false;
+              idbAudio.clear();
+            }
           }, 100);
           this.segmentPlaying = true;
 
-          if (this.segmentPlaying && settings.speakPali) {
+          if (this.segmentPlaying && settings.speakPali && seg.pli) {
             let src = await audio.langAudioUrl(audioScid, 'pli');
             idbAudio.src = src;
-            logger.debug(`${msgPfx} pliUrl:`, src);
+            logger.debug(`${msg} pliUrl:`, src);
             await idbAudio.play();
           }
 
-          if (this.segmentPlaying && settings.speakTranslation) {
+          if (this.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
             let src = await audio.langAudioUrl(audioScid, settings.langTrans);
             idbAudio.src = src;
-            logger.debug(`${msgPfx} transUrl:`, src);
+            logger.debug(`${msg} transUrl:`, src);
             await idbAudio.play();
           }
-        } finally {
           clearInterval(interval);
+          interval = undefined;
+        } catch(e) {
+          clearInterval(interval);
+          interval = undefined;
+          logger.warn(msg, e);
+        } finally {
           this.audioElapsed = -1;
         }
 
-        logger.debug(`${msgPfx} segmentPlaying`, this.segmentPlaying);
+        logger.debug(`${msg} segmentPlaying`, this.segmentPlaying);
 
         if (!this.segmentPlaying) {
           return false; // interrupted
