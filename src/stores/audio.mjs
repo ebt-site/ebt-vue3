@@ -48,7 +48,6 @@ export const useAudioStore = defineStore('audio', {
       let { ips } = settings;
       let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
       let url = ipsChoice?.url?.substring(1);
-      console.log("DBG0111 bellUrl", {ipsChoice, ips, url});
       return this.playUrl(url, {audioContext});
     },
     async setAudioSutta(audioSutta, audioIndex=0) {

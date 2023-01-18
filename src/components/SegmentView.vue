@@ -62,7 +62,9 @@
     },
     methods: {
       clickSeg(evt) {
-        let { settings, segment:seg, idbSuttaRef, routeCard, currentScid, card } = this;
+        let { 
+          audio, settings, segment:seg, idbSuttaRef, routeCard, currentScid, card,
+        } = this;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
         let { scid } = seg;
@@ -75,6 +77,7 @@
             settings.setRoute(hash);
             return;
           } 
+          audio.audioFocused = true;
         } else {
           let [ scidHash, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
@@ -105,7 +108,7 @@
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
         let currentClass = seg.scid === currentScid ? "seg-current" : '';
-        let focusClass = seg.scid === currentScid && audioFocused ? "seg-focus" : '';
+        let focusClass = seg.scid === audio.audioScid && audioFocused ? "seg-focus" : '';
         let routeClass = card === routeCard ? "seg-route" : "";
         return `${matchedClass} ${idClass} ${currentClass} ${routeClass} ${focusClass}`;
       },

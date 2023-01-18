@@ -6,6 +6,7 @@
     bg-color="audiobar"
     class="audio-nav"
   >
+    {{audioPlaying}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"
@@ -17,11 +18,11 @@
         <v-btn icon @click="clickBack" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
-        <v-btn id="audio-focus" icon density="compact"
+        <v-btn id="audio-play-pause" icon density="compact"
           @keydown="audioKey"
           @click="clickPlayPause" 
           @blur="onAudioBlur"
-          @focus="onAudioFocus"
+          @focus="onAudioFocus('audio-play-pause')"
         >
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
@@ -34,11 +35,12 @@
             {{ audioDuration.toFixed(1) }}
           </div>
         </div>
-        <v-btn icon density="compact"
+        <v-btn id="audio-play-to-end"
+          icon density="compact"
           @click="clickPlay" 
           @keydown="audioKey"
           @blur="onAudioBlur"
-          @focus="onAudioFocus"
+          @focus="onAudioFocus('audio-play-to-end')"
         >
           <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
         </v-btn>
@@ -86,6 +88,7 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         audioContext: ref(undefined),
+        audioFocus: 'audio-play-pause',
         idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
@@ -104,15 +107,16 @@
         let { audio } = this;
         audio.audioFocused = false;
       },
-      onAudioFocus() {
+      onAudioFocus(audioFocus) {
         let { audio, } = this;
+        this.audioFocus = audioFocus;
         audio.audioFocused = true;
       },
       setAudioFocus() {
-        let { audioScid } = this;
-        let audioFocus = document.getElementById('audio-focus');
-        audioFocus?.focus();
-        logger.debug("SuttaPlayer.setAudioFocus() audioFocus", audioFocus);
+        let { audioFocus } = this;
+        let elt = document.getElementById(audioFocus);
+        elt?.focus();
+        logger.debug("SuttaPlayer.setAudioFocus() audioFocus", elt);
       },
       audioKey(evt) {
         if (evt.code === "ArrowDown") {
@@ -204,10 +208,7 @@
         this.playToEnd();
       },
       async back() {
-        let { audioPlaying } = this;
-        if (audioPlaying) {
-          this.incrementSegment(-1);
-        }
+        this.incrementSegment(-1);
       },
       clickBack() {
         let { audio } = this;
@@ -217,9 +218,9 @@
       async next() {
         let { audioPlaying, } = this;
         let incremented = false;
-        if (audioPlaying) {
-          this.stopAudio(true);
-        } else {
+        //if (audioPlaying) {
+          //this.stopAudio(true);
+        //} else {
           let incRes = this.incrementSegment(1);
           if (incRes) {
             let { iSegment } = incRes;
@@ -227,7 +228,7 @@
           } else {
             logger.debug("SuttaPlayer.next() END");
           }
-        }
+        //}
         await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
 
         return incremented;
@@ -326,7 +327,7 @@
               this.transAudioUrl = URL_NOAUDIO;
             }
           }
-          logger.info(msg + segment.scid);
+          logger.debug(msg + segment.scid);
           result = playJson;
         } finally {
           volatile.waitEnd();
@@ -358,7 +359,7 @@
             this.audioElapsed = currentTime/1000;
             if (this.audioScid !== audioScid) {
               clearInterval(interval);
-              logger.info(msg + `interval${interval} interrupt`, 
+              logger.info(msg + `interrupt`, 
                 `${audioScid}=>${this.audioScid}`);
               this.segmentPlaying = false;
               idbAudio.clear();
