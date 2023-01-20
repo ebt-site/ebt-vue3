@@ -272,29 +272,17 @@
       },
       async bindSegmentAudio() {
         const msg = 'SuttaPlayer.bindSegmentAudio() ';
-        let { $t, volatile, settings, routeCard } = this;
+        let { $t, volatile, settings, routeCard, audio } = this;
         let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
         let [ scid, lang, author ] = routeCard.location;
         let suttaRef = SuttaRef.create(scid, langTrans);
         let { sutta_uid, segnum } = suttaRef;
-
-        let url = [ 
-          serverUrl, 
-          'play', 
-          'segment', 
-          sutta_uid,
-          lang,
-          author,
-          encodeURIComponent(scid), 
-          vnameTrans,
-        ].join('/'); 
-
         let result;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
 
-          let playJson = await volatile.fetchJson(url);
-          let { segment } = playJson;
+          let segAudio = await audio.getSegmentAudio(suttaRef);
+          let { segment } = segAudio;
 
           if (settings.speakPali) {
             if (segment.pli) {
@@ -328,7 +316,7 @@
             }
           }
           logger.debug(msg + segment.scid);
-          result = playJson;
+          result = segAudio;
         } finally {
           volatile.waitEnd();
         }
@@ -336,8 +324,8 @@
       },
       async playSegment() {
         const msg = `SuttaPlayer.playSegment() `;
-        let playJson = await this.bindSegmentAudio();
-        let { segment:seg, langTrans } = playJson;
+        let segAudio = await this.bindSegmentAudio();
+        let { segment:seg, langTrans } = segAudio;
         let { 
           audio,
           audioContext,
@@ -369,14 +357,15 @@
 
           let idOrRef = audioScid;
           if (this.segmentPlaying && settings.speakPali && seg.pli) {
-            let src = await audio.langAudioUrl({idOrRef, lang:'pli'});
+            let src = await audio.langAudioUrl({idOrRef, lang:'pli', segAudio});
             idbAudio.src = src;
             logger.debug(`${msg} pliUrl:`, src);
             await idbAudio.play();
           }
 
           if (this.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
-            let src = await audio.langAudioUrl({idOrRef, lang:settings.langTrans});
+            let lang = settings.langTrans;
+            let src = await audio.langAudioUrl({idOrRef, lang, segAudio});
             idbAudio.src = src;
             logger.debug(`${msg} transUrl:`, src);
             await idbAudio.play();

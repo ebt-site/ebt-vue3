@@ -25,11 +25,17 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
 
 
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
+  var nFetches = 0;
   this.timeout(5*1000);
+  function testFetch(...args) {
+    nFetches++;
+    console.log(`fetch#${nFetches} ${args[0]}`);
+    return fetch(...args);
+  };
   beforeEach(() => {
     window.localStorage = global.localStorage
     setActivePinia(createPinia());
-    global.fetch = global.fetch || fetch;
+    global.fetch = testFetch;
   });
   it("default state", ()=>{
     let audio = useAudioStore();
@@ -68,6 +74,42 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       vnameTrans,
       vnameRoot,
     ].join('/'));
+  });
+  it("TESTTESTlangAudioUrl() segAudio", async()=>{
+    let audio = useAudioStore();
+    let sutta_uid = "thig1.1";
+    let scid = `${sutta_uid}:0.1`;
+    let vnameRoot = "Aditi";
+    let langRoot = 'pli';
+    let translator = 'ms';
+    let guid = "56e190c8cde4e769f5458eab81949bc0";
+    let idOrRef = scid;
+    let lang = 'pli';
+    let segAudio = await audio.getSegmentAudio(idOrRef);
+    let nFetchesBefore = nFetches;
+    should(await audio.langAudioUrl({idOrRef, lang, segAudio})).equal([
+      SERVER_ROOT,
+      'audio',
+      sutta_uid,
+      langRoot,
+      translator,
+      vnameRoot,
+      guid,
+    ].join('/'));
+    should(nFetches).equal(nFetchesBefore);
+
+    // Pali audio for English translation
+    idOrRef = `${scid}/en/sujato`;
+    should(await audio.langAudioUrl({idOrRef, lang, segAudio})).equal([
+      SERVER_ROOT,
+      'audio',
+      sutta_uid,
+      langRoot,
+      translator,
+      vnameRoot,
+      guid,
+    ].join('/'));
+    should(nFetches).equal(nFetchesBefore);
   });
   it("langAudioUrl() pli", async()=>{
     let audio = useAudioStore();
@@ -120,7 +162,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTlangAudioUrl() de", async()=>{
+  it("langAudioUrl() de", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;

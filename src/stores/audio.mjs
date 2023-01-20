@@ -175,8 +175,9 @@ export const useAudioStore = defineStore('audio', {
         throw eNew;
       }
     },
-    async langAudioUrl({idOrRef, lang, settings=useSettingsStore()}) {
+    async langAudioUrl(opts={}) {
       const msg = 'audio.langAudioUrl() ';
+      let {idOrRef, lang, settings=useSettingsStore(), segAudio} = opts;
       let { serverUrl, langTrans } = settings;
       if (typeof lang !== 'string') {
         if (lang) {
@@ -189,7 +190,7 @@ export const useAudioStore = defineStore('audio', {
       let suttaRef = SuttaRef.create(segRef, langTrans);
       let { author } = suttaRef;
       author = author || Authors.langAuthor(lang);
-      let segAudio = await this.getSegmentAudio(segRef, settings);
+      segAudio = segAudio || await this.getSegmentAudio(segRef, settings);
       let { sutta_uid, translator, segment, vnameRoot, vnameTrans } = segAudio;
       let { audio } = segment;
       let guid = segment.audio[lang];
