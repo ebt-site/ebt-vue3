@@ -264,6 +264,7 @@ export default {
     "showGdpr": "Show GDPR notice",
     "showGithub": "Show Github source",
     "showLineByLine": "පේළියෙන් පේළිය පෙන්වන්න",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "පාලි පෙළ පමණක් පෙන්වන්න",
     "showOnlyTransText": "පරිවර්තන පෙළ පමණක් පෙන්වන්න",
     "showPaliText": "පාලි පෙළ පෙන්වන්න",

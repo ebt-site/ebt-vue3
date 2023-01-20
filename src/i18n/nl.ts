@@ -266,6 +266,7 @@ export default {
     "settingsTitle": "Instellingen",
     "showGithub": "Show Github source",
     "showLineByLine": "Show line by line",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "Toon uitsluitend tekst in Pali",
     "showOnlyTransText": "Toon alleen vertaalde tekst",
     "showPaliText": "Toon tekst in Pali",

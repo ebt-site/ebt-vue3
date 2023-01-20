@@ -107,7 +107,7 @@ export const useAudioStore = defineStore('audio', {
         let audioUrl = this.segmentAudioUrl(idOrRef, settings);
         let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
         segAudio = await resAudio.json();
-        logger.debug("fetchSegmentAudio()", audioUrl);
+        logger.info("fetchSegmentAudio()", audioUrl);
       } catch(e) {
         volatile.alert(e);
         throw e;
@@ -117,10 +117,11 @@ export const useAudioStore = defineStore('audio', {
       return segAudio;
     },
     async getSegmentAudio(idOrRef, settings=useSettingsStore()) {
+      const msg = 'audio.getSegmentAudio() ';
       let segAudio = await this.fetchSegmentAudio(idOrRef, settings);
       let segAudioKey = this.segAudioKey(idOrRef, settings);
       await Idb.set(segAudioKey, segAudio, AUDIO_STORE());
-      logger.debug("audio.fetchSegmentAudio()", segAudioKey);
+      logger.debug(msg, segAudioKey);
       return segAudio;
     },
     segmentAudioUrl(idOrRef, settings=useSettingsStore()) {
@@ -159,18 +160,19 @@ export const useAudioStore = defineStore('audio', {
       return promise;
     },
     async fetchArrayBuffer(url, opts={}) {
+      const msg = 'audio.fetchArrayBuffer() ${url}';
       const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
       try {
         let res = await fetch(url, { headers });
-        logger.debug(`audio.fetchArrayBuffer(${url}) => HTTP${res.status}:`);
+        logger.info(msg, `=> HTTP${res.status}:`);
         let abuf = await res.arrayBuffer();
         logger.debug(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
       } catch(e) {
-        let msg = `audio.fetchArrayBuffer() ${url} => ${e.message}`;
-        volatile.alert(msg, 'ebt.audioError');
-        throw new Error(msg);
+        let eNew = new Error(`${msg} => ${e.message}`);
+        volatile.alert(eNew.message, 'ebt.audioError');
+        throw eNew;
       }
     },
     async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
@@ -272,7 +274,7 @@ export const useAudioStore = defineStore('audio', {
       }
     },
     async playUrlAsync(url, opts={}) {
-      let msg = `audio.playUrlAsync() `;
+      const msg = `audio.playUrlAsync() ${url}`;
       let volatile = useVolatileStore();
       try {
         if (url == null) {
@@ -282,10 +284,9 @@ export const useAudioStore = defineStore('audio', {
         let { audioContext, headers=HEADERS_MPEG } = opts;
         let resClick = await fetch(url, { headers });
         if (!resClick.ok) {
-          msg += ` ${url} => HTTP${resClick.status}`;
-          let e = new Error(msg);
+          let e = new Error(msg + `=> HTTP${resClick.status}`);
           e.url = url;
-          volatile.alert(e, 'ebt.audioError');
+          volatile.alert(e.msg, 'ebt.audioError');
           return;
         }
         let urlBuf = await resClick.arrayBuffer();

@@ -31,6 +31,9 @@
               :items="maxResultsItems"
               :label="$t('ebt.searchResults')"
             />
+            <v-checkbox v-model="settings.showNewContent" density="compact"
+              :label="$t('ebt.showNewContent')">
+            </v-checkbox>
             <v-checkbox v-model="settings.showGdpr" density="compact"
               :label="$t('ebt.showGdpr')">
             </v-checkbox>

@@ -263,6 +263,7 @@ export default {
     "settingsTitle": "Paramètres",
     "showGithub": "Show Github source",
     "showLineByLine": "Show line by line",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "Montrer seulement textes Pali",
     "showOnlyTransText": "Montrer seulement les textes traduits",
     "showPaliText": "Montrer textes Pali",

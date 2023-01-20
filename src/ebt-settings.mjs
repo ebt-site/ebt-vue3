@@ -38,6 +38,7 @@ export default class Settings {
       refLang,
       serverUrl,
       showId,
+      showNewContent,
       showPali,
       speakPali,
       speakTranslation,
@@ -63,6 +64,7 @@ export default class Settings {
     this.refLang = refLang;
     this.serverUrl = serverUrl,
     this.showId = showId;
+    this.showNewContent = showNewContent;
     this.showPali = showPali;
     this.speakPali = speakPali;
     this.speakTranslation = speakTranslation;
@@ -111,6 +113,7 @@ export default class Settings {
       maxResults: 5,
       refLang: NAV_LANG,
       showId: false,
+      showNewContent: true,
       showPali: true,
       speakPali: true,
       speakTranslation: true,

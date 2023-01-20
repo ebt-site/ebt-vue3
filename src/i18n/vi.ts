@@ -265,6 +265,7 @@ export default {
     "settingsTitle": "Thiết lập",
     "showGithub": "Show Github source",
     "showLineByLine": "Show line by line",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "Chỉ hiển thị văn bản Pali",
     "showOnlyTransText": "Chỉ hiển thị bản dịch",
     "showPaliText": "Hiển thị văn bản Pali",

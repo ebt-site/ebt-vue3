@@ -267,6 +267,7 @@ export default {
     "showGdpr": "Show GDPR notice",
     "showGithub": "Show Github source",
     "showLineByLine": "ライン毎に表示",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "パーリ語テキストのみ表示",
     "showOnlyTransText": "訳文のみ表示",
     "showPaliText": "パーリ語テキストの表示",

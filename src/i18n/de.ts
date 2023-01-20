@@ -265,6 +265,7 @@ export default {
     "showGdpr": "DSGVO-Info zeigen",
     "showGithub": "Zum GitHub-Quellcode",
     "showLineByLine": "Zeile für Zeile darstellen",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "Zeige nur Palitext",
     "showOnlyTransText": "Zeige nur Übersetzung",
     "showPaliText": "Zeige Palitext",

@@ -264,6 +264,7 @@ export default {
     "settingsTitle": "सेटिंग्स",
     "showGithub": "Show Github source",
     "showLineByLine": "Show line by line",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "केवल पालि ही दिखाए",
     "showOnlyTransText": "केवल अनुवाद ही दिखाए",
     "showPaliText": "पालि ही दिखाए",

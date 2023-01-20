@@ -267,6 +267,7 @@ export default {
     "settingsTitle": "Stillingar",
     "showGithub": "Show Github source",
     "showLineByLine": "Show line by line",
+    "showNewContent:": "Show newest content",
     "showOnlyPaliText": "Sýna aðeins texta á Pali",
     "showOnlyTransText": "Sýna aðeins þýðingu",
     "showPaliText": "Sýna texta á Pali",

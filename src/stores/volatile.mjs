@@ -85,17 +85,18 @@ export const useVolatileStore = defineStore('volatile', {
       return suttas[key];
     },
     async fetch(url, options={}) {
+      const msg = `volatile.fetch() ${url} `;
       let res;
       try {
         this.waitBegin();
-        logger.debug('volatile.fetch()', url);
+        logger.debug(msg);
         let fetchOpts = Object.assign({
     //      mode: 'no-cors',
         }, options);
         res = await fetch(url, fetchOpts);
-        logger.debug('volatile.fetch() =>', res);
+        logger.debug(msg,  res);
       } catch(e) {
-        logger.error("volatile.fetch() ERROR:", res, e);
+        logger.error(msg + "ERROR:", res, e);
         res = { error: `ERROR: ${url.value} ${e.message}` };
       } finally {
         this.waitEnd();

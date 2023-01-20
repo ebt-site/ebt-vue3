@@ -61,17 +61,19 @@ class MockBufferSource {
   }
 
   connect(dst) {
-    logger.debug(`MockBufferSource.connect()`, dst);
+    const msg = 'MockBufferSource.connect() ';
+    logger.debug(msg + dst);
   }
 
   start() {
+    const msg = 'MockBufferSource.start() ';
     let that = this;
     let promise = new Promise(resolve=>setTimeout(resolve,50));
     promise.then(()=>{
       let evt = new Event('onended');
       that.onended(evt);
     });
-    promise.catch(e=>console.warn("MockBufferSOurce.start() ERROR", e.message));
+    promise.catch(e=>console.warn(msg + "ERROR", e.message));
     return promise;
   }
 }
@@ -130,11 +132,18 @@ class MockAudioContext {
   }
 }
 global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
+var nFetches = 0;
 
 (typeof describe === 'function') && describe("idb-audio.mjs", function () {
+  function testFetch(...args) {
+    nFetches++;
+    console.log(`fetch#${nFetches} ${args[0]}`);
+    return fetch(...args);
+  };
   beforeEach(() => {
     setActivePinia(createPinia());
-    global.fetch = global.fetch || fetch;
+    global.fetch = testFetch;
+    console.log("updated global.fetch <= node-fetch");
   });
   it("default ctor", ()=>{
     let audio = new IdbAudio();
@@ -183,14 +192,17 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let currentTime = audio.currentTime;
     should(audio.currentTime).equal(currentTime);
   });
-  it("duration", async ()=>{
+  it("TESTTESTduration", async ()=>{
     let src = IdbAudio.URL_NO_AUDIO;
     let preload = true;
+    let nFetchesBefore = nFetches;
     let audio = new IdbAudio({src, preload});
+    should(nFetches).equal(nFetchesBefore+1);
     should(audio.preload).equal(true);
     should(audio.duration).equal(0);
     await new Promise(r=>setTimeout(r,1000));
     should(audio.duration).equal(MOCK_DURATION);
+    should(nFetches).equal(nFetchesBefore+1);
   });
   it("play()", async ()=>{
     let audio = new IdbAudio();
