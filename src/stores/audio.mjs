@@ -175,11 +175,12 @@ export const useAudioStore = defineStore('audio', {
         throw eNew;
       }
     },
-    async langAudioUrl(idOrRef, lang, settings=useSettingsStore()) {
+    async langAudioUrl({idOrRef, lang, settings=useSettingsStore()}) {
+      const msg = 'audio.langAudioUrl() ';
       let { serverUrl, langTrans } = settings;
       if (typeof lang !== 'string') {
         if (lang) {
-          throw new Error(`audio.langAudioUrl() lang is required: ${lang}`);
+          throw new Error(msg + `lang is required: ${lang}`);
         }
         lang = settings.langTrans;
       }

@@ -367,15 +367,16 @@
           }, 100);
           this.segmentPlaying = true;
 
+          let idOrRef = audioScid;
           if (this.segmentPlaying && settings.speakPali && seg.pli) {
-            let src = await audio.langAudioUrl(audioScid, 'pli');
+            let src = await audio.langAudioUrl({idOrRef, lang:'pli'});
             idbAudio.src = src;
             logger.debug(`${msg} pliUrl:`, src);
             await idbAudio.play();
           }
 
           if (this.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
-            let src = await audio.langAudioUrl(audioScid, settings.langTrans);
+            let src = await audio.langAudioUrl({idOrRef, lang:settings.langTrans});
             idbAudio.src = src;
             logger.debug(`${msg} transUrl:`, src);
             await idbAudio.play();

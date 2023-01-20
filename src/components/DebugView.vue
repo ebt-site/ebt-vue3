@@ -71,12 +71,13 @@
         logger.info(msg);
       },
       async playScid(audioContext) {
+        const msg = 'DebugView.playScid() ';
         let { audio, volatile, settings, scid, lang, $t } = this;
         let { waiting } = volatile;
         try {
           volatile.waitBegin($t('ebt.loadingAudio'));
-          this.updateMessage(`playScid() langAudioUrl(${scid}, ${lang})`);
-          let url = await audio.langAudioUrl(scid, lang);
+          this.updateMessage(`${msg} langAudioUrl(${scid}, ${lang})`);
+          let url = await audio.langAudioUrl({idOrRef:scid, lang});
           volatile.waitEnd();
           if (url) {
             this.updateMessage(`playScid() fetchArrayBuffer() url:${url}`);
@@ -91,7 +92,7 @@
             this.audioContextCurrentTime = audioContext.currentTime;
             this.updateMessage("playScid() DONE");
           } else {
-            this.updateMessage(`playScid() langAudioUrl(${scid}, ${lang}) => null`);
+            this.updateMessage(`${msg} langAudioUrl(${scid}, ${lang}) => null`);
           }
         } catch(e) {
           volatile.alert(e);
@@ -134,7 +135,7 @@
       async playIdbAudio(audioContext) {
         let { audio, volatile, settings, scid, lang, $t } = this;
         try {
-          let src = await audio.langAudioUrl(scid, lang);
+          let src = await audio.langAudioUrl({idOrRef:scid, lang});
           console.log("DBG0109 playIdbAudio()", src);
           let idbAudio = new IdbAudio({src, audioContext});
           this.idbAudio = idbAudio;

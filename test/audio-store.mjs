@@ -77,7 +77,9 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let langRoot = 'pli';
     let translator = 'ms';
     let guid = "56e190c8cde4e769f5458eab81949bc0";
-    should(await audio.langAudioUrl(scid, 'pli')).equal([
+    let idOrRef = scid;
+    let lang = 'pli';
+    should(await audio.langAudioUrl({idOrRef, lang})).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
@@ -88,7 +90,8 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
 
     // Pali audio for English translation
-    should(await audio.langAudioUrl(`${scid}/en/sujato`, 'pli')).equal([
+    idOrRef = `${scid}/en/sujato`;
+    should(await audio.langAudioUrl({idOrRef, lang})).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
@@ -106,7 +109,8 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let langTrans = 'en';
     let translator = 'sujato';
     let guid = "84df812bf23b0203e0181e83b2a51dc4";
-    should(await audio.langAudioUrl(scid, langTrans)).equal([
+    let idOrRef = scid;
+    should(await audio.langAudioUrl({idOrRef, lang:langTrans})).equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
@@ -127,7 +131,9 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let settings = new EbtSettings({langTrans, vnameTrans, vnameRoot});
     should(settings.vnameTrans).equal(vnameTrans);
     let guid = "293c41636392500b0e85a1e8061f36ab";
-    should(await audio.langAudioUrl(scid, langTrans, settings)).equal([
+    let idOrRef = scid;
+    should(await audio.langAudioUrl({idOrRef:scid, lang:langTrans, settings}))
+    .equal([
       SERVER_ROOT,
       'audio',
       sutta_uid,
@@ -139,8 +145,9 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
   });
   it("fetchArrayBuffer()", async()=>{
     let audio = useAudioStore();
-    let suttaRef = SuttaRef.create('thig1.1:0.1/en/sujato');
-    let url = await audio.langAudioUrl(suttaRef, 'pli');
+    let lang = 'pli';
+    let idOrRef = SuttaRef.create('thig1.1:0.1/en/sujato');
+    let url = await audio.langAudioUrl({idOrRef, lang});
     let abuf = await audio.fetchArrayBuffer(url);
     should(abuf.byteLength).above(11640).below(11650);
   });
