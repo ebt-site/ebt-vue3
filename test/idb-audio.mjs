@@ -190,14 +190,14 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let audioStore = useAudioStore();
     let src = IdbAudio.URL_NO_AUDIO;
     let preload = true;
-    let nFetchesBefore = audioStore.nFetch;
+    let nFetch0 = audioStore.nFetch;
     let audio = new IdbAudio({src, preload});
-    should(audioStore.nFetch).equal(nFetchesBefore+1);
+    should(audioStore.nFetch).equal(nFetch0+1);
     should(audio.preload).equal(true);
     should(audio.duration).equal(0);
     await new Promise(r=>setTimeout(r,1000));
     should(audio.duration).equal(MOCK_DURATION);
-    should(audioStore.nFetch).equal(nFetchesBefore+1);
+    should(audioStore.nFetch).equal(nFetch0+1);
   });
   it("play()", async ()=>{
     let audio = new IdbAudio();
