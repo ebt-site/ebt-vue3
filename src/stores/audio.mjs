@@ -105,6 +105,7 @@ export const useAudioStore = defineStore('audio', {
       try {
         volatile.waitBegin("ebt.loadingAudio");
         let audioUrl = this.segmentAudioUrl(idOrRef, settings);
+        this.nFetch++;
         let resAudio = await fetch(audioUrl, { headers: HEADERS_JSON });
         segAudio = await resAudio.json();
         logger.info("fetchSegmentAudio()", audioUrl);
@@ -164,6 +165,7 @@ export const useAudioStore = defineStore('audio', {
       const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
       try {
+        this.nFetch++;
         let res = await fetch(url, { headers });
         logger.info(msg, `=> HTTP${res.status}:`);
         let abuf = await res.arrayBuffer();
@@ -284,6 +286,7 @@ export const useAudioStore = defineStore('audio', {
           return;
         }
         let { audioContext, headers=HEADERS_MPEG } = opts;
+        this.nFetch++;
         let resClick = await fetch(url, { headers });
         if (!resClick.ok) {
           let e = new Error(msg + `=> HTTP${resClick.status}`);

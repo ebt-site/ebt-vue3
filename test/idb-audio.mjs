@@ -1,4 +1,5 @@
 import { default as IdbAudio } from "../src/idb-audio.mjs";
+import { useAudioStore } from '../src/stores/audio.mjs';
 import { logger } from 'log-instance';
 import should from "should";
 import "fake-indexeddb/auto";
@@ -132,18 +133,11 @@ class MockAudioContext {
   }
 }
 global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
-var nFetches = 0;
 
 (typeof describe === 'function') && describe("idb-audio.mjs", function () {
-  function testFetch(...args) {
-    nFetches++;
-    console.log(`fetch#${nFetches} ${args[0]}`);
-    return fetch(...args);
-  };
   beforeEach(() => {
     setActivePinia(createPinia());
-    global.fetch = testFetch;
-    console.log("updated global.fetch <= node-fetch");
+    global.fetch = fetch;
   });
   it("default ctor", ()=>{
     let audio = new IdbAudio();
@@ -193,16 +187,17 @@ var nFetches = 0;
     should(audio.currentTime).equal(currentTime);
   });
   it("TESTTESTduration", async ()=>{
+    let audioStore = useAudioStore();
     let src = IdbAudio.URL_NO_AUDIO;
     let preload = true;
-    let nFetchesBefore = nFetches;
+    let nFetchesBefore = audioStore.nFetch;
     let audio = new IdbAudio({src, preload});
-    should(nFetches).equal(nFetchesBefore+1);
+    should(audioStore.nFetch).equal(nFetchesBefore+1);
     should(audio.preload).equal(true);
     should(audio.duration).equal(0);
     await new Promise(r=>setTimeout(r,1000));
     should(audio.duration).equal(MOCK_DURATION);
-    should(nFetches).equal(nFetchesBefore+1);
+    should(audioStore.nFetch).equal(nFetchesBefore+1);
   });
   it("play()", async ()=>{
     let audio = new IdbAudio();
@@ -229,7 +224,7 @@ var nFetches = 0;
     should(abuf.byteLength).above(138490).below(139510);
     should(abuf).instanceOf(ArrayBuffer);
   });
-  it("TESTTESTclear()", async()=>{
+  it("clear()", async()=>{
     let audio = new IdbAudio();
     await new Promise(resolve=>setTimeout(resolve,5));
 

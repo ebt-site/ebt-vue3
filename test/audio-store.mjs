@@ -29,7 +29,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
   this.timeout(5*1000);
   function testFetch(...args) {
     nFetches++;
-    console.log(`fetch#${nFetches} ${args[0]}`);
+    //console.log(`fetch#${nFetches} ${args[0]}`);
     return fetch(...args);
   };
   beforeEach(() => {
@@ -86,7 +86,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     let idOrRef = scid;
     let lang = 'pli';
     let segAudio = await audio.getSegmentAudio(idOrRef);
-    let nFetchesBefore = nFetches;
+    let nFetchesBefore = audio.nFetch;
     should(await audio.langAudioUrl({idOrRef, lang, segAudio})).equal([
       SERVER_ROOT,
       'audio',
@@ -96,7 +96,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       vnameRoot,
       guid,
     ].join('/'));
-    should(nFetches).equal(nFetchesBefore);
+    should(audio.nFetch).equal(nFetchesBefore);
 
     // Pali audio for English translation
     idOrRef = `${scid}/en/sujato`;
@@ -109,7 +109,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       vnameRoot,
       guid,
     ].join('/'));
-    should(nFetches).equal(nFetchesBefore);
+    should(audio.nFetch).equal(nFetchesBefore);
   });
   it("langAudioUrl() pli", async()=>{
     let audio = useAudioStore();
@@ -185,7 +185,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("fetchArrayBuffer()", async()=>{
+  it("TESTTESTfetchArrayBuffer()", async()=>{
     let audio = useAudioStore();
     let lang = 'pli';
     let idOrRef = SuttaRef.create('thig1.1:0.1/en/sujato');
