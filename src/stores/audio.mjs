@@ -5,7 +5,7 @@ import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';
 import { default as EbtSettings } from '../ebt-settings.mjs';
 import { default as IdbSutta } from '../idb-sutta.mjs';
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import * as Idb from 'idb-keyval';
 
 const MSDAY = 24 * 3600 * 1000;
@@ -45,6 +45,27 @@ export const useAudioStore = defineStore('audio', {
   getters: {
   },
   actions: {
+    async clearSoundCache() {
+      const msg = 'audio.clearSoundCache() ';
+      try {
+        logger.warn(msg);
+        const DBDeleteRequest = window.indexedDB.deleteDatabase("sound-db");
+        DBDeleteRequest.onerror = (event) => {
+          console.error(msg + "Error deleting database.");
+        };
+
+        DBDeleteRequest.onsuccess = (event) => {
+          console.log(msg + "Database deleted successfully");
+          console.log(msg, event.result); // should be undefined
+        };
+        segAudioDb = null;
+        console.log(msg, {segAudioDb, DBDeleteRequest});
+        nextTick(()=>window.location.reload());
+      } catch(e) {
+        logger.warn(msg + 'ERROR', e.message);
+        throw e;
+      }
+    },
     playClick(audioContext=this.getAudioContext()) {
       let settings = useSettingsStore();
       let volume = settings.clickVolume;
@@ -160,13 +181,12 @@ export const useAudioStore = defineStore('audio', {
       return this.playUrlAsync(url, {audioContext});
     },
     async playUrlAsync(url, opts) {
-      console.log('DBG0122 playUrlAsync', url);
+      let { audioContext=this.getAudioContext() } = opts;
       if (url == null) {
         return null;
       }
 
       let arrayBuffer = await this.fetchArrayBuffer(url, opts);
-      console.log("DEBUG0101 playUrlAsync", arrayBuffer.byteLength);
       let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
       return promise;
     },

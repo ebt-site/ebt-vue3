@@ -196,32 +196,20 @@
             <v-checkbox v-model="settings.highlightExamples" density="compact"
               :label="$t('ebt.highlightExamples')"
             />
-            <v-dialog v-model="isClearSettings" class="pb-5">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn class="settings-clear" 
-                  @click="openClearSettings"
-                  variant="outlined"
-                  >
-                  {{$t('ebt.resetSettings')}}
-                </v-btn>
-              </template>
-              <v-card max-width="30em" location="center">
-                <v-card-title>
-                  <div style="border-bottom: 1pt solid red">
-                    {{$t('ebt.clearSettings')}}
-                  </div>
-                </v-card-title>
-                <v-card-actions>
-                  <v-btn v-if="isClearSettings" @click="isClearSettings=false">
-                    {{$t('auth.cancel')}}
-                  </v-btn>
-                  <v-spacer/>
-                  <v-btn @click="resetDefaults" color="red">
-                    {{$t('ebt.reset')}}
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <div class='settings-confirm'>
+              <Confirm 
+                i18nButton='ebt.resetSettings'
+                i18nTitle='ebt.clearSettings'
+                i18nConfirm='ebt.reset'
+                :confirm='resetDefaults'
+              ></Confirm>
+              <Confirm 
+                i18nButton='ebt.clearSoundCache'
+                i18nTitle='ebt.clearSoundCache'
+                i18nConfirm='ebt.clear'
+                :confirm='audio.clearSoundCache'
+              ></Confirm>
+            </div>
             <v-select v-model="settings.serverUrl" :items="servers" 
               :menu-icon="selectIcon"
               :label="$t('ebt.server')"
@@ -245,7 +233,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, computed, } from 'vue';
+import { ref, nextTick, } from 'vue';
 import { useSettingsStore } from "../stores/settings.mjs";
 import { useVolatileStore } from "../stores/volatile.mjs";
 import { useAudioStore } from "../stores/audio.mjs";
@@ -253,6 +241,7 @@ import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as languages } from "../languages.mjs";
 import { logger } from "log-instance";
 import * as VOICES from "../auto/voices.json";
+import Confirm from "./Confirm.vue";
 import Version from "./Version.vue";
 import * as EBT_REPO from "../../ebt-repo.json";
 const maxResultsItems = [{
@@ -288,7 +277,6 @@ export default {
 
     let data = {
       bellAudio: ref({}),
-      isClearSettings: ref(false),
       host: ref(undefined),
       ipsChoices: EbtSettings.IPS_CHOICES,
       languages,
@@ -302,6 +290,7 @@ export default {
     return data;
   },
   components: {
+    Confirm,
     Version,
   },
   mounted() {
@@ -318,16 +307,13 @@ export default {
       audio.playClick();
       volatile.showSettings = false;
     },
-    openClearSettings() {
-      this.isClearSettings = !this.isClearSettings;
-    },
     resetDefaults() {
       let { settings, volatile } = this;
       settings.clear();
       volatile.showSettings = false;
-      logger.info("Settings.resetDefaults()", settings);
+      logger.warn("Settings.resetDefaults()", Object.assign({}, settings));
       settings.setRoute("#/home");
-      window.location.reload();
+      nextTick(()=>window.location.reload());
     },
     langVoices(lang, vnameKey) {
       let { settings } = this;
@@ -420,5 +406,9 @@ export default {
 }
 .settings-link {
   margin: 0.7rem;
+}
+.settings-confirm {
+  display: flex;
+  flex-flow: column;
 }
 </style>
