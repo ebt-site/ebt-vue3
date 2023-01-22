@@ -13,13 +13,21 @@ const VUEREFS = new Map();
 const HEADERS_JSON = { ["Accept"]: "application/json", };
 const HEADERS_MPEG = { ["Accept"]: "audio/mpeg", };
 const SAMPLE_RATE = 48000;
-var audioDb;
+var segAudioDb;
+var soundDb;
 
-function AUDIO_STORE() {
-  if (audioDb === undefined) {
-    audioDb = Idb.createStore('audio-db', 'audio-store')
+function SEG_AUDIO_STORE() {
+  if (segAudioDb === undefined) {
+    segAudioDb = Idb.createStore('seg-audio-db', 'seg-audio-store')
   }
-  return audioDb;
+  return segAudioDb;
+}
+
+function SOUND_STORE() {
+  if (soundDb === undefined) {
+    soundDb = Idb.createStore('sound-db', 'sound-store')
+  }
+  return soundDb;
 }
 
 export const useAudioStore = defineStore('audio', {
@@ -121,7 +129,7 @@ export const useAudioStore = defineStore('audio', {
       const msg = 'audio.getSegmentAudio() ';
       let segAudio = await this.fetchSegmentAudio(idOrRef, settings);
       let segAudioKey = this.segAudioKey(idOrRef, settings);
-      await Idb.set(segAudioKey, segAudio, AUDIO_STORE());
+      await Idb.set(segAudioKey, segAudio, SEG_AUDIO_STORE());
       logger.debug(msg, segAudioKey);
       return segAudio;
     },
@@ -152,23 +160,34 @@ export const useAudioStore = defineStore('audio', {
       return this.playUrlAsync(url, {audioContext});
     },
     async playUrlAsync(url, opts) {
+      console.log('DBG0122 playUrlAsync', url);
       if (url == null) {
         return null;
       }
+
       let arrayBuffer = await this.fetchArrayBuffer(url, opts);
       console.log("DEBUG0101 playUrlAsync", arrayBuffer.byteLength);
       let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
       return promise;
     },
     async fetchArrayBuffer(url, opts={}) {
-      const msg = 'audio.fetchArrayBuffer() ${url}';
+      const msg = `audio.fetchArrayBuffer() ${url}`;
       const volatile = useVolatileStore();
       let { headers=HEADERS_MPEG } = opts;
       try {
-        this.nFetch++;
-        let res = await fetch(url, { headers });
-        logger.info(msg, `=> HTTP${res.status}:`);
-        let abuf = await res.arrayBuffer();
+        let urlParts = url.split('/');
+        let iKey = Math.max(0, urlParts.length-4);
+        let idbKey = urlParts.slice(iKey).join('/');
+        let abuf = await Idb.get(idbKey, SOUND_STORE());
+        if (abuf) {
+          logger.info(msg, `=> cached`);
+        } else {
+          this.nFetch++;
+          let res = await fetch(url, { headers });
+          logger.info(msg, `=> HTTP${res.status}`);
+          abuf = await res.arrayBuffer();
+          await Idb.set(idbKey, abuf, SOUND_STORE());
+        }
         logger.debug(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
       } catch(e) {
@@ -272,57 +291,6 @@ export const useAudioStore = defineStore('audio', {
         let audioBuffer = await this.createAudioBuffer({audioContext, arrayBuffer});
         let audioSource = await this.createAudioSource({audioBuffer, audioContext});
         return this.playAudioSource({audioContext, audioSource});
-      } catch(e) {
-        volatile.alert(e, 'ebt.audioError');
-        throw e;
-      }
-    },
-    async playUrlAsync(url, opts={}) {
-      const msg = `audio.playUrlAsync() ${url}`;
-      let volatile = useVolatileStore();
-      try {
-        if (url == null) {
-          logger.debug(`${msg} url:null`);
-          return;
-        }
-        let { audioContext, headers=HEADERS_MPEG } = opts;
-        this.nFetch++;
-        let resClick = await fetch(url, { headers });
-        if (!resClick.ok) {
-          let e = new Error(msg + `=> HTTP${resClick.status}`);
-          e.url = url;
-          volatile.alert(e.msg, 'ebt.audioError');
-          return;
-        }
-        let urlBuf = await resClick.arrayBuffer();
-        let audioSource = audioContext.createBufferSource();
-        let urlAudio = await new Promise((resolve, reject)=>{
-          audioContext.decodeAudioData(urlBuf, resolve, reject);
-        });
-        let numberOfChannels = Math.min(2, urlAudio.numberOfChannels);
-        let length = urlAudio.length;
-        let sampleRate = Math.max(SAMPLE_RATE, urlAudio.sampleRate);
-        logger.debug(msg + url, {sampleRate, length, numberOfChannels});
-        let audioBuffer = audioContext.createBuffer(
-          numberOfChannels, length, sampleRate);
-        for (let channelNumber = 0; channelNumber < numberOfChannels; channelNumber++) {
-          let channelData = new Float32Array(length);
-          channelData.set(urlAudio.getChannelData(channelNumber), 0);
-          audioBuffer.getChannelData(channelNumber).set(channelData);
-        }
-
-        audioSource.buffer = audioBuffer;
-        audioSource.connect(audioContext.destination);
-        return new Promise((resolve, reject) => { try {
-          audioSource.onended = evt => {
-            logger.debug(`audio.playUrlAsync(${url}) => OK`);
-            resolve();
-          };
-          audioSource.start();
-        } catch(e) {
-          volatile.alert(e);
-          reject(e);
-        }}); // Promise
       } catch(e) {
         volatile.alert(e, 'ebt.audioError');
         throw e;
