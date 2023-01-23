@@ -206,7 +206,7 @@ export default {
     "buildingAudio": "Audiodatei wird erstellt...",
     "clear": "Clear",
     "clearSettings": "Einstellungen zurücksetzen?",
-    "clearSoundCache": "Clear sound cache",
+    "clearSoundCache": "Audio-Cache leeren",
     "click": "Tastenton",
     "clickRefresh": "In der Web-Anwendung ist ein Fehler aufgetreten. Klicken Sie „Seite neu laden“, um fortzufahren.",
     "closeCard": "Close",
