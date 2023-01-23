@@ -30,6 +30,21 @@ function SOUND_STORE() {
   return soundDb;
 }
 
+function deleteDatabase(name) {
+  const DBDeleteRequest = window.indexedDB.deleteDatabase(name);
+
+  DBDeleteRequest.onerror = (event) => {
+    console.error(msg + `Error deleting database: ${name}`);
+  };
+
+  DBDeleteRequest.onsuccess = (event) => {
+    console.log(msg + `Database ${name} deleted successfully`);
+    console.log(msg, event.result); // should be undefined
+  };
+
+  return DBDeleteRequest;
+}
+
 export const useAudioStore = defineStore('audio', {
   state: () => {
     return {
@@ -49,17 +64,11 @@ export const useAudioStore = defineStore('audio', {
       const msg = 'audio.clearSoundCache() ';
       try {
         logger.warn(msg);
-        const DBDeleteRequest = window.indexedDB.deleteDatabase("sound-db");
-        DBDeleteRequest.onerror = (event) => {
-          console.error(msg + "Error deleting database.");
-        };
-
-        DBDeleteRequest.onsuccess = (event) => {
-          console.log(msg + "Database deleted successfully");
-          console.log(msg, event.result); // should be undefined
-        };
+        const reqSoundDb = deleteDatabase("sound-db");
+        const reqSegAudioDb = deleteDatabase("seg-audio-db");
         segAudioDb = null;
-        console.log(msg, {segAudioDb, DBDeleteRequest});
+        soundDb = null;
+        console.log(msg, {reqSoundDb, reqSegAudioDb});
         nextTick(()=>window.location.reload());
       } catch(e) {
         logger.warn(msg + 'ERROR', e.message);
@@ -148,9 +157,15 @@ export const useAudioStore = defineStore('audio', {
     },
     async getSegmentAudio(idOrRef, settings=useSettingsStore()) {
       const msg = 'audio.getSegmentAudio() ';
-      let segAudio = await this.fetchSegmentAudio(idOrRef, settings);
       let segAudioKey = this.segAudioKey(idOrRef, settings);
-      await Idb.set(segAudioKey, segAudio, SEG_AUDIO_STORE());
+      let segAudio = await Idb.get(segAudioKey, SEG_AUDIO_STORE());
+      if (segAudio) {
+        console.log("DBG0123 segAudio elapsed", Date.now() - segAudio.created);
+      } else {
+        segAudio = await this.fetchSegmentAudio(idOrRef, settings);
+        segAudio.created = Date.now();
+        await Idb.set(segAudioKey, segAudio, SEG_AUDIO_STORE());
+      }
       logger.debug(msg, segAudioKey);
       return segAudio;
     },
