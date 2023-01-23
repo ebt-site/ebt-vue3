@@ -14,6 +14,7 @@ export default class IdbAudio {
       src=URL_NO_AUDIO,
       audioContext,
       preload=false,
+      created=Date.now(),
     } = opts;
     if (audioContext == null) {
       audioContext = new AudioContext();
@@ -24,6 +25,7 @@ export default class IdbAudio {
       audioContext,
       audioSource: null,
       audio: useAudioStore(),
+      created,
       ended: ()=>{ console.log("IdbAudio.ended()"); },
       msPlay: 0,
       msStart: null,
@@ -91,10 +93,8 @@ export default class IdbAudio {
   }
 
   clear() {
-    if (this.audioSource) {
-      this.audioSource.disconnect();
-      this.audioSource.stop();
-    }
+    this.audioSource?.disconnect && this.audioSource.disconnect();
+    this.audioSource?.stop && this.audioSource.stop();
     this.audioSource = null;
     this.audioBuffer = null;
     this.msStart = null;

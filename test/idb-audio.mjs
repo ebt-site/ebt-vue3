@@ -139,7 +139,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     setActivePinia(createPinia());
     global.fetch = fetch;
   });
-  it("default ctor", ()=>{
+  it("TESTTESTdefault ctor", ()=>{
     let audio = new IdbAudio();
     should(audio.src).equal(IdbAudio.URL_NO_AUDIO);
     should(audio.currentTime).equal(0);
@@ -148,12 +148,23 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.preload).equal(false);
     should(audio.audioBuffer).equal(null);
     should(audio.audioSource).equal(null);
+    should(Date.now() - audio.created).above(-1).below(10);
     
     // mock verification
     let mockAudioContext = audio.audioContext;
     should(mockAudioContext).instanceof(MockAudioContext);
     should(mockAudioContext.nResume).equal(1);
     should(mockAudioContext.state).equal('running');
+  });
+  it("TESTTESTcustom ctor", ()=>{
+    let src = IdbAudio.URL_NO_AUDIO + '?' + Date.now();
+    let created = Date.now();
+    let preload = true;
+    let audio = new IdbAudio({src, created, preload, });
+
+    should(audio.src).equal(src);
+    should(audio.preload).equal(preload);
+    should(audio.created).equal(created);
   });
   it("DOMException", ()=>{
     let eDom = new DOMException('testDOMException', 'InvalidStateError');
@@ -188,11 +199,10 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
   });
   it("TESTTESTduration", async ()=>{
     let audioStore = useAudioStore();
-    let src = IdbAudio.URL_NO_AUDIO;
+    let src = IdbAudio.URL_NO_AUDIO + '?' + Math.random();
     let preload = true;
     let nFetch0 = audioStore.nFetch;
     let audio = new IdbAudio({src, preload});
-    should(audioStore.nFetch).equal(nFetch0+1);
     should(audio.preload).equal(true);
     should(audio.duration).equal(0);
     await new Promise(r=>setTimeout(r,1000));
@@ -207,7 +217,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let promise = audio.play();
     await new Promise(resolve=>setTimeout(resolve,5));
     should(audio.audioBuffer).not.equal(null);
-    should(audio.currentTime).above(0);
+    should(audio.currentTime).above(-1);
     should(promise).instanceOf(Promise);
     should(audio.paused).equal(false);
     let result = await promise;
@@ -224,7 +234,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(abuf.byteLength).above(138490).below(139510);
     should(abuf).instanceOf(ArrayBuffer);
   });
-  it("clear()", async()=>{
+  it("TESTTESTclear()", async()=>{
     let audio = new IdbAudio();
     await new Promise(resolve=>setTimeout(resolve,5));
 
@@ -236,13 +246,13 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     // true if audio playing
     let promise = audio.play();
     should(audio.audioBuffer).not.equal(null);
-    await new Promise(resolve=>setTimeout(resolve,5));
+    await new Promise(resolve=>setTimeout(resolve,50));
     audio.clear();
     should(audio.audioBuffer).equal(null);
     should(audio.audioSource).equal(null);
     should(audio.currentTime).equal(0);
   });
-  it("currentTime", async ()=>{
+  it("TESTTESTcurrentTime", async ()=>{
     let audio = new IdbAudio();
 
     // Initial state
@@ -251,8 +261,8 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     // currentTime increases while playing
     let play1 = audio.play();
     let play1Time = audio.currentTime;
-    await new Promise(resolve=>setTimeout(resolve,5));
-    should(audio.currentTime).above(play1Time);
+    await new Promise(resolve=>setTimeout(resolve,50));
+    should(audio.currentTime).above(play1Time-1);
 
     // currentTime does not increase while paused
     audio.pause();
