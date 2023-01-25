@@ -197,6 +197,7 @@
   flex-flow: row wrap;
   justify-content: start;
   opacity: 0.85;
+  line-height: 1.5;
 }
 .seg-lang {
   margin-bottom: 0.3em;
@@ -237,7 +238,8 @@
   height: 1px;
 }
 .seg-current {
-  border: 2px dotted rgba(var(--v-theme-on-surface), 0.5);
+  xborder: 2px dotted rgba(var(--v-theme-on-surface), 0.5);
+  background-color: rgba(var(--v-theme-currentbg),1);
   border-radius: 5px;
 }
 .seg-current .seg-text {
