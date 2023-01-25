@@ -200,7 +200,7 @@
   line-height: 1.5;
 }
 .seg-lang {
-  margin-bottom: 0.3em;
+  margin-bottom: 0.8em;
   margin-left: 10px;
 }
 .seg-root {
