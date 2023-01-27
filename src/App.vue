@@ -35,7 +35,7 @@
               <v-btn icon href="#/search" >
                 <v-icon icon="mdi-magnify"/>
               </v-btn>
-              <v-btn icon @click="onClickSettings">
+              <v-btn icon @click.stop="onClickSettings">
                 <v-icon icon="mdi-cog"/>
               </v-btn>
             </v-sheet>
@@ -44,7 +44,7 @@
             <v-btn icon href="#/search" >
               <v-icon icon="mdi-magnify"/>
             </v-btn>
-            <v-btn icon @click="onClickSettings">
+            <v-btn id='btn-settings' icon @click="onClickSettings">
               <v-icon icon="mdi-cog"/>
             </v-btn>
           </div>
@@ -110,7 +110,7 @@
       audio: useAudioStore(),
       settings: useSettingsStore(),
       volatile: useVolatileStore(),
-      unsubscribe: undefined,
+      unsubSettings: undefined,
       collapsed: false,
     }),
     components: {
@@ -135,7 +135,13 @@
       onClickSettings(evt) {
         let { volatile, audio } = this;
         audio.playClick();
+        let btn = document.getElementById('btn-settings');
+        btn && btn.blur();
         volatile.showSettings = true;
+        nextTick(()=>{
+          let autofocus = document.getElementById('settings-autofocus');
+          autofocus && autofocus.focus();
+        });
       },
     },
     async mounted() {
@@ -143,9 +149,10 @@
       let loaded = await settings.loadSettings();
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
-      this.unsubscribe = settings.$subscribe((mutation, state) => {
+      this.unsubSettings = settings.$subscribe((mutation, state) => {
         $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
-        logger.debug("App.mounted() settings.subscribe()", {mutation, state, settings});
+        logger.debug("App.mounted() settings.subscribe()", 
+          {mutation, state, settings});
         settings.saveSettings();
         $i18n.locale = settings.locale;
       });

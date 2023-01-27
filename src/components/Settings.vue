@@ -1,18 +1,22 @@
 <template>
-  <v-dialog v-model="volatile.showSettings" max-width=600>
+  <v-dialog v-model="volatile.showSettings" max-width=600
+    scrollable
+    @update:modelValue="onClose"
+    >
     <v-sheet>
       <v-toolbar dense color="toolbar">
         <v-toolbar-title>
           <div>{{$t('ebt.settingsTitle')}}</div>
         </v-toolbar-title>
-        <v-btn icon @click="clickClose">
+        <v-btn id="btn-settings-close" icon @click="clickClose">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-
       <v-expansion-panels >
         <v-expansion-panel ><!--General-->
           <v-expansion-panel-title 
+            v-if="volatile.showSettings"
+            id="settings-autofocus"
             expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
             >
             {{$t('ebt.general')}}
@@ -285,6 +289,7 @@ export default {
       audio: useAudioStore(),
       settings: useSettingsStore(),
       volatile: useVolatileStore(),
+      btnSettings: ref(undefined),
     }
     logger.debug("Settings.setup()", data.settings);
     return data;
@@ -298,6 +303,13 @@ export default {
     logger.debug("Settings.mounted()", this.host);
   },
   methods: {
+    onClose() {
+      let { volatile } = this;
+      let btn = document.getElementById('btn-settings');
+      btn && nextTick(()=>{
+        btn.focus();
+      });
+    },
     onClickVolume() {
       let { audio } = this;
       audio.playClick();
@@ -306,6 +318,7 @@ export default {
       let { audio, volatile } = this;
       audio.playClick();
       volatile.showSettings = false;
+      this.onClose();
     },
     resetDefaults() {
       let { settings, volatile } = this;

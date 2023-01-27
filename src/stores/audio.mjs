@@ -160,7 +160,7 @@ export const useAudioStore = defineStore('audio', {
       let segAudioKey = this.segAudioKey(idOrRef, settings);
       let segAudio = await Idb.get(segAudioKey, SEG_AUDIO_STORE());
       if (segAudio) {
-        console.log("DBG0123 segAudio elapsed", Date.now() - segAudio.created);
+        //console.log("DBG0123 segAudio elapsed", Date.now() - segAudio.created);
       } else {
         segAudio = await this.fetchSegmentAudio(idOrRef, settings);
         segAudio.created = Date.now();

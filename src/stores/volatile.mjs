@@ -20,6 +20,7 @@ const INITIAL_STATE = {
   delayedWaiting: 0,
   suttas,
   showSettings,
+  btnSettings: ref(undefined),
 };
 
 export const useVolatileStore = defineStore('volatile', {

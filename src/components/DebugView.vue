@@ -80,14 +80,10 @@
           let url = await audio.langAudioUrl({idOrRef:scid, lang});
           volatile.waitEnd();
           if (url) {
-            this.updateMessage(`playScid() fetchArrayBuffer() url:${url}`);
+            this.updateMessage(`${msg} fetchArrayBuffer() url:${url}`);
             let arrayBuffer = await audio.fetchArrayBuffer(url);
-            this.updateMessage(`playScid() playArrayBuffer ${arrayBuffer.byteLength}B`);;
-            console.log("DBG0104 audioContext.state before playArrayBuffer", 
-              audioContext.state);
+            this.updateMessage(`${msg} playArrayBuffer ${arrayBuffer.byteLength}B`);;
             await audio.playArrayBuffer({arrayBuffer, audioContext});
-            console.log("DBG0104 audioContext.state after playArrayBuffer", 
-              audioContext.state);
             this.audioContextState = audioContext.state;
             this.audioContextCurrentTime = audioContext.currentTime;
             this.updateMessage("playScid() DONE");
@@ -102,10 +98,7 @@
       },
       clickBell() {
         let { audio } = this;
-        console.log("DBG0111 clickBell() start");
-        audio.playBell().then(()=>{
-          console.log("DBG0111 clickBell() end");
-        });
+        audio.playBell();
       },
       async clickPause() {
         let { audioContext } = this;
@@ -128,7 +121,6 @@
         let { audio } = this;
         let audioContext = audio.getAudioContext();
         this.audioContext = audioContext;
-        console.log("DBG0104 audioContext.state", audioContext.state);
         audioContext.resume();
         this.playScid(audioContext);
       },
@@ -136,12 +128,9 @@
         let { audio, volatile, settings, scid, lang, $t } = this;
         try {
           let src = await audio.langAudioUrl({idOrRef:scid, lang});
-          console.log("DBG0109 playIdbAudio()", src);
           let idbAudio = new IdbAudio({src, audioContext});
           this.idbAudio = idbAudio;
-          console.log("DBG0109 playIdbAudio() play()");
           await idbAudio.play();
-          console.log("DBG0109 playIdbAudio() done");
         } catch(e) {
           console.log(e);
         }
