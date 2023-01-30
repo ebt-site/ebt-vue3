@@ -67,13 +67,16 @@ export default class EbtCard {
         break;
     }
 
-    Object.assign(this, {
+    Object.assign(this, {// primary properties
       id,
       location,
       context,
       data,
       isOpen,
     });
+
+    // secondary properties
+    this.autoFocusId = this.tab1Id;
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }
@@ -94,18 +97,19 @@ export default class EbtCard {
   }
 
   static pathToCard(args) {
+    let msg = 'EbtCard.pathToCard() ';
     let {path='/', cards=[], addCard, defaultLang} = args;
     let [ tbd, context, ...location ] = path.split('/');
     location = location.map(loc => decodeURIComponent(loc));
     let card = cards.find(card => card.matchPath({path, defaultLang}));
     if (card == null) {
       if (!addCard) {
-        throw new Error("addCard is required");
+        throw new Error(msg+"addCard is required");
       }
       card = addCard({context, location});
-      card && logger.info(`EbtCard.pathToCard ${args} (NEW)`, {card, context, location});
+      card && logger.info(msg+`${args} (NEW)`, {card, context, location});
     } else {
-      logger.debug(`EbtCard.pathToCard (EXISTING))`, {args,card});
+      logger.debug(msg+`(EXISTING))`, {args,card});
     } 
     if (card && card.isOpen) {
       if (cards.length > 1 && card.context !== CONTEXT_HOME) {
@@ -114,6 +118,10 @@ export default class EbtCard {
     }
 
     return card;
+  }
+
+  get tab1Id() {
+    return `${this.id}-tab1`;
   }
 
   get icon() {

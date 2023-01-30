@@ -1,17 +1,23 @@
 <template>
-  <div class="chip-container">
+  <div id="ebt-chips" 
+    class="chip-container" tabindex=0
+    @keydown.tab.exact.prevent="onTab"
+    @keydown.right.exact.prevent="onNextChip(1)"
+    @keydown.left.exact.prevent="onNextChip(-1)"
+  >
     <v-chip-group v-model="filteredChips" column>
       <div v-for="card in settings.cards" :key="card.id">
         <v-chip 
           :prepend-icon="card.icon"
           @click="onClickChip(card, settings.cards)"
           draggable
+          tabindex=-1
           @dragstart="startDrag($event, card)"
           @drop="onDrop($event, card, settings)"
           @dragover.prevent
           @dragenter.prevent
-          :rounded="card.isOpen ? 0 : 1"
-          :class="chipClass(card)"
+          :rounded="0"
+          :class="chipClass(card, volatile)"
         >
           <div class="chip-title">{{card.chipTitle($t)}}</div>
           <v-icon icon="mdi-trash-can-outline chip-close"
@@ -19,8 +25,7 @@
             size="small"
             class="ml-2"
             @click="onClose(card, settings)"
-          />
-        </v-chip>
+          /> </v-chip>
       </div>
     </v-chip-group>
   </div>
@@ -43,7 +48,36 @@
         volatile,
       }
     },
+    mounted() {
+      let { volatile } = this;
+      volatile.ebtChips = document.getElementById('ebt-chips');
+    },
     methods: {
+      onNextChip(delta) {
+        let msg = `EbtChips.onNextChip(${delta})`;
+        let { volatile, settings } = this;
+        let { focusCard } = volatile;
+        let { cards } = settings;
+        let nextIndex = 0;
+
+        if (focusCard) {
+          let index = cards.indexOf(focusCard);
+          nextIndex = (index + delta + cards.length) % cards.length;
+        }
+        volatile.focusCard = cards[nextIndex];
+      },
+      async onTab(evt) {
+        let msg = "EbtChips.onTab()";
+        let { volatile, settings } = this;
+        let { focusCard } = volatile;
+        if (focusCard) {
+          settings.openCard(focusCard);
+          nextTick(()=>{
+            let tab1 = document.getElementById(focusCard.autoFocusId);
+            tab1 && tab1.focus();
+          });
+        }
+      },
       startDrag(evt, card) {
         evt.dataTransfer.dropEffect = 'move'
         evt.dataTransfer.effectAllowed = 'move'
@@ -85,12 +119,15 @@
           ? !card.isOpen && card.context !== EbtCard.CONTEXT_HOME
           : false;
       },
-      chipClass: (card) => {
+      chipClass(card) {
+        let { volatile } = this;
+        let { focusCard } = volatile;
         let chipClass = [];
 
         card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
         chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
         card.isOpen && card.visible && chipClass.push('card-in-view');
+        card === focusCard && chipClass.push('chip-focus-card');
         return chipClass.join(' ');
       },
     },
@@ -106,12 +143,18 @@
     },
   }
 </script>
-<style scoped>
+<style >
   .chip-container {
     display: flex;
     flex-direction: column;
     min-height: 32px;
     margin-left: 1.0rem;
+  }
+  .chip-container .v-chip-group {
+    padding: 0px !important;
+  }
+  .chip-container:focus {
+    outline: 2px dashed #ce8400;
   }
   .chip-title {
     display: inline-block;
@@ -119,17 +162,25 @@
     max-width: 30px;
     text-overflow: clip;
   }
+  .chip-closed {
+    border-bottom: 1px dashed rgb(var(--v-theme-on-surface));
+  }
   .chip-open {
-    border-bottom: 2pt solid #ff9933;
+    border-bottom: 1px solid rgb(var(--v-theme-on-surface));
     opacity: 0.6;
+  }
+  .v-chip.v-chip--size-default {
+    padding-right: 0px;
+  }
+  .chip-focus-card {
+    border-bottom-color: rgb(var(--v-theme-focus));
+    border-bottom-width: 3px;
   }
   .card-in-view {
     opacity: 1;
   }
-  .card-in-view .chip-title {
+  .chip-focus-card .chip-title {
     max-width: 80px;
-  }
-  .chip-closed {
   }
   .chip-close {
     margin-right: -0.4em;
@@ -141,7 +192,7 @@
     .chip-title {
       display: none;
     }
-    .card-in-view .chip-title {
+    .chip-focus-card .chip-title {
       display: inline;
       max-width: 40px;
     }

@@ -6,7 +6,6 @@
     bg-color="audiobar"
     class="audio-nav"
   >
-    {{audioPlaying}}
     <div class="play-col">
       <v-progress-linear 
         :model-value="segmentPercent"

@@ -21,6 +21,8 @@ const INITIAL_STATE = {
   suttas,
   showSettings,
   btnSettings: ref(undefined),
+  focusCard: ref(undefined),
+  ebtChips: ref(undefined),
 };
 
 export const useVolatileStore = defineStore('volatile', {

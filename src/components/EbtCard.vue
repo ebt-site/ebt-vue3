@@ -1,18 +1,23 @@
 <template>
 <Transition>
-  <v-sheet v-if="card.isOpen " :class="cardClass">
+  <v-sheet v-if="card.isOpen " :class="cardSheetClass"
+    @focusin="onFocusIn"
+  >
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
-    <v-card :id="card.id" :variant="cardVariant" class="ebt-card">
+    <div :class="cardClass">
+    <v-card :id="card.id" :variant="cardVariant" >
       <template v-slot:title>
         <v-icon :icon="card.icon" class="card-icon"/>
         <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
       </template>
       <template v-slot:append>
         <v-btn icon="mdi-window-minimize" flat 
+          :id="card.tab1Id"
           @click="clickMinimize"
           @focus="focusTop"
+          @keydown.shift.tab.exact.prevent="onBackTabOut"
         />
         <v-btn icon="mdi-close-thick" flat 
           v-if="isClosable"
@@ -48,6 +53,7 @@
         </v-card>
       </div>
     </v-card>
+    </div>
   </v-sheet>
 </Transition>
 </template>
@@ -96,6 +102,16 @@
       this.addIntersectionObserver();
     },
     methods: {
+      onBackTabOut(evt) {
+        let { volatile } = this;
+        volatile.ebtChips && volatile.ebtChips.focus();
+      },
+      onFocusIn(evt) {
+        let { volatile, card } = this;
+        let { location, id, context } = card;
+        let chipTitle = card.chipTitle();
+        volatile.focusCard = card;
+      },
       clickDelete() {
         let { card, settings } = this;
         this.clickMinimize();
@@ -165,7 +181,7 @@
       },
     },
     computed: {
-      cardClass(ctx) {
+      cardSheetClass(ctx) {
         let { card } = ctx;
         return card.isOpen
           ? 'card-sheet'
@@ -181,9 +197,17 @@
 
         return logLevel === 'info' || logLevel === 'debug';
       },
-      cardVariant: (ctx) => {
-        let { settings } = ctx;
-        return settings.cardsOpen === 1 ? "flat" : "outlined";
+      cardClass(ctx) {
+        let { settings, volatile, card } = ctx;
+        return 1 || settings.cardsOpen === 1 || volatile.focusCard != card
+          ? 'ebt-card'
+          : 'ebt-card ebt-card-current';
+      },
+      cardVariant(ctx) {
+        let { settings, volatile, card } = ctx;
+        return 0 || settings.cardsOpen === 1 || volatile.focusCard != card
+          ? 'flat'
+          : 'outlined';
       },
       cardLink: (ctx) => {
         let { card } = ctx;
@@ -221,7 +245,7 @@
   }
 </script>
 
-<style scoped>
+<style >
   .card-top-anchor {
     font-size: 12px;
     position: relative;
@@ -237,34 +261,23 @@
   .card-icon {
     opacity: 0.5;
   }
-  .debug-icon {
-    color: cyan;
-    font-size: smaller;
-    opacity: 0.5;
-    text-align: right;
-    margin-right: 1pt;
-    cursor: pointer;
-  }
-  .debug-icon:hover {
-    opacity: 1;
-  }
-  .debug-footer {
-    font-size: smaller;
-  }
-  th {
-    vertical-align: top;
-  }
   .ebt-card {
-    background: rgb(var(--v-theme-surface));
+    background: rgb(var(--v-theme-surface)) !important;
     margin-left: 2px;
     margin-right: 2px;
+    border-radius: 4px;
+  }
+  .ebt-card-current {
+    border: 3px solid red;
+    border-color: rgba(255, 153, 51, 1);
+    xborder: 2pt solid red;
   }
   @media (max-width: 600px) {
     .ebt-card {
       max-width: calc(100vw - 10px);
     }
   }
-  .debug {
+  .xdebug {
     color: rgb(var(--v-theme-debug));
   }
   .v-card-text {

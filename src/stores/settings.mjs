@@ -167,9 +167,15 @@ export const useSettingsStore = defineStore('settings', {
       let sutta;
       return sutta;
     },
+    openCard(card) {
+      if (card.IsOpen) {
+        return false;
+      }
+      card.isOpen = true;
+      return true;
+    },
     async scrollToCard(card) {
-      if (!card.isOpen) {
-        card.isOpen = true;
+      if (this.openCard(card)) {
         await new Promise(resolve => setTimeout(()=>resolve(), 100));
       }
 
