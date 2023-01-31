@@ -2,12 +2,13 @@
 <Transition>
   <v-sheet v-if="card.isOpen " :class="cardSheetClass"
     @focusin="onFocusIn"
+    @click="onClickCard"
   >
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
     </div>
     <div :class="cardClass">
-    <v-card :id="card.id" :variant="cardVariant" >
+    <v-card :id="card.id" variant="flat" >
       <template v-slot:title>
         <v-icon :icon="card.icon" class="card-icon"/>
         <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
@@ -102,6 +103,10 @@
       this.addIntersectionObserver();
     },
     methods: {
+      onClickCard(evt) {
+        let { volatile, card } = this;
+        volatile.focusCard = card;
+      },
       onBackTabOut(evt) {
         let { volatile } = this;
         volatile.ebtChips && volatile.ebtChips.focus();
@@ -199,15 +204,9 @@
       },
       cardClass(ctx) {
         let { settings, volatile, card } = ctx;
-        return 1 || settings.cardsOpen === 1 || volatile.focusCard != card
+        return settings.cardsOpen === 1 || volatile.focusCard != card
           ? 'ebt-card'
           : 'ebt-card ebt-card-current';
-      },
-      cardVariant(ctx) {
-        let { settings, volatile, card } = ctx;
-        return 0 || settings.cardsOpen === 1 || volatile.focusCard != card
-          ? 'flat'
-          : 'outlined';
       },
       cardLink: (ctx) => {
         let { card } = ctx;
@@ -268,17 +267,20 @@
     border-radius: 4px;
   }
   .ebt-card-current {
-    border: 3px solid red;
-    border-color: rgba(255, 153, 51, 1);
-    xborder: 2pt solid red;
+    -webkit-box-shadow:0px 0px 3px 3px rgba(var(--v-theme-focus), 0.5);
+    -moz-box-shadow: 0px 0px 3px 3px 1px rgba(var(--v-theme-focus), 0.5);
+    box-shadow: 0px 0px 3px 3px rgba(var(--v-theme-focus), 0.5);
+  }
+  .ebt-card > .v-card {
+    opacity: 0.5 !important;
+  }
+  .ebt-card-current > .v-card--variant-flat {
+    opacity: 1 !important;
   }
   @media (max-width: 600px) {
     .ebt-card {
       max-width: calc(100vw - 10px);
     }
-  }
-  .xdebug {
-    color: rgb(var(--v-theme-debug));
   }
   .v-card-text {
     min-width: 20em;
