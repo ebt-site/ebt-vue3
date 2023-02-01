@@ -47,8 +47,10 @@ export const useSettingsStore = defineStore('settings', {
       }
     },
     async loadSettings() {
+      let msg = 'stores.settings.loadSettings() ';
       let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
+      console.log(`DBG0201 ${msg}`);
       if (savedState) {
         try {
           let { cards, logLevel } = savedState;

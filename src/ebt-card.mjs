@@ -27,6 +27,7 @@ const CONTEXTS = {
 
 export default class EbtCard {
   constructor(opts = {}) {
+    let msg = 'EbtCard.ctor() ';
     let {
       id = uuidv4().split('-').pop(),
       context,
@@ -35,6 +36,8 @@ export default class EbtCard {
       data = undefined,
       langTrans, // factory prop
     } = opts;
+
+    console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
 
     if (context == null || context === '') {
       context = CONTEXT_HOME;

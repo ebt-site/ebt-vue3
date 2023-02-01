@@ -121,7 +121,7 @@ export default class Settings {
       showTrans: true,
       vnameRoot: 'Aditi',
       vnameTrans,
-      cards: [new EbtCard()],
+      cards: [],
     }
   }
 

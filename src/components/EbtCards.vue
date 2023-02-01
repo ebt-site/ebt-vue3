@@ -5,11 +5,11 @@
     <div v-for="card in settings.cards">
       <ebt-card-vue 
         :card="card" 
-        :routeCard="routeCard"
+        :routeCard="volatile.routeCard"
         @focusin="onFocusIn(card)"
       />
     </div><!-- v-for card -->
-    <sutta-player :routeCard="routeCard" />
+    <sutta-player :routeCard="volatile.routeCard" />
   </v-sheet>
 </template>
 
@@ -32,11 +32,11 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        routeCard: ref(undefined),
       }
     },
     mounted() {
-      let { settings, $route }  = this;
+      let msg = 'EbtCards.mounted() ';
+      let { settings, volatile, $route }  = this;
       let { params, fullPath }  = $route;
       let { cards } = settings;
       let card = EbtCard.pathToCard({
@@ -46,16 +46,18 @@
         addCard: (opts) => settings.addCard(opts),
       });
 
-      logger.info("EbtCards.mounted", this);
+      logger.info(msg, this);
 
       if (card == null) {
         //window.location.hash = '';
-        logger.warn("EbtCards.mounted UNEXPECTED", fullPath);
+        logger.warn(msg+"UNEXPECTED", fullPath);
       } else {
-        this.routeCard = card;
+        volatile.routeCard = card;
         nextTick(() => {
+          volatile.focusCard = card;
           settings.scrollToCard(card);
           this.bindAudioSutta(window.location.hash);
+          console.log(`DBG0201 ${msg}`, {card}, volatile.focusCard, settings.cards.length);
         });
       }
     },
@@ -87,7 +89,8 @@
           : null;
       },
       async bindAudioSutta(route) {
-        let { routeCard, suttas, audio, } = this;
+        let { volatile, suttas, audio, } = this;
+        let { routeCard } = volatile;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
           let suttaRef = this.routeSuttaRef(route);
           let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
@@ -116,7 +119,7 @@
     },
     watch:{
       $route (to, from) {
-        let { settings, $route }  = this;
+        let { volatile, settings, $route }  = this;
         let { cards } = settings;
         let msg = 'EbtCards.watch.$route';
         let card = EbtCard.pathToCard({
@@ -125,7 +128,7 @@
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
-        this.routeCard = card;
+        volatile.routeCard = card;
         this.bindAudioSutta(to.href);
         if (card == null) {
           settings.setRoute('');

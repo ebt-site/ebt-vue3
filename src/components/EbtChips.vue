@@ -18,6 +18,7 @@
           @dragenter.prevent
           :rounded="0"
           :class="chipClass(card, volatile)"
+          :title="card.id"
         >
           <div class="chip-title">{{card.chipTitle($t)}}</div>
           <v-icon icon="mdi-trash-can-outline chip-close"
@@ -27,6 +28,11 @@
             @click="onClose(card, settings)"
           /> </v-chip>
       </div>
+    <div class="debug" v-if="volatile.focusCard" >
+      {{volatile.focusCard.id}}
+      {{volatile.focusCard.context}}
+      {{volatile.focusCard.chipTitle()}}
+    </div>
     </v-chip-group>
   </div>
 </template>
@@ -64,7 +70,13 @@
           let index = cards.indexOf(focusCard);
           nextIndex = (index + delta + cards.length) % cards.length;
         }
-        volatile.focusCard = cards[nextIndex];
+        let card = cards[nextIndex];
+        volatile.focusCard = card;
+        if (volatile.routeCard !== card) {
+          nextTick(()=>{
+            window.location.hash = card.routeHash();
+          });
+        }
       },
       async onTab(evt) {
         let msg = "EbtChips.onTab()";
@@ -93,8 +105,17 @@
       updateActive: (evt) => {
         logger.info(`updateActive`, evt);
       },
-      onClickChip: async (card, cards) => {
+      async onClickChip(card, cards) {
         const settings = await useSettingsStore();
+        const volatile = await useVolatileStore();
+        if (document.activeElement !== volatile.ebtChips) {
+          volatile.ebtChips.focus();
+          return;
+        }
+        if (volatile.focusCard !== card) {
+          volatile.focusCard = card;
+          return;
+        }
         let cardHash = card.routeHash();
         if (cardHash !== window.location.hash) {
           settings.setRoute(cardHash);
@@ -121,13 +142,12 @@
       },
       chipClass(card) {
         let { volatile } = this;
-        let { focusCard } = volatile;
         let chipClass = [];
 
         card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
         chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
         card.isOpen && card.visible && chipClass.push('card-in-view');
-        card === focusCard && chipClass.push('chip-focus-card');
+        card === volatile.focusCard && chipClass.push('chip-focus-card');
         return chipClass.join(' ');
       },
     },

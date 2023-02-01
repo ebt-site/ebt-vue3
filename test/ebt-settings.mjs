@@ -79,8 +79,7 @@ import should from "should";
     });
     let cards = Settings.INITIAL_STATE.cards;
     should(cards instanceof Array);
-    should(cards.length).equal(1);
-    should(cards[0]).instanceOf(EbtCard);
+    should(cards.length).equal(0);
   });
   it("custom ctor", async () => {
     let dates = [

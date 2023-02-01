@@ -106,6 +106,11 @@
       onClickCard(evt) {
         let { volatile, card } = this;
         volatile.focusCard = card;
+        if (volatile.routeCard !== card) {
+          nextTick(()=>{
+            window.location.hash = card.routeHash();
+          });
+        }
       },
       onBackTabOut(evt) {
         let { volatile } = this;

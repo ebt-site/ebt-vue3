@@ -22,6 +22,7 @@ const INITIAL_STATE = {
   showSettings,
   btnSettings: ref(undefined),
   focusCard: ref(undefined),
+  routeCard: ref(undefined),
   ebtChips: ref(undefined),
 };
 
