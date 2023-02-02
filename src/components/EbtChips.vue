@@ -28,11 +28,6 @@
             @click="onClose(card, settings)"
           /> </v-chip>
       </div>
-    <div class="debug" v-if="volatile.focusCard" >
-      {{volatile.focusCard.id}}
-      {{volatile.focusCard.context}}
-      {{volatile.focusCard.chipTitle()}}
-    </div>
     </v-chip-group>
   </div>
 </template>

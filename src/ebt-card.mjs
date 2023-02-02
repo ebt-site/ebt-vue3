@@ -37,8 +37,7 @@ export default class EbtCard {
       langTrans, // factory prop
     } = opts;
 
-    console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
-
+    //console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
     if (context == null || context === '') {
       context = CONTEXT_HOME;
     }

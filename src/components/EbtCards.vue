@@ -34,9 +34,10 @@
         volatile: useVolatileStore(),
       }
     },
-    mounted() {
+    async mounted() {
       let msg = 'EbtCards.mounted() ';
       let { settings, volatile, $route }  = this;
+      await settings.loaded;
       let { params, fullPath }  = $route;
       let { cards } = settings;
       let card = EbtCard.pathToCard({
@@ -57,7 +58,6 @@
           volatile.focusCard = card;
           settings.scrollToCard(card);
           this.bindAudioSutta(window.location.hash);
-          console.log(`DBG0201 ${msg}`, {card}, volatile.focusCard, settings.cards.length);
         });
       }
     },

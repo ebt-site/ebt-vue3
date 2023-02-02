@@ -145,8 +145,11 @@
       },
     },
     async mounted() {
+      let msg = 'App.mounted() ';
+      console.log(msg+'start');
       let { $vuetify, settings, $i18n, volatile } = this;
-      let loaded = await settings.loadSettings();
+      settings.loaded = settings.loadSettings();
+      await settings.loaded;
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
       this.unsubSettings = settings.$subscribe((mutation, state) => {
@@ -156,6 +159,7 @@
         settings.saveSettings();
         $i18n.locale = settings.locale;
       });
+      console.log(msg+'end');
     },
     computed: {
       alertTitle(ctx) {
