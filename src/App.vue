@@ -20,6 +20,12 @@
                 class="ebt-nav-img"
               />
               <div>EBT-Vue3</div>
+              <div class="debug" 
+                v-if="volatile.routeCard?.id !== volatile.focusCard?.id"
+              >
+                {{volatile.routeCard?.id}} !==
+                {{volatile.focusCard?.id}}
+              </div>
             </div>
           </v-app-bar-title>
           

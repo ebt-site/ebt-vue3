@@ -33,6 +33,10 @@ export const useVolatileStore = defineStore('volatile', {
     return s;
   },
   getters: {
+    audioCard() {
+      let { focusCard } = this;
+      return focusCard?.context === EbtCard.CONTEXT_SUTTA ? focusCard : null;
+    },
     layout() {
       let root = document.documentElement;
       let onresize = ()=>{
