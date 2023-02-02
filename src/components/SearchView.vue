@@ -1,6 +1,7 @@
 <template>
   <v-sheet class="ebt-search">
     <v-autocomplete 
+      :id='searchId'
       v-model="search" 
       :append-icon="search ? 'mdi-magnify' : ''"
 
@@ -160,14 +161,20 @@
       },
     },
     mounted() {
-      let { card } = this;
-      logger.info('SearchView.mounted()', {card});
+      let { card, searchId } = this;
+      logger.info('SearchView.mounted()', {card, searchId});
       this.search = card.location[0];
       if (card.data == null) {
         nextTick(()=>this.onSearch());
       }
+      let autoFocusElt = document.getElementById(searchId);
+      autoFocusElt && (card.autoFocusId = searchId);
     },
     computed: {
+      searchId(ctx) {
+        let { card } = ctx;
+        return `${card.id}-search-id`;
+      },
       resultsClass(ctx) {
         let { card, search } = this;
         return !search || card.location[0] === search 

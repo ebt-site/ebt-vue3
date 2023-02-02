@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app >
     <v-main >
       <v-app-bar flat 
         :extension-height="collapsed ? 0 : 40"
@@ -120,6 +120,12 @@
       EbtProcessing,
     },
     methods: {
+      onHome(evt) {
+        let msg = 'App.onHome() ';
+        let { volatile } = this;
+        volatile.ebtChips && volatile.ebtChips.focus();
+        logger.debug(msg);
+      },
       allowLocalStorage() {
         let { settings } = this;
         settings.saveSettings();
@@ -146,10 +152,13 @@
     },
     async mounted() {
       let msg = 'App.mounted() ';
-      console.log(msg+'start');
       let { $vuetify, settings, $i18n, volatile } = this;
+
+      // wait for Settings to load
       settings.loaded = settings.loadSettings();
       await settings.loaded;
+
+      logger.info(msg);
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
       this.unsubSettings = settings.$subscribe((mutation, state) => {
@@ -159,7 +168,11 @@
         settings.saveSettings();
         $i18n.locale = settings.locale;
       });
-      console.log(msg+'end');
+      window.addEventListener('keydown', evt=>{
+        switch (evt.code) {
+          case 'Home': this.onHome(evt); break;
+        }
+      })
     },
     computed: {
       alertTitle(ctx) {
