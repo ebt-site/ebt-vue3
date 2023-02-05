@@ -66,7 +66,7 @@
           nextIndex = (index + delta + cards.length) % cards.length;
         }
         let card = cards[nextIndex];
-        volatile.focusCard = card;
+        volatile.setRoute(card);
         if (volatile.routeCard !== card) {
           nextTick(()=>{
             window.location.hash = card.routeHash();
@@ -101,18 +101,16 @@
         logger.info(`updateActive`, evt);
       },
       async onClickChip(card, cards) {
+        const msg = `EbtChips.onClickChip() ${card?.id} `;
         const settings = await useSettingsStore();
         const volatile = await useVolatileStore();
         if (document.activeElement !== volatile.ebtChips) {
           volatile.ebtChips.focus();
-          return;
         }
-        if (volatile.focusCard !== card) {
-          volatile.focusCard = card;
-          return;
-        }
+        card.isOpen = true;
         let cardHash = card.routeHash();
         if (cardHash !== window.location.hash) {
+          volatile.setRoute(card);
           settings.setRoute(cardHash);
           return;
         }

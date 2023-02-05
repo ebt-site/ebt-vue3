@@ -40,12 +40,7 @@
       await settings.loaded;
       let { params, fullPath }  = $route;
       let { cards } = settings;
-      let card = EbtCard.pathToCard({
-        path:fullPath, 
-        cards, 
-        defaultLang: settings.langTrans,
-        addCard: (opts) => settings.addCard(opts),
-      });
+      let card = settings.pathToCard(fullPath);
 
       logger.info(msg, this);
 
@@ -53,7 +48,8 @@
         //window.location.hash = '';
         logger.warn(msg+"UNEXPECTED", fullPath);
       } else {
-        volatile.routeCard = card;
+        //volatile.routeCard = card;
+        volatile.setRoute(card);
         nextTick(() => {
           volatile.focusCard = card;
           settings.scrollToCard(card);
@@ -128,7 +124,8 @@
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
-        volatile.routeCard = card;
+        //volatile.routeCard = card;
+        volatile.setRoute(card);
         this.bindAudioSutta(to.href);
         if (card == null) {
           settings.setRoute('');

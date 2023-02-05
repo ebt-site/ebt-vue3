@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { SuttaRef } from "scv-esm/main.mjs";
+import { default as EbtCard } from "../ebt-card.mjs";
 import { logger } from "log-instance";
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useSettingsStore } from "./settings.mjs";
 import Utils from "../utils.mjs";
 import * as Idb from "idb-keyval";
@@ -53,6 +54,17 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
+    setRoute(cardOrRoute='#/home') {
+      let settings = useSettingsStore();
+      let isCard = !(typeof cardOrRoute === 'string');
+      let route = isCard ? cardOrRoute.routeHash() : cardOrRoute;
+      let card = isCard ? cardOrRoute : settings.pathToCard(route);
+      if (window.location.hash !== route) {
+        window.location.hash = route;
+      }
+      this.routeCard = card;
+      this.focusCard = card;
+    },
     alert(eOrMsg, context) {
       let msg = eOrMsg;
       if (msg instanceof Error) {

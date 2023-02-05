@@ -175,8 +175,11 @@
         $i18n.locale = settings.locale;
       });
       window.addEventListener('keydown', evt=>{
+        let msg = `App.mounted() key:${evt.code}`;
         switch (evt.code) {
           case 'Home': this.onHome(evt); break;
+          case 'ArrowUp': evt.ctrlKey && this.onHome(evt); break;
+          //default: console.log(msg, evt); break;
         }
       })
     },

@@ -71,6 +71,23 @@ export const useSettingsStore = defineStore('settings', {
       }
       return this;
     },
+    pathToCard(fullPath) {
+      const msg = `settings.pathToCard(${fullPath}) `;
+      let { cards } = this;
+      let card = EbtCard.pathToCard({
+        path:fullPath, 
+        cards, 
+        defaultLang: this.langTrans,
+        addCard: (opts) => this.addCard(opts),
+      });
+      if (card) {
+        logger.debug(msg, card.context, card.id, );
+      } else { // should never happen
+        console.trace(msg);
+        logger.warn(msg+"=> null");
+      }
+      return card;
+    },
     saveSettings() {
       let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
       logger.logLevel = saved.logLevel;
@@ -162,12 +179,6 @@ export const useSettingsStore = defineStore('settings', {
         encodeURIComponent(search), 
         lang,
       ].join('/');
-    },
-    async fetchSutta(suttaRef) {
-      let url = this.suttaUrl(suttaRef);
-      logger.info("volatile.fetchSutta()", {suttaRef, url});
-      let sutta;
-      return sutta;
     },
     openCard(card) {
       if (card.IsOpen) {
