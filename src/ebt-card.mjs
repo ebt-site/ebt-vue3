@@ -113,11 +113,6 @@ export default class EbtCard {
     } else {
       logger.debug(msg+`(EXISTING))`, {args,card});
     } 
-    if (card && card.isOpen) {
-      if (cards.length > 1 && card.context !== CONTEXT_HOME) {
-        card.isOpen = true;
-      }
-    }
 
     return card;
   }

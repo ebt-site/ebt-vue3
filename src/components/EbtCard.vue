@@ -135,24 +135,10 @@
         settings.scrollToElementId(topId);
       },
       closeCard: (card, settings) => {
-        let { cards } = settings;
         card.isOpen = false;
-        if (window.location.hash === card.routeHash()) {
-          let openCard = cards.reduce((a,c)=>{
-            if (c.isOpen) {
-              if (!a || !a.visible && c.visible) {
-                a = c;
-              }
-            }
-            return a;
-          }, null);
-          if (openCard == null) {
-            openCard = cards.reduce((a,c)=> a || (
-              c.context === EbtCard.CONTEXT_HOME ? c : a
-            ), null);
-          }
-          settings.setRoute(openCard.routeHash());
-        }
+        let volatile = useVolatileStore();
+        let { ebtChips } = volatile;
+        ebtChips && ebtChips.focus();
       },
       addIntersectionObserver() {
         let { card, observer } = this;
