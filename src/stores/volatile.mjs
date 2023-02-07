@@ -22,7 +22,6 @@ const INITIAL_STATE = {
   suttas,
   showSettings,
   btnSettings: ref(undefined),
-  focusCard: ref(undefined),
   routeCard: ref(undefined),
   ebtChips: ref(undefined),
 };
@@ -35,8 +34,8 @@ export const useVolatileStore = defineStore('volatile', {
   },
   getters: {
     audioCard() {
-      let { focusCard } = this;
-      return focusCard?.context === EbtCard.CONTEXT_SUTTA ? focusCard : null;
+      let { routeCard } = this;
+      return routeCard?.context === EbtCard.CONTEXT_SUTTA ? routeCard : null;
     },
     layout() {
       let root = document.documentElement;
@@ -63,7 +62,6 @@ export const useVolatileStore = defineStore('volatile', {
         window.location.hash = route;
       }
       this.routeCard = card;
-      this.focusCard = card;
     },
     alert(eOrMsg, context) {
       let msg = eOrMsg;

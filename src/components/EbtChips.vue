@@ -57,12 +57,12 @@
       onNextChip(delta) {
         let msg = `EbtChips.onNextChip(${delta})`;
         let { volatile, settings } = this;
-        let { focusCard } = volatile;
+        let { routeCard } = volatile;
         let { cards } = settings;
         let nextIndex = 0;
 
-        if (focusCard) {
-          let index = cards.indexOf(focusCard);
+        if (routeCard) {
+          let index = cards.indexOf(routeCard);
           nextIndex = (index + delta + cards.length) % cards.length;
         }
         let card = cards[nextIndex];
@@ -76,11 +76,11 @@
       async onTab(evt) {
         let msg = "EbtChips.onTab()";
         let { volatile, settings } = this;
-        let { focusCard } = volatile;
-        if (focusCard) {
-          settings.openCard(focusCard);
+        let { routeCard } = volatile;
+        if (routeCard) {
+          settings.openCard(routeCard);
           nextTick(()=>{
-            let tab1 = document.getElementById(focusCard.autoFocusId);
+            let tab1 = document.getElementById(routeCard.autoFocusId);
             tab1 && tab1.focus();
           });
         }
@@ -140,7 +140,7 @@
         card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
         chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
         card.isOpen && card.visible && chipClass.push('card-in-view');
-        card === volatile.focusCard && chipClass.push('chip-focus-card');
+        card === volatile.routeCard && chipClass.push('chip-focus-card');
         return chipClass.join(' ');
       },
     },

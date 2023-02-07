@@ -51,7 +51,7 @@
         //volatile.routeCard = card;
         volatile.setRoute(card);
         nextTick(() => {
-          volatile.focusCard = card;
+          volatile.setRoute(card);
           settings.scrollToCard(card);
           this.bindAudioSutta(window.location.hash);
         });

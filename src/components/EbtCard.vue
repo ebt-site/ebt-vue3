@@ -105,12 +105,7 @@
     methods: {
       onClickCard(evt) {
         let { volatile, card } = this;
-        volatile.focusCard = card;
-        if (volatile.routeCard !== card) {
-          nextTick(()=>{
-            window.location.hash = card.routeHash();
-          });
-        }
+        volatile.setRoute(card);
       },
       onBackTabOut(evt) {
         let { volatile } = this;
@@ -120,7 +115,7 @@
         let { volatile, card } = this;
         let { location, id, context } = card;
         let chipTitle = card.chipTitle();
-        volatile.focusCard = card;
+        volatile.setRoute(card);
       },
       clickDelete() {
         let { card, settings } = this;
@@ -209,7 +204,7 @@
       },
       cardClass(ctx) {
         let { settings, volatile, card } = ctx;
-        return settings.cardsOpen === 1 || volatile.focusCard != card
+        return settings.cardsOpen === 1 || volatile.routeCard != card
           ? 'ebt-card'
           : 'ebt-card ebt-card-current';
       },
