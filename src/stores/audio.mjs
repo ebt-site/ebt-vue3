@@ -55,6 +55,7 @@ export const useAudioStore = defineStore('audio', {
       audioSutta: ref(null),
       audioScid: ref(''),
       audioFocused: ref(false),
+      mainContext: ref(null),
     }
   },
   getters: {
@@ -69,19 +70,20 @@ export const useAudioStore = defineStore('audio', {
         segAudioDb = null;
         soundDb = null;
         console.log(msg, {reqSoundDb, reqSegAudioDb});
-        nextTick(()=>window.location.reload());
-      } catch(e) {
+        nextTick(()=>window.location.reload()); } catch(e) {
         logger.warn(msg + 'ERROR', e.message);
         throw e;
       }
     },
-    playClick(audioContext=this.getAudioContext()) {
+    playClick(audioContext) {
+      const msg = 'audio.playClick() ';
       let settings = useSettingsStore();
       let volume = settings.clickVolume;
       let url =  volume ? `audio/click${volume}.mp3` : null;
       return this.playUrl(url, {audioContext});
     },
-    playBell(audioContext=this.getAudioContext()) {
+    playBell(audioContext) {
+      const msg = 'audio.playBell() ';
       let settings = useSettingsStore();
       let { ips } = settings;
       let ipsChoice = EbtSettings.IPS_CHOICES.filter(c=>c.value===ips)[0];
@@ -192,17 +194,25 @@ export const useAudioStore = defineStore('audio', {
       return url;
     },
     playUrl(url, opts={}) {
-      let { audioContext=this.getAudioContext() } = opts;
+      let { audioContext } = opts;
       return this.playUrlAsync(url, {audioContext});
     },
     async playUrlAsync(url, opts) {
-      let { audioContext=this.getAudioContext() } = opts;
+      const msg = 'audio.playUrlAsync() ';
       if (url == null) {
         return null;
       }
 
+      let { audioContext } = opts;
+      let tempContext = audioContext == null ? this.getAudioContext() : null;
+      audioContext = audioContext || tempContext;
+
       let arrayBuffer = await this.fetchArrayBuffer(url, opts);
       let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
+      tempContext && promise.then(()=>{
+        tempContext.close();
+        console.log(msg+'tempContext.close()');
+      });
       return promise;
     },
     async fetchArrayBuffer(url, opts={}) {

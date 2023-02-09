@@ -4,6 +4,8 @@
     @keydown.tab.exact.prevent="onTab"
     @keydown.right.exact.prevent="onNextChip(1)"
     @keydown.left.exact.prevent="onNextChip(-1)"
+    @keydown.space.exact.prevent="onSpace"
+    @keydown.enter.exact.prevent="onEnter"
   >
     <v-chip-group v-model="filteredChips" column>
       <div v-for="card in settings.cards" :key="card.id">
@@ -49,6 +51,14 @@
       volatile.ebtChips = document.getElementById('ebt-chips');
     },
     methods: {
+      onSpace(evt) {
+        const msg = 'App.onSpace() ';
+        console.log(msg);
+      },
+      onEnter(evt) {
+        const msg = 'App.onEnter() ';
+        console.log(msg);
+      },
       onNextChip(delta) {
         let msg = `EbtChips.onNextChip(${delta})`;
         let { volatile, settings } = this;

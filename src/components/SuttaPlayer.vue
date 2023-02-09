@@ -36,7 +36,7 @@
         </div>
         <v-btn id="audio-play-to-end"
           icon density="compact"
-          @click="clickPlay" 
+          @click="clickPlayToEnd" 
           @keydown="audioKey"
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-to-end')"
@@ -172,7 +172,6 @@
 
         logger.debug("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
-        audio.playClick();
         do {
           completed = await this.playSegment(AUDIO_PLAYALL);
         } while(completed && (await this.next()));
@@ -182,8 +181,8 @@
         }
         this.stopAudio(true);
       },
-      clickPlay() {
-        let msg = 'SuttaPlayer.clickPlay() ';
+      clickPlayToEnd() {
+        let msg = 'SuttaPlayer.clickPlayToEnd() ';
         let { audio } = this;
 
         if (this.playPause()) {
