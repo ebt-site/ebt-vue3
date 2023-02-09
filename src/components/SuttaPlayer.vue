@@ -87,7 +87,6 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         audioContext: ref(undefined),
-        audioFocus: 'audio-play-pause',
         idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
@@ -98,9 +97,6 @@
         AUDIO_PLAYALL,
       }
     },
-    updated() {
-      this.setAudioFocus();
-    },
     methods: {
       onAudioBlur() {
         let { audio } = this;
@@ -108,14 +104,7 @@
       },
       onAudioFocus(audioFocus) {
         let { audio, } = this;
-        this.audioFocus = audioFocus;
         audio.audioFocused = true;
-      },
-      setAudioFocus() {
-        let { audioFocus } = this;
-        let elt = document.getElementById(audioFocus);
-        elt?.focus();
-        logger.debug("SuttaPlayer.setAudioFocus() audioFocus", elt);
       },
       audioKey(evt) {
         if (evt.code === "ArrowDown") {
@@ -241,7 +230,6 @@
         let { routeCard, settings, } = this;
         let eltId = routeCard.routeHash();
         settings.scrollToElementId(eltId);
-        this.setAudioFocus();
       },
       incrementSegment(delta) {
         let { settings, routeCard, audioSutta, } = this;
