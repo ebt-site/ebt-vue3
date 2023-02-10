@@ -86,7 +86,6 @@
         suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        audioContext: ref(undefined),
         idbAudio: ref(undefined),
         pliAudioUrl: ref(URL_NOAUDIO),
         transAudioUrl: ref(URL_NOAUDIO),
@@ -133,12 +132,13 @@
       createIdbAudio() {
         // NOTE: Caller must UI callback (iOS restriction)
         let { audio } = this;
-        let audioContext =  this.audioContext = audio.getAudioContext();
+        let audioContext =  audio.mainContext = audio.getAudioContext();
         let idbAudio = this.idbAudio = new IdbAudio({audioContext});
         return idbAudio;
       },
       playPause() {
-        let { audio, audioContext, idbAudio } = this;
+        let { audio, idbAudio } = this;
+        let { mainContext:audioContext } = audio;
         audio.playClick();
 
         if (idbAudio?.audioSource) {
@@ -151,7 +151,7 @@
         }
 
         audioContext && audioContext.close();
-        this.audioContext = audioContext = audio.getAudioContext();
+        audio.audioContext = audioContext = audio.getAudioContext();
         return false;
       },
       clickPlayPause() {
@@ -314,7 +314,6 @@
         let { segment:seg, langTrans } = segAudio;
         let { 
           audio,
-          audioContext,
           routeCard, 
           audioScid,
           settings, 
