@@ -72,9 +72,6 @@
   const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3";
   const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
   const LENGTH_NOAUDIO = 5000; // actually 3761
-  const AUDIO_INACTIVE = 0;
-  const AUDIO_PLAY1 = 1;
-  const AUDIO_PLAYALL = 2;
 
   export default {
     props: {
@@ -91,9 +88,6 @@
         transAudioUrl: ref(URL_NOAUDIO),
         audioElapsed: ref(undefined),
         segmentPlaying: ref(false),
-        AUDIO_INACTIVE,
-        AUDIO_PLAY1,
-        AUDIO_PLAYALL,
       }
     },
     methods: {
@@ -118,7 +112,7 @@
         let { audio, audioScid } = this;
 
         logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
-        let completed = await this.playSegment(AUDIO_PLAY1);
+        let completed = await this.playSegment();
         if (!completed) {
           // interrupted
         } else if (await this.next()) {
@@ -173,7 +167,7 @@
         logger.debug("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed = false;
         do {
-          completed = await this.playSegment(AUDIO_PLAYALL);
+          completed = await this.playSegment();
         } while(completed && (await this.next()));
         if (completed) {
           logger.debug("SuttaPlayer.playToEnd() END");
