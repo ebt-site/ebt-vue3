@@ -5,26 +5,6 @@
 
       {{message}}
       <div class="buttons">
-        <v-btn @click="clickTestLoadSettings" variant="outlined">
-          Test Load Settings
-        </v-btn>
-        <v-btn @click="clickCards" variant="outlined">
-          Cards
-        </v-btn>
-        <v-btn @click="clickPlayScid" variant="outlined">
-          Play {{scid}}/{{lang}}
-        </v-btn>
-        <v-btn @click="clickPause" variant="outlined">
-          Pause {{audioContextState}} {{audioContextCurrentTime.toFixed(2)}}
-        </v-btn>
-        <v-text-field label="scid" v-model="scid" />
-        <v-text-field label="lang" v-model="lang" />
-        <v-btn @click="clickPlayIdbAudio" variant="outlined">
-          IdbAudio Play {{scid}}/{{lang}}
-        </v-btn>
-        <v-btn @click="clickPauseIdbAudio" variant="outlined">
-          IdbAudio Pause {{audioContextState}} {{audioContextCurrentTime.toFixed(2)}}
-        </v-btn>
         <v-btn @click="clickBell" variant="outlined">
           Audio Bell 
         </v-btn>
@@ -54,13 +34,7 @@
         settings: useSettingsStore(),
         audio: useAudioStore(),
         volatile: useVolatileStore(),
-        scid: ref('sn1.1:0.1'),
-        lang: ref('pli'),
         message: ref(''),
-        audioContext: ref(undefined),
-        audioContextState: ref('unknown'),
-        audioContextCurrentTime: ref(-1),
-        idbAudio: undefined,
       }
     },
     components: {
@@ -70,91 +44,9 @@
         this.message = msg;
         logger.info(msg);
       },
-      async playScid(audioContext) {
-        const msg = 'DebugView.playScid() ';
-        let { audio, volatile, settings, scid, lang, $t } = this;
-        let { waiting } = volatile;
-        try {
-          volatile.waitBegin($t('ebt.loadingAudio'));
-          this.updateMessage(`${msg} langAudioUrl(${scid}, ${lang})`);
-          let url = await audio.langAudioUrl({idOrRef:scid, lang});
-          volatile.waitEnd();
-          if (url) {
-            this.updateMessage(`${msg} fetchArrayBuffer() url:${url}`);
-            let arrayBuffer = await audio.fetchArrayBuffer(url);
-            this.updateMessage(`${msg} playArrayBuffer ${arrayBuffer.byteLength}B`);;
-            await audio.playArrayBuffer({arrayBuffer, audioContext});
-            this.audioContextState = audioContext.state;
-            this.audioContextCurrentTime = audioContext.currentTime;
-            this.updateMessage("playScid() DONE");
-          } else {
-            this.updateMessage(`${msg} langAudioUrl(${scid}, ${lang}) => null`);
-          }
-        } catch(e) {
-          volatile.alert(e);
-        } finally {
-          volatile.waiting > waiting && volatile.waitEnd();
-        }
-      },
       clickBell() {
         let { audio } = this;
         audio.playBell();
-      },
-      async clickPause() {
-        let { audioContext } = this;
-        switch (audioContext.state) {
-          case 'suspended':
-            await audioContext.resume();
-            break;
-          case 'running':
-            await audioContext.suspend();
-            break;
-          default:
-          case 'closed':
-            logger.warn("Debug.clickPause() IGNORED:", audioContext.state); 
-            break;
-        }
-        this.audioContextState = audioContext.state;
-        this.audioContextCurrentTime = audioContext.currentTime;
-      },
-      clickPlayScid() {
-        let { audio } = this;
-        let audioContext = audio.getAudioContext();
-        this.audioContext = audioContext;
-        audioContext.resume();
-        this.playScid(audioContext);
-      },
-      async playIdbAudio(audioContext) {
-        let { audio, volatile, settings, scid, lang, $t } = this;
-        try {
-          let src = await audio.langAudioUrl({idOrRef:scid, lang});
-          let idbAudio = new IdbAudio({src, audioContext});
-          this.idbAudio = idbAudio;
-          await idbAudio.play();
-        } catch(e) {
-          console.log(e);
-        }
-      },
-      clickPlayIdbAudio() {
-        let audioContext = new AudioContext();
-        this.audioContext = audioContext;
-        this.playIdbAudio(audioContext);
-      },
-      clickPauseIdbAudio() {
-        let { idbAudio } = this;
-        if (idbAudio.paused) {
-          idbAudio.play();
-        } else {
-          idbAudio.pause();
-        }
-      },
-      clickTestLoadSettings() {
-        let { settings } = this;
-        settings.loadSettings();
-      },
-      clickCards() {
-        let { settings } = this;
-        console.log("DEBUG clickCards()", JSON.stringify(settings.cards, null, 2));
       },
     },
     mounted() {
