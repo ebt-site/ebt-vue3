@@ -62,6 +62,7 @@ export const useVolatileStore = defineStore('volatile', {
         window.location.hash = route;
       }
       this.routeCard = card;
+      return card;
     },
     alert(eOrMsg, context) {
       let msg = eOrMsg;

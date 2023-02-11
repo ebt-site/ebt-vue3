@@ -3,7 +3,7 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("TESTTESTdefault ctor en", async () => {
+  it("default ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
     var ebt = new Settings();
     should(ebt).properties({

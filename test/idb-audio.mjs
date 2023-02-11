@@ -139,7 +139,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     setActivePinia(createPinia());
     global.fetch = fetch;
   });
-  it("TESTTESTdefault ctor", ()=>{
+  it("default ctor", ()=>{
     let audio = new IdbAudio();
     should(audio.src).equal(IdbAudio.URL_NO_AUDIO);
     should(audio.currentTime).equal(0);
@@ -156,7 +156,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(mockAudioContext.nResume).equal(1);
     should(mockAudioContext.state).equal('running');
   });
-  it("TESTTESTcustom ctor", ()=>{
+  it("custom ctor", ()=>{
     let src = IdbAudio.URL_NO_AUDIO + '?' + Date.now();
     let created = Date.now();
     let preload = true;
@@ -197,7 +197,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     let currentTime = audio.currentTime;
     should(audio.currentTime).equal(currentTime);
   });
-  it("TESTTESTduration", async ()=>{
+  it("duration", async ()=>{
     let audioStore = useAudioStore();
     let src = IdbAudio.URL_NO_AUDIO + '?' + Math.random();
     let preload = true;
@@ -234,7 +234,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(abuf.byteLength).above(136000).below(139600);
     should(abuf).instanceOf(ArrayBuffer);
   });
-  it("TESTTESTclear()", async()=>{
+  it("clear()", async()=>{
     let audio = new IdbAudio();
     await new Promise(resolve=>setTimeout(resolve,5));
 
@@ -252,7 +252,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.audioSource).equal(null);
     should(audio.currentTime).equal(0);
   });
-  it("TESTTESTcurrentTime", async ()=>{
+  it("currentTime", async ()=>{
     let audio = new IdbAudio();
 
     // Initial state

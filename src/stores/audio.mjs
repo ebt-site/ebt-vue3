@@ -341,6 +341,66 @@ export const useAudioStore = defineStore('audio', {
         throw e;
       }
     },
+    async bindSegmentAudio(args={}) {
+      const msg = 'sutta.bindSegmentAudio() ';
+      let { 
+        $t=(t=>t),
+        volatile=useVolatileStore(),
+        settings=useSettingsStore(),
+      } = args;
+      let { routeCard } = volatile;
+      if (routeCard == null) {
+        return null;
+      }
+      let result;
+      let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
+      let [ scid, lang, author ] = routeCard?.location || {};
+      let suttaRef = SuttaRef.create(scid, langTrans);
+      let { sutta_uid, segnum } = suttaRef;
+      try {
+        volatile.waitBegin($t('ebt.loadingAudio'));
+
+        let segAudio = await this.getSegmentAudio(suttaRef);
+        let { segment } = segAudio;
+
+        if (settings.speakPali) {
+          if (segment.pli) {
+            this.pliAudioUrl = [
+              serverUrl,
+              'audio',
+              sutta_uid,
+              'pli',
+              author,
+              vnameRoot,
+              segment.audio.pli,
+            ].join('/');
+          } else {
+            this.pliAudioUrl = URL_NOAUDIO;
+          }
+        }
+        if (settings.speakTranslation) {
+          let langText = segment[lang];
+          if (langText) {
+            this.transAudioUrl = [
+              serverUrl,
+              'audio',
+              sutta_uid,
+              lang,
+              author,
+              vnameTrans,
+              segment.audio[lang],
+            ].join('/');
+          } else {
+            this.transAudioUrl = URL_NOAUDIO;
+          }
+        }
+        logger.debug(msg + segment.scid);
+        result = segAudio;
+      } finally {
+        volatile.waitEnd();
+      }
+      return result;
+    },
   },
   getters: {
   },

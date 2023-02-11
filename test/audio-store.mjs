@@ -7,6 +7,7 @@ import fetch from "node-fetch";
 logger.logLevel = 'warn';
 
 import { useSettingsStore } from '../src/stores/settings.mjs';
+import { useVolatileStore } from '../src/stores/volatile.mjs';
 import { useAudioStore } from '../src/stores/audio.mjs';
 import { default as IdbSutta } from "../src/idb-sutta.mjs";
 import * as Idb from "idb-keyval";
@@ -16,7 +17,11 @@ const THIG1_1_SOMA = SuttaRef.create('thig1.1/en/soma');
 
 // mock global environment
 import "fake-indexeddb/auto";
-global.window = {}
+global.window = {
+  location: {
+    hash: undefined,
+  },
+}
 import 'mock-local-storage'
 
 const MSSEC = 1000;
@@ -69,7 +74,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       vnameRoot,
     ].join('/'));
   });
-  it("TESTTESTlangAudioUrl() segAudio", async()=>{
+  it("langAudioUrl() segAudio", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;
@@ -179,12 +184,34 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
       guid,
     ].join('/'));
   });
-  it("TESTTESTfetchArrayBuffer()", async()=>{
+  it("fetchArrayBuffer()", async()=>{
     let audio = useAudioStore();
     let lang = 'pli';
     let idOrRef = SuttaRef.create('thig1.1:0.1/en/sujato');
     let url = await audio.langAudioUrl({idOrRef, lang});
     let abuf = await audio.fetchArrayBuffer(url);
     should(abuf.byteLength).above(11640).below(11650);
+  });
+  it("TESTTESTbindSegmentAudio()", async()=>{
+    let audio = useAudioStore();
+    let volatile = useVolatileStore();
+    let sutta_uid = 'thig1.1';
+    let segnum = '0.2';
+    let lang = 'en';
+    let author = 'sujato';
+    let idOrRef = `${sutta_uid}:${segnum}/${lang}/${author}`;
+    let suttaRef = SuttaRef.create(idOrRef);
+    global.window.location = {hash:null};
+    let card = volatile.setRoute(`#/sutta/${idOrRef}`);
+    let segAudio = await audio.bindSegmentAudio();
+    let { vnameRoot, vnameTrans, langTrans } = segAudio;
+    let url = `https://s1.sc-voice.net/scv/audio/${sutta_uid}`;
+    let pliGuid = '44e4c425d93b9146ef5b8b16cbd8bac5';
+    should(audio.pliAudioUrl)
+      .equal(`${url}/pli/${author}/${vnameRoot}/${pliGuid}`);
+    let transGuid = '9767a87089cddaaecc32e37d20531fb9';
+    should(langTrans).equal(lang);
+    should(audio.transAudioUrl)
+      .equal(`${url}/${langTrans}/${author}/${vnameTrans}/${transGuid}`);
   });
 })
