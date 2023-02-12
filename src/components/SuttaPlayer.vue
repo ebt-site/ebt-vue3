@@ -30,7 +30,7 @@
             {{audioScid}}
           </div>
           <div v-if="audioPlaying" class="audioElapsed">
-            {{ audioElapsed.toFixed(1) }} / 
+            {{ audio.audioElapsed.toFixed(1) }} / 
             {{ audioDuration.toFixed(1) }}
           </div>
         </div>
@@ -58,7 +58,6 @@
   import { default as EbtSettings } from "../ebt-settings.mjs";
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as IdbAudio } from '../idb-audio.mjs';
-  import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useAudioStore } from '../stores/audio.mjs';
@@ -80,12 +79,9 @@
     setup() {
       return {
         audio: useAudioStore(),
-        suttas: useSuttasStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         idbAudio: ref(undefined),
-        audioElapsed: ref(undefined),
-        segmentPlaying: ref(false),
       }
     },
     methods: {
@@ -239,9 +235,11 @@
         logger.debug('SuttaPlayer.audioEnded', {evt});
       },
       stopAudio(stopSegment) {
-        logger.debug(`SuttaPlayer.stopAudio()`, {stopSegment});
+        const msg = 'SuttaPlayer.stopAudio() ';
+        let { audio } = this;
+        logger.debug(msg, {stopSegment});
         let stopped = false;
-        stopSegment && (this.segmentPlaying = false);
+        stopSegment && (audio.segmentPlaying = false);
         if (this.audioResolve) {
           this.audioResolve();
           this.audioResolve = undefined;
@@ -260,35 +258,34 @@
         let segAudio = await audio.bindSegmentAudio();
         let { segment:seg, langTrans } = segAudio;
         let that = this;
-        const IDB_AUDIO = 1;
 
         logger.debug(`${msg} ${audioScid}`);
 
         let interval;
         try {
-          this.audioElapsed = -2;
+          audio.audioElapsed = -2;
           interval = setInterval( ()=>{
             let currentTime = this.idbAudio?.currentTime || -1;
-            this.audioElapsed = currentTime/1000;
+            audio.audioElapsed = currentTime/1000;
             if (this.audioScid !== audioScid) {
               clearInterval(interval);
               logger.info(msg + `interrupt`, 
                 `${audioScid}=>${this.audioScid}`);
-              this.segmentPlaying = false;
+              audio.segmentPlaying = false;
               idbAudio.clear();
             }
           }, 100);
-          this.segmentPlaying = true;
+          audio.segmentPlaying = true;
 
           let idOrRef = audioScid;
-          if (this.segmentPlaying && settings.speakPali && seg.pli) {
+          if (audio.segmentPlaying && settings.speakPali && seg.pli) {
             let src = await audio.pliAudioUrl;
             idbAudio.src = src;
             logger.debug(`${msg} pliUrl:`, src);
             await idbAudio.play();
           }
 
-          if (this.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
+          if (audio.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
             let lang = settings.langTrans;
             let src = await audio.transAudioUrl;
             idbAudio.src = src;
@@ -302,16 +299,16 @@
           interval = undefined;
           logger.warn(msg, e);
         } finally {
-          this.audioElapsed = -1;
+          audio.audioElapsed = -1;
         }
 
-        logger.debug(`${msg} segmentPlaying`, this.segmentPlaying);
+        logger.debug(`${msg} segmentPlaying`, audio.segmentPlaying);
 
-        if (!this.segmentPlaying) {
+        if (!audio.segmentPlaying) {
           return false; // interrupted
         }
 
-        this.segmentPlaying = false;
+        audio.segmentPlaying = false;
         return true; // completed
       },
     },

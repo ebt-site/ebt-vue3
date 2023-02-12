@@ -56,6 +56,8 @@ export const useAudioStore = defineStore('audio', {
       audioScid: ref(''),
       audioFocused: ref(false),
       mainContext: ref(null),
+      segmentPlaying: ref(false),
+      audioElapsed: ref(0),
     }
   },
   getters: {
