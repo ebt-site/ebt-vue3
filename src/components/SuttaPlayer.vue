@@ -84,8 +84,6 @@
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
         idbAudio: ref(undefined),
-        pliAudioUrl: ref(URL_NOAUDIO),
-        transAudioUrl: ref(URL_NOAUDIO),
         audioElapsed: ref(undefined),
         segmentPlaying: ref(false),
       }
@@ -250,62 +248,8 @@
         }
         return stopped;
       },
-      async bindSegmentAudio() {
-        const msg = 'SuttaPlayer.bindSegmentAudio() ';
-        let { $t, volatile, settings, routeCard, audio } = this;
-        let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
-        let [ scid, lang, author ] = routeCard.location;
-        let suttaRef = SuttaRef.create(scid, langTrans);
-        let { sutta_uid, segnum } = suttaRef;
-        let result;
-        try {
-          volatile.waitBegin($t('ebt.loadingAudio'));
-
-          let segAudio = await audio.getSegmentAudio(suttaRef);
-          let { segment } = segAudio;
-
-          if (settings.speakPali) {
-            if (segment.pli) {
-              this.pliAudioUrl = [
-                serverUrl,
-                'audio',
-                sutta_uid,
-                'pli',
-                author,
-                vnameRoot,
-                segment.audio.pli,
-              ].join('/');
-            } else {
-              this.pliAudioUrl = URL_NOAUDIO;
-            }
-          }
-          if (settings.speakTranslation) {
-            let langText = segment[lang];
-            if (langText) {
-              this.transAudioUrl = [
-                serverUrl,
-                'audio',
-                sutta_uid,
-                lang,
-                author,
-                vnameTrans,
-                segment.audio[lang],
-              ].join('/');
-            } else {
-              this.transAudioUrl = URL_NOAUDIO;
-            }
-          }
-          logger.debug(msg + segment.scid);
-          result = segAudio;
-        } finally {
-          volatile.waitEnd();
-        }
-        return result;
-      },
       async playSegment() {
         const msg = `SuttaPlayer.playSegment() `;
-        let segAudio = await this.bindSegmentAudio();
-        let { segment:seg, langTrans } = segAudio;
         let { 
           audio,
           routeCard, 
@@ -313,6 +257,8 @@
           settings, 
           idbAudio,
         } = this;
+        let segAudio = await audio.bindSegmentAudio();
+        let { segment:seg, langTrans } = segAudio;
         let that = this;
         const IDB_AUDIO = 1;
 
@@ -336,7 +282,7 @@
 
           let idOrRef = audioScid;
           if (this.segmentPlaying && settings.speakPali && seg.pli) {
-            let src = await audio.langAudioUrl({idOrRef, lang:'pli', segAudio});
+            let src = await audio.pliAudioUrl;
             idbAudio.src = src;
             logger.debug(`${msg} pliUrl:`, src);
             await idbAudio.play();
@@ -344,7 +290,7 @@
 
           if (this.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
             let lang = settings.langTrans;
-            let src = await audio.langAudioUrl({idOrRef, lang, segAudio});
+            let src = await audio.transAudioUrl;
             idbAudio.src = src;
             logger.debug(`${msg} transUrl:`, src);
             await idbAudio.play();
