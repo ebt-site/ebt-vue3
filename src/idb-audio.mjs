@@ -88,8 +88,14 @@ export default class IdbAudio {
   }
 
   get paused() {
-    let { audioContext } = this;
+    let { audioContext, audioSource } = this;
     return audioContext.state === 'suspended';
+  }
+
+  get isPlaying() {
+    let { audioContext, audioBuffer } = this;
+    return audioContext?.state === 'running' &&
+      audioBuffer != null;
   }
 
   clear() {

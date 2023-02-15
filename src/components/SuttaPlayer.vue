@@ -23,15 +23,15 @@
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-pause')"
         >
-          <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
+          <v-icon size="small" 
+            :icon="idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
           <div @click="onClickPlayScid">
             {{audioScid}}
           </div>
-          <div v-if="audioPlaying" class="audioElapsed">
-            {{ audio.audioElapsed.toFixed(1) }} / 
-            {{ audioDuration.toFixed(1) }}
+          <div v-if="audioDuration" class="audioElapsed">
+            {{ audioElapsed }} / {{ audioDuration }}
           </div>
         </div>
         <v-btn id="audio-play-to-end"
@@ -41,7 +41,8 @@
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-to-end')"
         >
-          <v-icon size="small" :icon="audioPlaying ? 'mdi-pause' : 'mdi-play'" />
+          <v-icon size="small" 
+            :icon="idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play'" />
         </v-btn>
         <v-btn icon @click="clickNext" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-next" />
@@ -117,13 +118,6 @@
         }
         this.stopAudio(true);
       },
-      createIdbAudio() {
-        // NOTE: Caller must UI callback (iOS restriction)
-        let { audio } = this;
-        let audioContext =  audio.mainContext = audio.getAudioContext();
-        let idbAudio = this.idbAudio = new IdbAudio({audioContext});
-        return idbAudio;
-      },
       playPause() {
         let { audio, idbAudio } = this;
         let { mainContext:audioContext } = audio;
@@ -152,7 +146,7 @@
         }
 
         logger.debug(msg + 'playing');
-        this.idbAudio = this.createIdbAudio();
+        this.idbAudio = audio.createIdbAudio();
         this.playOne();
       },
       async playToEnd() {
@@ -179,7 +173,7 @@
         }
 
         logger.debug(msg + 'playing');
-        this.idbAudio = this.createIdbAudio();
+        this.idbAudio = audio.createIdbAudio();
         this.playToEnd();
       },
       async back() {
@@ -191,19 +185,14 @@
         return this.back();
       },
       async next() {
-        let { audioPlaying, } = this;
         let incremented = false;
-        //if (audioPlaying) {
-          //this.stopAudio(true);
-        //} else {
-          let incRes = this.incrementSegment(1);
-          if (incRes) {
-            let { iSegment } = incRes;
-            incremented = true;
-          } else {
-            logger.debug("SuttaPlayer.next() END");
-          }
-        //}
+        let incRes = this.incrementSegment(1);
+        if (incRes) {
+          let { iSegment } = incRes;
+          incremented = true;
+        } else {
+          logger.debug("SuttaPlayer.next() END");
+        }
         await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
 
         return incremented;
@@ -233,6 +222,12 @@
       audioEnded(evt) {
         this.stopAudio(false);
         logger.debug('SuttaPlayer.audioEnded', {evt});
+      },
+      audioPlaying() {
+        let { audio } = this;
+        let { idbAudio, mainContext } = audio;
+        return !!audio?.idbAudio?.audioSource && 
+          audio?.mainContext?.state === 'running';
       },
       stopAudio(stopSegment) {
         const msg = 'SuttaPlayer.stopAudio() ';
@@ -311,13 +306,18 @@
         audio.segmentPlaying = false;
         return true; // completed
       },
+      isRunning() {
+        return this.audio.mainContext?.state === 'running';
+      },
     },
     computed: {
-      audioDuration(ctx) {
-        return ctx.idbAudio?.audioBuffer?.duration || 0;
+      audioElapsed(ctx) {
+        let elapsed = ctx.audio.audioElapsed;
+        return elapsed.toFixed(1);
       },
-      audioPlaying(ctx) {
-        return !!ctx.idbAudio?.audioSource;
+      audioDuration(ctx) {
+        let duration = ctx.audio.audioDuration();
+        return typeof duration === 'number' ? duration.toFixed(1) : null
       },
       audioScid(ctx) {
         return ctx.audio.audioScid;

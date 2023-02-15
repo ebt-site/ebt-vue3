@@ -5,6 +5,7 @@ import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';
 import { default as EbtSettings } from '../ebt-settings.mjs';
 import { default as IdbSutta } from '../idb-sutta.mjs';
+import { default as IdbAudio } from '../idb-audio.mjs';
 import { ref, nextTick } from 'vue';
 import * as Idb from 'idb-keyval';
 
@@ -58,11 +59,22 @@ export const useAudioStore = defineStore('audio', {
       mainContext: ref(null),
       segmentPlaying: ref(false),
       audioElapsed: ref(0),
+      idbAudio: ref(undefined),
     }
   },
   getters: {
   },
   actions: {
+    audioDuration() {
+      let duration = this.idbAudio?.audioBuffer?.duration;
+      return duration;
+    },
+    createIdbAudio() {
+      // NOTE: Caller must UI callback (iOS restriction)
+      let audioContext = this.mainContext = this.getAudioContext();
+      let idbAudio = this.idbAudio = new IdbAudio({audioContext});
+      return idbAudio;
+    },
     async clearSoundCache() {
       const msg = 'audio.clearSoundCache() ';
       try {

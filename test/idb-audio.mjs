@@ -145,6 +145,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.currentTime).equal(0);
     should(audio.duration).equal(0);
     should(audio.paused).equal(false);
+    should(audio.isPlaying).equal(false);
     should(audio.preload).equal(false);
     should(audio.audioBuffer).equal(null);
     should(audio.audioSource).equal(null);
@@ -177,11 +178,12 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
       should(e.name).equal('InvalidStateError');
     }
   });
-  it("pause()", async()=>{
+  it("TESTTESTpause()", async()=>{
     let audio = new IdbAudio();
 
     // not playing
     should(audio.paused).equal(false);
+    should(audio.isPlaying).equal(false);
     should(audio.currentTime).equal(0);
     should(audio.currentTime).equal(0); // Double-check
 
@@ -192,8 +194,10 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     await new Promise(resolve=>setTimeout(resolve,5));
     should(audio.currentTime).above(playTime);
     should(audio.paused).equal(false);
+    should(audio.isPlaying).equal(true);
     audio.pause();
     should(audio.paused).equal(true);
+    should(audio.isPlaying).equal(false);
     let currentTime = audio.currentTime;
     should(audio.currentTime).equal(currentTime);
   });
