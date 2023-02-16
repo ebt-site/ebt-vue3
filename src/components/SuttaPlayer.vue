@@ -95,11 +95,12 @@
         audio.audioFocused = true;
       },
       audioKey(evt) {
+        let { audio } = this;
         if (evt.code === "ArrowDown") {
-          this.incrementSegment(1);
+          audio.incrementSegment(1);
           evt.preventDefault();
         } else if (evt.code === "ArrowUp") {
-          this.incrementSegment(-1);
+          audio.incrementSegment(-1);
           evt.preventDefault();
         }
       },
@@ -152,13 +153,13 @@
       async playToEnd() {
         let { audio, audioScid } = this;
 
-        logger.debug("SuttaPlayer.playToEnd() PLAY", {audioScid});
-        let completed = false;
+        logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
+        let completed;
         do {
           completed = await this.playSegment();
         } while(completed && (await this.next()));
         if (completed) {
-          logger.debug("SuttaPlayer.playToEnd() END");
+          logger.info("SuttaPlayer.playToEnd() END");
           await audio.playBell();
         }
         this.stopAudio(true);
@@ -172,12 +173,13 @@
           return;
         }
 
-        logger.debug(msg + 'playing');
+        logger.info(msg + 'playing');
         this.idbAudio = audio.createIdbAudio();
         this.playToEnd();
       },
       async back() {
-        this.incrementSegment(-1);
+        let { audio } = this;
+        audio.incrementSegment(-1);
       },
       clickBack() {
         let { audio } = this;
@@ -185,8 +187,9 @@
         return this.back();
       },
       async next() {
+        let { audio } = this;
         let incremented = false;
-        let incRes = this.incrementSegment(1);
+        let incRes = audio.incrementSegment(1);
         if (incRes) {
           let { iSegment } = incRes;
           incremented = true;
@@ -206,18 +209,6 @@
         let { routeCard, settings, } = this;
         let eltId = routeCard.routeHash();
         settings.scrollToElementId(eltId);
-      },
-      incrementSegment(delta) {
-        let { settings, routeCard, audioSutta, } = this;
-        let { segments } = audioSutta;
-        let incRes = routeCard.incrementLocation({ segments, delta, });
-        if (incRes) {
-          let { iSegment } = incRes;
-          let seg = segments[iSegment];
-          settings.setRoute(routeCard.routeHash());
-        }
-
-        return incRes;
       },
       audioEnded(evt) {
         this.stopAudio(false);
@@ -265,11 +256,13 @@
             if (this.audioScid !== audioScid) {
               clearInterval(interval);
               logger.info(msg + `interrupt`, 
+                interval,
                 `${audioScid}=>${this.audioScid}`);
               audio.segmentPlaying = false;
               idbAudio.clear();
             }
           }, 100);
+          logger.info(msg + 'setInterval', interval);
           audio.segmentPlaying = true;
 
           let idOrRef = audioScid;
@@ -287,6 +280,7 @@
             logger.debug(`${msg} transUrl:`, src);
             await idbAudio.play();
           }
+          logger.info(msg + 'clearInterval', interval);
           clearInterval(interval);
           interval = undefined;
         } catch(e) {

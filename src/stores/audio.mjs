@@ -75,6 +75,23 @@ export const useAudioStore = defineStore('audio', {
       let idbAudio = this.idbAudio = new IdbAudio({audioContext});
       return idbAudio;
     },
+    incrementSegment(delta) {
+      const msg = `audio.incrementSegment(${delta}) `;
+      let settings = useSettingsStore();
+      let volatile = useVolatileStore();
+      let { routeCard } = volatile;
+      let { audioSutta, } = this;
+      let { segments } = audioSutta;
+      let incRes = routeCard.incrementLocation({ segments, delta, });
+      if (incRes) {
+        let { iSegment } = incRes;
+        let seg = segments[iSegment];
+        this.audioScid = segments[iSegment].scid;
+        settings.setRoute(routeCard.routeHash());
+      }
+
+      return incRes;
+    },
     async clearSoundCache() {
       const msg = 'audio.clearSoundCache() ';
       try {
@@ -105,7 +122,7 @@ export const useAudioStore = defineStore('audio', {
       return this.playUrl(url, {audioContext});
     },
     async setAudioSutta(audioSutta, audioIndex=0) {
-      logger.debug("audio.setAudioSutta()", {audioSutta, audioIndex});
+      const msg = 'audio.setAudioSutta() '
       this.audioSutta = audioSutta;
       this.audioIndex = audioIndex;
 
@@ -147,7 +164,6 @@ export const useAudioStore = defineStore('audio', {
       if (author == null) {
         let msg = `audio.segmentAudioUrl() author is required: ` +
           JSON.stringify(idOrRef);
-        console.trace(msg);
         throw new Error(msg);
       }
       let key = `${sutta_uid}:${segnum}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
@@ -225,7 +241,6 @@ export const useAudioStore = defineStore('audio', {
       let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
       tempContext && promise.then(()=>{
         tempContext.close();
-        console.log(msg+'tempContext.close()');
       });
       return promise;
     },
