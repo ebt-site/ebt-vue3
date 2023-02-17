@@ -108,7 +108,7 @@
         let { audio, audioScid } = this;
 
         logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
-        let completed = await this.playSegment();
+        let completed = await audio.playSegment();
         if (!completed) {
           // interrupted
         } else if (await this.next()) {
@@ -156,7 +156,7 @@
         logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
         let completed;
         do {
-          completed = await this.playSegment();
+          completed = await audio.playSegment();
         } while(completed && (await this.next()));
         if (completed) {
           logger.info("SuttaPlayer.playToEnd() END");
@@ -231,74 +231,6 @@
           this.audioResolve = undefined;
         }
         return stopped;
-      },
-      async playSegment() {
-        const msg = `SuttaPlayer.playSegment() `;
-        let { 
-          audio,
-          routeCard, 
-          audioScid,
-          settings, 
-          idbAudio,
-        } = this;
-        let segAudio = await audio.bindSegmentAudio();
-        let { segment:seg, langTrans } = segAudio;
-        let that = this;
-
-        logger.debug(`${msg} ${audioScid}`);
-
-        let interval;
-        try {
-          audio.audioElapsed = -2;
-          interval = setInterval( ()=>{
-            let currentTime = this.idbAudio?.currentTime || -1;
-            audio.audioElapsed = currentTime/1000;
-            if (this.audioScid !== audioScid) {
-              clearInterval(interval);
-              logger.info(msg + `interrupt`, 
-                interval,
-                `${audioScid}=>${this.audioScid}`);
-              audio.segmentPlaying = false;
-              idbAudio.clear();
-            }
-          }, 100);
-          logger.info(msg + 'setInterval', interval);
-          audio.segmentPlaying = true;
-
-          let idOrRef = audioScid;
-          if (audio.segmentPlaying && settings.speakPali && seg.pli) {
-            let src = await audio.pliAudioUrl;
-            idbAudio.src = src;
-            logger.debug(`${msg} pliUrl:`, src);
-            await idbAudio.play();
-          }
-
-          if (audio.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
-            let lang = settings.langTrans;
-            let src = await audio.transAudioUrl;
-            idbAudio.src = src;
-            logger.debug(`${msg} transUrl:`, src);
-            await idbAudio.play();
-          }
-          logger.info(msg + 'clearInterval', interval);
-          clearInterval(interval);
-          interval = undefined;
-        } catch(e) {
-          clearInterval(interval);
-          interval = undefined;
-          logger.warn(msg, e);
-        } finally {
-          audio.audioElapsed = -1;
-        }
-
-        logger.debug(`${msg} segmentPlaying`, audio.segmentPlaying);
-
-        if (!audio.segmentPlaying) {
-          return false; // interrupted
-        }
-
-        audio.segmentPlaying = false;
-        return true; // completed
       },
       isRunning() {
         return this.audio.mainContext?.state === 'running';

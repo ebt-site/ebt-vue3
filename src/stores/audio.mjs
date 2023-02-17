@@ -65,6 +65,71 @@ export const useAudioStore = defineStore('audio', {
   getters: {
   },
   actions: {
+    async playSegment() {
+      const msg = `audio.playSegment() `;
+      let volatile = useVolatileStore();
+      let settings = useSettingsStore();
+      let audio = this;
+      let { routCard } = volatile;
+      let { idbAudio, audioScid } = audio;
+      let segAudio = await audio.bindSegmentAudio();
+      let { segment:seg, langTrans } = segAudio;
+
+      logger.debug(`${msg} ${audioScid}`);
+
+      let interval;
+      try {
+        audio.audioElapsed = -2;
+        interval = setInterval( ()=>{
+          let currentTime = audio.idbAudio?.currentTime || -1;
+          audio.audioElapsed = currentTime/1000;
+          if (audio.audioScid !== audioScid) {
+            clearInterval(interval);
+            logger.info(msg + `interrupt`, 
+              interval,
+              `${audioScid}=>${audio.audioScid}`);
+            audio.segmentPlaying = false;
+            idbAudio.clear();
+          }
+        }, 100);
+        logger.info(msg + 'setInterval', interval);
+        audio.segmentPlaying = true;
+
+        let idOrRef = audioScid;
+        if (audio.segmentPlaying && settings.speakPali && seg.pli) {
+          let src = await audio.pliAudioUrl;
+          idbAudio.src = src;
+          logger.debug(`${msg} pliUrl:`, src);
+          await idbAudio.play();
+        }
+
+        if (audio.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
+          let lang = settings.langTrans;
+          let src = await audio.transAudioUrl;
+          idbAudio.src = src;
+          logger.debug(`${msg} transUrl:`, src);
+          await idbAudio.play();
+        }
+        logger.info(msg + 'clearInterval', interval);
+        clearInterval(interval);
+        interval = undefined;
+      } catch(e) {
+        clearInterval(interval);
+        interval = undefined;
+        logger.warn(msg, e);
+      } finally {
+        audio.audioElapsed = -1;
+      }
+
+      logger.debug(`${msg} segmentPlaying`, audio.segmentPlaying);
+
+      if (!audio.segmentPlaying) {
+        return false; // interrupted
+      }
+
+      audio.segmentPlaying = false;
+      return true; // completed
+    },
     audioDuration() {
       let duration = this.idbAudio?.audioBuffer?.duration;
       return duration;
