@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation v-if="audioScid" 
+  <v-bottom-navigation v-if="audio.audioScid" 
     hide-on-scroll
     dense
     dark
@@ -24,11 +24,11 @@
           @focus="onAudioFocus('audio-play-pause')"
         >
           <v-icon size="small" 
-            :icon="idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
+            :icon="audio.idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
           <div @click="onClickPlayScid">
-            {{audioScid}}
+            {{audio.audioScid}}
           </div>
           <div v-if="audioDuration" class="audioElapsed">
             {{ audioElapsed }} / {{ audioDuration }}
@@ -42,7 +42,7 @@
           @focus="onAudioFocus('audio-play-to-end')"
         >
           <v-icon size="small" 
-            :icon="idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play'" />
+            :icon="audio.idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play'" />
         </v-btn>
         <v-btn icon @click="clickNext" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-next" />
@@ -82,7 +82,6 @@
         audio: useAudioStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        idbAudio: ref(undefined),
       }
     },
     methods: {
@@ -105,9 +104,9 @@
         }
       },
       async playOne() {
-        let { audio, audioScid } = this;
+        let { audio, } = this;
 
-        logger.debug("SuttaPlayer.playOne() PLAY", audioScid);
+        logger.debug("SuttaPlayer.playOne() PLAY", audio.audioScid);
         let completed = await audio.playSegment();
         if (!completed) {
           // interrupted
@@ -120,7 +119,8 @@
         this.stopAudio(true);
       },
       playPause() {
-        let { audio, idbAudio } = this;
+        let { audio, } = this;
+        let { idbAudio } = audio;
         let { mainContext:audioContext } = audio;
         audio.playClick();
 
@@ -147,13 +147,13 @@
         }
 
         logger.debug(msg + 'playing');
-        this.idbAudio = audio.createIdbAudio();
+        audio.createIdbAudio();
         this.playOne();
       },
       async playToEnd() {
-        let { audio, audioScid } = this;
+        let { audio, } = this;
 
-        logger.info("SuttaPlayer.playToEnd() PLAY", {audioScid});
+        logger.info("SuttaPlayer.playToEnd() PLAY", audio.audioScid);
         let completed;
         do {
           completed = await audio.playSegment();
@@ -174,7 +174,7 @@
         }
 
         logger.info(msg + 'playing');
-        this.idbAudio = audio.createIdbAudio();
+        audio.createIdbAudio();
         this.playToEnd();
       },
       async back() {
@@ -217,7 +217,7 @@
       audioPlaying() {
         let { audio } = this;
         let { idbAudio, mainContext } = audio;
-        return !!audio?.idbAudio?.audioSource && 
+        return !!idbAudio?.audioSource && 
           audio?.mainContext?.state === 'running';
       },
       stopAudio(stopSegment) {
@@ -244,9 +244,6 @@
       audioDuration(ctx) {
         let duration = ctx.audio.audioDuration();
         return typeof duration === 'number' ? duration.toFixed(1) : null
-      },
-      audioScid(ctx) {
-        return ctx.audio.audioScid;
       },
       audioSutta(ctx) {
         return ctx.audio.audioSutta;

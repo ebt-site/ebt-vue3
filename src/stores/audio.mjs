@@ -85,14 +85,14 @@ export const useAudioStore = defineStore('audio', {
           audio.audioElapsed = currentTime/1000;
           if (audio.audioScid !== audioScid) {
             clearInterval(interval);
-            logger.info(msg + `interrupt`, 
+            logger.debug(msg + `interrupt`, 
               interval,
               `${audioScid}=>${audio.audioScid}`);
             audio.segmentPlaying = false;
             idbAudio.clear();
           }
         }, 100);
-        logger.info(msg + 'setInterval', interval);
+        logger.debug(msg + 'setInterval', interval);
         audio.segmentPlaying = true;
 
         let idOrRef = audioScid;
@@ -110,7 +110,7 @@ export const useAudioStore = defineStore('audio', {
           logger.debug(`${msg} transUrl:`, src);
           await idbAudio.play();
         }
-        logger.info(msg + 'clearInterval', interval);
+        logger.debug(msg + 'clearInterval', interval);
         clearInterval(interval);
         interval = undefined;
       } catch(e) {
@@ -319,7 +319,7 @@ export const useAudioStore = defineStore('audio', {
         let idbKey = urlParts.slice(iKey).join('/');
         let abuf = await Idb.get(idbKey, SOUND_STORE());
         if (abuf) {
-          logger.info(msg, `=> cached`);
+          logger.debug(msg, `=> cached`);
         } else {
           this.nFetch++;
           let res = await fetch(url, { headers });
