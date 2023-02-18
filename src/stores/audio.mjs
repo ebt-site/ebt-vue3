@@ -65,6 +65,26 @@ export const useAudioStore = defineStore('audio', {
   getters: {
   },
   actions: {
+    async next(delta=1, msg='audio.next() ') {
+      let incremented = false;
+      let incRes = this.incrementSegment(delta);
+      if (incRes) {
+        this.playClick();
+        let { iSegment } = incRes;
+        incremented = true;
+        logger.info(msg, incRes);
+      } else {
+        this.playBell();
+        logger.info(msg+'END');
+      }
+      await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
+
+      return incremented;
+    },
+    async back() {
+      const msg = 'audio.back() ';
+      return await this.next(-1, msg);
+    },
     async playSegment() {
       const msg = `audio.playSegment() `;
       let volatile = useVolatileStore();

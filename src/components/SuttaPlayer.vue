@@ -14,7 +14,7 @@
         bg-color="progress2"
         height="2px" />
       <div class="play-row">
-        <v-btn icon @click="clickBack" density="compact" tabindex=-1>
+        <v-btn icon @click="audio.back()" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
         <v-btn id="audio-play-pause" icon density="compact"
@@ -44,7 +44,7 @@
           <v-icon size="small" 
             :icon="audio.idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play'" />
         </v-btn>
-        <v-btn icon @click="clickNext" density="compact" tabindex=-1>
+        <v-btn icon @click="audio.next()" density="compact" tabindex=-1>
           <v-icon size="small" icon="mdi-skip-next" />
         </v-btn>
       </div><!-- play-row -->
@@ -110,7 +110,7 @@
         let completed = await audio.playSegment();
         if (!completed) {
           // interrupted
-        } else if (await this.next()) {
+        } else if (await audio.next()) {
           logger.debug("SuttaPlayer.playOne() OK");
         } else {
           logger.debug("SuttaPlayer.playOne() END");
@@ -156,7 +156,7 @@
         let completed;
         do {
           completed = await audio.playSegment();
-        } while(completed && (await this.next()));
+        } while(completed && (await audio.next()));
         if (completed) {
           logger.info("SuttaPlayer.playToEnd() END");
           await audio.playBell();
@@ -174,34 +174,6 @@
         logger.info(msg + 'playing');
         audio.createIdbAudio();
         this.playToEnd();
-      },
-      async back() {
-        let { audio } = this;
-        audio.incrementSegment(-1);
-      },
-      clickBack() {
-        let { audio } = this;
-        audio.playClick();
-        return this.back();
-      },
-      async next() {
-        let { audio } = this;
-        let incremented = false;
-        let incRes = audio.incrementSegment(1);
-        if (incRes) {
-          let { iSegment } = incRes;
-          incremented = true;
-        } else {
-          logger.debug("SuttaPlayer.next() END");
-        }
-        await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
-
-        return incremented;
-      },
-      clickNext() {
-        let { audio } = this;
-        audio.playClick();
-        return this.next();
       },
       onClickPlayScid() {
         let { routeCard, settings, } = this;
