@@ -116,7 +116,6 @@
           logger.debug("SuttaPlayer.playOne() END");
           audio.playBell();
         }
-        this.stopAudio(true);
       },
       playPause() {
         let { audio, } = this;
@@ -162,7 +161,6 @@
           logger.info("SuttaPlayer.playToEnd() END");
           await audio.playBell();
         }
-        this.stopAudio(true);
       },
       clickPlayToEnd() {
         let msg = 'SuttaPlayer.clickPlayToEnd() ';
@@ -210,27 +208,11 @@
         let eltId = routeCard.routeHash();
         settings.scrollToElementId(eltId);
       },
-      audioEnded(evt) {
-        this.stopAudio(false);
-        logger.debug('SuttaPlayer.audioEnded', {evt});
-      },
       audioPlaying() {
         let { audio } = this;
         let { idbAudio, mainContext } = audio;
         return !!idbAudio?.audioSource && 
           audio?.mainContext?.state === 'running';
-      },
-      stopAudio(stopSegment) {
-        const msg = 'SuttaPlayer.stopAudio() ';
-        let { audio } = this;
-        logger.debug(msg, {stopSegment});
-        let stopped = false;
-        stopSegment && (audio.segmentPlaying = false);
-        if (this.audioResolve) {
-          this.audioResolve();
-          this.audioResolve = undefined;
-        }
-        return stopped;
       },
       isRunning() {
         return this.audio.mainContext?.state === 'running';
