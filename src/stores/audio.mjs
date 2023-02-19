@@ -46,6 +46,9 @@ function deleteDatabase(name) {
   return DBDeleteRequest;
 }
 
+const PLAY_ONE = 'one';
+const PLAY_END = 'end';
+
 export const useAudioStore = defineStore('audio', {
   state: () => {
     return {
@@ -60,19 +63,107 @@ export const useAudioStore = defineStore('audio', {
       segmentPlaying: ref(false),
       audioElapsed: ref(0),
       idbAudio: ref(undefined),
+      playMode: ref(PLAY_ONE),
     }
   },
   getters: {
   },
   actions: {
     keydown(evt) {
-      if (evt.code === "ArrowDown") {
-        this.next();
-        evt.preventDefault();
-      } else if (evt.code === "ArrowUp") {
-        this.back();
-        evt.preventDefault();
+      const msg = `audio.keydown(${evt.code}) `;
+      switch (evt.code) {
+        case 'ArrowDown':
+          this.next();
+          evt.preventDefault();
+          break;
+        case 'ArrowUp':
+          this.back();
+          evt.preventDefault();
+          break;
+        case 'Space':
+          if (!evt.altKey && !evt.metaKey) {
+            if (evt.shiftKey || evt.ctrlKey) {
+              this.clickPlayToEnd();
+            } else {
+              this.clickPlayOne();
+            }
+            evt.preventDefault();
+          }
+          break;
+        case 'Enter':
+          this.clickPlayToEnd();
+          evt.preventDefault();
+          break;
       }
+    },
+    playPause(playMode) {
+      let { idbAudio, mainContext, } = this;
+      this.playClick();
+
+      if (idbAudio?.audioSource) {
+        if (!idbAudio.paused) {
+          idbAudio.pause();
+          return true;
+        }
+        if (playMode === this.playMode) {
+          idbAudio.play();
+          return true;
+        } 
+        return false;
+      }
+
+      mainContext && mainContext.close();
+      this.getAudioContext();
+      this.playMode = playMode;
+      return false;
+    },
+    async playOne() {
+      const msg = 'audio.playOne() ';
+      logger.debug(msg +'PLAY', this.audioScid);
+      let completed = await this.playSegment();
+      if (!completed) {
+        // interrupted
+      } else if (await this.next()) {
+        logger.debug(msg+'OK');
+      } else {
+        logger.debug(msg+'END');
+        this.playBell();
+      }
+    },
+    clickPlayOne() {
+      let msg = 'audio.clickPlayOne() ';
+
+      if (this.playPause(PLAY_ONE)) {
+        logger.debug(msg + 'toggled');
+        return;
+      }
+
+      logger.debug(msg + 'playing');
+      this.createIdbAudio();
+      this.playOne();
+    },
+    async playToEnd() {
+      const msg = 'audio.playToEnd() ';
+      logger.info(msg+'PLAY', this.audioScid);
+      let segPlayed;
+      do {
+        segPlayed = await this.playSegment();
+      } while(segPlayed && (await this.next()));
+      if (segPlayed) {
+        logger.info(msg+'END');
+        await this.playBell();
+      }
+    },
+    clickPlayToEnd() {
+      const msg = 'audio.clickPlayToEnd() ';
+      if (this.playPause(PLAY_END)) {
+        logger.debug(msg + 'toggled');
+        return;
+      }
+
+      logger.info(msg + 'playing');
+      this.createIdbAudio();
+      this.playToEnd();
     },
     async next(delta=1, msg='audio.next() ') {
       let incremented = false;

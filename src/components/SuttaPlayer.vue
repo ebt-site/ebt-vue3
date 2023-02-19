@@ -19,7 +19,7 @@
         </v-btn>
         <v-btn id="audio-play-pause" icon density="compact"
           @keydown="audio.keydown"
-          @click="clickPlayPause" 
+          @click="audio.clickPlayOne" 
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-pause')"
         >
@@ -36,7 +36,7 @@
         </div>
         <v-btn id="audio-play-to-end"
           icon density="compact"
-          @click="clickPlayToEnd" 
+          @click="audio.clickPlayToEnd" 
           @keydown="audio.keydown"
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-to-end')"
@@ -92,77 +92,6 @@
       onAudioFocus(audioFocus) {
         let { audio, } = this;
         audio.audioFocused = true;
-      },
-      async playOne() {
-        let { audio, } = this;
-
-        logger.debug("SuttaPlayer.playOne() PLAY", audio.audioScid);
-        let completed = await audio.playSegment();
-        if (!completed) {
-          // interrupted
-        } else if (await audio.next()) {
-          logger.debug("SuttaPlayer.playOne() OK");
-        } else {
-          logger.debug("SuttaPlayer.playOne() END");
-          audio.playBell();
-        }
-      },
-      playPause() {
-        let { audio, } = this;
-        let { idbAudio } = audio;
-        audio.playClick();
-
-        if (idbAudio?.audioSource) {
-          if (idbAudio.paused) {
-            idbAudio.play();
-          } else {
-            idbAudio.pause();
-          }
-          return true;
-        }
-
-        audioContext && audioContext.close();
-        audio.audioContext = audioContext = audio.getAudioContext();
-        return false;
-      },
-      clickPlayPause() {
-        let msg = 'SuttaPlayer.clickPlayPause() ';
-        let { audio } = this;
-
-        if (this.playPause()) {
-          logger.debug(msg + 'toggled');
-          return;
-        }
-
-        logger.debug(msg + 'playing');
-        audio.createIdbAudio();
-        this.playOne();
-      },
-      async playToEnd() {
-        let { audio, } = this;
-
-        logger.info("SuttaPlayer.playToEnd() PLAY", audio.audioScid);
-        let completed;
-        do {
-          completed = await audio.playSegment();
-        } while(completed && (await audio.next()));
-        if (completed) {
-          logger.info("SuttaPlayer.playToEnd() END");
-          await audio.playBell();
-        }
-      },
-      clickPlayToEnd() {
-        let msg = 'SuttaPlayer.clickPlayToEnd() ';
-        let { audio } = this;
-
-        if (this.playPause()) {
-          logger.debug(msg + 'toggled');
-          return;
-        }
-
-        logger.info(msg + 'playing');
-        audio.createIdbAudio();
-        this.playToEnd();
       },
       onClickPlayScid() {
         let { routeCard, settings, } = this;
