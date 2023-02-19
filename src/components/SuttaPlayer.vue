@@ -18,7 +18,7 @@
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
         <v-btn id="audio-play-pause" icon density="compact"
-          @keydown="audioKey"
+          @keydown="audio.keydown"
           @click="clickPlayPause" 
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-pause')"
@@ -37,7 +37,7 @@
         <v-btn id="audio-play-to-end"
           icon density="compact"
           @click="clickPlayToEnd" 
-          @keydown="audioKey"
+          @keydown="audio.keydown"
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-to-end')"
         >
@@ -93,16 +93,6 @@
         let { audio, } = this;
         audio.audioFocused = true;
       },
-      audioKey(evt) {
-        let { audio } = this;
-        if (evt.code === "ArrowDown") {
-          audio.incrementSegment(1);
-          evt.preventDefault();
-        } else if (evt.code === "ArrowUp") {
-          audio.incrementSegment(-1);
-          evt.preventDefault();
-        }
-      },
       async playOne() {
         let { audio, } = this;
 
@@ -120,7 +110,6 @@
       playPause() {
         let { audio, } = this;
         let { idbAudio } = audio;
-        let { mainContext:audioContext } = audio;
         audio.playClick();
 
         if (idbAudio?.audioSource) {
@@ -207,8 +196,6 @@
         let { audioIndex } = audio;
         return (audioIndex+1)*100 / audioSutta.segments.length+1;
       },
-    },
-    components: {
     },
   }
 </script>

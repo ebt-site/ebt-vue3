@@ -65,6 +65,15 @@ export const useAudioStore = defineStore('audio', {
   getters: {
   },
   actions: {
+    keydown(evt) {
+      if (evt.code === "ArrowDown") {
+        this.next();
+        evt.preventDefault();
+      } else if (evt.code === "ArrowUp") {
+        this.back();
+        evt.preventDefault();
+      }
+    },
     async next(delta=1, msg='audio.next() ') {
       let incremented = false;
       let incRes = this.incrementSegment(delta);
