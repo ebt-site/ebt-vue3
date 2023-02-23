@@ -225,6 +225,7 @@ export default {
     "foundSuttas": "\"A_SEARCH\" in A_RESULTCOUNT Suttas gefunden",
     "general": "Allgemein",
     "highlightExamples": "Zeige Beispiel-Links (langsam)",
+    "homeSound": "Home",
     "inspireMe": "Such mir etwas aus!",
     "languageCode": "Deutsch / DE",
     "languages": "Sprachen",

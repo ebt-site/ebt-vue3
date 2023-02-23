@@ -229,6 +229,7 @@ export default {
     "foundSuttas": "A_RESULTCOUNT 経典が見つかりました",
     "general": "一般",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "心に響く経典を！",
     "languageCode": "日本語 / JA",
     "languages": "言語",

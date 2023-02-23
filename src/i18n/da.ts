@@ -228,6 +228,7 @@ export default {
     "foundSuttas": "Der blev fundet A_RESULTCOUNT suttas",
     "general": "Generelt",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspirer Mig!",
     "languageCode": "Dansk / DA",
     "languages": "Sprog",

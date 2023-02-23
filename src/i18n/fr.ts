@@ -225,6 +225,7 @@ export default {
     "foundSuttas": "Trouvé A_RESULTCOUNT sutras",
     "general": "Général",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspire Moi!",
     "languageCode": "Français / FR",
     "languages": "Langues",

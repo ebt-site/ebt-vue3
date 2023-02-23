@@ -172,6 +172,11 @@
               @update:modelValue="onClickVolume"
               prepend-icon="mdi-volume-high"
             ></v-slider>
+            <v-slider v-model="settings.blockVolume" min=0 max=4 step=1 
+              :label="$t('ebt.homeSound')"
+              @update:modelValue="onBlockVolume"
+              prepend-icon="mdi-volume-high"
+            ></v-slider>
             <template v-for="bell,i in ipsChoices">
               <audio v-if="bell.value" 
                 :ref="el => {bellAudio[bell.value] = el}" preload=auto>
@@ -313,6 +318,10 @@ export default {
     onClickVolume() {
       let { audio } = this;
       audio.playClick();
+    },
+    onBlockVolume() {
+      let { audio } = this;
+      audio.playBlock();
     },
     clickClose() {
       let { audio, volatile } = this;

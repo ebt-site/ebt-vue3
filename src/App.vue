@@ -122,7 +122,8 @@
     methods: {
       onHome(evt) {
         let msg = 'App.onHome() ';
-        let { volatile } = this;
+        let { volatile, audio } = this;
+        audio.playBlock();
         volatile.ebtChips && volatile.ebtChips.focus();
         logger.debug(msg);
       },
@@ -170,9 +171,11 @@
       });
       window.addEventListener('keydown', evt=>{
         let msg = `App.mounted() key:${evt.code}`;
+        let { audio } = this;
         switch (evt.code) {
           case 'Home': this.onHome(evt); break;
           case 'ArrowUp': evt.ctrlKey && this.onHome(evt); break;
+          case 'Tab': audio.playClick(); break;
           //default: console.log(msg, evt); break;
         }
       })

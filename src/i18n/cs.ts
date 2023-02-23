@@ -227,6 +227,7 @@ export default {
     "foundSuttas": "Nalezeno A_RESULTCOUNT rozprav",
     "general": "Všeobecný",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspiruj Mě!",
     "languageCode": "Čeština / CS",
     "languages": "Jazyky",

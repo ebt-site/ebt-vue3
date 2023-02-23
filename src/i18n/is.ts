@@ -229,6 +229,7 @@ export default {
     "foundSuttas": "Fundnar A_RESULTCOUNT Suttur",
     "general": "Almennt",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Hvetja mig",
     "languageCode": "Íslenska / IS",
     "languages": "Tungumál",

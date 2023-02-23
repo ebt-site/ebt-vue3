@@ -9,6 +9,7 @@ import should from "should";
     should(ebt).properties({
       audio: Settings.AUDIO.OGG,
       clickVolume: 2,
+      blockVolume: 2,
       fullLine: false,
       ips: 6,
       langTrans: 'en',
@@ -55,6 +56,7 @@ import should from "should";
       audio: 'ogg',
       audioSuffix: 'mp3',
       clickVolume: 2,
+      blockVolume: 2,
       fullLine: false,
       id: 1,
       ips: 6,
@@ -91,16 +93,19 @@ import should from "should";
       new Date(2021, 3, 3),
     ];
     let clickVolume = 4;
+    let blockVolume = 3;
     let showId = true;
     let showPali = false;
     var ebt = new Settings({
       clickVolume,
+      blockVolume,
       showId,
       showPali,
     });
 
     should(ebt).properties({
       clickVolume,
+      blockVolume,
       showId,
       showPali,
     });

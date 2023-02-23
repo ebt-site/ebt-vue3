@@ -74,11 +74,11 @@ export const useAudioStore = defineStore('audio', {
       switch (evt.code) {
         case 'ArrowDown':
           this.next();
-          evt.preventDefault();
           break;
         case 'ArrowUp':
-          this.back();
-          evt.preventDefault();
+          if (!evt.ctrlKey && !evt.shiftKey) {
+            this.back();
+          }
           break;
         case 'Space':
           if (!evt.altKey && !evt.metaKey) {
@@ -87,14 +87,16 @@ export const useAudioStore = defineStore('audio', {
             } else {
               this.clickPlayOne();
             }
-            evt.preventDefault();
           }
           break;
         case 'Enter':
           this.clickPlayToEnd();
-          evt.preventDefault();
           break;
+        default: 
+          // Defer to App.vue keydown listener
+          return;
       }
+      evt.preventDefault();
     },
     playPause(playMode) {
       let { idbAudio, mainContext, } = this;
@@ -165,25 +167,11 @@ export const useAudioStore = defineStore('audio', {
       this.createIdbAudio();
       this.playToEnd();
     },
-    async next(delta=1, msg='audio.next() ') {
-      let incremented = false;
-      let incRes = this.incrementSegment(delta);
-      if (incRes) {
-        this.playClick();
-        let { iSegment } = incRes;
-        incremented = true;
-        logger.info(msg, incRes);
-      } else {
-        this.playBell();
-        logger.info(msg+'END');
-      }
-      await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
-
-      return incremented;
+    back() {
+      return this.incrementSegment(-1);
     },
-    async back() {
-      const msg = 'audio.back() ';
-      return await this.next(-1, msg);
+    next() {
+      return this.incrementSegment(1);
     },
     async playSegment() {
       const msg = `audio.playSegment() `;
@@ -260,20 +248,27 @@ export const useAudioStore = defineStore('audio', {
       let idbAudio = this.idbAudio = new IdbAudio({audioContext});
       return idbAudio;
     },
-    incrementSegment(delta) {
+    async incrementSegment(delta) {
       const msg = `audio.incrementSegment(${delta}) `;
-      let settings = useSettingsStore();
       let volatile = useVolatileStore();
       let { routeCard } = volatile;
       let { audioSutta, } = this;
       let { segments } = audioSutta;
       let incRes = routeCard.incrementLocation({ segments, delta, });
       if (incRes) {
+        let settings = useSettingsStore();
+
         let { iSegment } = incRes;
         let seg = segments[iSegment];
         this.audioScid = segments[iSegment].scid;
         settings.setRoute(routeCard.routeHash());
+        this.playClick();
+        logger.debug(msg, incRes);
+      } else {
+        this.playBell();
+        logger.debug(msg+'END');
       }
+      await new Promise(resolve=>nextTick(()=>resolve())); // sync instance
 
       return incRes;
     },
@@ -290,6 +285,13 @@ export const useAudioStore = defineStore('audio', {
         logger.warn(msg + 'ERROR', e.message);
         throw e;
       }
+    },
+    playBlock(audioContext) {
+      const msg = 'audio.playBlock() ';
+      let settings = useSettingsStore();
+      let volume = settings.blockVolume;
+      let url =  volume ? `audio/block${volume}.mp3` : null;
+      return this.playUrl(url, {audioContext});
     },
     playClick(audioContext) {
       const msg = 'audio.playClick() ';

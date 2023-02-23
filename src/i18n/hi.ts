@@ -228,6 +228,7 @@ export default {
     "foundSuttas": "A_RESULTCOUNT सुत्त मिले",
     "general": "साधारण",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "मुझे प्रेरित करे!",
     "languageCode": "हिंदी / HI",
     "languages": "भाषाएँ",

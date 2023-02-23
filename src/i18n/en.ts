@@ -231,6 +231,7 @@ export default {
     "foundSuttas": "Found A_RESULTCOUNT suttas",
     "general": "General",
     "highlightExamples": "Show all example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspire Me!",
     "languageCode": "English / EN",
     "languages": "Languages",

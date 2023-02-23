@@ -29,6 +29,7 @@ export default class Settings {
     let {
       audio,
       clickVolume,
+      blockVolume,
       fullLine,
       highightExamples,
       ips,
@@ -52,6 +53,7 @@ export default class Settings {
 
     this.audio = audio;
     this.clickVolume = clickVolume;
+    this.blockVolume = blockVolume;
     this.fullLine = fullLine;
     this.ips = 6;
     this.langTrans = Settings.TRANS_LANGUAGES.reduce((a, l) => {
@@ -93,6 +95,7 @@ export default class Settings {
       // from scv-server
       audioSuffix: 'mp3',
       clickVolume: 2,
+      blockVolume: 2,
       highlightExamples: false,
       id: 1,
       showGdpr: true,

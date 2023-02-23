@@ -226,6 +226,7 @@ export default {
     "foundSuttas": "Fant A_RESULTCOUNT sutta-er",
     "general": "Generelt",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspirer meg!",
     "languageCode": "Norsk / NB",
     "languages": "Språk",

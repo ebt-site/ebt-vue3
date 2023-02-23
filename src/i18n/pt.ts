@@ -229,6 +229,7 @@ export default {
     "foundSuttas": "Foram encontrados A_RESULTCOUNT suttas",
     "general": "Geral",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspire-me!",
     "languageCode": "Português / PT",
     "languages": "Idiomas",

@@ -229,6 +229,7 @@ export default {
     "foundSuttas": "A_RESULTCOUNT soetras gevonden",
     "general": "Algemeen",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Inspireer mij!",
     "languageCode": "Nederlands / NL",
     "languages": "Talen",

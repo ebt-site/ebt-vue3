@@ -229,6 +229,7 @@ export default {
     "foundSuttas": "Tìm thấy A_RESULTCOUNT kinh",
     "general": "Phần chung",
     "highlightExamples": "Show example links (slow)",
+    "homeSound": "Home",
     "inspireMe": "Truyền linh cảm cho tôi!",
     "languageCode": "Tiếng Việt / VI",
     "languages": "Ngôn ngữ",

@@ -24,7 +24,7 @@
         :routeCard="routeCard"
       />
     </template>
-    <tipitaka-nav :card="card"/>
+    <tipitaka-nav :card="card" class="mt-3"/>
   </v-sheet>
 </template>
 
