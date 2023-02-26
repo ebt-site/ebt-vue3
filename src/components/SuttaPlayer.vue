@@ -18,6 +18,7 @@
           <v-icon size="small" icon="mdi-skip-previous" />
         </v-btn>
         <v-btn id="audio-play-pause" icon density="compact"
+          tabindex=-1
           @keydown="audio.keydown"
           @click="audio.clickPlayOne" 
           @blur="onAudioBlur"
@@ -36,6 +37,7 @@
         </div>
         <v-btn id="audio-play-to-end"
           icon density="compact"
+          tabindex=-1
           @click="audio.clickPlayToEnd" 
           @keydown="audio.keydown"
           @blur="onAudioBlur"
@@ -87,11 +89,11 @@
     methods: {
       onAudioBlur() {
         let { audio } = this;
-        audio.audioFocused = false;
+        //audio.audioFocused = false;
       },
       onAudioFocus(audioFocus) {
         let { audio, } = this;
-        audio.audioFocused = true;
+        //audio.audioFocused = true;
       },
       onClickPlayScid() {
         let { routeCard, settings, } = this;

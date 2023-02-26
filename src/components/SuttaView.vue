@@ -1,10 +1,14 @@
 <template>
   <v-sheet :class="suttaClass"
     :id="suttaViewId"
-    @click="onClick"
+    :ref="suttaViewId"
+    @click="onClickSutta"
+    @keydown='audio.keydown'
+    @focus='audio.audioFocused=true'
+    @blur='audio.audioFocused=false'
+    tabindex=0
   >
     <tipitaka-nav :card="card"/>
-    {{suttaViewId}}
     <div class="sutta-title">
       <div v-for="t in title"> {{t}} </div>
     </div> <!-- sutta-title -->
@@ -32,6 +36,7 @@
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
+  import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from "log-instance";
   import { Authors, Examples, Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
@@ -50,19 +55,14 @@
       routeCard: { type: Object, required: true },
     },
     setup() {
-      const settings = useSettingsStore();
-      const volatile = useVolatileStore();
-      const suttas = useSuttasStore();
-      const idbSuttaRef = ref(null);
-      const showTakaNav = ref(false);
       return {
-        settings,
-        volatile,
-        suttas,
-        idbSuttaRef,
+        audio: useAudioStore(),
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
+        suttas: useSuttasStore(),
+        idbSuttaRef: ref(null),
         taka: new Tipitaka(),
-        showTakaNav,
-        logger,
+        showTakaNav: ref(false),
       }
     },
     components: {
@@ -103,8 +103,11 @@
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
       },
-      onClick(evt) {
-        const msg = `SuttaView.onClick(${this.suttaViewId})`;
+      onClickSutta(evt) {
+        const msg = `SuttaView.onClickSutta(${this.suttaViewId})`;
+        let { $refs, suttaViewId } = this;
+        let elt = $refs[suttaViewId];
+        console.log(msg, {evt, elt});
       },
     },
     computed: {
@@ -137,9 +140,9 @@
       suttaClass(ctx) {
         let { nCols, volatile } = ctx;
         switch (nCols) {
-          case 3: return "sutta-3col";
-          case 2: return "sutta-2col";
-          default: return "sutta-1col";
+          case 3: return "sutta sutta-3col";
+          case 2: return "sutta sutta-2col";
+          default: return "sutta sutta-1col";
         }
       },
       nCols(ctx) {
@@ -200,8 +203,9 @@
 
 <style >
 .sutta {
-  margin-left: auto;
-  margin-right: auto;
+  outline: none;
+}
+.sutta:focus {
 }
 .sutta-1col {
   max-width: 40em;

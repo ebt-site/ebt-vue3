@@ -4,14 +4,14 @@
       {{segment.scid}}
     </span>
   </div>
-  <div :class="segMatchedClass(segment)">
+  <div :class="segMatchedClass(segment)"
+    @click='onClickSegBody'
+    :title="segment.scid"
+  >
     <div class="seg-id" v-if="settings.showId"> 
       {{segment.scid}} 
     </div>
-    <div class="seg-text" 
-      @click="clickSeg($event)"
-      :title="segment.scid"
-    >
+    <div class="seg-text" >
       <div :class="langClass('root')" 
         v-if="settings.showPali"
         v-html="segment.pli" />
@@ -61,15 +61,15 @@
     async mounted() {
     },
     methods: {
-      clickSeg(evt) {
+      onClickSegBody(evt) {
         let { 
-          audio, settings, segment:seg, idbSuttaRef, routeCard, currentScid, card,
+          segment, $refs, segBodyId, currentScid, routeCard, card, settings,
         } = this;
+        const msg = `SegmentView.onClickSegBody(${segment.scid}) `;
         let { srcElement } = evt;
         let { className, innerText } = srcElement;
-        let { scid } = seg;
-        let audioFocus = document.getElementById('audio-focus');
-        audioFocus?.focus();
+        let { scid } = segment;
+
         if (currentScid === scid && routeCard === card) {
           if (className === 'ebt-example') {
             let pattern = encodeURIComponent(innerText);
@@ -77,7 +77,6 @@
             settings.setRoute(hash);
             return;
           } 
-          audio.audioFocused = true;
         } else {
           let [ scidHash, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
@@ -108,15 +107,24 @@
         let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
         let currentClass = seg.scid === currentScid ? "seg-current" : '';
-        let focusClass = seg.scid === audio.audioScid && audioFocused ? "seg-focus" : '';
-        let routeClass = card === routeCard ? "seg-route" : "";
-        return `${matchedClass} ${idClass} ${currentClass} ${routeClass} ${focusClass}`;
+        let audioClass = seg.scid === audio.audioScid && audioFocused ? "seg-audio" : '';
+        return [
+          'seg-body',
+          matchedClass,
+          idClass,
+          currentClass,
+          audioClass,
+        ].join(' ');
       },
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
       },
     },
     computed: {
+      segBodyId(ctx) {
+        let { card, segment } = ctx;
+        return `${card.id}-${segment.scid}`;
+      },
       segId(ctx) {
         let { segment, card } = ctx;
         let [ suidSeg, lang, author ] = card.location;
@@ -238,7 +246,6 @@
   height: 1px;
 }
 .seg-current {
-  xborder: 2px dotted rgba(var(--v-theme-on-surface), 0.5);
   background-color: rgba(var(--v-theme-currentbg),1);
   border-radius: 5px;
 }
@@ -246,15 +253,10 @@
   opacity: 1;
   font-size: larger;
 }
-.seg-focus {
-  border: 2px dotted rgba(var(--v-theme-matched), 1);
+.seg-audio {
+  border: 2px dashed rgba(var(--v-theme-matched), 1);
 }
-.seg-route .seg-text{
-  opacity: 1;
-}
-.seg-route.seg-current .ebt-example{
-}
-.seg-route.seg-current .ebt-example:hover {
+.seg-audio .ebt-example:hover {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -262,6 +264,11 @@
   color: #888;
   padding-left: 1em;
   padding-right: 1em;
+}
+.seg-body {
+}
+.seg-body:focus {
+  border: 2px dotted rgba(var(--v-theme-matched), 1);
 }
 </style>
 
