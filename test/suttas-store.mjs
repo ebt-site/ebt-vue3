@@ -227,16 +227,19 @@ const MSDAY = 24*3600*MSSEC;
     // refresh is true by default
     let noRefresh = await suttas.getIdbSuttaRef("thig1.2/en/soma", {refresh:false});
     should(noRefresh).equal(null);
-
-    // Bad suttaRef error
+  });
+  it("TESTTESTgetIdbSuttaRef() fails", async () => {
+    let suttas = useSuttasStore();
     let eCaught;
     let oldLogLevel = logger.logLevel;
+
     try { 
       logger.logLevel = "error";
       await suttas.getIdbSuttaRef("xyz"); 
     } catch(e) {eCaught=e;}
     finally { 
       logger.logLevel = oldLogLevel;
+      console.log('DBG0227', eCaught);
       should(eCaught?.message).match(/invalid suttaRef.*xyz/);
     }
   });

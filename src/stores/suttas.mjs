@@ -37,9 +37,11 @@ export const useSuttasStore = defineStore('suttas', {
       return url;
     },
     async loadIdbSutta(suttaRef, opts={}) { // low-level API
+      const msg = `suttas.loadIdbSutta(${suttaRef})`;
       let { maxAge } = this;
       let { refresh=false } = opts;
       let idbKey = IdbSutta.idbKey(suttaRef);
+      console.log(msg, {idbKey});
       let idbData = await Idb.get(idbKey);
       this.nGet++;
       let age = idbData?.saved ? Date.now()-idbData.saved : maxAge+1;
@@ -88,6 +90,8 @@ export const useSuttasStore = defineStore('suttas', {
       return vueRef;
     },
     async getIdbSuttaRef(suttaRef, opts={refresh:true}) { // get/post API
+      const msg = `suttas.getIdbSuttaRef(${suttaRef})`;
+      console.log(msg);
       try {
         let idbKey = IdbSutta.idbKey(suttaRef);
         let vueRef = VUEREFS.get(idbKey);
@@ -97,16 +101,20 @@ export const useSuttasStore = defineStore('suttas', {
           if (!opts.refresh) {
             return null;
           }
+        console.log('DBG0227 b');
           let promise = this.loadIdbSutta(suttaRef);
           vueRef = ref(promise);
           VUEREFS.set(idbKey, vueRef);
 
+        console.log('DBG0227 b2');
           idbSutta = await this.loadIdbSutta(suttaRef);
           vueRef.value = idbSutta;
           VUEREFS.set(idbKey, vueRef);
         } else {
+        console.log('DBG0227 c');
           if (vueRef.value instanceof Promise) {
             vueRef.value = await vueRef.value;
+        console.log('DBG0227 d');
           }
           //console.log("Suttas.getIdbSuttaRef() found", {idbKey, idbSutta});
         }
