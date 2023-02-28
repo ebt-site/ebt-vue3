@@ -71,7 +71,7 @@
       TipitakaNav,
     },
     async mounted() {
-      let { $route, suttas, settings, volatile, card, } = this;
+      let { $route, suttas, settings, volatile, card, suttaViewId} = this;
       let { location, data } = card;
       let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
       let suttaRef = SuttaRef.create(ref);
@@ -87,7 +87,9 @@
       let { langTrans:defaultLang } = settings;
       this.idbSuttaRef = idbSuttaRef?.value;
 
-      logger.info('SuttaView.mounted()', {suttaRef});
+      card.autoFocusId = suttaViewId;
+
+      logger.info('SuttaView.mounted()', {suttaRef, suttaViewId});
 
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
@@ -112,7 +114,7 @@
     },
     computed: {
       suttaViewId(ctx) {
-        return ctx.card.id;
+        return `${ctx.card.id}-sutta`;
       },
       idbSuttaSegments(ctx) {
         return ctx.idbSuttaRef?.segments || [];
