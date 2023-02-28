@@ -239,7 +239,6 @@ const MSDAY = 24*3600*MSSEC;
     } catch(e) {eCaught=e;}
     finally { 
       logger.logLevel = oldLogLevel;
-      console.log('DBG0227', eCaught);
       should(eCaught?.message).match(/invalid suttaRef.*xyz/);
     }
   });

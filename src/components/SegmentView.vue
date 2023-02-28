@@ -63,7 +63,7 @@
     methods: {
       onClickSegBody(evt) {
         let { 
-          segment, $refs, segBodyId, currentScid, routeCard, card, settings,
+          segment, currentScid, routeCard, card, settings, idbSuttaRef
         } = this;
         const msg = `SegmentView.onClickSegBody(${segment.scid}) `;
         let { srcElement } = evt;
@@ -82,7 +82,7 @@
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
           settings.setRoute(hash);
-          idbSuttaRef.highlightExamples({seg});
+          idbSuttaRef.highlightExamples({segment});
         }
       },
       langClass(langType) {
