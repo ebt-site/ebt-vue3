@@ -36,22 +36,10 @@
         ></sutta-view>
         <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
       </v-card-text>
-      <div class="debug-footer" v-if="showDev" >
-        <div class="debug-icon" @click="showDebug= !showDebug">
-          <v-icon icon="mdi-hammer-wrench" size="x-small" class="debug" />
-        </div>
-        <v-card v-if="showDebug" class="debug" >
-          <div>{{card.id}}</div>
-          <v-select v-model="card.context" :items="contexts"
-            :label="'Context'"
-            >
-          </v-select>
-          <v-card-text>
-            <v-text-field v-model="card.location[0]"
-              label="$t('ebt.location')"
-            />
-          </v-card-text>
-        </v-card>
+      <div class="last-tab" tabindex=0 
+        @click='onClickLastTab'
+        @focus='onFocusLastTab'>
+        <v-icon icon='mdi-home' />
       </div>
     </v-card>
     </div>
@@ -103,6 +91,17 @@
       this.addIntersectionObserver();
     },
     methods: {
+      onClickLastTab(evt) {
+        const msg = 'EbtCard.onClickLastTab() ';
+        console.log(msg);
+      },
+      onFocusLastTab(evt) {
+        const msg = 'EbtCard.onFocusLastTab() ';
+        let { volatile } = this;
+        let { ebtChips } = volatile;
+        console.log(msg, ebtChips);
+        ebtChips && ebtChips.focus();
+      },
       onClickCard(evt) {
         let { volatile, card } = this;
         volatile.setRoute(card);
@@ -282,6 +281,15 @@
   }
   .card-sheet-closed {
     display: none;
+  }
+  .last-tab {
+    display: flex;
+    opacity: 0.1;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .last-tab:focus {
+    outline: 1pt solid green;
   }
 </style>
 
