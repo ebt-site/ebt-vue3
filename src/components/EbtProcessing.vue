@@ -8,7 +8,8 @@
         {{volatile.waitingMsg}}
       </v-card-title>
       <v-card-text>
-        <div class="text-center">
+        <div class="ebt-processing-status">
+          <v-icon size="x-large" :icon="volatile.waitingIcon" />
           <v-progress-circular 
             indeterminate 
             width=3
@@ -50,7 +51,6 @@ export default {
 <style>
 .ebt-processing {
   border: 2px solid rgb(var(--v-theme-progress1));
-  width: 15em;
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 5px;
@@ -60,5 +60,10 @@ export default {
   width: 100%;
   background: rgb(0,0,0,0.1);
   backdrop-filter: blur(1px);
+}
+.ebt-processing-status {
+  width: 15em;
+  display: flex;
+  justify-content: space-around;
 }
 </style>

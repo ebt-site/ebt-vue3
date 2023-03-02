@@ -153,7 +153,8 @@
     },
     async mounted() {
       let msg = 'App.mounted() ';
-      let { $vuetify, settings, $i18n, volatile } = this;
+      let { $t, $vuetify, settings, $i18n, volatile } = this;
+      volatile.$t = $t;
 
       // wait for Settings to load
       settings.loaded = settings.loadSettings();

@@ -109,7 +109,8 @@
             try {
               let mlDoc = mlDocs[i];
               let { sutta_uid, lang, author_uid } = mlDoc;
-              volatile.waitBegin($t('ebt.processing') + ' ' + sutta_uid);
+              volatile.waitBegin($t('ebt.processing') + ' ' + sutta_uid, 
+                volatile.ICON_PROCESSING);
 
               let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
               let idbData = await Idb.get(idbKey);

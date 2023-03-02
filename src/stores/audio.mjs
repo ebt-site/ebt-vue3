@@ -574,7 +574,7 @@ export const useAudioStore = defineStore('audio', {
       let suttaRef = SuttaRef.create(scid, langTrans);
       let { sutta_uid, segnum } = suttaRef;
       try {
-        volatile.waitBegin($t('ebt.loadingAudio'));
+        volatile.waitBegin('ebt.loadingAudio');
 
         let segAudio = await this.getSegmentAudio(suttaRef);
         let { segment } = segAudio;

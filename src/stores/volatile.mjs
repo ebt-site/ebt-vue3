@@ -11,11 +11,15 @@ const suttas = new Map();
 const layout = ref();
 const showSettings = ref(false);
 const SAMPLE_RATE = 48000;
+const ICON_DOWNLOAD = 'mdi-wan';
+const ICON_PROCESSING = 'mdi-factory';
 const INITIAL_STATE = {
+  $t: t=>t,
   alertMsg: ref(null),
   showAlertMsg: ref(false),
   waiting: 0,
   waitingMsg: ref('...'),
+  waitingIcon: ref(ICON_DOWNLOAD),
   waitingDelay: ref(500),
   showWaiting: ref(false),
   delayedWaiting: 0,
@@ -33,6 +37,12 @@ export const useVolatileStore = defineStore('volatile', {
     return s;
   },
   getters: {
+    iconProcessing() {
+      return ICON_PROCESSING;
+    },
+    iconLoading() {
+      return ICON_LOADING;
+    },
     audioCard() {
       let { routeCard } = this;
       return routeCard?.context === EbtCard.CONTEXT_SUTTA ? routeCard : null;
@@ -74,8 +84,10 @@ export const useVolatileStore = defineStore('volatile', {
       this.alertMsg = msg && { msg, context };
       this.showAlertMsg = !!msg;
     },
-    waitBegin(msg) {
-      msg && (this.waitingMsg = msg);
+    waitBegin(msg, icon=ICON_DOWNLOAD) {
+      let { $t } = this;
+      msg && (this.waitingMsg = $t(msg));
+      this.waitingIcon = icon;
       if (this.waiting === 0) {
         setTimeout(()=>{
           if (this.waiting > 0) {
