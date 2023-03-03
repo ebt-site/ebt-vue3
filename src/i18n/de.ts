@@ -162,8 +162,7 @@ export default {
     "allow": "Erlauben",
     "allowSettings": "Ihre Daten werden nur in Ihrem Browser verwendet.",
     "allowSettingsLink": "(Mehr Info …)",
-    "alwaysShowLatestText": "Always show latest text",
-    "alwaysShowLatestText:": "Show newest content",
+    "alwaysShowLatestText": "Neuesten Text zeigen",
     "and": "und",
     "applicationError": "Fehler in der Web-Anwendung",
     "ariaAbout": "Über Voice",
@@ -189,7 +188,7 @@ export default {
     "ariaSuttaCentralNewTab": "suttacentral.net öffnet in neuem Tab",
     "audio": "Audio",
     "audioError": "Audio Error",
-    "author": "Author",
+    "author": "Autor",
     "bellIndian": "Indischer Gong",
     "bellIndianHint": "Flemur: Sampling Plus 1.0",
     "bellMeditation": "Bell Meditation Cleaned",
@@ -206,12 +205,12 @@ export default {
     "bellTibetan": "Tibetische Klangschale",
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "Audiodatei wird erstellt...",
-    "clear": "Clear",
+    "clear": "Leeren",
     "clearSettings": "Einstellungen zurücksetzen?",
     "clearSoundCache": "Audio-Cache leeren",
     "click": "Tastenton",
     "clickRefresh": "In der Web-Anwendung ist ein Fehler aufgetreten. Klicken Sie „Seite neu laden“, um fortzufahren.",
-    "closeCard": "Close",
+    "closeCard": "Schließen",
     "confirm": "Bestätigen",
     "context-home": "",
     "context-search": "Suche",
@@ -222,7 +221,7 @@ export default {
     "downloadPlaylist": "Wiedergabeliste herunterladen",
     "downloadTimeout": "Herunterladen Zeitüberschreitung:",
     "downloading": "Herunterladen:",
-    "examples": "Examples",
+    "examples": "Beispiele",
     "exploreBuddhasTeaching": "Die Lehren des Buddha erkunden",
     "foundSuttas": "\"A_SEARCH\" in A_RESULTCOUNT Suttas gefunden",
     "general": "Allgemein",
@@ -234,7 +233,7 @@ export default {
     "loadingAudio": "Audio laden...",
     "loadingSutta": "A_SUTTA wird geladen...",
     "logLevel": "Konsolen-Info",
-    "no-location-debug": "Debug",
+    "no-location-debug": "Fehlersuche",
     "no-location-home": "",
     "no-location-search": "Suche...",
     "no-location-sutta": "Sutta...",
@@ -249,7 +248,7 @@ export default {
     "playSection": "Abschnitt A_SECTION wiedergeben",
     "point": "punkt",
     "processing": "Verarbeiten...",
-    "publicDomain": "Public Domain",
+    "publicDomain": "Öffentliche Domain",
     "reader": "Lesestimmen",
     "refLanguage": "Vergleichssprache",
     "referenceBy": "Vergleichstext von A_AUTHOR",
@@ -297,6 +296,6 @@ export default {
     "wikiAria": "Home@Deutsch.md"
   },
   "input": {
-    "clear": "Clear {0}"
+    "clear": "Leeren {0}"
   }
 }
