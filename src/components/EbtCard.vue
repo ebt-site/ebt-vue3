@@ -8,40 +8,40 @@
       {{card.topAnchor}}
     </div>
     <div :class="cardClass">
-    <v-card :id="card.id" variant="flat" >
-      <template v-slot:title>
-        <v-icon :icon="card.icon" class="card-icon"/>
-        <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
-      </template>
-      <template v-slot:append>
-        <v-btn icon="mdi-window-minimize" flat 
-          :id="card.tab1Id"
-          @click="clickMinimize"
-          @focus="focusTop"
-          @keydown.shift.tab.exact.prevent="onBackTabOut"
-        />
-        <v-btn icon="mdi-close-thick" flat 
-          v-if="isClosable"
-          @click="clickDelete"
-          @focus="focusTop"
-        />
-      </template>
-      <v-card-text>
-        <debug-view v-if="card.context===CONTEXT_DEBUG"/>
-        <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
-        <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
-        <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
-          :card="card" 
-          :routeCard="routeCard"
-        ></sutta-view>
-        <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
-      </v-card-text>
-      <div class="last-tab" tabindex=0 
-        @click='onClickLastTab'
-        @focus='onFocusLastTab'>
-        <v-icon icon='mdi-home' />
-      </div>
-    </v-card>
+      <v-card :id="card.id" variant="flat" >
+        <template v-slot:title>
+          <v-icon :icon="card.icon" class="card-icon"/>
+          <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
+        </template>
+        <template v-slot:append>
+          <v-btn icon="mdi-window-minimize" flat 
+            :id="card.tab1Id"
+            @click="clickMinimize"
+            @focus="focusTop"
+            @keydown.shift.tab.exact.prevent="onBackTabOut"
+          />
+          <v-btn icon="mdi-close-thick" flat 
+            v-if="isClosable"
+            @click="clickDelete"
+            @focus="focusTop"
+          />
+        </template>
+        <v-card-text>
+          <debug-view v-if="card.context===CONTEXT_DEBUG"/>
+          <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
+          <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
+          <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
+            :card="card" 
+            :routeCard="routeCard"
+          ></sutta-view>
+          <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
+        </v-card-text>
+        <div class="last-tab" tabindex=0 
+          @click='onClickLastTab'
+          @focus='onFocusLastTab'>
+          <v-icon icon='mdi-home' />
+        </div>
+      </v-card>
     </div>
   </v-sheet>
 </Transition>
@@ -97,10 +97,11 @@
       },
       onFocusLastTab(evt) {
         const msg = 'EbtCard.onFocusLastTab() ';
-        let { volatile } = this;
+        let { volatile, audio } = this;
         let { ebtChips } = volatile;
         console.log(msg, ebtChips);
         ebtChips && ebtChips.focus();
+        audio.playBlock();
       },
       onClickCard(evt) {
         let { volatile, card } = this;
@@ -189,9 +190,9 @@
       },
       cardClass(ctx) {
         let { settings, volatile, card } = ctx;
-        return settings.cardsOpen === 1 || volatile.routeCard != card
-          ? 'ebt-card'
-          : 'ebt-card ebt-card-current';
+        return volatile.routeCard === card
+          ? 'ebt-card ebt-card-current'
+          : 'ebt-card';
       },
       cardLink: (ctx) => {
         let { card } = ctx;
