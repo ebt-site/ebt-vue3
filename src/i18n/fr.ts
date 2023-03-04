@@ -156,6 +156,7 @@ export default {
     "HHMMSS": "A_HOURSh A_MINUTESm A_SECONDSs",
     "MMSS": "A_MINUTESm A_SECONDSs",
     "aboutTitle": "A propos de Voice",
+    "addingExamples": "Adding examples",
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",

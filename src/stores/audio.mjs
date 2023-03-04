@@ -326,12 +326,12 @@ export const useAudioStore = defineStore('audio', {
       let { audioSutta, audioIndex } = this;
       let segments = audioSutta?.segments;
       if (segments) {
-        let seg = segments[audioIndex];
-        let updated = audioSutta.highlightExamples({seg});
+        let segment = segments[audioIndex];
+        let updated = audioSutta.highlightExamples({segment});
         if (updated) {
-          seg.examples = updated;
+          segment.examples = updated;
         }
-        logger.debug("audio.updateAudioExamples()", {updated, seg, audioIndex});
+        logger.debug("audio.updateAudioExamples()", {updated, segment, audioIndex});
       } else {
         logger.debug("audio.updateAudioExamples() SKIP", 
           {audioSutta, audioIndex, segments});

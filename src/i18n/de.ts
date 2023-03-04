@@ -158,6 +158,7 @@ export default {
     "HHMMSS": "A_HOURSh A_MINUTESm A_SECONDSs",
     "MMSS": "A_HOURS h A_MINUTES m A_SECONDS s",
     "aboutTitle": "Über Voice",
+    "addingExamples": "Adding examples",
     "advanced": "Erweitert",
     "allow": "Erlauben",
     "allowSettings": "Ihre Daten werden nur in Ihrem Browser verwendet.",

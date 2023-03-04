@@ -1,4 +1,5 @@
 import { logger } from 'log-instance';
+import { useVolatileStore } from './stores/volatile.mjs';
 import { Examples, SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
 import * as Idb from "idb-keyval";
 
@@ -126,24 +127,25 @@ export default class IdbSutta {
         return a;
       }, []);
     if (highlightExamples) {
-      this.highlightExamples();
+      this.highlightExamples(opts);
     }
   }
 
-  highlightExamples(opts={}) {
+  async highlightExamples(opts={}) {
+    const msg = 'IdbSutta.highlightExamples() ';
     let { segments } = this;
+    let volatile = useVolatileStore();
     let { 
-      seg,
+      segment,
       lang=this.lang, 
       template=EXAMPLE_TEMPLATE,
     } = opts;
     let updated = 0;
 
-
     let msStart = Date.now();
-    if (seg) { // one segment
-      let iSeg = segments.findIndex(s=>s.scid === seg.scid);
-      let langText = seg[lang];
+    if (segment) { // one segment
+      let iSeg = segments.findIndex(s=>s.scid === segment.scid);
+      let langText = segment[lang];
       if (RE_EXAMPLE_CLASS.test(langText)) {
         // already highlighted examples
       } else if (langText) {
@@ -151,11 +153,12 @@ export default class IdbSutta {
         if (langText2 === langText) {
           // no examples to highlight
         } else {
-          seg[lang] = langText2;
+          segment[lang] = langText2;
           updated = 1;
         }
       }
     } else { // all segments
+      volatile.waitBegin('ebt.addingExamples', volatile.ICON_PROCESSING);
       segments.forEach(seg => {
         let langText = seg[lang];
         if (langText && Examples.test(langText, lang)) {
@@ -163,9 +166,11 @@ export default class IdbSutta {
           updated++;
         }
       });
+      volatile.waitEnd();
     }
     let msElapsed = Date.now() - msStart;
-    updated && logger.debug("IdbSutta.highlightExamples()", {updated, seg, msElapsed});
+    updated && logger.info(msg, {updated, segment, msElapsed});
+
     return updated;
   }
 

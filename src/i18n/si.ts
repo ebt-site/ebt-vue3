@@ -156,6 +156,7 @@ export default {
     "HHMMSS": "A_HOURSh A_MINUTESm A_SECONDSs",
     "MMSS": "මිA_MINUTES තA_SECONDS",
     "aboutTitle": "Voice පිළිබඳව",
+    "addingExamples": "Adding examples",
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",

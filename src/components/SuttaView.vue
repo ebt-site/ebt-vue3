@@ -109,7 +109,7 @@
         const msg = `SuttaView.onClickSutta(${this.suttaViewId})`;
         let { $refs, suttaViewId } = this;
         let elt = $refs[suttaViewId];
-        console.log(msg, {evt, elt});
+        logger.info(msg, {evt, elt});
       },
     },
     computed: {

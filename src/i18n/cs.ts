@@ -157,6 +157,7 @@ export default {
     "MMSS": "A_MINUTESm A_SECONDSs",
     "aboutTitle": "O Voice",
     "addCard": "Add Card",
+    "addingExamples": "Adding examples",
     "advanced": "Advanced",
     "allow": "Allow",
     "allowSettings": "Do not collect or share my data",
