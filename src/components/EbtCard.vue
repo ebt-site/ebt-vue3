@@ -70,7 +70,6 @@
         audio: useAudioStore(),
         settings: useSettingsStore(),
         volatile: useVolatileStore(),
-        showDebug: ref(false),
         observer: ref(undefined),
       }
     },

@@ -3,9 +3,9 @@
     :id="suttaViewId"
     :ref="suttaViewId"
     @click="onClickSutta"
-    @keydown='audio.keydown'
-    @focus='audio.audioFocused=true'
-    @blur='audio.audioFocused=false'
+    @keydown='onKeyDownSutta'
+    @focus='onFocusSutta'
+    @blur='onBlurSutta'
     tabindex=0
   >
     <tipitaka-nav :card="card"/>
@@ -102,6 +102,30 @@
       }
     },
     methods: {
+      onKeyDownSutta(evt) {
+        let { audio } = this;
+        switch (evt.code) {
+          case 'Tab': {
+            let elt = document.getElementById('ebt-chips');
+            elt && elt.focus();
+            evt.preventDefault();
+            break;
+          }
+          default:
+            audio.keydown(evt);
+            break;
+        }
+      },
+      onFocusSutta(evt) {
+        let { settings, audio, card } = this;
+        audio.audioFocused = true;
+        let routeHash = card.routeHash();
+        settings.scrollToElementId(routeHash);
+      },
+      onBlurSutta(evt) {
+        let { audio } = this;
+        audio.audioFocused = false;
+      },
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;
       },
