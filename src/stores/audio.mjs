@@ -11,6 +11,7 @@ import * as Idb from 'idb-keyval';
 
 const MSDAY = 24 * 3600 * 1000;
 const VUEREFS = new Map();
+const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3"; 
 const HEADERS_JSON = { ["Accept"]: "application/json", };
 const HEADERS_MPEG = { ["Accept"]: "audio/mpeg", };
 const SAMPLE_RATE = 48000;
