@@ -71,6 +71,7 @@
       TipitakaNav,
     },
     async mounted() {
+      const msg = 'SuttaView.mounted() ';
       let { $route, suttas, settings, volatile, card, suttaViewId} = this;
       let { location, data } = card;
       let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
@@ -89,16 +90,19 @@
 
       card.autoFocusId = suttaViewId;
 
-      logger.info('SuttaView.mounted()', {suttaRef, suttaViewId});
-
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
+          logger.info(msg+'matchPath', {suttaRef, suttaViewId});
           let routeHash = card.routeHash();
           settings.scrollToElementId(routeHash);
           if (window.location.hash !== routeHash) {
             settings.setRoute(routeHash);
           }
+          let elt = document.getElementById(suttaViewId);
+          elt && elt.focus();
         });
+      } else {
+        logger.info(msg, {suttaRef, suttaViewId});
       }
     },
     methods: {
