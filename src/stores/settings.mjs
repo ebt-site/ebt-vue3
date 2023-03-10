@@ -47,7 +47,7 @@ export const useSettingsStore = defineStore('settings', {
       }
     },
     async loadSettings() {
-      let msg = 'stores.settings.loadSettings() ';
+      let msg = 'settings.loadSettings() ';
       let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
       if (savedState) {
@@ -82,8 +82,7 @@ export const useSettingsStore = defineStore('settings', {
       if (card) {
         logger.debug(msg, card.context, card.id, );
       } else { // should never happen
-        console.trace(msg);
-        logger.warn(msg+"=> null");
+        logger.warn(msg+"=> null", {card, fullPath, cards});
       }
       return card;
     },
