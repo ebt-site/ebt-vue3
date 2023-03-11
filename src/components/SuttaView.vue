@@ -1,7 +1,6 @@
 <template>
   <v-sheet :class="suttaClass"
-    :id="suttaViewId"
-    :ref="suttaViewId"
+    :id="card.autofocusId"
     @click="onClickSutta"
     @keydown='onKeyDownSutta'
     @focus='onFocusSutta'
@@ -72,7 +71,7 @@
     },
     async mounted() {
       const msg = 'SuttaView.mounted() ';
-      let { $route, suttas, settings, volatile, card, suttaViewId} = this;
+      let { $route, suttas, settings, volatile, card, } = this;
       let { location, data } = card;
       let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
       let suttaRef = SuttaRef.create(ref);
@@ -88,21 +87,18 @@
       let { langTrans:defaultLang } = settings;
       this.idbSuttaRef = idbSuttaRef?.value;
 
-      card.autoFocusId = suttaViewId;
-
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
-          logger.info(msg+'matchPath', {suttaRef, suttaViewId});
+          logger.info(msg+'matchPath', {suttaRef, });
           let routeHash = card.routeHash();
           settings.scrollToElementId(routeHash);
           if (window.location.hash !== routeHash) {
             settings.setRoute(routeHash);
           }
-          let elt = document.getElementById(suttaViewId);
-          elt && elt.focus();
+          card.focus();
         });
       } else {
-        logger.info(msg, {suttaRef, suttaViewId});
+        logger.info(msg, {suttaRef});
       }
     },
     methods: {
@@ -134,16 +130,13 @@
         return `https://suttacentral.net/${sutta_uid}`;
       },
       onClickSutta(evt) {
-        const msg = `SuttaView.onClickSutta(${this.suttaViewId})`;
-        let { $refs, suttaViewId } = this;
-        let elt = $refs[suttaViewId];
+        let { $refs, card } = this;
+        const msg = `SuttaView.onClickSutta(${card.chipTitle()})`;
+        let elt = card.focus();
         logger.info(msg, {evt, elt});
       },
     },
     computed: {
-      suttaViewId(ctx) {
-        return `${ctx.card.id}-sutta`;
-      },
       idbSuttaSegments(ctx) {
         return ctx.idbSuttaRef?.segments || [];
       },

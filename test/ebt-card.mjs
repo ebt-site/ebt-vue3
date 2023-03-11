@@ -5,7 +5,7 @@ import should from "should";
 logger.logLevel = 'warn';
 
 (typeof describe === 'function') && describe("ebt-card.mjs", function () {
-  it("default ctor", async () => {
+  it("TESTTESTdefault ctor", async () => {
     let card1 = new EbtCard();
     let card2 = new EbtCard();
     let defaultProps = {
@@ -15,9 +15,13 @@ logger.logLevel = 'warn';
       data: undefined,
     }
     should(card1.id.length).equal(12);
+    should(card1.tab1Id.length).equal(17);
+    should(card1.autofocusId.length).equal(22);
     should(card1).properties(defaultProps);
 
     should(card2.id).not.equal(card1.id);
+    should(card2.autofocusId).not.equal(card1.autofocusId);
+    should(card2.tab1Id).not.equal(card1.tab1Id);
     should(card2).properties(defaultProps);
   });
   it("constants", ()=>{
@@ -425,5 +429,31 @@ logger.logLevel = 'warn';
     should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
     should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
+  });
+  it("TESTTESTfocus()", ()=>{
+    let card = new EbtCard();
+    let { tab1Id, autofocusId } = card;
+    let elts = [];
+    let document = {
+      activeElement: undefined,
+      getElementById: (id)=>{ return elts.find(elt=>elt.id === id); },
+    };
+    let testElt1 = { id:tab1Id, focus:()=>{document.activeElement = testElt1;}};
+    let testElt2 = { id:autofocusId, focus:()=>{document.activeElement = testElt2;}};
+    global.document = document;
+
+    // No element
+    should(card.focus()).equal(undefined);
+    should(document.activeElement).equal(undefined);
+
+    // tab1 element but no autofocus element
+    elts.push(testElt1);
+    should(card.focus()).equal(testElt1);
+    should(document.activeElement).equal(testElt1);
+
+    // both autofocus and tab1 elements
+    elts.push(testElt2);
+    should(card.focus()).equal(testElt2);
+    should(document.activeElement).equal(testElt2);
   });
 });

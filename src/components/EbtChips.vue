@@ -79,10 +79,7 @@
         let { routeCard } = volatile;
         if (routeCard) {
           settings.openCard(routeCard);
-          nextTick(()=>{
-            let tab1 = document.getElementById(routeCard.autoFocusId);
-            tab1 && tab1.focus();
-          });
+          nextTick(()=> routeCard.focus());
         }
       },
       startDrag(evt, card) {

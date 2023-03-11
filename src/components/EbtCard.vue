@@ -81,10 +81,17 @@
       WikiView,
     },
     mounted() {
-      let { card } = this;
+      const msg = 'EbtCard.mounted() ';
+      let { card, $route, settings } = this;
+      let { langTrans:defaultLang } = settings;
       let { id } = card;
-      logger.debug("EbtCard.mounted()", {id});
       this.addIntersectionObserver();
+      if (card.matchPath({path:$route.fullPath, defaultLang})) {
+        nextTick(() => card.focus());
+        logger.info(msg, "routeCard:", {id});
+      } else {
+        logger.debug(msg, {id});
+      }
     },
     updated() {
       this.addIntersectionObserver();

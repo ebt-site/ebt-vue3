@@ -78,7 +78,6 @@ export default class EbtCard {
     });
 
     // secondary properties
-    this.autoFocusId = this.tab1Id;
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }
@@ -121,6 +120,10 @@ export default class EbtCard {
     return `${this.id}-tab1`;
   }
 
+  get autofocusId() {
+    return `${this.id}-autofocus`;
+  }
+
   get icon() {
     return CONTEXTS[this.context]?.icon || "mdi-alert-icon";
   }
@@ -143,6 +146,24 @@ export default class EbtCard {
       default:
         return this.titleAnchor;
     }
+  }
+
+  focus() {
+    const msg = 'EbtCard.focus() ';
+    let elt = document.getElementById(this.autofocusId);
+    if (elt) {
+      elt.focus();
+      logger.debug(msg, this.autofocusId);
+    } else if ((elt = document.getElementById(this.tab1Id))) {
+      elt.focus();
+      logger.debug(msg, this.tab1Id);
+    } else {
+      logger.warn(msg, 'element not found', {
+        autofocusId: this.autofocusId, 
+        tab1Id: this.tab1Id,
+      });
+    }
+    return elt;
   }
 
   routeHash(dstPath) {
