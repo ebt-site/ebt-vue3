@@ -7,7 +7,6 @@
           expand-icon="mdi-dots-vertical"
           collapse-icon="mdi-dots-horizontal"
           class="expansion-panel-title"
-          @click="onClick"
           :aria-label="result.uid"
         >
           <div class="result-title">
@@ -92,10 +91,6 @@
     async mounted() {
     },
     methods: {
-      onClick() {
-        let { audio } = this;
-        audio.playClick();
-      },
       matchedSegments(result) {
         let segments = result?.segments;
         if (segments == null) {

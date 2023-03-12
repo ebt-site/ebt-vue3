@@ -325,7 +325,7 @@ export default {
     },
     clickClose() {
       let { audio, volatile } = this;
-      audio.playClick();
+      //audio.playClick();
       volatile.showSettings = false;
       this.onClose();
     },

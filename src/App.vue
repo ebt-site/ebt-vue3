@@ -135,13 +135,11 @@
       onClickGdrp(evt) {
         let { audio, settings } = this;
         logger.debug('onClickGdrp', evt);
-        audio.playClick();
         settings.showGdpr = false;
         evt.preventDefault();
       },
       onClickSettings(evt) {
         let { volatile, audio } = this;
-        audio.playClick();
         let btn = document.getElementById('btn-settings');
         btn && btn.blur();
         volatile.showSettings = true;
@@ -171,15 +169,23 @@
         $i18n.locale = settings.locale;
       });
       window.addEventListener('keydown', evt=>{
-        let msg = `App.mounted() key:${evt.code}`;
+        let msg = `App.mounted().keydown:${evt.code}`;
         let { audio } = this;
         switch (evt.code) {
           case 'Home': this.onHome(evt); break;
           case 'ArrowUp': evt.ctrlKey && this.onHome(evt); break;
-          case 'Tab': audio.playClick(); break;
           //default: console.log(msg, evt); break;
         }
       })
+      window.addEventListener('focusin', evt=>{
+        let msg = 'App.mounted().focusin';
+        let { audio } = this;
+        if (evt.target.id === 'ebt-chips') {
+          audio.playBlock();
+        } else {
+          audio.playClick();
+        }
+      });
     },
     computed: {
       alertTitle(ctx) {
