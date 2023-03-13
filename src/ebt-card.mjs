@@ -339,6 +339,31 @@ export default class EbtCard {
     return result;
   }
 
+  setLocation({segments, delta=0}) {
+    const msg = 'EbtCard.setLocation() ';
+    let { context } = this;
+    let [...newLocation] = this.location;
+
+    let result = null;
+    if (context === CONTEXT_SUTTA) {
+      if (segments.length <= 0) {
+        logger.info(msg, "no segments");
+        return result;
+      }
+      let iSegNext = delta >= 0 ? delta : segments.length+delta;
+      newLocation[0] = segments[iSegNext].scid;
+
+      if (this.location.join('/') !== newLocation.join('/')) {
+        this.location = newLocation;
+        result = {
+          location: newLocation,
+          iSegment: iSegNext,
+        };
+      }
+    }
+    return result;
+  }
+
 }
 
 

@@ -178,7 +178,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
       should(e.name).equal('InvalidStateError');
     }
   });
-  it("TESTTESTpause()", async()=>{
+  it("pause()", async()=>{
     let audio = new IdbAudio();
 
     // not playing

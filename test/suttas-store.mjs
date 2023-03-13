@@ -228,7 +228,7 @@ const MSDAY = 24*3600*MSSEC;
     let noRefresh = await suttas.getIdbSuttaRef("thig1.2/en/soma", {refresh:false});
     should(noRefresh).equal(null);
   });
-  it("TESTTESTgetIdbSuttaRef() fails", async () => {
+  it("getIdbSuttaRef() fails", async () => {
     let suttas = useSuttasStore();
     let eCaught;
     let oldLogLevel = logger.logLevel;

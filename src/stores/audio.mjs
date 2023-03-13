@@ -74,10 +74,16 @@ export const useAudioStore = defineStore('audio', {
       const msg = `audio.keydown(${evt.code}) `;
       switch (evt.code) {
         case 'ArrowDown':
-          this.next();
+          if (evt.ctrlKey && !evt.shiftKey) {
+            this.setLocation(-1);
+          } else if (!evt.cgtrlKey && !evt.shiftKey) {
+            this.next();
+          }
           break;
         case 'ArrowUp':
-          if (!evt.ctrlKey && !evt.shiftKey) {
+          if (evt.ctrlKey && !evt.shiftKey) {
+            this.setLocation(0);
+          } else if (!evt.ctrlKey && !evt.shiftKey) {
             this.back();
           }
           break;
@@ -173,6 +179,29 @@ export const useAudioStore = defineStore('audio', {
     },
     next() {
       return this.incrementSegment(1);
+    },
+    setLocation(delta=0) {
+      const msg = `audio.setLocation(${delta}) `;
+      let volatile = useVolatileStore();
+      let { routeCard } = volatile;
+      let { audioSutta, } = this;
+      let { segments } = audioSutta;
+      let incRes = routeCard.setLocation({ segments, delta, });
+      if (incRes) {
+        let settings = useSettingsStore();
+
+        let { iSegment } = incRes;
+        let seg = segments[iSegment];
+        this.audioScid = segments[iSegment].scid;
+        settings.setRoute(routeCard.routeHash());
+        this.playClick();
+        logger.debug(msg, incRes);
+      } else {
+        this.playBell();
+        logger.debug(msg+'END');
+      }
+
+      return incRes;
     },
     async playSegment() {
       const msg = `audio.playSegment() `;

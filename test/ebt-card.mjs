@@ -5,7 +5,7 @@ import should from "should";
 logger.logLevel = 'warn';
 
 (typeof describe === 'function') && describe("ebt-card.mjs", function () {
-  it("TESTTESTdefault ctor", async () => {
+  it("default ctor", async () => {
     let card1 = new EbtCard();
     let card2 = new EbtCard();
     let defaultProps = {
@@ -430,7 +430,7 @@ logger.logLevel = 'warn';
     should.deepEqual(card.incrementLocation({segments, delta:-1}), null);
     should.deepEqual(card.location, [ scids[0], langTrans, author, ]);
   });
-  it("TESTTESTfocus()", ()=>{
+  it("focus()", ()=>{
     let card = new EbtCard();
     let { tab1Id, autofocusId } = card;
     let elts = [];
@@ -455,5 +455,50 @@ logger.logLevel = 'warn';
     elts.push(testElt2);
     should(card.focus()).equal(testElt2);
     should(document.activeElement).equal(testElt2);
+  });
+  it("TESTTESTsetLocation()", ()=>{
+    let segments = [
+      {scid:"test:1"},
+      {scid:"test:2"},
+      {scid:"test:3"},
+    ];
+    let location = ['test:1', 'test-lang', 'test-author'];
+    let context = EbtCard.CONTEXT_SUTTA;
+    let card = new EbtCard({context, location});
+
+    // already at first location
+    should(card.setLocation({segments, delta:0})).equal(null);
+
+    // last location
+    should.deepEqual(card.setLocation({segments, delta:-1}), {
+      iSegment: 2,
+      location: [ 'test:3', 'test-lang', 'test-author'],
+    });
+
+    // first location
+    should.deepEqual(card.setLocation({segments, delta:0}), {
+      iSegment: 0,
+      location: [ 'test:1', 'test-lang', 'test-author'],
+    });
+
+    // second segment from start
+    should.deepEqual(card.setLocation({segments, delta:1}), {
+      iSegment: 1,
+      location: [ 'test:2', 'test-lang', 'test-author'],
+    });
+
+    // third segment from end
+    should.deepEqual(card.setLocation({segments, delta:-3}), {
+      iSegment: 0,
+      location: [ 'test:1', 'test-lang', 'test-author'],
+    });
+
+    // same location
+    card.setLocation({segments, delta:0});
+    should(card.setLocation({segments, delta:0})).equal(null);
+    card.setLocation({segments, delta:1});
+    should(card.setLocation({segments, delta:1})).equal(null);
+    card.setLocation({segments, delta:-1});
+    should(card.setLocation({segments, delta:-1})).equal(null);
   });
 });
