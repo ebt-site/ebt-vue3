@@ -1,6 +1,6 @@
 {
   "name": "ebt-vue3",
-  "version": "1.161.4",
+  "version": "1.161.5",
   "description": "SuttaCentral Voice EBT-Vue3",
   "main": "index.js",
   "private": false,
