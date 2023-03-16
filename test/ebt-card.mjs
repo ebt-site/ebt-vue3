@@ -517,7 +517,7 @@ logger.logLevel = 'warn';
   });
   it("TESTTESTincrementGroup()", ()=>{
     let segments = [
-      'test:1.1', 'test:1.2', 'test:2.1', 'test:2.2'
+      'test:1.1', 'test10.12:1.2', 'test10.12:2.1', 'test10.12:2.2'
     ].map(scid=>({scid})); 
     let locationSuffix = ['test-lang', 'test-author'];
     let location = [ segments[0].scid, ...locationSuffix ];

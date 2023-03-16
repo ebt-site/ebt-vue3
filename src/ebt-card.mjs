@@ -364,6 +364,11 @@ export default class EbtCard {
     return result;
   }
 
+  segGroup(scid) {
+    let segnum = scid.split(':')[1];
+    return segnum.split('.')[0];
+  }
+
   groupStartIndex({segments=[], iSegCur=0}) {
     const msg = 'EbtCard.groupStartIndex() ';
     let { context, } = this;
@@ -373,17 +378,17 @@ export default class EbtCard {
     }
 
     let scid = segments[iSegCur].scid;
-    let curGroup = scid.split('.')[0];
+    let curGroup = this.segGroup(scid);
     iSegCur = iSegCur < 0 ? 0 : iSegCur;
     let iSegPrev = iSegCur;
     let iSegNext = Math.min(segments.length-1, Math.max(0, iSegPrev-1));
     let nextScid = segments[iSegNext].scid;
-    let nextGroup = nextScid.split('.')[0];
+    let nextGroup = this.segGroup(nextScid);
     while (iSegPrev !== iSegNext && curGroup === nextGroup) {
       iSegPrev = iSegNext;
       iSegNext = Math.min(segments.length-1, Math.max(0, iSegPrev-1));
       nextScid = segments[iSegNext].scid;
-      nextGroup = nextScid.split('.')[0];
+      nextGroup = this.segGroup(nextScid);
     }
     return iSegPrev;
   }
@@ -399,7 +404,7 @@ export default class EbtCard {
     }
 
     let scid = this.location[0];
-    let curGroup = scid.split('.')[0];
+    let curGroup = this.segGroup(scid);
     let iSegCur = segments.findIndex(seg=>seg.scid === scid);
     iSegCur = iSegCur < 0 ? 0 : iSegCur;
     let iSegPrev = iSegCur;
@@ -419,7 +424,7 @@ export default class EbtCard {
 
     while (result == null && iSegPrev !== iSegment) {
       let nextScid = segments[iSegment].scid;
-      let nextGroup = nextScid.split('.')[0];
+      let nextGroup = this.segGroup(nextScid);
       if (nextGroup !== curGroup) {
         location[0] = nextScid;
         result = { location, iSegment };
