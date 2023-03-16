@@ -456,7 +456,7 @@ logger.logLevel = 'warn';
     should(card.focus()).equal(testElt2);
     should(document.activeElement).equal(testElt2);
   });
-  it("TESTTESTsetLocation()", ()=>{
+  it("setLocation()", ()=>{
     let segments = [
       {scid:"test:1"},
       {scid:"test:2"},
@@ -500,5 +500,52 @@ logger.logLevel = 'warn';
     should(card.setLocation({segments, delta:1})).equal(null);
     card.setLocation({segments, delta:-1});
     should(card.setLocation({segments, delta:-1})).equal(null);
+  });
+  it("groupStartIndex()", ()=>{
+    let segments = [
+      'test:1.1', 'test:1.2', 'test:2.1', 'test:2.2'
+    ].map(scid=>({scid})); 
+    let locationSuffix = ['test-lang', 'test-author'];
+    let location = [ segments[0].scid, ...locationSuffix ];
+    let context = EbtCard.CONTEXT_SUTTA;
+    let card = new EbtCard({context, location});
+    
+    should(card.groupStartIndex({segments, iSegCur:0})).equal(0);
+    should(card.groupStartIndex({segments, iSegCur:1})).equal(0);
+    should(card.groupStartIndex({segments, iSegCur:2})).equal(2);
+    should(card.groupStartIndex({segments, iSegCur:3})).equal(2);
+  });
+  it("TESTTESTincrementGroup()", ()=>{
+    let segments = [
+      'test:1.1', 'test:1.2', 'test:2.1', 'test:2.2'
+    ].map(scid=>({scid})); 
+    let locationSuffix = ['test-lang', 'test-author'];
+    let location = [ segments[0].scid, ...locationSuffix ];
+    let context = EbtCard.CONTEXT_SUTTA;
+    let card = new EbtCard({context, location});
+
+    // Backward
+    card.location[0] = segments[3].scid;
+    should.deepEqual(card.incrementGroup({segments, delta:-1}), {
+      iSegment: 2,
+      location: [segments[2].scid, ...locationSuffix],
+    });
+    should(card.location[0]).equal(segments[2].scid);
+    should.deepEqual(card.incrementGroup({segments, delta:-1}), {
+      iSegment: 0,
+      location: [segments[0].scid, ...locationSuffix],
+    });
+    should(card.location[0]).equal(segments[0].scid);
+    should(card.incrementGroup({segments, delta:-1})).equal(null);
+
+    // Forward
+    card.location[0] = segments[0].scid;
+    should.deepEqual(card.incrementGroup({segments, delta:1}), {
+      iSegment: 2,
+      location: [segments[2].scid, ...locationSuffix],
+    });
+    should(card.location[0]).equal(segments[2].scid);
+    should.deepEqual(card.incrementGroup({segments, delta:1}), null);
+    should(card.location[0]).equal(segments[2].scid);
   });
 });

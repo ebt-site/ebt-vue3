@@ -364,6 +364,78 @@ export default class EbtCard {
     return result;
   }
 
+  groupStartIndex({segments=[], iSegCur=0}) {
+    const msg = 'EbtCard.groupStartIndex() ';
+    let { context, } = this;
+
+    if (context !== CONTEXT_SUTTA || segments.length <= 0) {
+      return 0;
+    }
+
+    let scid = segments[iSegCur].scid;
+    let curGroup = scid.split('.')[0];
+    iSegCur = iSegCur < 0 ? 0 : iSegCur;
+    let iSegPrev = iSegCur;
+    let iSegNext = Math.min(segments.length-1, Math.max(0, iSegPrev-1));
+    let nextScid = segments[iSegNext].scid;
+    let nextGroup = nextScid.split('.')[0];
+    while (iSegPrev !== iSegNext && curGroup === nextGroup) {
+      iSegPrev = iSegNext;
+      iSegNext = Math.min(segments.length-1, Math.max(0, iSegPrev-1));
+      nextScid = segments[iSegNext].scid;
+      nextGroup = nextScid.split('.')[0];
+    }
+    return iSegPrev;
+  }
+
+  incrementGroup({segments=[], delta=1}) {
+    const msg = 'EbtCard.incrementGroup() ';
+    let result = null;
+    let { context } = this;
+    let [...location] = this.location;
+
+    if (context !== CONTEXT_SUTTA || segments.length <= 0) {
+      return result;
+    }
+
+    let scid = this.location[0];
+    let curGroup = scid.split('.')[0];
+    let iSegCur = segments.findIndex(seg=>seg.scid === scid);
+    iSegCur = iSegCur < 0 ? 0 : iSegCur;
+    let iSegPrev = iSegCur;
+    let iSegNext = Math.min(segments.length-1, Math.max(0, iSegPrev+delta));
+    let iSegment = iSegNext;
+
+    if (delta < 0) {
+      iSegment = this.groupStartIndex({segments, iSegCur});
+      if (iSegment === iSegCur) {
+        iSegment = this.groupStartIndex({segments, iSegCur: iSegNext});
+      }
+      if (iSegment !== iSegCur) {
+        location[0] = segments[iSegment].scid;
+        result = { location, iSegment }
+      }
+    }
+
+    while (result == null && iSegPrev !== iSegment) {
+      let nextScid = segments[iSegment].scid;
+      let nextGroup = nextScid.split('.')[0];
+      if (nextGroup !== curGroup) {
+        location[0] = nextScid;
+        result = { location, iSegment };
+        break;
+      }
+      iSegPrev = iSegment;
+      iSegment = Math.min(segments.length-1, Math.max(0, iSegPrev+delta));
+    }
+
+    if (result) {
+      this.location = result.location;
+    }
+
+    return result;
+  }
+
 }
 
 
