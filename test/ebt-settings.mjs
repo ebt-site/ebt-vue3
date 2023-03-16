@@ -10,6 +10,7 @@ import should from "should";
       audio: Settings.AUDIO.OGG,
       clickVolume: 2,
       blockVolume: 2,
+      swooshVolume: 2,
       fullLine: false,
       ips: 6,
       langTrans: 'en',
@@ -57,6 +58,7 @@ import should from "should";
       audioSuffix: 'mp3',
       clickVolume: 2,
       blockVolume: 2,
+      swooshVolume: 2,
       fullLine: false,
       id: 1,
       ips: 6,
@@ -94,11 +96,13 @@ import should from "should";
     ];
     let clickVolume = 4;
     let blockVolume = 3;
+    let swooshVolume = 1;
     let showId = true;
     let showPali = false;
     var ebt = new Settings({
       clickVolume,
       blockVolume,
+      swooshVolume,
       showId,
       showPali,
     });
@@ -106,6 +110,7 @@ import should from "should";
     should(ebt).properties({
       clickVolume,
       blockVolume,
+      swooshVolume,
       showId,
       showPali,
     });

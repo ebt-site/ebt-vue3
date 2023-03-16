@@ -283,6 +283,7 @@ export default {
     "speakSearchText": "検索テキストを音声化",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "ウェブブラウザのクッキーに設定を保存",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
     "trackOfSection": "A_TRACK / A_TRACKS",

@@ -283,6 +283,7 @@ export default {
     "speakSearchText": "Speak search text",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Geyma stillingar í vafrakökum",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
     "trackOfSection": "A_TRACK af A_TRACKS",

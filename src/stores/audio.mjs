@@ -73,18 +73,22 @@ export const useAudioStore = defineStore('audio', {
     keydown(evt) {
       const msg = `audio.keydown(${evt.code}) `;
       switch (evt.code) {
-        case 'ArrowDown':
-          if (evt.ctrlKey && !evt.shiftKey) {
-            this.setLocation(-1);
-          } else if (!evt.cgtrlKey && !evt.shiftKey) {
-            this.next();
+        case 'ArrowUp':
+          if (evt.ctrlKey) {
+            this.setLocation(0);
+          } else if (evt.shiftKey) {
+            this.incrementGroup(-1);
+          } else {
+            this.back();
           }
           break;
-        case 'ArrowUp':
-          if (evt.ctrlKey && !evt.shiftKey) {
-            this.setLocation(0);
-          } else if (!evt.ctrlKey && !evt.shiftKey) {
-            this.back();
+        case 'ArrowDown':
+          if (evt.ctrlKey) {
+            this.setLocation(-1);
+          } else if (evt.shiftKey) {
+            this.incrementGroup(1);
+          } else {
+            this.next();
           }
           break;
         case 'Space':
@@ -195,6 +199,29 @@ export const useAudioStore = defineStore('audio', {
         this.audioScid = segments[iSegment].scid;
         settings.setRoute(routeCard.routeHash());
         this.playClick();
+        logger.debug(msg, incRes);
+      } else {
+        this.playBell();
+        logger.debug(msg+'END');
+      }
+
+      return incRes;
+    },
+    incrementGroup(delta=1) {
+      const msg = `audio.incrementGroup(${delta}) `;
+      let volatile = useVolatileStore();
+      let { routeCard } = volatile;
+      let { audioSutta, } = this;
+      let { segments } = audioSutta;
+      let incRes = routeCard.incrementGroup({segments, delta});
+      if (incRes) {
+        let settings = useSettingsStore();
+
+        let { iSegment } = incRes;
+        let seg = segments[iSegment];
+        this.audioScid = segments[iSegment].scid;
+        settings.setRoute(routeCard.routeHash());
+        this.playSwoosh();
         logger.debug(msg, incRes);
       } else {
         this.playBell();
@@ -315,6 +342,13 @@ export const useAudioStore = defineStore('audio', {
         logger.warn(msg + 'ERROR', e.message);
         throw e;
       }
+    },
+    playSwoosh(audioContext) {
+      const msg = 'audio.playSwoosh() ';
+      let settings = useSettingsStore();
+      let volume = settings.swooshVolume;
+      let url =  volume ? `audio/swoosh${volume}.mp3` : null;
+      return this.playUrl(url, {audioContext});
     },
     playBlock(audioContext) {
       const msg = 'audio.playBlock() ';

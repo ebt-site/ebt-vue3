@@ -280,6 +280,7 @@ export default {
     "speakSearchText": "Speak search text",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Lagre innstillinger i nettleser informasjonskapsler",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
     "trackOfSection": "A_TRACK av A_TRACKS",

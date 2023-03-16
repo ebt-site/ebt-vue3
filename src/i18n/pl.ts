@@ -283,6 +283,7 @@ export default {
     "speakSearchText": "Speak search text",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Zachowaj ustawienia w ciasteczkach internetowej przeglądarki",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
     "trackOfSection": "A_TRACK z A_TRACKS",

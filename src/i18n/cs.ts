@@ -283,6 +283,7 @@ export default {
     "speakSearchText": "Řekni hledaný text",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "Uchovej nastavení v cookies webového prohlížeče",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "Text Layout",
     "trackOfSection": "A_TRACK z A_TRACKS",

@@ -177,6 +177,11 @@
               @update:modelValue="onBlockVolume"
               prepend-icon="mdi-volume-high"
             ></v-slider>
+            <v-slider v-model="settings.swooshVolume" min=0 max=4 step=1 
+              :label="$t('ebt.swooshSound')"
+              @update:modelValue="onSwooshVolume"
+              prepend-icon="mdi-volume-high"
+            ></v-slider>
             <template v-for="bell,i in ipsChoices">
               <audio v-if="bell.value" 
                 :ref="el => {bellAudio[bell.value] = el}" preload=auto>
@@ -322,6 +327,10 @@ export default {
     onBlockVolume() {
       let { audio } = this;
       audio.playBlock();
+    },
+    onSwooshVolume() {
+      let { audio } = this;
+      audio.playSwoosh();
     },
     clickClose() {
       let { audio, volatile } = this;

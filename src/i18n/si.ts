@@ -281,6 +281,7 @@ export default {
     "speakSearchText": "සෙවුම් පෙළ පවසන්න",
     "speakTranslation": "Speak translation",
     "storeSettingsInCookies": "වෙබ් බ්‍රව්සර් කුකී තුළ සැකසුම් ගබඩා කරන්න",
+    "swooshSound": "Swoosh sound",
     "text": "Sutta ID or text",
     "textLayout": "පෙළ පිරිසැලසුම",
     "trackOfSection": "A_TRACKS න් A_TRACK",
