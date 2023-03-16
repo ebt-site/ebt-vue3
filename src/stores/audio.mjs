@@ -198,7 +198,7 @@ export const useAudioStore = defineStore('audio', {
         let seg = segments[iSegment];
         this.audioScid = segments[iSegment].scid;
         settings.setRoute(routeCard.routeHash());
-        this.playClick();
+        this.playSwoosh();
         logger.debug(msg, incRes);
       } else {
         this.playBell();
