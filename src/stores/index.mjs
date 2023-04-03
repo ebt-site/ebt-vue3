@@ -1,13 +1,13 @@
 
-import { default as AudioStore } from "./audio.mjs"
-import { default as SettingsStore } from "./settings.mjs"
-import { default as SuttasStore } from "./suttas.mjs"
-import { default as VolatileStore } from "./volatile.mjs"
+import { useAudioStore  } from "./audio.mjs"
+import { useSettingsStore } from "./settings.mjs"
+import { useSuttasStore } from "./suttas.mjs"
+import { useVolatileStore } from "./volatile.mjs"
 
 export {
-  AudioStore,
-  SettingsStore,
-  SuttasStore,
-  VolatileStore,
+  useAudioStore,
+  useSettingsStore,
+  useSuttasStore,
+  useVolatileStore,
 }
 

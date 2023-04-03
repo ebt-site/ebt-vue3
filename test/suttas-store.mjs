@@ -5,9 +5,13 @@ import { logger } from "log-instance";
 import fetch from "node-fetch";
 logger.logLevel = 'warn';
 
-import { useSettingsStore } from '../src/stores/settings.mjs';
-import { useSuttasStore } from '../src/stores/suttas.mjs';
-import { default as IdbSutta } from "../src/idb-sutta.mjs";
+import { 
+  useSettingsStore,
+  useSuttasStore,
+  useVolatileStore,
+  useAudioStore,
+  IdbSutta,
+} from '../src/index.mjs';
 import * as Idb from "idb-keyval";
 import { ref, shallowRef, watch, watchEffect } from "vue";
 
