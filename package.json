@@ -2,7 +2,7 @@
   "name": "ebt-vue3",
   "version": "1.169.0",
   "description": "SuttaCentral Voice EBT-Vue3",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "private": false,
   "directories": {
     "test": "test"
