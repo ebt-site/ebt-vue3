@@ -5,7 +5,7 @@ APP=$DIR/..
 set -e
 
 VERSION=`node scripts/version.cjs`
-echo "<template>v$VERSION</template>" | tee $APP/src/components/Version.vue
+#echo "<template>v$VERSION</template>" | tee $APP/src/components/Version.vue
 
 echo "$SCRIPT: vite build"
 vite build
