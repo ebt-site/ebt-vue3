@@ -12,9 +12,9 @@ vite build
 
 echo $VERSION > $APP/dist/version
 
-cat > $APP/dist/.gitignore <<CATEOF
-local
-node_modules
-CATEOF
+#cat > $APP/dist/.gitignore <<CATEOF
+#local
+#node_modules
+#CATEOF
 
-git add -A $APP/dist $APP/src/components/Version.vue
+#git add -A $APP/dist $APP/src/components/Version.vue
