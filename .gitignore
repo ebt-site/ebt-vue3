@@ -1,5 +1,3 @@
-dist
-.nuxt
 *.deb
 *.wiki
 local
