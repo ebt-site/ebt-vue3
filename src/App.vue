@@ -12,9 +12,7 @@
           </v-btn>
         </template> <!-- collapsed -->
         <template v-if="!collapsed">
-          <v-app-bar-title 
-                @click="collapsed=true"
-          > 
+          <v-app-bar-title @click="collapsed=true" > 
             <div class="ebt-title">
               <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
                 class="ebt-nav-img"
