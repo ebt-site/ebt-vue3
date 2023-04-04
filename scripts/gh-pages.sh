@@ -44,7 +44,6 @@ fi
 echo -e "$SCRIPT: git branch: $BRANCH"
 
 echo -e "$SCRIPT: removing existing content"
-rm *html favicon.* _payload.js
 rm -rf assets audio fonts img 
 
 echo -e "$SCRIPT: copying new content"
