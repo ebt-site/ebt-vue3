@@ -50,8 +50,6 @@ echo -e "$SCRIPT: copying new content"
 cp -r dist/* .
 ls -l
 
-exit 0; # TODO
-
 echo -e "$SCRIPT: updating github"
 git add .
 git commit -m "gh-pages"
