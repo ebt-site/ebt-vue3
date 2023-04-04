@@ -11,6 +11,7 @@ echo "$SCRIPT: vite build"
 vite build
 
 echo $VERSION > $APP/dist/version
+cp package.json dist
 
 #cat > $APP/dist/.gitignore <<CATEOF
 #local
