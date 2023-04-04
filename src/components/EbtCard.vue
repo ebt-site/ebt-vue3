@@ -27,7 +27,7 @@
           />
         </template>
         <v-card-text>
-          <debug-view v-if="card.context===CONTEXT_DEBUG"/>
+          <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
           <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 

@@ -1,8 +1,7 @@
 <template>
   <v-sheet class="debug-card">
     <div>
-      <h3>DEBUG VIEW</h3>
-
+      <h3>Actions</h3>
       {{message}}
       <div class="buttons">
         <v-btn @click="clickBell" variant="outlined">
@@ -10,6 +9,10 @@
         </v-btn>
       </div>
 
+      <h3 class="mt-4"> Layout </h3>
+      Layout: {{volatile.layout}}
+
+      <h3 class="mt-4">Links</h3>
       <div style="width: 20em">
         <div v-for="link in testLinks">
           <a :href="link">{{link.replace(/#/,'')}}</a>

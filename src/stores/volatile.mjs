@@ -48,16 +48,23 @@ export const useVolatileStore = defineStore('volatile', {
       return routeCard?.context === EbtCard.CONTEXT_SUTTA ? routeCard : null;
     },
     layout() {
-      let root = document.documentElement;
-      let onresize = ()=>{
-        layout.value = {
-          w: root.clientWidth,
-          h: root.clientHeight,
+      let root = document?.documentElement;
+      if (root) {
+        let onresize = ()=>{
+          layout.value = {
+            w: root.clientWidth,
+            h: root.clientHeight,
+          }
         }
-      }
-      if (layout.value == null) {
-        document.defaultView.onresize = onresize;
-        onresize();
+        if (layout.value == null) {
+          document.defaultView.onresize = onresize;
+          onresize();
+        }
+      } else {
+        layout.value = {
+          w:  375,
+          h: 667,
+        }
       }
       return layout;
     },
