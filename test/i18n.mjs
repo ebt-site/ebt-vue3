@@ -5,10 +5,11 @@ logger.logLevel = 'warn';
 
 import { 
   Languages,
+  Messages,
 } from '../src/index.mjs';
 
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
-  it("TESTTESTi18n", ()=>{
+  it("i18n", ()=>{
     should.deepEqual(Languages.REF_LANGS, [
       { value: 'de', title: 'Sabbamitta / DE', voice: true },                                  
       { value: 'en', title: 'Sujato / EN', voice: true },                                  
@@ -36,5 +37,13 @@ import {
       { value: 'si', title: 'සිංහල / SI', voice: false },
       { value: 'vi', title: 'Tiếng Việt / VI', voice: false },
     ]);
+  });
+  it("TESTTESTMessages", async()=>{
+    let promise = Messages.MESSAGES;
+    should(promise).instanceOf(Promise);
+    let MESSAGES = await promise;
+    should(MESSAGES).properties([ 'en', 'de', 'pt', 'si', 'ja' ]);
+    should(MESSAGES.en.ebt.translation).equal('Translation');
+    should(MESSAGES.de.ebt.translation).equal('Übersetzung');
   });
 })
