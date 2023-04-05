@@ -12,4 +12,6 @@ vite build
 
 echo $VERSION > $APP/dist/version
 cp package.json dist
+cp -r src/i18n dist/assets/
+
 
