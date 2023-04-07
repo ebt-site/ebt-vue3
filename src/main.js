@@ -12,7 +12,7 @@ import 'vuetify/styles'
 import { default as VuetifyOpts } from "./vuetify-opts.mjs";
 import { createI18n, useI18n } from 'vue-i18n';
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
-import { default as Messages } from './messages.mjs';
+import { default as messages } from './auto/messages.mjs';
 import { createVuetify, } from "vuetify"
 import { loadFonts } from './plugins/webfontloader'
 import NotFound from './components/NotFound.vue';
@@ -24,7 +24,6 @@ import * as VueRouter from "vue-router";
 
   const vuetifyOpts = VuetifyOpts.options();
 
-  const messages = await Messages.MESSAGES;
   const i18n = new createI18n({
     legacy: false,
     locale: "en",
