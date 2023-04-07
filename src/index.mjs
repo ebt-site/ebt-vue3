@@ -10,7 +10,7 @@ import { default as EbtSettings } from "./ebt-settings.mjs";
 import { default as IdbAudio } from "./idb-audio.mjs"
 import { default as IdbSutta } from "./idb-sutta.mjs"
 import { default as Languages } from "./languages.mjs"
-import { default as Messages } from "./messages.mjs"
+import { default as messages } from "./auto/messages.mjs"
 import { default as SuttaDuration } from "./sutta-duration.mjs"
 import { default as Utils } from "./utils.mjs"
 import { default as Voices } from "./auto/voices.mjs"
@@ -29,7 +29,7 @@ export {
   IdbAudio,
   IdbSutta,
   Languages,
-  Messages,
+  messages,
   SuttaCentralId,
   SuttaDuration,
   SuttaRef,

@@ -5,7 +5,7 @@ logger.logLevel = 'warn';
 
 import { 
   Languages,
-  Messages,
+  messages,
 } from '../src/index.mjs';
 
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
@@ -38,12 +38,9 @@ import {
       { value: 'vi', title: 'Tiếng Việt / VI', voice: false },
     ]);
   });
-  it("TESTTESTMessages", async()=>{
-    let promise = Messages.MESSAGES;
-    should(promise).instanceOf(Promise);
-    let MESSAGES = await promise;
-    should(MESSAGES).properties([ 'en', 'de', 'pt', 'si', 'ja' ]);
-    should(MESSAGES.en.ebt.translation).equal('Translation');
-    should(MESSAGES.de.ebt.translation).equal('Übersetzung');
+  it("TESTTESTmessages", async()=>{
+    should(messages).properties([ 'en', 'de', 'pt', 'si', 'ja' ]);
+    should(messages.en.ebt.translation).equal('Translation');
+    should(messages.de.ebt.translation).equal('Übersetzung');
   });
 })

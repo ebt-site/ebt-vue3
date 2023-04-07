@@ -47,6 +47,7 @@
     "dev": "vite",
     "serve": "vite preview",
     "build:dist": "scripts/build-dist.sh",
+    "build:messages": "node scripts/build-messages.mjs > src/auto/messages.mjs",
     "build:docker": "scripts/build-docker.sh",
     "preview": "vite preview",
     "vite": "vite",

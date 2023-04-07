@@ -18,5 +18,6 @@ export default class Messages {
       return MESSAGES; 
     })();
   }
+
 }
 

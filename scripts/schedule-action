@@ -19,6 +19,7 @@ npm install --save-dev \
 
 $DIR/i18n-langs.cjs > $APPDIR/src/languages.mjs
 $DIR/get-voices.sh
+npm run build:messages
 
 CMD="git status | grep 'nothing to commit' > /dev/null"
 if bash -c "$CMD"; then
