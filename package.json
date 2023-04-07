@@ -1,10 +1,6 @@
 {
   "name": "ebt-vue3",
-<<<<<<< HEAD
   "version": "1.184.0",
-=======
-  "version": "1.182.6",
->>>>>>> refs/remotes/origin/main
   "description": "SuttaCentral Voice EBT-Vue3",
   "main": "src/index.mjs",
   "private": false,
