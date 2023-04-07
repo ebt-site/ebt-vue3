@@ -1,6 +1,10 @@
 {
   "name": "ebt-vue3",
+<<<<<<< HEAD
   "version": "1.184.0",
+=======
+  "version": "1.182.6",
+>>>>>>> refs/remotes/origin/main
   "description": "SuttaCentral Voice EBT-Vue3",
   "main": "src/index.mjs",
   "private": false,
@@ -15,7 +19,7 @@
     "merkle-json": "^2.4.0",
     "pinia": "^2.0.16",
     "roboto-fontface": "*",
-    "scv-esm": "^1.61.110",
+    "scv-esm": "^1.61.114",
     "serve-favicon": "^2.5.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.37",
