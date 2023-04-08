@@ -13,6 +13,10 @@ var id = 1;
 
 function elementInViewport(elt, root = document.documentElement) {
   const rect = elt?.getBoundingClientRect();
+  const { window } = globalThis;
+  if (window == null) {
+    return false;
+  }
   const viewBottom = (window.innerHeight || root.clientHeight);
   const viewRight = (window.innerWidth || root.clientWidth);
 
@@ -42,6 +46,12 @@ export const useSettingsStore = defineStore('settings', {
   },
   actions: {
     setRoute(route) {
+      const msg = 'settings.setRoute() ';
+      const { window } = globalThis;
+      if (window == null) {
+        console.log(msg, "no window");
+        return;
+      }
       if (window.location.hash !== route) {
         window.location.hash = route;
       }
@@ -94,6 +104,12 @@ export const useSettingsStore = defineStore('settings', {
       logger.debug("SettingsStore.saveSettings()");
     },
     removeCard(card) {
+      const msg = "settings.removeCard() ";
+      const { window } = globalThis;
+      if (window == null) {
+        console.log(msg, "no window");
+        return;
+      }
       let { cards, langTrans:defaultLang } = this;
       let path = window.location.hash;
       cards = this.cards = cards.filter(c => c !== card);
@@ -206,6 +222,7 @@ export const useSettingsStore = defineStore('settings', {
       return cards.reduce((a,v)=> (v.isOpen ? a+1: a), 0);
     },
     servers: (state)=>{ 
+      let { window } = globalThis;
       let isDev = window && window.location.host.startsWith('localhost');
       let servers = Settings.SERVERS.filter(svr => !svr.dev || isDev);
       return servers;
