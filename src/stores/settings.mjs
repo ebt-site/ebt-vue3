@@ -206,7 +206,7 @@ export const useSettingsStore = defineStore('settings', {
       return cards.reduce((a,v)=> (v.isOpen ? a+1: a), 0);
     },
     servers: (state)=>{ 
-      let isDev = window.location.host.startsWith('localhost');;
+      let isDev = window && window.location.host.startsWith('localhost');
       let servers = Settings.SERVERS.filter(svr => !svr.dev || isDev);
       return servers;
     },
