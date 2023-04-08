@@ -166,18 +166,6 @@ export const useSettingsStore = defineStore('settings', {
       this.saveSettings();
       logger.debug(`SettingsStore.clear()`, this);
     },
-    suttaUrl(idOrRef) {
-      let suttaRef = SuttaRef.create(idOrRef, this.langTrans);
-      let { sutta_uid, lang, author, segnum } = suttaRef;
-      let search = `${sutta_uid}/${lang}/${author}`;
-      let { serverUrl } = this;
-      return [ 
-        serverUrl, 
-        'search', 
-        encodeURIComponent(search), 
-        lang,
-      ].join('/');
-    },
     openCard(card) {
       if (card.IsOpen) {
         return false;
