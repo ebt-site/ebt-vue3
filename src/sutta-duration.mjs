@@ -1,5 +1,5 @@
 import { logger } from 'log-instance';
-import { MerkleJson } from 'merkle-json';
+import { MerkleJson } from 'merkle-json/index.mjs';
 
 const SUID_DURATION_URL = [
   `https://raw.githubusercontent.com/sc-voice/scv-server`,
