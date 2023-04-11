@@ -202,7 +202,7 @@
 .seg-text {
   display: flex;
   flex-flow: row wrap;
-  justify-content: start;
+  justify-content: flex-start;
   opacity: 0.85;
   line-height: 1.5;
 }
