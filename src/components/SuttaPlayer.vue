@@ -67,14 +67,6 @@
   import { logger } from "log-instance";
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
-  // TODO: Apple doesn't support AudioContext symbol
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const SAMPLE_RATE = 48000;
-
-  const URL_NOAUDIO = "audio/383542__alixgaus__turn-page.mp3";
-  const PAT_NOAUDIO = ['ac87a767581710d97b8bf190fd5e109c']; // Amy
-  const LENGTH_NOAUDIO = 5000; // actually 3761
-
   export default {
     props: {
       routeCard: { type: Object, },
