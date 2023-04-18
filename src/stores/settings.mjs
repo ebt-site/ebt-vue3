@@ -45,17 +45,6 @@ export const useSettingsStore = defineStore('settings', {
     return settings;
   },
   actions: {
-    setRoute(route) {
-      const msg = 'settings.setRoute() ';
-      const { window } = globalThis;
-      if (window == null) {
-        console.log(msg, "no window");
-        return;
-      }
-      if (window.location.hash !== route) {
-        window.location.hash = route;
-      }
-    },
     async loadSettings() {
       let msg = 'settings.loadSettings() ';
       let state = Utils.assignTyped({}, Settings.INITIAL_STATE);

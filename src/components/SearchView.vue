@@ -101,7 +101,7 @@
             ? await res.json()
             : res;
 
-          settings.setRoute(card.routeHash());
+          volatile.setRoute(card.routeHash());
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mlDoc=>volatile.addMlDoc(mlDoc));

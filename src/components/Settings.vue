@@ -343,7 +343,7 @@ export default {
       settings.clear();
       volatile.showSettings = false;
       logger.warn("Settings.resetDefaults()", Object.assign({}, settings));
-      settings.setRoute("#/home");
+      volatile.setRoute("#/home");
       nextTick(()=>window.location.reload());
     },
     langVoices(lang, vnameKey) {

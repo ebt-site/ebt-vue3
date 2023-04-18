@@ -70,7 +70,7 @@
           defaultLang: settings.langTrans,
         });
         if (routeCard !== card) {
-          settings.setRoute(card.routeHash());
+          volatile.setRoute(card.routeHash());
         }
       },
       routeSuttaRef(route) {
@@ -115,20 +115,19 @@
     },
     watch:{
       $route (to, from) {
+        const msg = 'EbtCards.watch.$route';
         let { volatile, settings, $route }  = this;
         let { cards } = settings;
-        let msg = 'EbtCards.watch.$route';
         let card = EbtCard.pathToCard({
           path: to.fullPath, 
           cards, 
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
-        //volatile.routeCard = card;
         volatile.setRoute(card);
         this.bindAudioSutta(to.href);
         if (card == null) {
-          settings.setRoute('');
+          volatile.setRoute('');
           logger.warn(`${msg} => invalid card route`, {$route, to, from});
           return;
         }

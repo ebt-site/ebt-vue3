@@ -77,7 +77,7 @@
       let suttaRef = SuttaRef.create(ref);
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        settings.setRoute('#/home');
+        volatile.setRoute('#/home');
         settings.removeCard(card);
         return;
       }
@@ -93,7 +93,7 @@
           let routeHash = card.routeHash();
           settings.scrollToElementId(routeHash);
           if (window.location.hash !== routeHash) {
-            settings.setRoute(routeHash);
+            volatile.setRoute(routeHash);
           }
           card.focus();
         });

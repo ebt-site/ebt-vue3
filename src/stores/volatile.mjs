@@ -71,13 +71,26 @@ export const useVolatileStore = defineStore('volatile', {
   },
   actions: {
     setRoute(cardOrRoute='#/home') {
+      const msg = 'volatile.setRoute() ';
       let settings = useSettingsStore();
       let isCard = !(typeof cardOrRoute === 'string');
       let route = isCard ? cardOrRoute.routeHash() : cardOrRoute;
       let card = isCard ? cardOrRoute : settings.pathToCard(route);
-      if (window.location.hash !== route) {
+
+      const { window } = globalThis;
+      if (window == null) {
+        console.trace(msg, 'DBG0418', 'no window');
+      } else if (window.location.hash !== route) {
+        let { document } = globalThis;
+        let activeElement = document?.activeElement;
         window.location.hash = route;
+        let expected = activeElement;
+        let actual = document?.activeElement;
+        if (expected !== actual) {
+          console.trace(msg, 'DBG0418', `activeElement`, {expected, actual});
+        }
       }
+
       this.routeCard = card;
       return card;
     },

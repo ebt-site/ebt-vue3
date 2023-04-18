@@ -74,13 +74,13 @@
           if (className === 'ebt-example') {
             let pattern = encodeURIComponent(innerText);
             let hash = `#/search/${pattern}`
-            settings.setRoute(hash);
+            volatile.setRoute(hash);
           } 
         } else {
           let [ scidHash, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
-          settings.setRoute(hash);
+          volatile.setRoute(hash);
           //idbSuttaRef.highlightExamples({segment});
         }
       },
