@@ -325,7 +325,8 @@ logger.logLevel = 'warn';
 
     // no arguments uses existing card location
     should(cardSuid.routeHash()).equal(`#/${context}/${suid}/${langTrans}/${author}`);
-    should(cardSuidSeg.routeHash()).equal(`#/${context}/${suidSeg}/${langTrans}/${author}`);
+    should(cardSuidSeg.routeHash())
+      .equal(`#/${context}/${suidSeg}/${langTrans}/${author}`);
 
     // update location segment id
     should(cardSuid.routeHash(`/${context}/${suidSeg2}`))
