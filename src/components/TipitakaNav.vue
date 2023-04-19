@@ -58,37 +58,6 @@
       SegmentView,
       SegmentHeader,
     },
-    async mounted() {
-    /*
-      let { $route, suttas, settings, volatile, card, } = this;
-      let { location, data } = card;
-      let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
-      let suttaRef = SuttaRef.create(ref);
-      if (suttaRef == null) {
-        volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        volatile.setRoute('#/home');
-        settings.removeCard(card);
-        return;
-      }
-      let { sutta_uid, lang, author, segnum } = suttaRef;
-      let idbKey = IdbSutta.idbKey({sutta_uid, lang, author});
-      let idbSuttaRef = await suttas.getIdbSuttaRef({sutta_uid, lang, author});
-      let { langTrans:defaultLang } = settings;
-      this.idbSuttaRef = idbSuttaRef?.value;
-
-      logger.info('SuttaView.mounted()', {suttaRef});
-
-      if (card.matchPath({path:$route.fullPath, defaultLang})) {
-        nextTick(()=>{
-          let routeHash = card.routeHash();
-          settings.scrollToElementId(routeHash);
-          if (window.location.hash !== routeHash) {
-            volatile.setRoute(routeHash);
-          }
-        });
-      }
-    */
-    },
     methods: {
       hrefSuttaCentral(sutta_uid) {
         return `https://suttacentral.net/${sutta_uid}`;

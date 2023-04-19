@@ -90,8 +90,9 @@
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
           logger.info(msg+'matchPath', {suttaRef, });
+          let segmentElementId = card.segmentElementId();
+          settings.scrollToElementId(segmentElementId);
           let routeHash = card.routeHash();
-          settings.scrollToElementId(routeHash);
           if (window.location.hash !== routeHash) {
             volatile.setRoute(routeHash);
           }
@@ -119,8 +120,8 @@
       onFocusSutta(evt) {
         let { settings, audio, card } = this;
         audio.audioFocused = true;
-        let routeHash = card.routeHash();
-        settings.scrollToElementId(routeHash);
+        let segmentElementId = card.segmentElementId();
+        settings.scrollToElementId(segmentElementId);
       },
       onBlurSutta(evt) {
         let { audio } = this;

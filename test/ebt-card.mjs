@@ -549,4 +549,16 @@ logger.logLevel = 'warn';
     should.deepEqual(card.incrementGroup({segments, delta:1}), null);
     should(card.location[0]).equal(segments[2].scid);
   });
+  it("TESTTESTsegmentElementId()", ()=>{
+    let context = EbtCard.CONTEXT_SUTTA;
+    let scid = 'test-scid';
+    let lang = 'test-lang';
+    let author = 'test-author';
+    let card1 = new EbtCard({
+      context,
+      location: [scid, lang, author],
+    });
+    should(card1.segmentElementId(scid))
+      .equal(`#/${context}/${scid}/${lang}/${author}`);
+  });
 });

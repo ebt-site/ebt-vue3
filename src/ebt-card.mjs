@@ -141,7 +141,7 @@ export default class EbtCard {
     switch (context) {
       case CONTEXT_SUTTA:
         return location.length>0 && location[0].includes(':')
-          ? this.routeHash()
+          ? this.segmentElementId()
           : this.titleAnchor;
       default:
         return this.titleAnchor;
@@ -179,9 +179,7 @@ export default class EbtCard {
           let [ ignored, ctx, suttaSeg, lang, author ] =  dstPath.split('/');
           location[0] = suttaSeg;
         }
-        return location.reduce((a,v) => {
-          return `${a}/${v}`;
-        }, `#/${context}`);
+        return this.segmentElementId(location[0]);
       default:
         return location.reduce((a,v) => {
           return `${a}/${encodeURIComponent(v)}`;
@@ -439,6 +437,20 @@ export default class EbtCard {
     }
 
     return result;
+  }
+
+  segmentElementId(scid) {
+    let { id, context, location } = this;
+    if (context !== CONTEXT_SUTTA) {
+      scid = scid || 'no-segment';
+      return `${id}:${scid}`;
+    }
+
+    scid = scid || location[0];
+
+    let [ ignore, lang, author ] = location;
+
+    return `#/${context}/${scid}/${lang}/${author}`;
   }
 
 }

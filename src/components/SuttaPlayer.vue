@@ -89,8 +89,8 @@
       },
       onClickPlayScid() {
         let { routeCard, settings, } = this;
-        let eltId = routeCard.routeHash();
-        settings.scrollToElementId(eltId);
+        let segmentElementId = routeCard.segmentElementId();
+        settings.scrollToElementId(segmentElementId);
       },
       audioPlaying() {
         let { audio } = this;
