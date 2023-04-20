@@ -77,7 +77,7 @@
             volatile.setRoute(hash);
           } 
         } else {
-          let [ scidHash, lang, author ] = card.location;
+          let [ locationScid, lang, author ] = card.location;
           let hash = `#/sutta/${scid}/${lang}/${author}`
           card.location[0] = scid;
           volatile.setRoute(hash);
@@ -126,8 +126,7 @@
       },
       segId(ctx) {
         let { segment, card } = ctx;
-        let [ suidSeg, lang, author ] = card.location;
-        return `#/sutta/${segment.scid}/${lang}/${author}`;
+        return card.segmentElementId(segment.scid);
       },
       sutta_uid(ctx) {
         let { card } = ctx;

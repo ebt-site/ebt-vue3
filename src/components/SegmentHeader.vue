@@ -1,15 +1,7 @@
 <template>
-  <div :id="segId(segment)" class="seg-anchor" >
-    <span class="debug" v-if="logger.logLevel==='debug'">
-      {{segment.scid}}
-    </span>
-  </div>
   <div :class="segMatchedClass(segment)">
-    <div class="seg-id" v-if="settings.showId"> 
-      {{segment.scid}} 
-    </div>
     <div class="seg-text seg-header" 
-      :title="segment.scid"
+      :title="$t('ebt.author')"
       style="text-align: center"
     >
       <div :class="langClass('root')" 
@@ -37,8 +29,6 @@
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
   const EMPTY_TEXT = '<div class="empty-text">&#8211;&#8709;&#8211;</div>'
 
-  var hello = 0;
-
   export default {
     props: {
       segment: { type: Object, required:true },
@@ -63,11 +53,6 @@
     async mounted() {
     },
     methods: {
-      segId(seg) {
-        let { card } = this;
-        let [ suidSeg, lang, author ] = card.location;
-        return `#/sutta/${seg.scid}/${lang}/${author}`;
-      },
       langClass(langType) {
         let { layout, volatile, nCols } = this;
         let colw = "lg";

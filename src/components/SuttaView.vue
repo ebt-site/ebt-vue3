@@ -46,8 +46,6 @@
   import { default as TipitakaNav } from './TipitakaNav.vue';
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
-  var hello = 0;
-
   export default {
     props: {
       card: { type: Object, required: true, },
