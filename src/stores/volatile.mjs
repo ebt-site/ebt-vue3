@@ -70,7 +70,7 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    setRoute(cardOrRoute='#/home') {
+    setRoute(cardOrRoute='#/home', keepFocus) {
       const msg = 'volatile.setRoute() ';
       let settings = useSettingsStore();
       let isCard = !(typeof cardOrRoute === 'string');
@@ -87,7 +87,11 @@ export const useVolatileStore = defineStore('volatile', {
         let expected = activeElement;
         let actual = document?.activeElement;
         if (expected !== actual) {
-          console.trace(msg, 'DBG0418', `activeElement`, {expected, actual});
+          if (keepFocus) {
+            activeElement.focus(); // Why do we need to do this?
+          } else {
+            console.trace(msg, 'DBG0418', `activeElement`, {expected, actual, route});
+          }
         }
       }
 

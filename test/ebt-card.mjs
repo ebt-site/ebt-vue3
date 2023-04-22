@@ -559,6 +559,6 @@ logger.logLevel = 'warn';
       location: [scid, lang, author],
     });
     should(card1.segmentElementId(scid))
-      .equal(`#/${context}/${scid}/${lang}/${author}`);
+      .equal(`/${context}/${scid}/${lang}/${author}`);
   });
 });

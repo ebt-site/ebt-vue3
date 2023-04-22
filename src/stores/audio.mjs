@@ -197,7 +197,7 @@ export const useAudioStore = defineStore('audio', {
         let { iSegment } = incRes;
         let seg = segments[iSegment];
         this.audioScid = segments[iSegment].scid;
-        volatile.setRoute(routeCard.routeHash());
+        volatile.setRoute(routeCard.routeHash(), true);
         this.playSwoosh();
         logger.debug(msg, incRes);
       } else {
@@ -220,7 +220,7 @@ export const useAudioStore = defineStore('audio', {
         let { iSegment } = incRes;
         let seg = segments[iSegment];
         this.audioScid = segments[iSegment].scid;
-        volatile.setRoute(routeCard.routeHash());
+        volatile.setRoute(routeCard.routeHash(), true);
         this.playSwoosh();
         logger.debug(msg, incRes);
       } else {
@@ -318,7 +318,8 @@ export const useAudioStore = defineStore('audio', {
         let { iSegment } = incRes;
         let seg = segments[iSegment];
         this.audioScid = segments[iSegment].scid;
-        volatile.setRoute(routeCard.routeHash());
+        let hash = routeCard.routeHash();
+        volatile.setRoute(hash, true);
         this.playClick();
         logger.debug(msg, incRes);
       } else {

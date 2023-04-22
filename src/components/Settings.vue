@@ -36,7 +36,7 @@
               :label="$t('ebt.searchResults')"
             />
             <v-checkbox v-model="settings.alwaysShowLatestText" density="compact"
-              :label="$t('ebt.alwaysShowLatestText') (not implemented)">
+              :label="$t('ebt.alwaysShowLatestText')">
             </v-checkbox>
             <v-checkbox v-model="settings.showGdpr" density="compact"
               :label="$t('ebt.showGdpr')">

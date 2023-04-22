@@ -179,7 +179,7 @@ export default class EbtCard {
           let [ ignored, ctx, suttaSeg, lang, author ] =  dstPath.split('/');
           location[0] = suttaSeg;
         }
-        return this.segmentElementId(location[0]);
+        return `#${this.segmentElementId(location[0])}`;
       default:
         return location.reduce((a,v) => {
           return `${a}/${encodeURIComponent(v)}`;
@@ -450,7 +450,7 @@ export default class EbtCard {
 
     let [ ignore, lang, author ] = location;
 
-    return `#/${context}/${scid}/${lang}/${author}`;
+    return `/${context}/${scid}/${lang}/${author}`;
   }
 
 }
