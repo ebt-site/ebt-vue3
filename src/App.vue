@@ -193,12 +193,12 @@
       alertMsg(ctx) {
         return ctx.volatile.alertMsg?.msg;
       },
-      layout(ctx) {
-        return ctx.volatile.layout.value;
+      displayBox(ctx) {
+        return ctx.volatile.displayBox.value;
       },
       narrowView(ctx) {
-        let { layout } = ctx;
-        return layout.w < 400;
+        let { displayBox } = ctx;
+        return displayBox.w < 400;
       },
     },
   }

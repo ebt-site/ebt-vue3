@@ -10,7 +10,7 @@
       </div>
 
       <h3 class="mt-4"> Layout </h3>
-      Layout: {{volatile.layout}}
+      Layout: {{volatile.displayBox}}
 
       <h3 class="mt-4">Links</h3>
       <div style="width: 20em">

@@ -54,14 +54,14 @@
     },
     methods: {
       langClass(langType) {
-        let { layout, volatile, nCols } = this;
+        let { displayBox, volatile, nCols } = this;
         let colw = "lg";
         switch (nCols) {
           case 3:
-            colw = layout.w < 1132 ? "sm" : "lg";
+            colw = displayBox.w < 1132 ? "sm" : "lg";
             break;
           case 1:
-            colw = layout.w < 600 ? "sm" : "lg";
+            colw = displayBox.w < 600 ? "sm" : "lg";
             break;
           default:
             colw = "lg";
@@ -70,8 +70,8 @@
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
       },
       segMatchedClass(seg) {
-        let { layout, card, currentScid, routeCard } = this;
-        let idClass = layout.w < 1200 ? "seg-id-col" : "seg-id-row";
+        let { displayBox, card, currentScid, routeCard } = this;
+        let idClass = displayBox.w < 1200 ? "seg-id-col" : "seg-id-row";
         let matchedClass = seg.matched ? "seg-match seg-matched" : "seg-match";
         let currentClass = seg.scid === currentScid ? "seg-current" : '';
         let routeClass = card === routeCard ? "seg-route" : "";
@@ -96,8 +96,8 @@
       },
       nCols(ctx) {
         let { volatile, settings } = ctx;
-        let { layout } = volatile;
-        let w = layout.value.w;
+        let { displayBox } = volatile;
+        let w = displayBox.value.w;
         let nCols = 0;
         settings.showPali && nCols++;
         settings.showReference && nCols++;
@@ -123,8 +123,8 @@
         let text = segment[langTrans] || EMPTY_TEXT;
         return text;
       },
-      layout(ctx) {
-        return ctx.volatile.layout.value;
+      displayBox(ctx) {
+        return ctx.volatile.displayBox.value;
       },
     },
   }

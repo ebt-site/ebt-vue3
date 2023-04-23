@@ -169,8 +169,8 @@
       },
       nCols(ctx) {
         let { volatile, settings } = ctx;
-        let { layout } = volatile;
-        let w = layout.value.w;
+        let { displayBox } = volatile;
+        let w = displayBox.value.w;
         let nCols = 0;
         settings.showPali && nCols++;
         settings.showReference && nCols++;
@@ -196,8 +196,8 @@
         let title = idbSuttaRef?.title || '(no-title)';
         return title.split('\n');
       },
-      layout(ctx) {
-        return ctx.volatile.layout.value;
+      displayBox(ctx) {
+        return ctx.volatile.displayBox.value;
       },
       takaNavIcon(ctx) {
         let { showTakaNav } = ctx;

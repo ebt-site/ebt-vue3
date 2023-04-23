@@ -217,10 +217,10 @@
           ? `${url}/${langTrans}?${query}`
           : `${url}/${lang}?${query}`;
       },
-      layout(ctx) {
+      displayBox(ctx) {
         let { volatile } = ctx;
-        let { layout } = volatile;
-        return layout.value || layout;
+        let { displayBox } = volatile;
+        return displayBox.value || displayBox;
       },
       langTrans(ctx) {
         return ctx.settings.langTrans;

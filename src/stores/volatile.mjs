@@ -8,7 +8,7 @@ import Utils from "../utils.mjs";
 import * as Idb from "idb-keyval";
 
 const suttas = new Map();
-const layout = ref();
+const displayBox = ref();
 const showSettings = ref(false);
 const SAMPLE_RATE = 48000;
 const ICON_DOWNLOAD = 'mdi-wan';
@@ -47,26 +47,26 @@ export const useVolatileStore = defineStore('volatile', {
       let { routeCard } = this;
       return routeCard?.context === EbtCard.CONTEXT_SUTTA ? routeCard : null;
     },
-    layout() {
+    displayBox() {
       let root = document?.documentElement;
       if (root) {
         let onresize = ()=>{
-          layout.value = {
+          displayBox.value = {
             w: root.clientWidth,
             h: root.clientHeight,
           }
         }
-        if (layout.value == null) {
+        if (displayBox.value == null) {
           document.defaultView.onresize = onresize;
           onresize();
         }
       } else {
-        layout.value = {
+        displayBox.value = {
           w:  375,
           h: 667,
         }
       }
-      return layout;
+      return displayBox;
     },
   },
   actions: {
