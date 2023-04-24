@@ -89,7 +89,12 @@
       let { id } = card;
       this.addIntersectionObserver();
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
-        nextTick(() => card.focus());
+        nextTick(() => {
+          let { activeElement } = document;
+          //console.log(msg, 'before focus', {$route, activeElement});
+          card.focus();
+          //console.log(msg, 'after focus', document.activeElement);
+        });
         logger.info(msg, "routeCard:", {id});
       } else {
         logger.debug(msg, {id});

@@ -163,7 +163,6 @@
       settings.loaded = settings.loadSettings();
       await settings.loaded;
 
-      logger.info(msg);
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;
       this.unsubSettings = settings.$subscribe((mutation, state) => {
@@ -190,6 +189,8 @@
           audio.playClick();
         }
       });
+      let { activeElement } = document;
+      logger.debug(msg, activeElement);
     },
     computed: {
       alertTitle(ctx) {

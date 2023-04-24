@@ -87,18 +87,19 @@
 
       if (card.matchPath({path:$route.fullPath, defaultLang})) {
         nextTick(()=>{
-          logger.info(msg+'matchPath', {suttaRef, });
+          let { activeElement } = document;
           let segmentElementId = card.segmentElementId();
           settings.scrollToElementId(segmentElementId);
           let routeHash = card.routeHash();
           if (window.location.hash !== routeHash) {
             volatile.setRoute(routeHash);
           }
-          card.focus();
+          logger.debug(msg+'matchPath', {suttaRef, activeElement});
         });
       } else {
-        logger.info(msg, {suttaRef});
+        logger.debug(msg, {suttaRef});
       }
+      //nextTick(()=>{ console.log(msg, document.activeElement); });
     },
     methods: {
       onKeyDownSutta(evt) {

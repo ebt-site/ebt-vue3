@@ -45,9 +45,9 @@
       let msg = 'EbtCards.mounted() ';
       let { settings, volatile, $route }  = this;
       await settings.loaded;
-      let { params, path }  = $route;
+      let { params, path='/home' }  = $route;
       let { cards } = settings;
-      if (path === "/") {
+      if (path === "/" ) {
         path = "/home"
       }
       let card = settings.pathToCard(path);
@@ -55,16 +55,15 @@
       logger.info(msg, this);
 
       if (card == null) {
-        //window.location.hash = '';
         logger.warn(msg+"UNEXPECTED", {$route, path});
       } else {
-        //volatile.routeCard = card;
-        console.log(msg, document.activeElement);
+        let { activeElement } = document;
         volatile.setRoute(card, true);
         nextTick(() => {
           volatile.setRoute(card, true);
           settings.scrollToCard(card);
           this.bindAudioSutta(window.location.hash);
+          //console.log(msg, {card, activeElement});
         });
       }
     },
@@ -81,7 +80,7 @@
           defaultLang: settings.langTrans,
         });
         if (routeCard !== card) {
-          volatile.setRoute(card.routeHash());
+          volatile.setRoute(card.routeHash(), true);
         }
       },
       routeSuttaRef(route) {
@@ -135,7 +134,9 @@
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
+        //console.log(msg, 'before setRoute', document.activeElement);
         volatile.setRoute(card);
+        //console.log(msg, 'after setRoute', document.activeElement);
         this.bindAudioSutta(to.href);
         if (card == null) {
           volatile.setRoute('');
@@ -149,7 +150,10 @@
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
-        nextTick(() => { settings.scrollToCard(card); })
+        nextTick(() => { 
+          settings.scrollToCard(card); 
+          logger.debug(msg, document.activeElement, volatile.routeCard);
+        })
       }
     }, 
     components: {

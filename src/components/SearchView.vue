@@ -162,8 +162,9 @@
       },
     },
     mounted() {
+      const msg = "SearchView.mounted() ";
       let { card, } = this;
-      logger.info('SearchView.mounted()', {card, });
+      logger.debug(msg, {card, });
       this.search = card.location[0];
       if (card.data == null) {
         nextTick(()=>this.onSearch());

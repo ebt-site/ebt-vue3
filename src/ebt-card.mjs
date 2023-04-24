@@ -109,6 +109,7 @@ export default class EbtCard {
         throw new Error(msg+"addCard is required");
       }
       card = addCard({context, location});
+      //console.log(msg, {card, path});
       card && logger.info(msg+`${args} (NEW)`, {card, context, location});
     } else {
       logger.debug(msg+`(EXISTING))`, {args,card});
