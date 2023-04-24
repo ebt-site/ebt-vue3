@@ -71,7 +71,7 @@
           nextIndex = (index + delta + cards.length) % cards.length;
         }
         let card = cards[nextIndex];
-        volatile.setRoute(card);
+        volatile.setRoute(card, card.context===EbtCard.CONTEXT_SUTTA);
       },
       async onTab(evt) {
         let msg = "EbtChips.onTab()";
@@ -103,7 +103,7 @@
         const volatile = await useVolatileStore();
         let { ebtChips } = volatile;
         ebtChips && ebtChips.focus();
-        volatile.setRoute(card);
+        volatile.setRoute(card, true);
         if (!card.isOpen) {
           card.isOpen = true;
           let scrolled = await settings.scrollToCard(card);

@@ -7,7 +7,13 @@
         :card="card" 
         :routeCard="volatile.routeCard"
         @focusin="onFocusIn(card)"
-      />
+      >
+        <template v-slot:home>
+          <slot name="home">
+            EbtCards.EbtCard &lt;template v-slot:home&gt; default
+          </slot>
+        </template>
+      </ebt-card-vue>
     </div><!-- v-for card -->
     <sutta-player :routeCard="volatile.routeCard" />
   </v-sheet>
@@ -16,6 +22,7 @@
 <script>
   import { ref, nextTick } from "vue";
   import { SuttaRef } from 'scv-esm';
+  import { default as HomeView } from './HomeView.vue';
   import { default as EbtCard } from '../ebt-card.mjs';
   import { default as EbtCardVue } from './EbtCard.vue';
   import { default as SuttaPlayer } from './SuttaPlayer.vue';
@@ -38,20 +45,24 @@
       let msg = 'EbtCards.mounted() ';
       let { settings, volatile, $route }  = this;
       await settings.loaded;
-      let { params, fullPath }  = $route;
+      let { params, path }  = $route;
       let { cards } = settings;
-      let card = settings.pathToCard(fullPath);
+      if (path === "/") {
+        path = "/home"
+      }
+      let card = settings.pathToCard(path);
 
       logger.info(msg, this);
 
       if (card == null) {
         //window.location.hash = '';
-        logger.warn(msg+"UNEXPECTED", fullPath);
+        logger.warn(msg+"UNEXPECTED", {$route, path});
       } else {
         //volatile.routeCard = card;
-        volatile.setRoute(card);
+        console.log(msg, document.activeElement);
+        volatile.setRoute(card, true);
         nextTick(() => {
-          volatile.setRoute(card);
+          volatile.setRoute(card, true);
           settings.scrollToCard(card);
           this.bindAudioSutta(window.location.hash);
         });
@@ -142,6 +153,7 @@
       }
     }, 
     components: {
+      HomeView,
       EbtCardVue,
       SuttaPlayer,
     },

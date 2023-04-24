@@ -313,6 +313,26 @@ logger.logLevel = 'warn';
 
     should(nAdd).equal(1);
   });
+  it("TESTTESTpathToCard() /#", ()=>{
+    let cards = [];
+    let nAdd = 0;
+    let langTrans = "test-lang";
+    let defaultLang = langTrans;
+    let author = "test-author";
+    let addCard = (opts) => {
+      let card = new EbtCard(Object.assign({langTrans, author},opts));
+      //console.trace(`added card`, card);
+      cards.push(card);
+      nAdd++
+      return card;
+    }
+    let cardSN42_11 = EbtCard.pathToCard({
+      path:'/sutta/sn42.11', cards, addCard, defaultLang});
+    should.deepEqual(cards, [cardSN42_11]);
+    let card = EbtCard.pathToCard({
+      path:'/#/sutta/sn42.11', cards, addCard, defaultLang});
+    should.deepEqual(cards, [cardSN42_11]);
+  });
   it("routeHash() sutta", ()=>{
     let context = 'sutta';
     let suid = 'sn34.1';

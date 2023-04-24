@@ -56,7 +56,12 @@
         <div>
           <ebt-processing />
           <Settings />
-          <router-view />
+          <EbtCards >
+            <template v-slot:home>
+              <home-view />
+            </template>
+          </EbtCards>
+          <!--router-view /-->
         </div>
       </v-sheet>
 
@@ -87,6 +92,7 @@
 </template>
 
 <script>
+  import { default as HomeView } from './components/HomeView.vue';
   import EbtCards from './components/EbtCards.vue';
   import EbtChips from './components/EbtChips.vue';
   import Settings from './components/Settings.vue';
@@ -112,6 +118,7 @@
       collapsed: false,
     }),
     components: {
+      HomeView,
       EbtCards,
       EbtChips,
       Settings,

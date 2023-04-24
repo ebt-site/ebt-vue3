@@ -28,13 +28,15 @@
         </template>
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
-          <home-view :card="card" v-if="card.context===CONTEXT_HOME"/>
+          <div v-if="card.context===CONTEXT_HOME">
+            <slot name="home">
+            </slot>
+          </div>
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
             :card="card" 
             :routeCard="routeCard"
           ></sutta-view>
-          <wiki-view :card="card" v-if="card.context===CONTEXT_WIKI"/>
         </v-card-text>
         <div class="last-tab" tabindex=0 
           @click='onClickLastTab'

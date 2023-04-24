@@ -100,6 +100,7 @@ export default class EbtCard {
   static pathToCard(args) {
     let msg = 'EbtCard.pathToCard() ';
     let {path='/', cards=[], addCard, defaultLang} = args;
+    path = path.replace(/^\/#/, ''); // ignore non-hash part of path
     let [ tbd, context, ...location ] = path.split('/');
     location = location.map(loc => decodeURIComponent(loc));
     let card = cards.find(card => card.matchPath({path, defaultLang}));
