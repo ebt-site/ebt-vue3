@@ -140,7 +140,7 @@
         this.bindAudioSutta(to.href);
         if (card == null) {
           volatile.setRoute('');
-          logger.warn(`${msg} => invalid card route`, {$route, to, from});
+          logger.warn(`${msg} => non-card route`, {$route, to, from});
           return;
         }
 

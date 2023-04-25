@@ -181,7 +181,9 @@ export default class EbtCard {
           let [ ignored, ctx, suttaSeg, lang, author ] =  dstPath.split('/');
           location[0] = suttaSeg;
         }
-        return `#${this.segmentElementId(location[0])}`;
+        let [ suttaSeg, lang, author ] = location;
+        // NOTE: See segmentElementId()
+        return `#/sutta/${suttaSeg}/${lang}/${author}`;
       default:
         return location.reduce((a,v) => {
           return `${a}/${encodeURIComponent(v)}`;
@@ -452,7 +454,10 @@ export default class EbtCard {
 
     let [ ignore, lang, author ] = location;
 
-    return `/${context}/${scid}/${lang}/${author}`;
+    // NOTE: routeHash() and segmentElementId() must differ
+    // to prevent the browser from auto-navigating
+    // to segmentElementId's when the route changes
+    return `suttaref-${scid}/${lang}/${author}`;
   }
 
 }
