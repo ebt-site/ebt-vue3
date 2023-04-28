@@ -218,7 +218,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Tileinkað þeim í myrkri, sem stefna á ljósið",
     "dedicatedSearch": "the dark bound for light",

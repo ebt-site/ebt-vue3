@@ -5,7 +5,6 @@ import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
-const CONTEXT_WIKI = "wiki";
 const CONTEXT_DEBUG = "debug";
 const CONTEXTS = {
   [CONTEXT_HOME]: {
@@ -13,9 +12,6 @@ const CONTEXTS = {
   },
   [CONTEXT_SEARCH]: {
     icon: "mdi-magnify",
-  },
-  [CONTEXT_WIKI]: {
-    icon: "mdi-wikipedia",
   },
   [CONTEXT_SUTTA]: {
     icon: "mdi-file-document-outline",
@@ -37,7 +33,6 @@ export default class EbtCard {
       langTrans, // factory prop
     } = opts;
 
-    //console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
     if (context == null || context === '') {
       context = CONTEXT_HOME;
     }
@@ -78,11 +73,12 @@ export default class EbtCard {
     });
 
     // secondary properties
+
+    //console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
-  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
 
@@ -152,18 +148,16 @@ export default class EbtCard {
 
   focus() {
     const msg = 'EbtCard.focus() ';
-    let elt = document.getElementById(this.autofocusId);
+    let { autofocusId, tab1Id, volatile } = this;
+    let elt = document.getElementById(autofocusId);
     if (elt) {
       elt.focus();
-      logger.debug(msg, this.autofocusId);
-    } else if ((elt = document.getElementById(this.tab1Id))) {
+      logger.debug(msg, autofocusId);
+    } else if ((elt = document.getElementById(tab1Id))) {
       elt.focus();
-      logger.debug(msg, this.tab1Id);
+      logger.debug(msg, tab1Id);
     } else {
-      logger.warn(msg, 'element not found', {
-        autofocusId: this.autofocusId, 
-        tab1Id: this.tab1Id,
-      });
+      logger.warn(msg, 'element not found', { autofocusId, tab1Id, volatile});
     }
     return elt;
   }

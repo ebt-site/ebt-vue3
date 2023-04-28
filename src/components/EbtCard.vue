@@ -3,6 +3,7 @@
   <v-sheet v-if="card.isOpen " :class="cardSheetClass"
     @focusin="onFocusIn"
     @click="onClickCard"
+    :title="`${card.id}`"
   >
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
@@ -218,7 +219,6 @@
       CONTEXT_DEBUG: (ctx)=>EbtCard.CONTEXT_DEBUG,
       CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
-      CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
       CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
         let { $t } = ctx;
@@ -231,9 +231,6 @@
         },{
           title: $t('ebt.context-search'),
           value: EbtCard.CONTEXT_SEARCH,
-        },{
-          title: $t('ebt.context-wiki'),
-          value: EbtCard.CONTEXT_WIKI,
         },{
           title: $t('ebt.context-debug'),
           value: EbtCard.CONTEXT_DEBUG,

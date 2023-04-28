@@ -29,7 +29,6 @@ logger.logLevel = 'warn';
     should(EbtCard.CONTEXT_HOME).equal('home');
     should(EbtCard.CONTEXT_SEARCH).equal('search');
     should(EbtCard.CONTEXT_SUTTA).equal('sutta');
-    should(EbtCard.CONTEXT_WIKI).equal('wiki');
   });
   it("custom ctor", async () => {
     let id = 'test-id';
@@ -42,11 +41,11 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(Object.assign({}, card1));
     should(card2).properties(card1);
   });
-  it("icon", async() => {
+  it("TESTTESTicon", async() => {
     let card = new EbtCard();
     should(card.icon).equal("mdi-home");
-    let cardWiki = new EbtCard({ context: "wiki"});
-    should(cardWiki.icon).equal("mdi-wikipedia");
+    let cardHome = new EbtCard({ context: "home"});
+    should(cardHome.icon).equal("mdi-home");
   });
   it("stringify", async() => {
     let card1 = new EbtCard();

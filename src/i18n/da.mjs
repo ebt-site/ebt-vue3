@@ -216,7 +216,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Til dem som lever i mørket, men er på vej mod lyset",
     "dedicatedSearch": "the dark bound for light",

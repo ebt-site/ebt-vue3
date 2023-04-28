@@ -219,7 +219,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "To the dark bound for light",
     "dedicatedSearch": "the dark bound for light",

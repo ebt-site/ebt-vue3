@@ -18,6 +18,7 @@ import { loadFonts } from './plugins/webfontloader'
 import NotFound from './components/NotFound.vue';
 import EbtCards from './components/EbtCards.vue';
 import * as VueRouter from "vue-router";
+import { default as EbtConfig } from "../ebt-config.mjs";
 
 (async() => {
   const pinia = createPinia();
@@ -49,9 +50,12 @@ import * as VueRouter from "vue-router";
   })
 
   var app = createApp(App);
+  let { baseUrl } = EbtConfig;
+  app.provide('baseUrl', baseUrl);
+  console.log("main.js", baseUrl, EbtConfig);
   app.use(pinia);
   app.use(i18n);
   app.use(vuetify);
-  app.use(router);;
+  app.use(router);
   app.mount('#app');
 })()

@@ -219,7 +219,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Sống trong bóng tối, hướng đến ánh sáng",
     "dedicatedSearch": "the dark bound for light",

@@ -215,7 +215,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "අඳුරෙන් ආලෝකය කරා පිවිසුමට",
     "dedicatedSearch": "අඳුරෙන් ආලෝකය කරා",

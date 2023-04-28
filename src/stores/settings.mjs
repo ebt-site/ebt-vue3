@@ -110,21 +110,22 @@ export const useSettingsStore = defineStore('settings', {
     addCard(opts) {
       let { cards, langTrans } = this;
       let { context, location } = opts;
+      let card = null;
       switch (context) {
         case EbtCard.CONTEXT_DEBUG:
         case EbtCard.CONTEXT_SEARCH:
         case EbtCard.CONTEXT_SUTTA:
         case EbtCard.CONTEXT_HOME:
-        case EbtCard.CONTEXT_WIKI:
           logger.info("addCard", {context, location, langTrans});
-          let card = new EbtCard(Object.assign({langTrans}, opts));
+          card = new EbtCard(Object.assign({langTrans}, opts));
           this.cards.push(card);
           this.saveSettings();
-          return card;
+          break;
         default:
-          logger.info("addCard => null [INVALID CONTEXT]", opts);
-          return null;
+          logger.info(`addCard => null [INVALID CONTEXT]`, opts);
+          break;
       }
+      return card;
     },
     moveCard(srcIndex, dstIndex) {
       let { cards } = this;

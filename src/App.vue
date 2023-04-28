@@ -104,6 +104,7 @@
   import { nextTick, ref } from "vue";
 
   export default {
+    inject: ['baseUrl'],
     setup() {
       const tabs = ref([]);
       return {
@@ -127,9 +128,12 @@
     methods: {
       onHome(evt) {
         let msg = 'App.onHome() ';
-        let { volatile, audio } = this;
+        let { volatile, audio, baseUrl } = this;
         audio.playBlock();
-        volatile.ebtChips && volatile.ebtChips.focus();
+
+        let location = `${baseUrl}#/home`;
+        window.location = location;
+        volatile.ebtChips && nextTick(()=>volatile.ebtChips.focus());
         logger.debug(msg);
       },
       allowLocalStorage() {
@@ -190,7 +194,7 @@
         }
       });
       let { activeElement } = document;
-      logger.debug(msg, activeElement);
+      logger.info(msg, {activeElement});
     },
     computed: {
       alertTitle(ctx) {
