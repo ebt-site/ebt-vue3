@@ -13,7 +13,7 @@ npm install --save \
   scv-esm \
   log-instance \
   merkle-json \
-  vuetify@next
+  vuetify@latest
 npm install --save-dev \
   memo-again@latest 
 
