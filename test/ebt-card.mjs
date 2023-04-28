@@ -19,9 +19,10 @@ logger.logLevel = 'warn';
     should(card1.autofocusId.length).equal(22);
     should(card1).properties(defaultProps);
 
-    should(card2.id).not.equal(card1.id);
-    should(card2.autofocusId).not.equal(card1.autofocusId);
-    should(card2.tab1Id).not.equal(card1.tab1Id);
+    // there is only one home card
+    should(card2.id).equal(card1.id);
+    should(card2.autofocusId).equal(card1.autofocusId);
+    should(card2.tab1Id).equal(card1.tab1Id);
     should(card2).properties(defaultProps);
   });
   it("constants", ()=>{
@@ -463,7 +464,9 @@ logger.logLevel = 'warn';
     global.document = document;
 
     // No element
+    console.warn("EXPECTED WARNING BEGIN");
     should(card.focus()).equal(undefined);
+    console.warn("EXPECTED WARNING END");
     should(document.activeElement).equal(undefined);
 
     // tab1 element but no autofocus element

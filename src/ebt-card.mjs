@@ -25,7 +25,7 @@ export default class EbtCard {
   constructor(opts = {}) {
     let msg = 'EbtCard.ctor() ';
     let {
-      id = uuidv4().split('-').pop(),
+      id,
       context,
       location=[],
       isOpen = true,
@@ -37,6 +37,11 @@ export default class EbtCard {
       context = CONTEXT_HOME;
     }
     context = context.toLowerCase();
+    if (id == null) {
+      id = context===CONTEXT_HOME 
+        ? 'home-card-id' 
+        : uuidv4().split('-').pop();
+    }
 
     if (typeof location === 'string') {
       location = [location];
@@ -74,7 +79,7 @@ export default class EbtCard {
 
     // secondary properties
 
-    //console.trace(`DBG0201 ${msg} ${context} ${id} ${location[0]}`);
+    logger.info(msg, `${context} ${id} ${location[0]}`);
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }

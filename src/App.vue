@@ -164,8 +164,9 @@
       volatile.$t = $t;
 
       // wait for Settings to load
-      settings.loaded = settings.loadSettings();
-      await settings.loaded;
+      //console.log(msg, 'loading settings');
+      //await settings.loadSettings();
+      console.log(msg, settings.loaded);
 
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;

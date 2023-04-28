@@ -41,12 +41,16 @@ function elementInViewport(elt, root = document.documentElement) {
 
 export const useSettingsStore = defineStore('settings', {
   state: () => {
-    let settings = Utils.assignTyped({}, Settings.INITIAL_STATE);
+    const msg = 'settings.useSettingsStore() ';
+    let settings = Utils.assignTyped({loaded:false}, Settings.INITIAL_STATE);
     return settings;
   },
   actions: {
     async loadSettings() {
       let msg = 'settings.loadSettings() ';
+      if (this.loaded) {
+        return this;
+      }
       let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
       if (savedState) {
@@ -54,7 +58,7 @@ export const useSettingsStore = defineStore('settings', {
           let { cards, logLevel } = savedState;
           logger.logLevel = logLevel;
           if (cards == null) {
-            cards = savedState.cards = [{}];
+            cards = savedState.cards = [{context:'home'}];
           }
           cards.forEach((card,i) => {
             cards[i] = new EbtCard(card);
@@ -67,6 +71,7 @@ export const useSettingsStore = defineStore('settings', {
       if (savedState) {
         Utils.assignTyped(this, savedState, Settings.INITIAL_STATE);
       }
+      this.loaded = true;
       return this;
     },
     pathToCard(fullPath) {

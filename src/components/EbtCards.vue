@@ -44,7 +44,10 @@
     async mounted() {
       let msg = 'EbtCards.mounted() ';
       let { settings, volatile, $route }  = this;
-      await settings.loaded;
+      //console.log(msg, 'loading settings');
+      //await settings.loadSettings();
+      console.log(msg, settings.loaded);
+
       let { params, path='/home' }  = $route;
       let { cards } = settings;
       if (path === "/" ) {

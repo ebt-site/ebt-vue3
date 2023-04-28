@@ -14,7 +14,6 @@ import should from "should";
       fullLine: false,
       ips: 6,
       langTrans: 'en',
-      loaded: false,
       maxResults: 5,
       refLang: 'en',
       showId: false,

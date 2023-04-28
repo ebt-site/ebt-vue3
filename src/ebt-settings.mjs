@@ -76,9 +76,6 @@ export default class Settings {
     this.showTrans = showTrans;
     this.vnameRoot = vnameRoot;
     this.vnameTrans = vnameTrans;
-
-    // not serialized
-    Object.defineProperty(this, "loaded", { writable: true, value: false, });
   }
 
   static get SERVERS() {

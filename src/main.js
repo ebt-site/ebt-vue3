@@ -19,6 +19,7 @@ import NotFound from './components/NotFound.vue';
 import EbtCards from './components/EbtCards.vue';
 import * as VueRouter from "vue-router";
 import { default as EbtConfig } from "../ebt-config.mjs";
+import { useSettingsStore } from "./stores/settings.mjs";
 
 (async() => {
   const pinia = createPinia();
@@ -54,6 +55,8 @@ import { default as EbtConfig } from "../ebt-config.mjs";
   app.provide('baseUrl', baseUrl);
   console.log("main.js", baseUrl, EbtConfig);
   app.use(pinia);
+  const settings = useSettingsStore();
+  await settings.loadSettings();
   app.use(i18n);
   app.use(vuetify);
   app.use(router);
