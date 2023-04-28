@@ -219,7 +219,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Aan hen in donkerte op weg naar licht",
     "dedicatedSearch": "the dark bound for light",

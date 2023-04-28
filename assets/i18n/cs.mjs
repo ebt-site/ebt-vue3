@@ -216,7 +216,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Temné náklonnosti k světlu",
     "dedicatedSearch": "the dark bound for light",

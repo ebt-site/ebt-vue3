@@ -218,7 +218,6 @@ export default {
     "context-home": "Home",
     "context-search": "Search",
     "context-sutta": "Sutta",
-    "context-wiki": "Wiki",
     "days": "A_DAYS days",
     "dedicated": "Para aqueles na escuridão e tendo a luz como destino",
     "dedicatedSearch": "aqueles na escuridão e tendo a luz como destino",
