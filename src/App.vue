@@ -104,7 +104,7 @@
   import { nextTick, ref } from "vue";
 
   export default {
-    inject: ['baseUrl'],
+    inject: ['config'],
     setup() {
       const tabs = ref([]);
       return {
@@ -128,10 +128,10 @@
     methods: {
       onHome(evt) {
         let msg = 'App.onHome() ';
-        let { volatile, audio, baseUrl } = this;
+        let { volatile, audio, config } = this;
         audio.playBlock();
 
-        let location = `${baseUrl}#/home`;
+        let location = `${config.baseUrl}#/home`;
         window.location = location;
         volatile.ebtChips && nextTick(()=>volatile.ebtChips.focus());
         logger.debug(msg);

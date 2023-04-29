@@ -22,6 +22,7 @@ import { default as EbtConfig } from "../ebt-config.mjs";
 import { useSettingsStore } from "./stores/settings.mjs";
 
 (async() => {
+  const msg = "main.js ";
   const pinia = createPinia();
 
   const vuetifyOpts = VuetifyOpts.options();
@@ -51,12 +52,12 @@ import { useSettingsStore } from "./stores/settings.mjs";
   })
 
   var app = createApp(App);
-  let { baseUrl } = EbtConfig;
-  app.provide('baseUrl', baseUrl);
-  console.log("main.js", baseUrl, EbtConfig);
+  app.provide('config', EbtConfig);
+  logger.info("main.js", EbtConfig);
   app.use(pinia);
   const settings = useSettingsStore();
   await settings.loadSettings();
+
   app.use(i18n);
   app.use(vuetify);
   app.use(router);

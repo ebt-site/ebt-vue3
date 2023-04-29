@@ -257,7 +257,6 @@ import { logger } from "log-instance";
 import * as VOICES from "../auto/voices.json";
 import Confirm from "./Confirm.vue";
 import Version from "./Version.vue";
-import * as EBT_REPO from "../../ebt-repo.json";
 const maxResultsItems = [{
   title: "5",
   value: 5,
@@ -274,6 +273,7 @@ const maxResultsItems = [{
 
 
 export default {
+  inject: ['config'],
   setup() {
     const logLevels = [{
       title: 'Errors only',
@@ -381,7 +381,7 @@ export default {
   },
   computed: {
     githubUrl: ctx=>{
-      let { repository, account } = EBT_REPO;
+      let { repository, account } = ctx.config.github;
       return `https://github.com/${account}/${repository}`;
     },
     selectIcon: ctx=>"mdi-menu-open",
