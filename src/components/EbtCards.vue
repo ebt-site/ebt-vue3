@@ -134,7 +134,8 @@
           addCard: (opts) => settings.addCard(opts),
           defaultLang: settings.langTrans,
         });
-        //console.log(msg, 'before setRoute', document.activeElement);
+        let { activeElement } = document;
+        console.log(msg, 'before setRoute', { activeElement, to, from});
         volatile.setRoute(card);
         //console.log(msg, 'after setRoute', document.activeElement);
         this.bindAudioSutta(to.href);
