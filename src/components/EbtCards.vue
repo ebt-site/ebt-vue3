@@ -41,12 +41,9 @@
         volatile: useVolatileStore(),
       }
     },
-    async mounted() {
+    mounted() {
       let msg = 'EbtCards.mounted() ';
       let { settings, volatile, $route }  = this;
-      //console.log(msg, 'loading settings');
-      //await settings.loadSettings();
-      console.log(msg, settings.loaded);
 
       let { params, path='/home' }  = $route;
       let { cards } = settings;
@@ -55,7 +52,7 @@
       }
       let card = settings.pathToCard(path);
 
-      logger.info(msg, this);
+      logger.debug(msg, this);
 
       if (card == null) {
         logger.warn(msg+"UNEXPECTED", {$route, path});

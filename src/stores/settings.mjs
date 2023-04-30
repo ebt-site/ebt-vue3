@@ -71,6 +71,7 @@ export const useSettingsStore = defineStore('settings', {
       if (savedState) {
         Utils.assignTyped(this, savedState, Settings.INITIAL_STATE);
       }
+      logger.info(msg, 'loaded');
       this.loaded = true;
       return this;
     },
@@ -109,7 +110,7 @@ export const useSettingsStore = defineStore('settings', {
       cards = this.cards = cards.filter(c => c !== card);
       if (card.matchPath({path, defaultLang})) {
         let openCard = cards.filter(c => c.isOpen)[0];
-        this.setRoute(openCard ? openCard.routeHash() : "#/home");
+        window.location.hash = openCard ? openCard.routeHash() : "#/home";
       }
     },
     addCard(opts) {

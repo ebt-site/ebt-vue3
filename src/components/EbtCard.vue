@@ -96,7 +96,7 @@
           card.focus();
           //console.log(msg, 'after focus', document.activeElement);
         });
-        logger.info(msg, "routeCard:", {id});
+        logger.debug(msg, "routeCard:", {id});
       } else {
         logger.debug(msg, {id});
       }

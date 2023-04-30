@@ -19,7 +19,6 @@ import NotFound from './components/NotFound.vue';
 import EbtCards from './components/EbtCards.vue';
 import * as VueRouter from "vue-router";
 import { default as EbtConfig } from "../ebt-config.mjs";
-import { useSettingsStore } from "./stores/settings.mjs";
 
 (async() => {
   const msg = "main.js ";
@@ -53,11 +52,8 @@ import { useSettingsStore } from "./stores/settings.mjs";
 
   var app = createApp(App);
   app.provide('config', EbtConfig);
-  logger.info("main.js", EbtConfig);
+  console.log(msg, EbtConfig);
   app.use(pinia);
-  const settings = useSettingsStore();
-  await settings.loadSettings();
-
   app.use(i18n);
   app.use(vuetify);
   app.use(router);
