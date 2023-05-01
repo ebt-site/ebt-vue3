@@ -87,15 +87,15 @@ export default class EbtCard {
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
 
-  static routeSuttaRef(route) {
-    let hashParts = route.split("/");
-    if (hashParts[0] === '#') {
-      hashParts.shift();
+  static routeSuttaRef(route, langTrans='en') {
+    const msg = 'EbtCard.routeSuttaRef() ';
+    let routeParts = route.split('#/sutta');
+    //console.log(msg, {route, langTrans, routeParts});
+    if (routeParts.length !== 2) {
+      return null;
     }
-    let [ context, sutta_uid, lang, author ] = hashParts;
-    return context === EbtCard.CONTEXT_SUTTA
-      ? SuttaRef.create({sutta_uid, lang, author})
-      : null;
+    let refStr = routeParts[1].slice(1);
+    return SuttaRef.create(refStr, langTrans)
   }
 
   static pathToCard(args) {

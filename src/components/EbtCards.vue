@@ -83,22 +83,11 @@
           volatile.setRoute(card.routeHash(), true);
         }
       },
-      routeSuttaRef(route) {
-        let { settings } = this;
-        let hashParts = route.split("/");
-        if (hashParts[0] === '#') {
-          hashParts.shift();
-        }
-        let [ context, sutta_uid, lang, author ] = hashParts;
-        return context === EbtCard.CONTEXT_SUTTA
-          ? SuttaRef.create({sutta_uid, lang, author}, settings.langTrans)
-          : null;
-      },
       async bindAudioSutta(route) {
-        let { volatile, suttas, audio, } = this;
+        let { volatile, suttas, audio, settings, } = this;
         let { routeCard } = volatile;
         if (routeCard?.context === EbtCard.CONTEXT_SUTTA) {
-          let suttaRef = this.routeSuttaRef(route);
+          let suttaRef = EbtCard.routeSuttaRef(route, settings.langTrans);
           let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
           let idbSutta = idbSuttaRef.value;
           let { sutta_uid, segnum } = suttaRef;

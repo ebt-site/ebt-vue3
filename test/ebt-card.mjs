@@ -1,3 +1,4 @@
+import { SuttaRef } from 'scv-esm/main.mjs';
 import { default as EbtCard } from "../src/ebt-card.mjs";
 import { logger } from "log-instance";
 import should from "should";
@@ -582,5 +583,31 @@ logger.logLevel = 'warn';
     });
     should(card1.segmentElementId(scid))
       .equal(`suttaref-${scid}/${lang}/${author}`);
+  });
+  it("TESTTESTrouteSuttaRef()", ()=>{
+    const scid = 'mn44:1.2';
+    const lang = 'en';
+    const author = 'sujato';
+    const sutta = [scid, lang, author].join('/');
+    const vueRoute = `#/sutta/${sutta}`;
+    const nuxtRoute = `/ebt-nuxt3/#/sutta/${sutta}`;
+    const suttaRef = SuttaRef.create(sutta);
+    const suttaRefNoAuthor = SuttaRef.create([scid, lang].join('/'));
+
+    // valid routes
+    should.deepEqual(suttaRef, 
+      EbtCard.routeSuttaRef(`/ebt-nuxt3/#/sutta/${sutta}`));
+    should.deepEqual(suttaRef, 
+      EbtCard.routeSuttaRef(`#/sutta/${sutta}`));
+    should.deepEqual(suttaRefNoAuthor,
+      EbtCard.routeSuttaRef(`/ebt-nuxt3/#/sutta/${scid}`));
+    should.deepEqual(suttaRefNoAuthor,
+      EbtCard.routeSuttaRef(`#/sutta/${scid}`));
+
+    //invalid routes
+    should(EbtCard.routeSuttaRef('#/search/to%20kill/en')).equal(null);
+    should(EbtCard.routeSuttaRef('#/home')).equal(null);
+    should(EbtCard.routeSuttaRef('#/')).equal(null);
+    should(EbtCard.routeSuttaRef('/')).equal(null);
   });
 });
