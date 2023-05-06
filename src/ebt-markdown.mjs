@@ -64,7 +64,7 @@ export default class EbtMarkdown {
     } = heading;
     if (img) {
       head.push('  <a target="_blank">');
-      head.push(`    <img src="img/${img}" />`);
+      head.push(`    <img src="img/${img}" alt="${imgAlt}"/>`);
       head.push('  </a>');
     }
     head.push('  <div>');

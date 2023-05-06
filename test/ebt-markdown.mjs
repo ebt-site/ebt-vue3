@@ -55,7 +55,7 @@ logger.logLevel = 'warn';
     should.deepEqual(emd.htmlLines, [
       '<div class="ebt-wiki-heading">',
       '  <a target="_blank">',
-      '    <img src="img/test-img" />',
+      '    <img src="img/test-img" alt="test-img-alt"/>',
       '  </a>',
       '  <div>',
       '    <div class="text-caption">',
