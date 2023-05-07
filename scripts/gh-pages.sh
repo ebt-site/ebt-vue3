@@ -44,7 +44,7 @@ fi
 echo -e "$SCRIPT: git branch: $BRANCH"
 
 echo -e "$SCRIPT: removing existing content"
-rm -rf assets audio fonts img 
+rm -rf assets audio fonts img wiki
 
 echo -e "$SCRIPT: copying new content"
 cp -r dist/* .
