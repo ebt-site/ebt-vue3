@@ -110,7 +110,7 @@ export const useSettingsStore = defineStore('settings', {
       cards = this.cards = cards.filter(c => c !== card);
       if (card.matchPath({path, defaultLang})) {
         let openCard = cards.filter(c => c.isOpen)[0];
-        window.location.hash = openCard ? openCard.routeHash() : "#/home";
+        window.location.hash = openCard ? openCard.routeHash() : config.homePath;
       }
     },
     addCard(opts) {

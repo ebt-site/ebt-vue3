@@ -75,7 +75,7 @@
       let suttaRef = SuttaRef.create(ref);
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        volatile.setRoute('#/home');
+        volatile.setRoute();
         settings.removeCard(card);
         return;
       }

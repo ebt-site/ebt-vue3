@@ -5,7 +5,7 @@ import should from "should";
 logger.logLevel = 'warn';
 
 (typeof describe === 'function') && describe("ebt-markdown.mjs", function () {
-  it("TESTTESTdefault ctor", ()=>{
+  it("default ctor", ()=>{
     let emd = new EbtMarkdown();
     should(emd).properties({htmlLines:['']});
     should.deepEqual(Object.keys(emd).sort(), [
@@ -36,6 +36,7 @@ logger.logLevel = 'warn';
       'title: test-title',
       'img: test-img',
       'img-alt: test-img-alt',
+      'unknown-key: test-unknown',
       '---',
       'test-body',
       '',
@@ -49,6 +50,7 @@ logger.logLevel = 'warn';
         title: 'test-title',
         img: 'test-img',
         'img-alt': 'test-img-alt',
+        'unknown-key': 'test-unknown',
       },
     });
     let delimiter = '&nbsp;&gt;&nbsp;';

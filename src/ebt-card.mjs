@@ -2,11 +2,15 @@ import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
 import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 
-const CONTEXT_HOME = "home";
+const CONTEXT_WIKI = "wiki";
+const CONTEXT_HOME = CONTEXT_WIKI;
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
 const CONTEXT_DEBUG = "debug";
 const CONTEXTS = {
+  [CONTEXT_WIKI]: {
+    icon: "mdi-home",
+  },
   [CONTEXT_HOME]: {
     icon: "mdi-home",
   },
@@ -83,6 +87,7 @@ export default class EbtCard {
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }
+  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
@@ -101,7 +106,7 @@ export default class EbtCard {
   static pathToCard(args) {
     let msg = 'EbtCard.pathToCard() ';
     let {path='/', cards=[], addCard, defaultLang} = args;
-    path = path.replace(/^\/#/, ''); // ignore non-hash part of path
+    path = path.replace(/^.*\/#/, ''); // ignore non-hash part of path
     let [ tbd, context, ...location ] = path.split('/');
     location = location.map(loc => decodeURIComponent(loc));
     let card = cards.find(card => card.matchPath({path, defaultLang}));
@@ -243,28 +248,33 @@ export default class EbtCard {
   }
 
   matchPath(strOrObj) {
+    const msg = 'EbtCard.matchPath() ';
     let opts = typeof strOrObj === 'string'
       ? { path: strOrObj }
       : strOrObj;
     let { path } = opts;
+    let dbg = 0;
     path = path.toLowerCase().replace(/^#/, '');
-    let [ tbd, context="", ...location ] = path.split('/');
+    let [ blank, context="", ...location ] = path.split('/');
+    if (blank !== '') {
+      dbg && console.log(msg, `(${path}) expected initial "/"`, {blank});
+      return false;
+    }
     while (location.length && location[location.length-1] === '') {
       location.pop();
     }
     context = context && context.toLowerCase() || CONTEXT_HOME;
+    if (context === this.context && context===CONTEXT_HOME) {
+      dbg && console.log(msg, 'CONTEXT_HOME', strOrObj, this);
+      return true;
+    }
     location = location 
       ? location.map(loc => loc && decodeURIComponent(loc.toLowerCase())) 
       : [];
 
-    let dbg = 0;
     let cardLocation = this.location instanceof Array 
       ? this.location
       : (this.location == null ? [] : [this.location]);
-    if (tbd !== '') {
-      dbg && console.log(`matchPath(${path}) expected initial "/"`, {tbd});
-      return false;
-    }
     if (context !== this.context) {
       dbg && console.log(`matchPath(${path}) context ${context} != ${this.context}`);
       return false;

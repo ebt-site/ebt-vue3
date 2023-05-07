@@ -3,6 +3,7 @@ import { default as MarkdownIt } from 'markdown-it';
 
 export default class EbtMarkdown {
   constructor(markdown='', opts={}) {
+    const msg = 'EbtMarkdown.ctor() ';
     let lines = markdown.split('\n');
 
     let { 
@@ -30,7 +31,7 @@ export default class EbtMarkdown {
             this.heading[key] = value;
             break;
           default: 
-            this[key] = value.join(': ');
+            this.heading[key] = value;
             break;
         }
       }

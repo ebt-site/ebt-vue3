@@ -16,6 +16,7 @@ const ICON_PROCESSING = 'mdi-factory';
 const INITIAL_STATE = {
   $t: t=>t,
   alertMsg: ref(null),
+  config: ref({}),
   showAlertMsg: ref(false),
   waiting: 0,
   waitingMsg: ref('...'),
@@ -31,6 +32,7 @@ const INITIAL_STATE = {
 };
 
 export const useVolatileStore = defineStore('volatile', {
+  inject: ['config'],
   state: () => {
     let s = Object.assign({}, INITIAL_STATE);
     logger.debug(`volatile.state() => `, s);
@@ -70,9 +72,11 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    setRoute(cardOrRoute='#/home', keepFocus) {
+    setRoute(cardOrRoute, keepFocus) {
       const msg = 'volatile.setRoute() ';
+      let { config } = this;
       let settings = useSettingsStore();
+      cardOrRoute = cardOrRoute || config.homePath;
       let isCard = !(typeof cardOrRoute === 'string');
       let route = isCard ? cardOrRoute.routeHash() : cardOrRoute;
       let card = isCard ? cardOrRoute : settings.pathToCard(route);

@@ -29,7 +29,7 @@
         </template>
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
-          <div v-if="card.context===CONTEXT_HOME">
+          <div v-if="card.context===CONTEXT_WIKI">
             <slot name="home">
             </slot>
           </div>
@@ -195,7 +195,7 @@
       },
       isClosable(ctx) {
         let { card } = ctx;
-        return card.context !== EbtCard.CONTEXT_HOME;
+        return card.context !== EbtCard.CONTEXT_WIKI;
       },
       showDev(ctx) {
         let logLevel = ctx.settings.logLevel;
@@ -217,14 +217,14 @@
         return link;
       },
       CONTEXT_DEBUG: (ctx)=>EbtCard.CONTEXT_DEBUG,
-      CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
+      CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
       CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
         let { $t } = ctx;
         return [{
           title: $t('ebt.context-home'),
-          value: EbtCard.CONTEXT_HOME,
+          value: EbtCard.CONTEXT_WIKI,
         },{
           title: $t('ebt.context-sutta'),
           value: EbtCard.CONTEXT_SUTTA,

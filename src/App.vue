@@ -130,8 +130,9 @@
         let msg = 'App.onHome() ';
         let { volatile, audio, config } = this;
         audio.playBlock();
+        volatile.config = config;
 
-        let location = `${config.baseUrl}#/home`;
+        let location = `${config.baseUrl}${config.homePath}`;
         window.location = location;
         volatile.ebtChips && nextTick(()=>volatile.ebtChips.focus());
         logger.debug(msg);

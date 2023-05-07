@@ -11,7 +11,7 @@ import {
   beforeEach(() => {
     global.fetch = fetch;
   });
-  it("TESTTESTduration", async()=>{
+  it("duration", async()=>{
     let sd = new SuttaDuration({fetch});
     await sd.initialize();
     should.deepEqual(sd.duration('mn44'), 1175.8849397020688);

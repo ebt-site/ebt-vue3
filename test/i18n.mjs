@@ -38,7 +38,7 @@ import {
       { value: 'vi', title: 'Tiếng Việt / VI', voice: false },
     ]);
   });
-  it("TESTTESTmessages", async()=>{
+  it("messages", async()=>{
     should(messages).properties([ 'en', 'de', 'pt', 'si', 'ja' ]);
     should(messages.en.ebt.translation).equal('Translation');
     should(messages.de.ebt.translation).equal('Übersetzung');
