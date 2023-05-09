@@ -37,6 +37,7 @@
   import { logger } from "log-instance";
 
   export default {
+    inject: ['config'],
     setup() {
       const settings = useSettingsStore();
       const volatile = useVolatileStore();
@@ -118,7 +119,7 @@
       onClose: (card, settings) => { // DEPRECATED
         let { cards } = settings;
         logger.info(`onClose removing card ${card.id}`);
-        nextTick(() => settings.removeCard(card));
+        nextTick(() => settings.removeCard(card, config));
       },
       closable: (card, settings) => { // DEPRECATED
         const IS_PHONE = 1; // save space for iPhone

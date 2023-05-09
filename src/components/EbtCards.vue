@@ -7,13 +7,7 @@
         :card="card" 
         :routeCard="volatile.routeCard"
         @focusin="onFocusIn(card)"
-      >
-        <template v-slot:home>
-          <slot name="home">
-            EbtCards.EbtCard &lt;template v-slot:home&gt; default
-          </slot>
-        </template>
-      </ebt-card-vue>
+      />
     </div><!-- v-for card -->
     <sutta-player :routeCard="volatile.routeCard" />
   </v-sheet>
@@ -69,7 +63,7 @@
     },
     methods: {
       onFocusIn(card) {
-        let { settings } = this;
+        let { volatile, settings } = this;
         let { cards } = settings;
         let { context, location } = card;
         let routeHash = window.location.hash;

@@ -29,10 +29,9 @@
         </template>
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
-          <div v-if="card.context===CONTEXT_WIKI">
-            <slot name="home">
-            </slot>
-          </div>
+          <home-view v-if="card.context===CONTEXT_WIKI"
+            :card="card" 
+          />
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
             :card="card" 
@@ -64,6 +63,7 @@
   import { nextTick, ref } from "vue";
 
   export default {
+    inject: ['config'],
     props: {
       card: { type: Object, },
       routeCard: { type: Object },
@@ -132,10 +132,10 @@
         volatile.setRoute(card);
       },
       clickDelete() {
-        let { card, settings } = this;
+        let { card, settings, config } = this;
         this.clickMinimize();
         setTimeout(()=>{
-          settings.removeCard(card);
+          settings.removeCard(card, config);
         }, 500);
       },
       clickMinimize() {

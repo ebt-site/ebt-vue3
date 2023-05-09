@@ -56,11 +56,7 @@
         <div>
           <ebt-processing />
           <Settings />
-          <EbtCards v-if="settings?.cards?.length">
-            <template v-slot:home>
-              <home-view />
-            </template>
-          </EbtCards>
+          <EbtCards v-if="settings?.cards?.length" />
           <!--router-view /-->
         </div>
       </v-sheet>

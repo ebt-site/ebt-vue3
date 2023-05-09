@@ -47,6 +47,7 @@
   const EXAMPLE_TEMPLATE = IdbSutta.EXAMPLE_TEMPLATE;
 
   export default {
+    inject: ['config'],
     props: {
       card: { type: Object, required: true, },
       routeCard: { type: Object, required: true },
@@ -76,7 +77,7 @@
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
         volatile.setRoute();
-        settings.removeCard(card);
+        settings.removeCard(card, config);
         return;
       }
       let { sutta_uid, lang, author, segnum } = suttaRef;

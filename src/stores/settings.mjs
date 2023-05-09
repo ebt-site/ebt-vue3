@@ -98,11 +98,15 @@ export const useSettingsStore = defineStore('settings', {
       Idb.set(SETTINGS_KEY, JSON.parse(json));
       logger.debug("SettingsStore.saveSettings()");
     },
-    removeCard(card) {
+    removeCard(card, config) {
       const msg = "settings.removeCard() ";
       const { window } = globalThis;
       if (window == null) {
-        console.log(msg, "no window");
+        console.trace(msg, "no window");
+        return;
+      }
+      if (config == null) {
+        console.trace(msg, "no config");
         return;
       }
       let { cards, langTrans:defaultLang } = this;
