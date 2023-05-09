@@ -8,7 +8,7 @@ import vuetify from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: EbtConfig.baseUrl,
+  base: EbtConfig.basePath,
   assetsInclude: [ './public/.wellknown/**' ],
   plugins: [
 		vue(),

@@ -1,17 +1,25 @@
-import { default as MarkdownIt } from 'markdown-it';
-
-
 export default class EbtMarkdown {
-  constructor(markdown='', opts={}) {
+  constructor(opts={}) {
     const msg = 'EbtMarkdown.ctor() ';
-    let lines = markdown.split('\n');
 
     let { 
-      basePath='basePath-undefined',
-      wikiPath="wikiPath-undefined",
+      basePath='/ebt-vue3/',
+      wikiPath="wiki",
+      renderer,
     } = opts;
-    Object.assign(this, { basePath, wikiPath });
+    Object.assign(this, { basePath, wikiPath, renderer });
+  }
 
+  async render(markdown, renderer=this.renderer) {
+    const msg = 'EbtMarkdown.render() ';
+    if (!markdown) {
+      throw new Error(`${msg} markdown is required`);
+    }
+    if (!renderer) {
+      throw new Error(`${msg} renderer is required`);
+    }
+    let lines = markdown.split('\n');
+    let md = markdown;
     if (lines[0] === '---') {
       this.heading = {};
       let iLine;
@@ -19,6 +27,7 @@ export default class EbtMarkdown {
         let line = lines[iLine];
         if (line === '---') {
           lines = lines.splice(iLine+1);
+          md = lines.join('\n');
           break;
         }
         let [key, ...valueParts] = line.split(/:[ \t]*/);
@@ -36,16 +45,18 @@ export default class EbtMarkdown {
         }
       }
     }
-
-    var mdit = new MarkdownIt();
-    this.htmlLines = mdit.render(lines.join('\n')).trim().split('\n');
-    let htmlHeading = this.htmlHeading();
-    if (htmlHeading) {
-      this.htmlLines = [...htmlHeading, ...this.htmlLines];
+    
+    let html = await renderer.render(md);
+    let htmlLines = html.trim().split('\n');
+    let heading = this.parseHeading();
+    if (heading) {
+      htmlLines = [...heading, ...htmlLines];
     }
+
+    return htmlLines;
   }
 
-  htmlHeading() {
+  parseHeading() {
     let { basePath, wikiPath, heading, } = this;
     if (heading == null) {
       return '';
@@ -65,7 +76,8 @@ export default class EbtMarkdown {
     } = heading;
     if (img) {
       head.push('  <a target="_blank">');
-      head.push(`    <img src="img/${img}" alt="${imgAlt}"/>`);
+      let src = `${basePath}img/${img}`;
+      head.push(`    <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
       head.push('  </a>');
     }
     head.push('  <div>');

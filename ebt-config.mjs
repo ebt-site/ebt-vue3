@@ -1,5 +1,5 @@
 const EbtConfig = {
-  "baseUrl": "/ebt-vue3/",
+  "basePath": "/ebt-vue3/",
   "homePath": "#/wiki/welcome",
   "github": {
     "account": "ebt-site",

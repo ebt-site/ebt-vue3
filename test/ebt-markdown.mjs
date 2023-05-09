@@ -1,37 +1,76 @@
 import { default as EbtMarkdown } from '../src/ebt-markdown.mjs'
+import { default as CmarkGfmRenderer } from '../scripts/cmark-gfm-renderer.mjs';
 import { logger } from 'log-instance';
 import should from "should";
 
 logger.logLevel = 'warn';
 
+const renderer = new CmarkGfmRenderer();
+
 (typeof describe === 'function') && describe("ebt-markdown.mjs", function () {
-  it("default ctor", ()=>{
+  it("TESTTESTdefault ctor", ()=>{
     let emd = new EbtMarkdown();
-    should(emd).properties({htmlLines:['']});
     should.deepEqual(Object.keys(emd).sort(), [
-      'htmlLines', 
       'wikiPath',
       'basePath',
+      'renderer',
     ].sort());
     should(emd).properties({
-      wikiPath: 'wikiPath-undefined',
+      basePath: '/ebt-vue3/',
+      wikiPath: 'wiki',
+      renderer: undefined,
     });
   });
-  it("TESTTESTheading", ()=>{
-    let emd = new EbtMarkdown(`### Title\ntext`);
-    should.deepEqual(emd.htmlLines, [
+  it("TESTTESTheading", async ()=>{
+    let markdown = '### Title\ntext';
+    let emd = new EbtMarkdown({renderer});
+    let htmlLines = await emd.render(markdown);
+    should.deepEqual(htmlLines, [
       '<h3>Title</h3>',
       '<p>text</p>',
     ]);
   });
-  it("TESTTESTlink", ()=>{
-    let emd = new EbtMarkdown('a [link](https://x/y) b');
-    should.deepEqual(emd.htmlLines, [
-      '<p>a <a href="https://x/y">link</a> b</p>',
+  it("TESTTESTlink", async ()=>{
+    let markdown = [
+      'a [link](https://x/y) b',
+      '<a href="https://p/q">pq</a> c',
+    ].join('\n');
+    let emd = new EbtMarkdown({renderer});
+    let htmlLines = await emd.render(markdown);
+    should.deepEqual(htmlLines, [
+      '<p>a <a href="https://x/y">link</a> b',
+      '<a href="https://p/q">pq</a> c</p>',
     ]);
   });
-  it("TESTTESTheading", ()=>{
-    let md = [
+  it("TESTTESTtable", async ()=>{
+    let markdown = [
+      'a table ',
+      '| title1 | title2 |',
+      '| ---- | ---- |',
+      '| cell1 | cell2 |',
+    ].join('\n');
+    let emd = new EbtMarkdown({renderer});
+    let htmlLines = await emd.render(markdown);
+    should.deepEqual(htmlLines, [
+      '<p>a table</p>',
+      '<table>',
+      '<thead>',
+      '<tr>',
+      '<th>title1</th>',
+      '<th>title2</th>',
+      '</tr>',
+      '</thead>',
+      '<tbody>',
+      '<tr>',
+      '<td>cell1</td>',
+      '<td>cell2</td>',
+      '</tr>',
+      '</tbody>',
+      '</table>',
+    ]);
+  });
+  it("TESTTESTheading", async ()=>{
+    let markdown = [
       '---',
       'title: test-title',
       'img: test-img',
@@ -44,20 +83,21 @@ logger.logLevel = 'warn';
     let basePath = '/test-basePath/';
     let wikiBase = 'test-wikiPath';
     let wikiPath = `${wikiBase}/a/b`;
-    let emd = new EbtMarkdown(md, {basePath, wikiPath});
-    should(emd).properties({
-      heading: {
-        title: 'test-title',
-        img: 'test-img',
-        'img-alt': 'test-img-alt',
-        'unknown-key': 'test-unknown',
-      },
-    });
+    let emd = new EbtMarkdown({basePath, wikiPath, renderer});
     let delimiter = '&nbsp;&gt;&nbsp;';
-    should.deepEqual(emd.htmlLines, [
+    let htmlLines = await emd.render(markdown);
+    let heading = emd.parseHeading(markdown);
+    should(emd.heading).properties({
+      title: 'test-title',
+      img: 'test-img',
+      'img-alt': 'test-img-alt',
+      'unknown-key': 'test-unknown',
+    });
+    let src = `${basePath}img/test-img`;
+    should.deepEqual(htmlLines, [
       '<div class="ebt-wiki-heading">',
       '  <a target="_blank">',
-      '    <img src="img/test-img" alt="test-img-alt"/>',
+      `    <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
       '  </a>',
       '  <div>',
       '    <div class="text-caption">',

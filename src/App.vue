@@ -132,7 +132,7 @@
         audio.playBlock();
         volatile.config = config;
 
-        let location = `${config.baseUrl}${config.homePath}`;
+        let location = `${config.basePath}${config.homePath}`;
         window.location = location;
         volatile.ebtChips && nextTick(()=>volatile.ebtChips.focus());
         logger.debug(msg);
