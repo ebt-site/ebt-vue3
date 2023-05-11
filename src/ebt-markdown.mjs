@@ -45,15 +45,21 @@ export default class EbtMarkdown {
         }
       }
     }
-    
+
     let html = await renderer.render(md);
     let htmlLines = html.trim().split('\n');
+    
     let heading = this.parseHeading();
     if (heading) {
       htmlLines = [...heading, ...htmlLines];
     }
 
-    return htmlLines;
+    return [
+      '<article class="ebt-wiki">',
+      ...htmlLines,
+      '</article>',
+    ]
+    htmlLines;
   }
 
   parseHeading() {
@@ -65,35 +71,49 @@ export default class EbtMarkdown {
     if (pathParts[0] == '') {
       pathParts = pathParts.slice(1);
     }
-    let head = ['<div class="ebt-wiki-heading">'];
-    let tail = ['</div><!--ebt-wiki-heading-->'];
     let spaces = '';
     let { 
       description,
-      title, 
+      title="(no-title)", 
       img, 
       'img-alt':imgAlt,
     } = heading;
+    let imgHtml = [];
     if (img) {
-      head.push('  <a target="_blank">');
+      imgHtml.push(' <a target="_blank">');
       let src = `${basePath}img/${img}`;
-      head.push(`    <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
-      head.push('  </a>');
+      imgHtml.push(`  <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
+      imgHtml.push(' </a>');
     }
-    head.push('  <div>');
-    head.push('    <div class="text-caption">');
+
+    // breadcrumbs
+    let breadcrumbs = [];
+    breadcrumbs.push('  <div class="ebt-wiki-breadcrumbs">');
     let iLast = pathParts.length-1;
     for (let i = 0; i < iLast; i++) {
       let part = pathParts[i];
       let href = basePath + pathParts.slice(0, i+1).join('/');
-      head.push(`      <a href="${href}" class="nuxt-link-active">`);
-      head.push(`        ${part}`);
-      head.push(`      </a>&nbsp;&gt;&nbsp;`);
+      breadcrumbs.push(`   <a href="${href}" >${part}</a>&nbsp;&gt;&nbsp;`);
     }
-    head.push(`      ${pathParts[iLast]}`);
-    head.push('    </div>');
-    head.push('  </div>');
-    return [...head, ...tail];
+    breadcrumbs.push(`   ${pathParts[iLast]}`);
+    breadcrumbs.push('  </div><!--ebt-wiki-breadcrumbs-->');
+
+    // text block
+    let textHtml = [
+      ' <div class="ebt-wiki-heading-text">',
+      ...breadcrumbs,
+      `  <h1>${title}</h1>`,
+      `  <div class="ebt-wiki-description">${description}</div>`,
+      ' </div><!--ebt-wiki-heading-text-->',
+    ];
+
+
+    return [
+      '<div class="ebt-wiki-heading">',
+      ...imgHtml,
+      ...textHtml,
+      '</div><!--ebt-wiki-heading-->',
+    ];
   }
 
 }

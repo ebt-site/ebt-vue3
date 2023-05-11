@@ -26,8 +26,10 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer});
     let htmlLines = await emd.render(markdown);
     should.deepEqual(htmlLines, [
+      '<article class="ebt-wiki">',
       '<h3>Title</h3>',
       '<p>text</p>',
+      '</article>',
     ]);
   });
   it("TESTTESTlink", async ()=>{
@@ -38,8 +40,10 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer});
     let htmlLines = await emd.render(markdown);
     should.deepEqual(htmlLines, [
+      '<article class="ebt-wiki">',
       '<p>a <a href="https://x/y">link</a> b',
       '<a href="https://p/q">pq</a> c</p>',
+      '</article>',
     ]);
   });
   it("TESTTESTtable", async ()=>{
@@ -52,6 +56,7 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer});
     let htmlLines = await emd.render(markdown);
     should.deepEqual(htmlLines, [
+      '<article class="ebt-wiki">',
       '<p>a table</p>',
       '<table>',
       '<thead>',
@@ -67,6 +72,7 @@ const renderer = new CmarkGfmRenderer();
       '</tr>',
       '</tbody>',
       '</table>',
+      '</article>',
     ]);
   });
   it("TESTTESTheading", async ()=>{
@@ -76,6 +82,7 @@ const renderer = new CmarkGfmRenderer();
       'img: test-img',
       'img-alt: test-img-alt',
       'unknown-key: test-unknown',
+      'description: test-description',
       '---',
       'test-body',
       '',
@@ -95,23 +102,23 @@ const renderer = new CmarkGfmRenderer();
     });
     let src = `${basePath}img/test-img`;
     should.deepEqual(htmlLines, [
+      '<article class="ebt-wiki">',
       '<div class="ebt-wiki-heading">',
-      '  <a target="_blank">',
-      `    <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
-      '  </a>',
-      '  <div>',
-      '    <div class="text-caption">',
-      `      <a href="${basePath}${wikiBase}" class="nuxt-link-active">`,
-      '        test-wikiPath',
-      `      </a>${delimiter}`,
-      `      <a href="${basePath}${wikiBase}/a" class="nuxt-link-active">`,
-      '        a',
-      `      </a>${delimiter}`,
-      '      b',
-      '    </div>',
-      '  </div>',
+      ' <a target="_blank">',
+      `  <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
+      ' </a>',
+      ' <div class="ebt-wiki-heading-text">',
+      '  <div class="ebt-wiki-breadcrumbs">',
+      `   <a href="${basePath}${wikiBase}" >test-wikiPath</a>${delimiter}`,
+      `   <a href="${basePath}${wikiBase}/a" >a</a>${delimiter}`,
+      '   b',
+      '  </div><!--ebt-wiki-breadcrumbs-->',
+      '  <h1>test-title</h1>',
+      '  <div class="ebt-wiki-description">test-description</div>',
+      ' </div><!--ebt-wiki-heading-text-->',
       '</div><!--ebt-wiki-heading-->',
       '<p>test-body</p>',
+      '</article>',
     ]);
   });
 });

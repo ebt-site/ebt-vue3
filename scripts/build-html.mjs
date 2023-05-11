@@ -23,7 +23,7 @@ async function convertFile(fnSrc, fnDst) {
   let htmlLines = await emd.render(markdown);
   await fsp.mkdir(DSTDIR, {recursive:true});
   let cssPath = `${basePath}/wiki/ebt.css`;
-  htmlLines.push(`<link rel="stylesheet" href="${cssPath}">`);
+  //htmlLines.unshift(`<link rel="stylesheet" href="${cssPath}">`);
   let html = htmlLines.join('\n');
   await fsp.writeFile(fnDst, html);
 }

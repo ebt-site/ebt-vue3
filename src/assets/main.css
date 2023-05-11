@@ -82,3 +82,71 @@ a:focus {
 .v-leave-to {
   opacity: 0;
 }
+
+.ebt-icon-btn {
+  margin: 0;
+  margin-left:2px;
+  margin-right:2px;
+  border-radius:5px;
+  border: none;
+  font-size: 24px ;
+  min-height: 1.7em !important;
+  min-width: 1.7em !important;
+}
+.ebt-icon-btn svg {
+  bottom: 0em !important;
+}
+.ebt-icon-btn:focus, 
+.ebt-icon-btn:hover {
+  outline: 2px solid rgb(var(--v-theme-link));
+}
+.TBDtheme--dark.ebt-icon-btn:focus-within, 
+.TBDtheme--dark.ebt-icon-btn:hover {
+  outline: 2px solid var(--ebt-focus-color-dark);
+  background-color: var(--ebt-focus-background-color-dark);
+}
+.TBDtheme--dark.ebt-icon-btn:focus-within svg, 
+.TBDtheme--dark.ebt-icon-btn:hover svg{
+  color: var(--ebt-focus-color-dark);
+  background-color: var(--ebt-focus-background-color-dark);
+}
+
+.ebt-wiki {
+  padding: 1em;
+  padding-bottom: 20em;
+  font-size: 14px;
+}
+.ebt-wiki li {
+  margin-left: 1.2em;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.ebt-wiki p {
+  padding-top: 0.5em;
+  padding-bottom: 0.2em;
+}
+.ebt-wiki h1,h2,h3,h4,h5,h6 {
+  padding-top: 0.8em;
+  padding-bottom: 0.4em;
+}
+.ebt-wiki-heading {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+.ebt-wiki-heading img {
+  margin-right: 1em;
+  height: 175px;
+  border-top-left-radius: 0.5em;
+}
+.ebt-wiki-heading-text {
+  display: flex;
+  flex-flow: column;
+}
+.ebt-wiki-description {
+  padding-top: 0.5em;
+}
+.ebt-wiki-breadcrumbs {
+  font-weight: 500;
+}
+
