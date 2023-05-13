@@ -11,7 +11,7 @@ import { default as EbtMarkdown } from '../src/ebt-markdown.mjs';
 import { default as EbtConfig } from '../ebt-config.mjs';
 const SRCDIR = path.join(__dirname, '../content');
 const DSTDIR = path.join(__dirname, '../public/content');
-const wikiPath = 'wiki/welcome';
+const wikiPath = 'wiki/home';
 
 class HtmlFactory {
   constructor(opts={}) {

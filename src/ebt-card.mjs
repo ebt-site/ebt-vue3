@@ -107,7 +107,7 @@ export default class EbtCard {
     let msg = 'EbtCard.pathToCard() ';
     let {path='/', cards=[], addCard, defaultLang} = args;
     path = path.replace(/^.*\/#/, ''); // ignore non-hash part of path
-    let [ tbd, context, ...location ] = path.split('/');
+    let [ ignored, context, ...location ] = path.split('/');
     location = location.map(loc => decodeURIComponent(loc));
     let card = cards.find(card => card.matchPath({path, defaultLang}));
     if (card == null) {
@@ -120,6 +120,11 @@ export default class EbtCard {
     } else {
       logger.debug(msg+`(EXISTING))`, {args,card});
     } 
+
+    if (card && card.context === CONTEXT_WIKI) {
+      let newLocation = path.split('/').slice(2);
+      card.location = newLocation;
+    }
 
     return card;
   }
@@ -265,6 +270,7 @@ export default class EbtCard {
     }
     context = context && context.toLowerCase() || CONTEXT_HOME;
     if (context === this.context && context===CONTEXT_HOME) {
+      // all wiki locations are owned by home card singleton
       dbg && console.log(msg, 'CONTEXT_HOME', strOrObj, this);
       return true;
     }

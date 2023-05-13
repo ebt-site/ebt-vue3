@@ -157,11 +157,14 @@
     },
     async mounted() {
       let msg = 'App.mounted() ';
-      let { $t, $vuetify, settings, $i18n, volatile } = this;
+      let { $t, config, $vuetify, settings, $i18n, volatile } = this;
       volatile.$t = $t;
 
       // wait for Settings to load
       await settings.loadSettings();
+      let { homePath } = config;
+      let homeCard = settings.pathToCard(homePath);
+      logger.info(msg, {homeCard, homePath});
 
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;

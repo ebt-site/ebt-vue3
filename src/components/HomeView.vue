@@ -32,7 +32,7 @@
       const msg = "HomeView.mounted() ";
       let { card, config } = this;
       let { location } = card;
-      let href = `${config.basePath}wiki/${location.join('/')}.html`
+      let href = `${config.basePath}content/wiki/${location.join('/')}.html`
       try {
         let res = await fetch(href);
         let html = await res.text();

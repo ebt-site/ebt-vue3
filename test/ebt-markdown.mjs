@@ -8,7 +8,7 @@ logger.logLevel = 'warn';
 const renderer = new CmarkGfmRenderer();
 
 (typeof describe === 'function') && describe("ebt-markdown.mjs", function () {
-  it("TESTTESTdefault ctor", ()=>{
+  it("default ctor", ()=>{
     let emd = new EbtMarkdown();
     should.deepEqual(Object.keys(emd).sort(), [
       'wikiPath',
@@ -21,7 +21,7 @@ const renderer = new CmarkGfmRenderer();
       renderer: undefined,
     });
   });
-  it("TESTTESTheading", async ()=>{
+  it("heading", async ()=>{
     let markdown = '### Title\ntext';
     let emd = new EbtMarkdown({renderer});
     let htmlLines = await emd.render(markdown);
@@ -33,7 +33,7 @@ const renderer = new CmarkGfmRenderer();
     ]);
     should(emd.metadata).equal(undefined);
   });
-  it("TESTTESTlink", async ()=>{
+  it("link", async ()=>{
     let markdown = [
       'a [link](https://x/y) b',
       '<a href="https://p/q">pq</a> c',
@@ -47,7 +47,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("TESTTESTtable", async ()=>{
+  it("table", async ()=>{
     let markdown = [
       'a table ',
       '| title1 | title2 |',
@@ -76,7 +76,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("TESTTESThtml heading", async ()=>{
+  it("html heading", async ()=>{
     let markdown = [
       '---',
       'title: test-title',

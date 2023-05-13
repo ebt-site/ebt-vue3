@@ -46,7 +46,7 @@
       }
       let card = settings.pathToCard(path);
 
-      logger.debug(msg, this);
+      logger.info(msg, this, card);
 
       if (card == null) {
         logger.warn(msg+"UNEXPECTED", {$route, path});
