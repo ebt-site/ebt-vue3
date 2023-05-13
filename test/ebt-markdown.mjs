@@ -31,6 +31,7 @@ const renderer = new CmarkGfmRenderer();
       '<p>text</p>',
       '</article>',
     ]);
+    should(emd.metadata).equal(undefined);
   });
   it("TESTTESTlink", async ()=>{
     let markdown = [
@@ -75,7 +76,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("TESTTESTheading", async ()=>{
+  it("TESTTESThtml heading", async ()=>{
     let markdown = [
       '---',
       'title: test-title',
@@ -83,6 +84,8 @@ const renderer = new CmarkGfmRenderer();
       'img-alt: test-img-alt',
       'unknown-key: test-unknown',
       'description: test-description',
+      'category: test-category',
+      'order: 42',
       '---',
       'test-body',
       '',
@@ -93,12 +96,14 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({basePath, wikiPath, renderer});
     let delimiter = '&nbsp;&gt;&nbsp;';
     let htmlLines = await emd.render(markdown);
-    let heading = emd.parseHeading(markdown);
-    should(emd.heading).properties({
+    let heading = emd.htmlHeading(markdown);
+    should(emd.metadata).properties({
       title: 'test-title',
       img: 'test-img',
       'img-alt': 'test-img-alt',
       'unknown-key': 'test-unknown',
+      order: '42',
+      category: 'test-category',
     });
     let src = `${basePath}img/test-img`;
     should.deepEqual(htmlLines, [

@@ -1,4 +1,4 @@
-import { default as CmarkGfm } from 'cmark-gfm';
+import { default as cmark } from 'cmark-gfm';
 
 export default class CmarkGfmRenderer {
   async render(markdown) {
@@ -9,7 +9,7 @@ export default class CmarkGfmRenderer {
       },
     }
     return new Promise((resolve,reject) => {
-      CmarkGfm.renderHtml(markdown, options)
+      cmark.renderHtml(markdown, options)
       .then(html => resolve(html))
       .catch(error => console.error(error));
     });

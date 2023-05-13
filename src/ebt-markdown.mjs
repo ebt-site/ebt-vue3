@@ -21,7 +21,7 @@ export default class EbtMarkdown {
     let lines = markdown.split('\n');
     let md = markdown;
     if (lines[0] === '---') {
-      this.heading = {};
+      this.metadata = {};
       let iLine;
       for (iLine = 1; iLine < lines.length; iLine++) {
         let line = lines[iLine];
@@ -37,10 +37,10 @@ export default class EbtMarkdown {
           case 'img-alt':
           case 'title': 
           case 'description':
-            this.heading[key] = value;
+            this.metadata[key] = value;
             break;
           default: 
-            this.heading[key] = value;
+            this.metadata[key] = value;
             break;
         }
       }
@@ -49,7 +49,7 @@ export default class EbtMarkdown {
     let html = await renderer.render(md);
     let htmlLines = html.trim().split('\n');
     
-    let heading = this.parseHeading();
+    let heading = this.htmlHeading();
     if (heading) {
       htmlLines = [...heading, ...htmlLines];
     }
@@ -59,12 +59,11 @@ export default class EbtMarkdown {
       ...htmlLines,
       '</article>',
     ]
-    htmlLines;
   }
 
-  parseHeading() {
-    let { basePath, wikiPath, heading, } = this;
-    if (heading == null) {
+  htmlHeading() {
+    let { basePath, wikiPath, metadata, } = this;
+    if (metadata == null) {
       return '';
     }
     let pathParts = wikiPath.split('/');
@@ -77,7 +76,7 @@ export default class EbtMarkdown {
       title="(no-title)", 
       img, 
       'img-alt':imgAlt,
-    } = heading;
+    } = metadata;
     let imgHtml = [];
     if (img) {
       imgHtml.push(' <a target="_blank">');
@@ -106,7 +105,6 @@ export default class EbtMarkdown {
       `  <div class="ebt-wiki-description">${description}</div>`,
       ' </div><!--ebt-wiki-heading-text-->',
     ];
-
 
     return [
       '<div class="ebt-wiki-heading">',
