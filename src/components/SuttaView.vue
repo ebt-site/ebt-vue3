@@ -70,14 +70,14 @@
     },
     async mounted() {
       const msg = 'SuttaView.mounted() ';
-      let { $route, suttas, settings, volatile, card, } = this;
+      let { $route, suttas, settings, volatile, card, config, } = this;
       let { location, data } = card;
       let ref = {sutta_uid:location[0], lang:location[1], author:location[2]}
       let suttaRef = SuttaRef.create(ref);
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
-        volatile.setRoute();
         settings.removeCard(card, config);
+        volatile.setRoute(config.homePath);
         return;
       }
       let { sutta_uid, lang, author, segnum } = suttaRef;

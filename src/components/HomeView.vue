@@ -49,7 +49,7 @@
 
 <style scoped>
 .home {
-  max-width: 45em;
+  max-width: 40em;
   margin-left: auto;
   margin-right: auto;
 }

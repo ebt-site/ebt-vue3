@@ -178,7 +178,8 @@
           : "ebt-results-old";
       },
       exampleItems() {
-        let { card, search='', settings } = this;
+        let { card, search, settings } = this;
+        search = search || ''; // might be null or undefined 
         let { langTrans, maxResults } = settings;
         var searchLower = search.toLowerCase();
         var langEx = Examples[langTrans] || Examples.en;
