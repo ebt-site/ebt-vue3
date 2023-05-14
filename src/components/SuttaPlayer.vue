@@ -20,7 +20,7 @@
         <v-btn id="audio-play-pause" icon density="compact"
           tabindex=-1
           @keydown="audio.keydown"
-          @click="audio.clickPlayOne" 
+          @click="clickPlayOne" 
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-pause')"
         >
@@ -28,7 +28,7 @@
             :icon="audio.idbAudio?.isPlaying ? 'mdi-pause' : 'mdi-play-pause'" />
         </v-btn>
         <div class="play-scid" >
-          <div @click="onClickPlayScid">
+          <div @click="onShowScid">
             {{audio.audioScid}}
           </div>
           <div v-if="audioDuration" class="audioElapsed">
@@ -38,7 +38,7 @@
         <v-btn id="audio-play-to-end"
           icon density="compact"
           tabindex=-1
-          @click="audio.clickPlayToEnd" 
+          @click="clickPlayToEnd" 
           @keydown="audio.keydown"
           @blur="onAudioBlur"
           @focus="onAudioFocus('audio-play-to-end')"
@@ -79,6 +79,14 @@
       }
     },
     methods: {
+      clickPlayOne() {
+        let { audio } = this;
+        audio.clickPlayOne();
+      },
+      clickPlayToEnd() {
+        let { audio } = this;
+        audio.clickPlayToEnd();
+      },
       onAudioBlur() {
         let { audio } = this;
         //audio.audioFocused = false;
@@ -87,7 +95,7 @@
         let { audio, } = this;
         //audio.audioFocused = true;
       },
-      onClickPlayScid() {
+      onShowScid() {
         let { routeCard, settings, } = this;
         let segmentElementId = routeCard.segmentElementId();
         settings.scrollToElementId(segmentElementId);

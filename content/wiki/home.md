@@ -9,9 +9,11 @@ order: 1
 
 Thank you for visiting Ebt-Vue3!
 
-Ebt-Vue3 is the successor to [SuttaCentral Voice](https://voice.suttacentral.net),
+Ebt-Vue3 is the successor to 
+<a href="https://voice.suttacentral.net" target="_blank">Voice.suttacentral.net</a>,
 which provides an accessible interface to the Early Buddhist Texts (EBTs) 
-found on [SuttaCentral](httsp:://suttacentral.net).
+found on 
+<a href="https://suttacentral.net" target="_blank">SuttaCentral</a>),
 Voice lets you listen to the the EBTs in several different languages, 
 including Pali, using both AI and human voices.
 

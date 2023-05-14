@@ -126,7 +126,7 @@ export const useAudioStore = defineStore('audio', {
       }
 
       mainContext && mainContext.close();
-      this.getAudioContext();
+      //this.createIdbAudio();
       this.playMode = playMode;
       return false;
     },
@@ -147,11 +147,11 @@ export const useAudioStore = defineStore('audio', {
       let msg = 'audio.clickPlayOne() ';
 
       if (this.playPause(PLAY_ONE)) {
-        logger.debug(msg + 'toggled');
+        logger.info(msg + 'toggled');
         return;
       }
 
-      logger.debug(msg + 'playing');
+      logger.info(msg + 'playing');
       this.createIdbAudio();
       this.playOne();
     },
@@ -300,7 +300,9 @@ export const useAudioStore = defineStore('audio', {
       return duration;
     },
     createIdbAudio() {
-      // NOTE: Caller must UI callback (iOS restriction)
+      const msg = "audio.createIdbAudio() ";
+      console.trace(msg);
+      // NOTE: Caller must be UI callback (iOS restriction)
       let audioContext = this.mainContext = this.getAudioContext();
       let idbAudio = this.idbAudio = new IdbAudio({audioContext});
       return idbAudio;
