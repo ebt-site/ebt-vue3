@@ -301,7 +301,7 @@ export const useAudioStore = defineStore('audio', {
     },
     createIdbAudio() {
       const msg = "audio.createIdbAudio() ";
-      console.trace(msg);
+      //console.trace(msg);
       // NOTE: Caller must be UI callback (iOS restriction)
       let audioContext = this.mainContext = this.getAudioContext();
       let idbAudio = this.idbAudio = new IdbAudio({audioContext});
@@ -405,6 +405,8 @@ export const useAudioStore = defineStore('audio', {
       }
     },
     getAudioContext() {
+      const msg = "audio.getAudioContext() "
+      //console.trace(msg);
       // IMPORTANT! Call this from a user-initiated non-async context
       let audioContext = new AudioContext();
       audioContext.resume(); // required for iOS
@@ -479,7 +481,16 @@ export const useAudioStore = defineStore('audio', {
     },
     playUrl(url, opts={}) {
       let { audioContext } = opts;
-      return this.playUrlAsync(url, {audioContext});
+      let tempContext = audioContext == null ? this.getAudioContext() : null;
+      audioContext = audioContext || tempContext;
+
+      let promise = this.playUrlAsync(url, {audioContext});
+
+      tempContext && promise.then(()=>{
+        tempContext.close();
+      });
+
+      return promise;
     },
     async playUrlAsync(url, opts) {
       const msg = 'audio.playUrlAsync() ';
@@ -488,15 +499,12 @@ export const useAudioStore = defineStore('audio', {
       }
 
       let { audioContext } = opts;
-      let tempContext = audioContext == null ? this.getAudioContext() : null;
-      audioContext = audioContext || tempContext;
+      if (audioContext == null) {
+        throw new Error(`${msg} audioContext is required`);
+      }
 
       let arrayBuffer = await this.fetchArrayBuffer(url, opts);
-      let promise = this.playArrayBuffer({arrayBuffer, audioContext, });
-      tempContext && promise.then(()=>{
-        tempContext.close();
-      });
-      return promise;
+      return this.playArrayBuffer({arrayBuffer, audioContext, });
     },
     async fetchArrayBuffer(url, opts={}) {
       const msg = `audio.fetchArrayBuffer() ${url}`;
