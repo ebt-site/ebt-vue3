@@ -213,6 +213,10 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   getters: {
+    clickUrl(state) {
+      let volume = state.clickVolume || 0;
+      return `audio/click${volume}.mp3`;
+    },
     development(state) {
       let { logLevel } = state;
       return logLevel === 'debug' || logLevel === 'info';

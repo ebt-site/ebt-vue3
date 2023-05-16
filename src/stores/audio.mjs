@@ -65,6 +65,7 @@ export const useAudioStore = defineStore('audio', {
       audioElapsed: ref(0),
       idbAudio: ref(undefined),
       playMode: ref(PLAY_ONE),
+      clickElt: ref(undefined),
     }
   },
   getters: {
@@ -362,10 +363,12 @@ export const useAudioStore = defineStore('audio', {
     },
     playClick(audioContext) {
       const msg = 'audio.playClick() ';
-      let settings = useSettingsStore();
-      let volume = settings.clickVolume;
-      let url =  volume ? `audio/click${volume}.mp3` : null;
-      return this.playUrl(url, {audioContext});
+      let { clickElt } = this;
+      if (typeof(clickElt?.play) === 'function') {
+        clickElt.play()
+      } else {
+        console.trace(msg, "no clickElt");
+      }
     },
     playBell(audioContext) {
       const msg = 'audio.playBell() ';

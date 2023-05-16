@@ -50,6 +50,11 @@
         <template v-if="!collapsed" v-slot:extension>
           <ebt-chips />
         </template> <!-- !collapsed -->
+        <audio 
+          :ref="el => {clickElt = el}" preload=auto>
+          <source type="audio/mp3" :src="settings.clickUrl" />
+          <p>{{$t('ebt.noHTML5')}}</p>
+        </audio>
       </v-app-bar>
 
       <v-sheet>
@@ -102,9 +107,9 @@
   export default {
     inject: ['config'],
     setup() {
-      const tabs = ref([]);
       return {
-        tabs,
+        tabs: ref([]),
+        clickElt: ref(undefined),
       }
     },
     data: ()=>({
@@ -157,11 +162,13 @@
     },
     async mounted() {
       let msg = 'App.mounted() ';
-      let { $t, config, $vuetify, settings, $i18n, volatile } = this;
+      let { $t, audio, config, $vuetify, settings, $i18n, volatile, clickElt } = this;
       volatile.$t = $t;
 
       // wait for Settings to load
       await settings.loadSettings();
+      console.log(msg, 'clickUrl', settings.clickUrl, {clickElt});
+      audio.clickElt = clickElt;
       let { homePath } = config;
       let homeCard = settings.pathToCard(homePath);
       logger.info(msg, {homeCard, homePath});
