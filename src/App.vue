@@ -50,11 +50,13 @@
         <template v-if="!collapsed" v-slot:extension>
           <ebt-chips />
         </template> <!-- !collapsed -->
-        <audio 
-          :ref="el => {clickElt = el}" preload=auto>
-          <source type="audio/mp3" :src="settings.clickUrl" />
-          <p>{{$t('ebt.noHTML5')}}</p>
-        </audio>
+        <template v-if="settings.loaded">
+          <audio 
+            :ref="el => {clickElt = el}" preload=auto>
+            <source type="audio/mp3" src="audio/click4.mp3" />
+            <p>{{$t('ebt.noHTML5')}}</p>
+          </audio>
+        </template>
       </v-app-bar>
 
       <v-sheet>
@@ -162,13 +164,17 @@
     },
     async mounted() {
       let msg = 'App.mounted() ';
-      let { $t, audio, config, $vuetify, settings, $i18n, volatile, clickElt } = this;
+      let { $t, audio, config, $vuetify, settings, $i18n, volatile, } = this;
       volatile.$t = $t;
 
       // wait for Settings to load
       await settings.loadSettings();
-      console.log(msg, 'clickUrl', settings.clickUrl, {clickElt});
-      audio.clickElt = clickElt;
+      nextTick(()=>{
+        let { clickElt } = this;
+        audio.clickElt = clickElt;
+        let { audioVolume } = settings;
+        clickElt.volume = audioVolume;
+      });
       let { homePath } = config;
       let homeCard = settings.pathToCard(homePath);
       logger.info(msg, {homeCard, homePath});

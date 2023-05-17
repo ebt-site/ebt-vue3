@@ -321,7 +321,15 @@ export default {
       });
     },
     onClickVolume() {
-      let { audio } = this;
+      const msg = "Settings.onClickVolume() ";
+      let { audio, settings } = this;
+      let { clickElt } = audio;
+      if (!clickElt) {
+        console.trace(msg, "no clickElt");
+        return;
+      }
+      let { volume } = clickElt;
+      clickElt.volume = settings.audioVolume
       audio.playClick();
     },
     onBlockVolume() {

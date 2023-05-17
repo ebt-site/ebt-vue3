@@ -189,6 +189,11 @@ export const useSettingsStore = defineStore('settings', {
       card.isOpen = true;
       return true;
     },
+    clickUrl(s) {
+      let { clickVolume } = this;
+      let volume = clickVolume || 0;
+      return `audio/click${volume}.mp3`;
+    },
     async scrollToCard(card) {
       if (this.openCard(card)) {
         await new Promise(resolve => setTimeout(()=>resolve(), 100));
@@ -213,13 +218,13 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   getters: {
-    clickUrl(state) {
-      let volume = state.clickVolume || 0;
-      return `audio/click${volume}.mp3`;
-    },
     development(state) {
       let { logLevel } = state;
       return logLevel === 'debug' || logLevel === 'info';
+    },
+    audioVolume(state) {
+      let { clickVolume } = state;
+      return Number(clickVolume) / 4;
     },
     cardsOpen: (state)=>{
       let { cards } = state;
