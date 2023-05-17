@@ -53,7 +53,7 @@
         <template v-if="settings.loaded">
           <audio 
             :ref="el => {clickElt = el}" preload=auto>
-            <source type="audio/mp3" src="audio/click4.mp3" />
+            <source type="audio/mp3" :src="'audio/click4.mp3'" />
             <p>{{$t('ebt.noHTML5')}}</p>
           </audio>
         </template>
