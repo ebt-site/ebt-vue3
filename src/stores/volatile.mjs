@@ -16,7 +16,8 @@ const ICON_PROCESSING = 'mdi-factory';
 const INITIAL_STATE = {
   $t: t=>t,
   alertMsg: ref(null),
-  config: ref({}),
+  alertHtml: ref("hello<br>there"),
+  config: ref(undefined),
   showAlertMsg: ref(false),
   waiting: 0,
   waitingMsg: ref('...'),
@@ -29,10 +30,10 @@ const INITIAL_STATE = {
   btnSettings: ref(undefined),
   routeCard: ref(undefined),
   ebtChips: ref(undefined),
+  homeHtml: ref('loading...'),
 };
 
 export const useVolatileStore = defineStore('volatile', {
-  inject: ['config'],
   state: () => {
     let s = Object.assign({}, INITIAL_STATE);
     logger.debug(`volatile.state() => `, s);
@@ -76,7 +77,11 @@ export const useVolatileStore = defineStore('volatile', {
       const msg = 'volatile.setRoute() ';
       let { config } = this;
       let settings = useSettingsStore();
-      cardOrRoute = cardOrRoute || config.homePath;
+      cardOrRoute = cardOrRoute || config?.homePath;
+      if (!cardOrRoute) {
+        console.trace(msg, 'ERROR: cardOrRoute is required');
+        return;
+      }
       let isCard = !(typeof cardOrRoute === 'string');
       let route = isCard ? cardOrRoute.routeHash() : cardOrRoute;
       let card = isCard ? cardOrRoute : settings.pathToCard(route);
@@ -102,7 +107,35 @@ export const useVolatileStore = defineStore('volatile', {
       this.routeCard = card;
       return card;
     },
-    alert(eOrMsg, context) {
+    async fetchHomeHtml(wikiPath) {
+      const msg = 'volatile.fetchHomeHtml() ';
+      let { config } = this;
+      let configJson = JSON.stringify(config, null, 2);
+      let alertMsg = 'ebt.cannotLoadWikiHtml';
+      let alertHtml = [
+        '<pre>',
+        'href:',
+        `config: ${configJson}`,
+        '</pre>',
+      ];
+      let html = "loading...";
+      if (config) {
+        let href = `${config.basePath}content/wiki/${wikiPath}.html`
+        let res;
+        res = await fetch(href);
+        if (res.ok) {
+          html = await res.text();
+          logger.info(msg, {wikiPath, href, res});
+        } else {
+          alertHtml[1] += `<b>${href}</b>`;
+          this.alert(msg, alertMsg, alertHtml.join('\n'));
+          logger.error(msg, {wikiPath, href});
+        }
+      }
+      this.homeHtml = html;
+      return html;
+    },
+    alert(eOrMsg, context, alertHtml="") {
       let msg = eOrMsg;
       if (msg instanceof Error) {
         msg = eOrMsg.message;
@@ -110,6 +143,7 @@ export const useVolatileStore = defineStore('volatile', {
       }
       msg && console.trace(`volatile.alert() ${msg} ${context}`);
       this.alertMsg = msg && { msg, context };
+      this.alertHtml = alertHtml;
       this.showAlertMsg = !!msg;
     },
     waitBegin(msg, icon=ICON_DOWNLOAD) {

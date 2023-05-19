@@ -134,6 +134,11 @@
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
+        if (card.context === EbtCard.CONTEXT_HOME) {
+          let wikiPath = card.location.join('/');
+          console.log(msg, {wikiPath});
+          volatile.fetchHomeHtml(wikiPath);
+        }
         nextTick(() => { 
           settings.scrollToCard(card); 
           logger.debug(msg, document.activeElement, volatile.routeCard);

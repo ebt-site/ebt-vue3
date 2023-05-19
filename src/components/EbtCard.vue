@@ -29,9 +29,9 @@
         </template>
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
-          <home-view v-if="card.context===CONTEXT_WIKI"
-            :card="card" 
-          />
+          <template v-if="volatile.config">
+            <home-view v-if="card.context===CONTEXT_WIKI" :card="card" />
+          </template>
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
             :card="card" 

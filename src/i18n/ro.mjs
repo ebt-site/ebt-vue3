@@ -206,6 +206,7 @@ export default {
     "bellTibetan": "Bol de Cântat Tibetan",
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "Building audio file...",
+    "cannotLoadWikiHtml": "Cannot load wiki html",
     "clear": "Clear",
     "clearSettings": "Clear all settings and reset to defaults?",
     "clearSoundCache": "Clear sound cache",

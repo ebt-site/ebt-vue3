@@ -88,7 +88,10 @@
             @click="volatile.alert(null)"
           />
         </div>
-        <div class="alert-msg"> {{ alertMsg }}</div>
+        <div class="alert-body">
+          <div class="alert-msg">{{ alertMsg }}</div>
+          <div v-html="alertHtml" class="alert-html"/>
+        </div>
       </v-snackbar>
     </v-main>
   </v-app>
@@ -133,7 +136,6 @@
         let msg = 'App.onHome() ';
         let { volatile, audio, config } = this;
         audio.playBlock();
-        volatile.config = config;
 
         let location = `${config.basePath}${config.homePath}`;
         window.location = location;
@@ -166,6 +168,7 @@
       let msg = 'App.mounted() ';
       let { $t, audio, config, $vuetify, settings, $i18n, volatile, } = this;
       volatile.$t = $t;
+      volatile.config = config;
 
       // wait for Settings to load
       await settings.loadSettings();
@@ -209,6 +212,9 @@
       logger.info(msg, {activeElement});
     },
     computed: {
+      alertHtml(ctx) {
+        return ctx.volatile.alertHtml;
+      },
       alertTitle(ctx) {
         let { $t } = ctx;
         let titleKey = ctx.volatile.alertMsg?.context || 'ebt.applicationError';
@@ -295,11 +301,21 @@
   font-weight: 600;
   border-bottom: 1pt solid rgba(var(--v-theme-on-surface), 0.5);
 }
-.alert-msg {
-  margin-top: 1em;
+.alert-body {
   min-height: 40px;
+}
+.alert-msg {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.2em;
   max-width: 300px;
   text-overflow: '';
+}
+.alert-html{
+  font-size: 11px;
+  line-height: 1.2em;
+  border-left: 1pt solid orange;
+  padding-left: 1em;
 }
 </style>
 

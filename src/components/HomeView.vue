@@ -2,23 +2,23 @@
   <v-sheet class="home">
     <div>
       <h3>HOME VIEW</h3>
-      <div v-html="html" />
+      <div v-html="volatile.homeHtml" />
     </div>
   </v-sheet>
 </template>
 
 <script>
   import { useSettingsStore } from '../stores/settings.mjs';
+  import { useVolatileStore } from '../stores/volatile.mjs';
+  import { logger } from 'log-instance';
   import { ref } from "vue";
 
   export default {
     inject: ['config'],
     setup() {
-      const settings = useSettingsStore();
-      const html = ref('loading html...');
       return {
-        settings,
-        html,
+        settings: useSettingsStore(),
+        volatile: useVolatileStore(),
       }
     },
     props: {
@@ -30,17 +30,10 @@
     },
     async mounted() {
       const msg = "HomeView.mounted() ";
-      let { card, config } = this;
+      let { card, volatile } = this;
       let { location } = card;
-      let href = `${config.basePath}content/wiki/${location.join('/')}.html`
-      try {
-        let res = await fetch(href);
-        let html = await res.text();
-        console.log(msg, {location, href, res, html});
-        this.html = html;
-      } catch (e) {
-        logger.error(msg, {location, href, res, e});
-      }
+      await volatile.fetchHomeHtml(location.join('/'));
+      logger.info(msg);
     },
     computed: {
     },
