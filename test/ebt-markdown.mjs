@@ -8,7 +8,7 @@ logger.logLevel = 'warn';
 const renderer = new CmarkGfmRenderer();
 
 (typeof describe === 'function') && describe("ebt-markdown.mjs", function () {
-  it("default ctor", ()=>{
+  it("TESTTESTdefault ctor", ()=>{
     let emd = new EbtMarkdown();
     should.deepEqual(Object.keys(emd).sort(), [
       'wikiPath',
@@ -21,10 +21,10 @@ const renderer = new CmarkGfmRenderer();
       renderer: undefined,
     });
   });
-  it("heading", async ()=>{
+  it("TESTTESTheading", async ()=>{
     let markdown = '### Title\ntext';
     let emd = new EbtMarkdown({renderer});
-    let htmlLines = await emd.render(markdown);
+    let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
       '<article class="ebt-wiki">',
       '<h3>Title</h3>',
@@ -33,13 +33,13 @@ const renderer = new CmarkGfmRenderer();
     ]);
     should(emd.metadata).equal(undefined);
   });
-  it("link", async ()=>{
+  it("TESTTESTlink", async ()=>{
     let markdown = [
       'a [link](https://x/y) b',
       '<a href="https://p/q">pq</a> c',
     ].join('\n');
     let emd = new EbtMarkdown({renderer});
-    let htmlLines = await emd.render(markdown);
+    let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
       '<article class="ebt-wiki">',
       '<p>a <a href="https://x/y">link</a> b',
@@ -47,7 +47,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("table", async ()=>{
+  it("TESTTESTtable", async ()=>{
     let markdown = [
       'a table ',
       '| title1 | title2 |',
@@ -55,7 +55,7 @@ const renderer = new CmarkGfmRenderer();
       '| cell1 | cell2 |',
     ].join('\n');
     let emd = new EbtMarkdown({renderer});
-    let htmlLines = await emd.render(markdown);
+    let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
       '<article class="ebt-wiki">',
       '<p>a table</p>',
@@ -76,7 +76,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("html heading", async ()=>{
+  it("TESTTESThtml heading", async ()=>{
     let markdown = [
       '---',
       'title: test-title',
@@ -95,9 +95,9 @@ const renderer = new CmarkGfmRenderer();
     let wikiPath = `${wikiBase}/a/b`;
     let emd = new EbtMarkdown({basePath, wikiPath, renderer});
     let delimiter = '&nbsp;&gt;&nbsp;';
-    let htmlLines = await emd.render(markdown);
+    let { metadata, htmlLines } = await emd.render(markdown);
     let heading = emd.htmlHeading(markdown);
-    should(emd.metadata).properties({
+    should(metadata).properties({
       title: 'test-title',
       img: 'test-img',
       'img-alt': 'test-img-alt',

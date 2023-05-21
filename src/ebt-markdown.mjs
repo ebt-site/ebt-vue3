@@ -20,8 +20,9 @@ export default class EbtMarkdown {
     }
     let lines = markdown.split('\n');
     let md = markdown;
+    let metadata;
     if (lines[0] === '---') {
-      this.metadata = {};
+      metadata = {};
       let iLine;
       for (iLine = 1; iLine < lines.length; iLine++) {
         let line = lines[iLine];
@@ -37,10 +38,10 @@ export default class EbtMarkdown {
           case 'img-alt':
           case 'title': 
           case 'description':
-            this.metadata[key] = value;
+            metadata[key] = value;
             break;
           default: 
-            this.metadata[key] = value;
+            metadata[key] = value;
             break;
         }
       }
@@ -49,20 +50,25 @@ export default class EbtMarkdown {
     let html = await renderer.render(md);
     let htmlLines = html.trim().split('\n');
     
-    let heading = this.htmlHeading();
+    let heading = this.htmlHeading(metadata);
     if (heading) {
       htmlLines = [...heading, ...htmlLines];
     }
 
-    return [
+    htmlLines =  [
       '<article class="ebt-wiki">',
       ...htmlLines,
       '</article>',
     ]
+
+    return {
+      metadata,
+      htmlLines,
+    }
   }
 
-  htmlHeading() {
-    let { basePath, wikiPath, metadata, } = this;
+  htmlHeading(metadata) {
+    let { basePath, wikiPath, } = this;
     if (metadata == null) {
       return '';
     }

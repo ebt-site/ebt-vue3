@@ -20,14 +20,13 @@ class HtmlFactory {
     this.dstDir = opts.dstDir || DSTDIR;
   }
   
-  async convertFile(fnSrc, fnDst) {
-    const msg = 'HtmlFactory.convertFile() ';
+  async convertMarkDownFile(fnSrc, fnDst, ) {
+    const msg = 'HtmlFactory.convertMarkDownFile() ';
     let { renderer, categories, srcDir } = this;
     let markdown = fs.readFileSync(fnSrc).toString();
     let basePath = "/ebt-vue3/";
     let emd = new EbtMarkdown({basePath, wikiPath, renderer});
-    let htmlLines = await emd.render(markdown);
-    let metadata = Object.assign({}, emd.metadata);
+    let { metadata, htmlLines }  = await emd.render(markdown);
 
     //let cssPath = `${basePath}/wiki/ebt.css`;
     //htmlLines.unshift(`<link rel="stylesheet" href="${cssPath}">`);
@@ -41,8 +40,35 @@ class HtmlFactory {
     logger.info(msg, catKey, fnDst);
   }
 
-  async traverseSource(srcDir) {
-    const msg = 'HtmlFactory.traverseSource() ';
+  async buildChannel(channel, srcDir) {
+    const msg = 'HtmlFactory.buildChannel() ';
+    const entries = await fsp.readdir(srcDir, {
+      recursive: true,
+      withFileTypes: true,
+    });
+    for (let i = 0; i < entries.length; i++) {
+      let entry = entries[i];
+      let { name, } = entry;
+      let fnSrc = path.join(srcDir, name);
+      let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
+      if (entry.isFile()) {
+        if (name.endsWith('.md')) {
+          fnDst = fnDst.replace(/.md$/, '.html');
+          await this.convertMarkDownFile(fnSrc, fnDst);
+          let item = { name, fnSrc, fnDst };
+          channel.items.push(item);
+          logger.info(msg, `Item ${channel.name}`, item);
+        } else {
+          logger.warn(msg, 'FILE ignored', {name, fnsSrc});
+        }
+      } else {
+        logger.warn(msg, 'IGNORING ENTRY', {name, fnSrc});
+      }
+    }
+  }
+
+  async buildChannels(srcDir) {
+    const msg = 'HtmlFactory.buildChannels() ';
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
       withFileTypes: true,
@@ -53,19 +79,13 @@ class HtmlFactory {
       let fnSrc = path.join(srcDir, name);
       let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
       if (entry.isDirectory()) {
-        logger.debug(msg, 'DIR', {name, fnSrc, fnDst});
+        let channel = {name, fnSrc, fnDst, items:[]};
+        logger.info(msg, 'DIR', channel);
+        this.channels[name] = channel;
         await fsp.mkdir(fnDst, {recursive: true});
-        await this.traverseSource(fnSrc);
-      } else if (entry.isFile()) {
-        if (name.endsWith('.md')) {
-          fnDst = fnDst.replace(/.md$/, '.html');
-          logger.debug(msg, 'FILE', {name, fnSrc, fnDst});
-          await this.convertFile(fnSrc, fnDst);
-        } else {
-          logger.warn(msg, 'FILE ignored', {name, fnsSrc});
-        }
+        await this.buildChannel(channel, fnSrc);
       } else {
-        logger.warn(msg, 'UNKNOWN', {name, fnSrc});
+        logger.warn(msg, 'IGNORING ENTRY', {name, fnSrc});
       }
     }
   }
@@ -75,9 +95,10 @@ class HtmlFactory {
     let { srcDir, dstDir } = this;
     await fsp.mkdir(dstDir, {recursive:true});
     this.categories = {};
+    this.channels = {};
     try {
-      await this.traverseSource(srcDir);
-      logger.log(msg, this.categories);
+      await this.buildChannels(srcDir);
+      logger.log(msg, "channels", this.channels);
     } catch(e) {
       logger.warn(msg, e);
     }
