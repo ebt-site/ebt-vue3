@@ -14,6 +14,8 @@ const renderer = new CmarkGfmRenderer();
       'wikiPath',
       'basePath',
       'renderer',
+      'htmlHead',
+      'htmlTail',
     ].sort());
     should(emd).properties({
       basePath: '/ebt-vue3/',
@@ -125,5 +127,36 @@ const renderer = new CmarkGfmRenderer();
       '<p>test-body</p>',
       '</article>',
     ]);
+  });
+  it("TESTTESTcompareMetadata()", ()=>{
+    // single level
+    should(EbtMarkdown.compareMetadata({ order: 1, },{ order: 2, })).below(0);
+    should(EbtMarkdown.compareMetadata({ order: 2, },{ order: 1, })).above(0);
+    should(EbtMarkdown.compareMetadata({ title: 't1' },{ title: 't2' })).below(0);
+    should(EbtMarkdown.compareMetadata({ title: 't2' },{ title: 't1' })).above(0);
+    should(EbtMarkdown.compareMetadata({ category: 'c1' },{ category: 'c2' })).below(0);
+    should(EbtMarkdown.compareMetadata({ category: 'c2' },{ category: 'c1' })).above(0);
+
+    // multilevel: category > order > title
+    let t1o1 = { title: 't1', order: 1 };
+    let t2o1 = { title: 't2', order: 1 };
+    let t1o2 = { title: 't1', order: 2 };
+    let t2o2 = { title: 't2', order: 2 };
+    let c1o1 = { category: 'c1', order: 1 };
+    let c1o2 = { category: 'c1', order: 2 };
+    let c2o1 = { category: 'c2', order: 1 };
+    let c1t1 = { category: 'c1', title: 't1' };
+    let c1t2 = { category: 'c1', title: 't2' };
+    let c2t1 = { category: 'c2', title: 't1' };
+    should(EbtMarkdown.compareMetadata(t1o1, t1o1)).equal(0);
+    should(EbtMarkdown.compareMetadata(t1o1, t1o2)).below(0);
+    should(EbtMarkdown.compareMetadata(t1o1, t2o2)).below(0);
+    should(EbtMarkdown.compareMetadata(t2o1, t2o1)).equal(0);
+    should(EbtMarkdown.compareMetadata(t2o1, t1o2)).below(0);
+    should(EbtMarkdown.compareMetadata(t2o1, t1o1)).above(0);
+    should(EbtMarkdown.compareMetadata(c2t1, c2t1)).equal(0);
+    should(EbtMarkdown.compareMetadata(c1t1, c1t2)).below(0);
+    should(EbtMarkdown.compareMetadata(c2t1, c1t2)).above(0);
+    should(EbtMarkdown.compareMetadata(c2t1, c1t1)).above(0);
   });
 });

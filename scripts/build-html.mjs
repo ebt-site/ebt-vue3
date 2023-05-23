@@ -18,14 +18,16 @@ class HtmlFactory {
     this.renderer = opts.renderer || new CmarkGfmRenderer();
     this.srcDir = opts.srcDir || SRCDIR;
     this.dstDir = opts.dstDir || DSTDIR;
+    this.htmlHead = opts.htmlHead;
+    this.htmlTail = opts.htmlTail;
   }
   
-  async convertMarkDownFile(fnSrc, fnDst, ) {
+  async #convertMarkDownFile(fnSrc, fnDst, ) {
     const msg = 'HtmlFactory.convertMarkDownFile() ';
-    let { renderer, categories, srcDir } = this;
+    let { renderer, categories, srcDir, htmlHead, htmlTail } = this;
     let markdown = fs.readFileSync(fnSrc).toString();
     let basePath = "/ebt-vue3/";
-    let emd = new EbtMarkdown({basePath, wikiPath, renderer});
+    let emd = new EbtMarkdown({basePath, wikiPath, renderer, htmlHead, htmlTail});
     let { metadata, htmlLines }  = await emd.render(markdown);
 
     //let cssPath = `${basePath}/wiki/ebt.css`;
@@ -37,15 +39,19 @@ class HtmlFactory {
     categories[catKey] = categories[catKey] || [];
     categories[catKey].push(metadata);
 
-    logger.info(msg, catKey, fnDst);
+    logger.debug(msg, catKey, fnDst);
+    return {
+      metadata,
+    }
   }
 
-  async buildChannel(channel, srcDir) {
-    const msg = 'HtmlFactory.buildChannel() ';
+  async #buildChannelFiles(channel, srcDir) {
+    const msg = 'HtmlFactory.buildChannelFiles() ';
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
       withFileTypes: true,
     });
+
     for (let i = 0; i < entries.length; i++) {
       let entry = entries[i];
       let { name, } = entry;
@@ -54,20 +60,78 @@ class HtmlFactory {
       if (entry.isFile()) {
         if (name.endsWith('.md')) {
           fnDst = fnDst.replace(/.md$/, '.html');
-          await this.convertMarkDownFile(fnSrc, fnDst);
-          let item = { name, fnSrc, fnDst };
+          let { metadata }  = await this.#convertMarkDownFile(fnSrc, fnDst);
+          let item = { name, fnSrc, fnDst, metadata };
           channel.items.push(item);
-          logger.info(msg, `Item ${channel.name}`, item);
+          logger.debug(msg, `Item ${channel.name}`, item);
         } else {
           logger.warn(msg, 'FILE ignored', {name, fnsSrc});
         }
       } else {
-        logger.warn(msg, 'IGNORING ENTRY', {name, fnSrc});
+        logger.warn(msg, 'IGNORING CHANNEL ENTRY', {channel, name, fnSrc});
       }
     }
   }
 
-  async buildChannels(srcDir) {
+  async #buildChannelIndex(channel) {
+    const msg = 'HtmlFactory.buildChannelIndex() ';
+    let { htmlHead, htmlTail } = this;
+    let { name, items, fnDst } = channel;
+    items.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
+    let fnIndex = path.join(fnDst, 'index.html');
+    let htmlLines;
+    if (fs.existsSync(fnIndex)) {
+      let htmlBuf = await fsp.readFile(fnIndex);
+      htmlLines = htmlBuf.toString().split('\n');
+      //console.log(msg, "index file", fnIndex, htmlLines);
+    } else {
+      let emd = new EbtMarkdown({htmlHead, htmlTail});
+      htmlLines = [emd.htmlHead, emd.htmlTail];
+      //console.log(msg, "no index file", fnIndex, htmlLines);
+    }
+    let curCategory = null;
+    let htmlItems = items.reduce((a,item,i)=>{
+      let { title, img, description, category="" } = item.metadata;
+      if (curCategory !== category) {
+        if (a.length) {
+          a.push('</div>');
+        }
+        if (category) {
+          a.push(`<div>`);
+          a.push(` <h2>${category}</h2>`);
+        } else {
+          a.push('<div><hr />');
+        }
+      }
+      a.push(` <div class="ebt-toc-item">`);
+      a.push(`  <div class="ebt-thumbnail"><img src="${img}" /></div>`);
+      a.push(`  <div class="ebt-toc-item-text">`);
+      a.push(`   <div class="ebt-toc-item-title">${title}</div>`);
+      a.push(`   <div class="ebt-toc-item-subtitle">${description}</div>`);
+      a.push(`  </div>`);
+      a.push(` </div>`);
+
+      curCategory = category;
+      return a;
+    }, []);
+    htmlItems.push('</div>');
+    console.log(msg, htmlItems);
+  }
+
+  async #buildChannel({name, fnSrc}) {
+    const msg = 'HtmlFactory.buildChannel() ';
+    let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
+    let channel = {name, fnSrc, fnDst, items:[]};
+
+    this.channels[name] = channel;
+    await fsp.mkdir(fnDst, {recursive: true});
+    await this.#buildChannelFiles(channel, fnSrc);
+    await this.#buildChannelIndex(channel, fnSrc);
+
+    return channel;
+  }
+
+  async #buildChannels(srcDir) {
     const msg = 'HtmlFactory.buildChannels() ';
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
@@ -77,15 +141,11 @@ class HtmlFactory {
       let entry = entries[i];
       let { name, } = entry;
       let fnSrc = path.join(srcDir, name);
-      let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
       if (entry.isDirectory()) {
-        let channel = {name, fnSrc, fnDst, items:[]};
-        logger.info(msg, 'DIR', channel);
-        this.channels[name] = channel;
-        await fsp.mkdir(fnDst, {recursive: true});
-        await this.buildChannel(channel, fnSrc);
+        let channel = await this.#buildChannel({ name, fnSrc });
+        //console.log(msg, JSON.stringify(channel, null, 2));
       } else {
-        logger.warn(msg, 'IGNORING ENTRY', {name, fnSrc});
+        logger.warn(msg, 'IGNORING CONTENT ENTRY', fnSrc);
       }
     }
   }
@@ -97,8 +157,8 @@ class HtmlFactory {
     this.categories = {};
     this.channels = {};
     try {
-      await this.buildChannels(srcDir);
-      logger.log(msg, "channels", this.channels);
+      await this.#buildChannels(srcDir);
+      logger.debug(msg, "channels", this.channels);
     } catch(e) {
       logger.warn(msg, e);
     }

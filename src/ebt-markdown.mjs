@@ -6,12 +6,34 @@ export default class EbtMarkdown {
       basePath='/ebt-vue3/',
       wikiPath="wiki",
       renderer,
+      htmlHead='<article class="ebt-wiki">',
+      htmlTail='</article>',
     } = opts;
-    Object.assign(this, { basePath, wikiPath, renderer });
+    Object.assign(this, {  
+      basePath, wikiPath, renderer, htmlHead, htmlTail 
+    });
+  }
+
+  static compareMetadata(a,b) {
+    let acategory = a.category || '';
+    let bcategory = b.category || '';
+    let cmp = acategory.localeCompare(bcategory);
+    if (cmp === 0) {
+      let aorder = Number(a.order||0);
+      let border = Number(b.order||0);
+      cmp = aorder - border;
+      if (cmp === 0) {
+        let atitle = a.title || '';
+        let btitle = b.title || '';
+        cmp = atitle.localeCompare(btitle);
+      }
+    }
+    return cmp;
   }
 
   async render(markdown, renderer=this.renderer) {
     const msg = 'EbtMarkdown.render() ';
+    let { htmlHead, htmlTail } = this;
     if (!markdown) {
       throw new Error(`${msg} markdown is required`);
     }
@@ -55,11 +77,7 @@ export default class EbtMarkdown {
       htmlLines = [...heading, ...htmlLines];
     }
 
-    htmlLines =  [
-      '<article class="ebt-wiki">',
-      ...htmlLines,
-      '</article>',
-    ]
+    htmlLines =  [ htmlHead, ...htmlLines, htmlTail ];
 
     return {
       metadata,
