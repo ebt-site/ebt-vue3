@@ -19,7 +19,7 @@ const renderer = new CmarkGfmRenderer();
     ].sort());
     should(emd).properties({
       basePath: '/ebt-vue3/',
-      wikiPath: 'wiki',
+      wikiPath: 'home',
       renderer: undefined,
     });
   });
@@ -116,8 +116,8 @@ const renderer = new CmarkGfmRenderer();
       ' </a>',
       ' <div class="ebt-wiki-heading-text">',
       '  <div class="ebt-wiki-breadcrumbs">',
-      `   <a href="${basePath}${wikiBase}" >test-wikiPath</a>${delimiter}`,
-      `   <a href="${basePath}${wikiBase}/a" >a</a>${delimiter}`,
+      `   <a href="${basePath}#/${wikiBase}/index" >test-wikiPath</a>${delimiter}`,
+      `   <a href="${basePath}#/${wikiBase}/a/index" >a</a>${delimiter}`,
       '   b',
       '  </div><!--ebt-wiki-breadcrumbs-->',
       '  <h1>test-title</h1>',

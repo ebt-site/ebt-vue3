@@ -27,9 +27,9 @@ logger.logLevel = 'warn';
     should(card2.tab1Id).equal(card1.tab1Id);
     should(card2).properties(defaultProps);
   });
-  it("constants", ()=>{
+  it("TESTTESTconstants", ()=>{
     should(EbtCard.CONTEXT_DEBUG).equal('debug');
-    should(EbtCard.CONTEXT_WIKI).equal('wiki');
+    should(EbtCard.CONTEXT_HOME).equal('home');
     should(EbtCard.CONTEXT_SEARCH).equal('search');
     should(EbtCard.CONTEXT_SUTTA).equal('sutta');
   });
@@ -56,8 +56,8 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(JSON.parse(json));
     should(card2).properties(card1);
   });
-  it("matchPath() wiki context", async() => {
-    let context = EbtCard.CONTEXT_WIKI;
+  it("TESTTESTmatchPath() wiki context", async() => {
+    let context = EbtCard.CONTEXT_HOME;
     let card0 = new EbtCard({ context: "" });
     let card1 = new EbtCard({ context, });
     let card2 = new EbtCard({ context, location:["a","b c"], });
@@ -74,14 +74,14 @@ logger.logLevel = 'warn';
 
     let cardPaths = [
       "/",
-      "/wiki/a",
-      "#/wiki/a",
-      "/wiki/a/b c",
-      "/wiki/a/b%20c",
-      "/WIKI/A/B%20C",
-      "#/WIKI/A/B%20C",
-      "/WIKI/A/B%20C/",
-      "#/WIKI/A/B%20C/",
+      "/home/a",
+      "#/home/a",
+      "/home/a/b c",
+      "/Home/a/b%20c",
+      "/HOME/A/B%20C",
+      "#/HOME/A/B%20C",
+      "/HOME/A/B%20C/",
+      "#/HOME/A/B%20C/",
     ];
     cardPaths.forEach(path => {
       should(card0.matchPath(path)).equal(true);
@@ -227,7 +227,7 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard() wiki", ()=>{
+  it("TESTTESTpathToCard() content", ()=>{
     let cards = [];
     let { homePath } = EbtConfig;
     let nAdd = 0;
@@ -240,14 +240,14 @@ logger.logLevel = 'warn';
       return card;
     }
     let cardHome = EbtCard.pathToCard({path:homePath, cards, addCard});
-    should(cardHome.context).equal(EbtCard.CONTEXT_WIKI);
+    should(cardHome.context).equal(EbtCard.CONTEXT_HOME);
     should.deepEqual(cards, [cardHome]);
     let cardHome2 = EbtCard.pathToCard({path:homePath, cards, addCard});
     should.deepEqual(cards, [cardHome]);
     should.deepEqual(cardHome.location, homePath.split('/').slice(2));
 
     // since the home card is a singleton, the location must be updated
-    let childPath = `#/${EbtCard.CONTEXT_WIKI}/x/y/z`;
+    let childPath = `#/${EbtCard.CONTEXT_HOME}/x/y/z`;
     console.log('DBG0513', {childPath, homePath});
     let cardHome3 = EbtCard.pathToCard({path:childPath, cards, addCard});
     should.deepEqual(cards, [cardHome]);

@@ -12,26 +12,25 @@ import { default as EbtConfig } from '../ebt-config.mjs';
 const SRCDIR = path.join(__dirname, '../content');
 const DSTDIR = path.join(__dirname, '../public/content');
 
-export default class HtmlFactory {
+export default class ChannelFactory {
   constructor(opts={}) {
     this.renderer = opts.renderer || new CmarkGfmRenderer();
     this.srcDir = opts.srcDir || SRCDIR;
     this.dstDir = opts.dstDir || DSTDIR;
-    this.htmlHead = opts.htmlHead;
-    this.htmlTail = opts.htmlTail;
-    this.wikiPath = opts.wikiPath || 'wiki/home';
+    this.htmlHead = opts.htmlHead || '<article class="ebt-wiki">';
+    this.htmlTail = opts.htmlTail || '</article>';
+    this.wikiPath = opts.wikiPath || EbtConfig.homePath;
+    this.config = opts.config || EbtConfig;
   }
   
   async #convertMarkDownFile(fnSrc, fnDst, ) {
-    const msg = 'HtmlFactory.convertMarkDownFile() ';
+    const msg = 'ChannelFactory.convertMarkDownFile() ';
     let { renderer, categories, srcDir, htmlHead, htmlTail, wikiPath } = this;
     let markdown = fs.readFileSync(fnSrc).toString();
     let basePath = "/ebt-vue3/";
     let emd = new EbtMarkdown({basePath, wikiPath, renderer, htmlHead, htmlTail});
     let { metadata, htmlLines }  = await emd.render(markdown);
 
-    //let cssPath = `${basePath}/wiki/ebt.css`;
-    //htmlLines.unshift(`<link rel="stylesheet" href="${cssPath}">`);
     let html = htmlLines.join('\n');
     await fsp.writeFile(fnDst, html);
 
@@ -46,7 +45,7 @@ export default class HtmlFactory {
   }
 
   async #buildChannelFiles(channel, srcDir) {
-    const msg = 'HtmlFactory.buildChannelFiles() ';
+    const msg = 'ChannelFactory.buildChannelFiles() ';
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
       withFileTypes: true,
@@ -61,12 +60,14 @@ export default class HtmlFactory {
         if (name.endsWith('.md')) {
           fnDst = fnDst.replace(/.md$/, '.html');
           let { metadata }  = await this.#convertMarkDownFile(fnSrc, fnDst);
-          let item = { name, fnSrc, fnDst, metadata };
-          channel.items.push(item);
-          logger.debug(msg, `Item ${channel.name}`, item);
+          let kid = { name, fnSrc, fnDst, metadata };
+          channel.kids.push(kid);
+          logger.info(msg, `Channel ${channel.name}/${name}`);
         } else {
           logger.warn(msg, 'FILE ignored', {name, fnsSrc});
         }
+      } else if (entry.isDirectory()) {
+        logger.info(msg, `skipping ${channel.name} sub-directory ${name}`);
       } else {
         logger.warn(msg, 'IGNORING CHANNEL ENTRY', {channel, name, fnSrc});
       }
@@ -74,54 +75,55 @@ export default class HtmlFactory {
   }
 
   async #buildChannelIndex(channel) {
-    const msg = 'HtmlFactory.buildChannelIndex() ';
-    let { htmlHead, htmlTail } = this;
-    let { name, items, fnDst } = channel;
-    items.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
-    let fnIndex = path.join(fnDst, 'index.html');
-    let htmlLines;
-    if (fs.existsSync(fnIndex)) {
-      let htmlBuf = await fsp.readFile(fnIndex);
-      htmlLines = htmlBuf.toString().split('\n');
-      //console.log(msg, "index file", fnIndex, htmlLines);
+    const msg = 'ChannelFactory.buildChannelIndex() ';
+    let { htmlHead, htmlTail, config } = this;
+    let { basePath } = config;
+    let { name, kids, fnDst, fnSrc } = channel;
+    kids.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
+    let indexDst = path.join(fnDst, 'index.html');
+    let indexSrc = path.join(fnSrc, 'index.md');
+    let htmlBody;
+    if (fs.existsSync(indexSrc)) {
+      let htmlBuf = await fsp.readFile(indexDst);
+      htmlBody = htmlBuf.toString().split('\n');
+      htmlHead && htmlBody.shift();
+      htmlTail && htmlBody.pop();
     } else {
       let emd = new EbtMarkdown({htmlHead, htmlTail});
-      htmlLines = [emd.htmlHead, emd.htmlTail];
-      //console.log(msg, "no index file", fnIndex, htmlLines);
+      htmlBody = [];
     }
-    let curCategory = null;
-    let htmlItems = items.reduce((a,item,i)=>{
-      let { title, img, description, category="" } = item.metadata;
-      if (curCategory !== category) {
-        if (a.length) {
-          a.push('</div>');
-        }
-        if (category) {
-          a.push(`<div>`);
-          a.push(` <h2>${category}</h2>`);
-        } else {
-          a.push('<div><hr />');
-        }
-      }
-      a.push(` <div class="ebt-toc-item">`);
-      a.push(`  <div class="ebt-thumbnail"><img src="${img}" /></div>`);
-      a.push(`  <div class="ebt-toc-item-text">`);
-      a.push(`   <div class="ebt-toc-item-title">${title}</div>`);
-      a.push(`   <div class="ebt-toc-item-subtitle">${description}</div>`);
-      a.push(`  </div>`);
-      a.push(` </div>`);
-
-      curCategory = category;
+    let htmlKids = kids.reduce((a,kid,i)=>{
+      let { title, img, description, category="" } = kid.metadata;
+      let imgSrc = `${basePath}img/${img}`
+      let tocHref = `${basePath}#/content/${name}/${kid.name}`.replace('.md', '.html');;
+      a.push(`  <div class="ebt-toc-item">`);
+      a.push(`   <a href="${tocHref}">`);
+      a.push(`    <div class="ebt-thumbnail"><img src="${imgSrc}" /></div>`);
+      a.push(`    <div class="ebt-toc-item-text">`);
+      a.push(`     <div class="ebt-toc-item-title">${title}</div>`);
+      a.push(`     <div class="ebt-toc-item-subtitle">${description}</div>`);
+      a.push(`    </div>`);
+      a.push(`   </a>`);
+      a.push(`  </div><!--ebt-toc-item-->`);
       return a;
     }, []);
-    htmlItems.push('</div>');
-    console.log(msg, htmlItems);
+    htmlKids.unshift(` <div class="ebt-toc"><!--ebt-toc/${name}-->`);
+    htmlKids.push(` </div><!--ebt-toc/${name}-->`);
+    console.log(msg, 'kids', kids.length, htmlKids.length);
+    let html = [
+      htmlHead,
+      ...htmlBody,
+      ...htmlKids,
+      htmlTail,
+    ].join('\n');
+    await fsp.writeFile(indexDst, html);
+    logger.info(msg, indexSrc, indexDst);
   }
 
-  async #buildChannel({name, fnSrc}) {
-    const msg = 'HtmlFactory.buildChannel() ';
+  async #buildChannel(name, fnSrc) {
+    const msg = 'ChannelFactory.buildChannel() ';
     let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
-    let channel = {name, fnSrc, fnDst, items:[]};
+    let channel = {name, fnSrc, fnDst, kids:[]};
 
     this.channels[name] = channel;
     await fsp.mkdir(fnDst, {recursive: true});
@@ -132,7 +134,7 @@ export default class HtmlFactory {
   }
 
   async #buildChannels(srcDir) {
-    const msg = 'HtmlFactory.buildChannels() ';
+    const msg = 'ChannelFactory.buildChannels() ';
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
       withFileTypes: true,
@@ -142,7 +144,7 @@ export default class HtmlFactory {
       let { name, } = entry;
       let fnSrc = path.join(srcDir, name);
       if (entry.isDirectory()) {
-        let channel = await this.#buildChannel({ name, fnSrc });
+        let channel = await this.#buildChannel(name, fnSrc);
         //console.log(msg, JSON.stringify(channel, null, 2));
       } else {
         logger.warn(msg, 'IGNORING CONTENT ENTRY', fnSrc);
@@ -150,14 +152,22 @@ export default class HtmlFactory {
     }
   }
 
+  async #buildWikiIndex(srcDir) {
+    const msg = 'ChannelFactory.buildWikiIndex() ';
+    console.log(msg);
+  }
+
   async build() {
-    const msg = 'HtmlFactory.build() ';
+    const msg = 'ChannelFactory.build() ';
     let { srcDir, dstDir } = this;
     await fsp.mkdir(dstDir, {recursive:true});
     this.categories = {};
     this.channels = {};
     try {
       await this.#buildChannels(srcDir);
+      await this.#buildWikiIndex(srcDir);
+      await this.#buildChannel('main', srcDir);
+      console.log(msg, {srcDir});
       logger.debug(msg, "channels", this.channels);
     } catch(e) {
       logger.warn(msg, e);

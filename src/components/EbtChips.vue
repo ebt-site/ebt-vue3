@@ -124,14 +124,14 @@
       closable: (card, settings) => { // DEPRECATED
         const IS_PHONE = 1; // save space for iPhone
         return !IS_PHONE && settings.cards.length > 1
-          ? !card.isOpen && card.context !== EbtCard.CONTEXT_WIKI
+          ? !card.isOpen && card.context !== EbtCard.CONTEXT_HOME
           : false;
       },
       chipClass(card) {
         let { volatile } = this;
         let chipClass = [];
 
-        card.context === EbtCard.CONTEXT_WIKI && chipClass.push('chip-home');
+        card.context === EbtCard.CONTEXT_HOME && chipClass.push('chip-home');
         chipClass.push(card.isOpen ? 'chip-open' : 'chip-closed');
         card.isOpen && card.visible && chipClass.push('card-in-view');
         card === volatile.routeCard && chipClass.push('chip-route-card');

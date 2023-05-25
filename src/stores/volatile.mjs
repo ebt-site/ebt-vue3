@@ -120,7 +120,7 @@ export const useVolatileStore = defineStore('volatile', {
       ];
       let html = "loading...";
       if (config) {
-        let href = `${config.basePath}content/wiki/${wikiPath}.html`
+        let href = `${config.basePath}content/${wikiPath}.html`
         let res;
         res = await fetch(href);
         if (res.ok) {

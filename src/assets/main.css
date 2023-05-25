@@ -149,4 +149,30 @@ a:focus {
 .ebt-wiki-breadcrumbs {
   font-weight: 500;
 }
+.ebt-toc {
+  margin: 1em;
+}
+.ebt-toc-item {
+  display: flex;
+  flex-flow: row wrap;
+  align-item: flex-start;
+  margin-top: 0.4em;
+}
+.ebt-toc-item-text {
+  margin-top: 0.3em;
+  margin-left: 1em;
+}
+.ebt-toc-item-subtitle {
+  font-size: smaller;
+  font-weight: 400;
+}
+.ebt-thumbnail {
+  height: 4em;
+  width: 5em;
+  overflow: hidden;
+  border-top-left-radius: 0.5em;
+}
+.ebt-thumbnail img {
+  height: 4.5em;
+}
 

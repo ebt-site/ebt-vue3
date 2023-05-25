@@ -2,13 +2,12 @@ import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
 import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 
-const CONTEXT_WIKI = "wiki";
-const CONTEXT_HOME = CONTEXT_WIKI;
+const CONTEXT_HOME = "home";
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
 const CONTEXT_DEBUG = "debug";
 const CONTEXTS = {
-  [CONTEXT_WIKI]: {
+  [CONTEXT_HOME]: {
     icon: "mdi-home",
   },
   [CONTEXT_HOME]: {
@@ -87,7 +86,7 @@ export default class EbtCard {
   }
 
   static get CONTEXT_HOME() { return CONTEXT_HOME; }
-  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
+  static get CONTEXT_HOME() { return CONTEXT_HOME; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
@@ -121,7 +120,7 @@ export default class EbtCard {
       logger.debug(msg+`(EXISTING))`, {args,card});
     } 
 
-    if (card && card.context === CONTEXT_WIKI) {
+    if (card && card.context === CONTEXT_HOME) {
       let newLocation = path.split('/').slice(2);
       card.location = newLocation;
     }

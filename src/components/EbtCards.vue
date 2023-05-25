@@ -118,7 +118,7 @@
           defaultLang: settings.langTrans,
         });
         let { activeElement } = document;
-        console.log(msg, 'before setRoute', { activeElement, to, from});
+        console.trace(msg, 'before setRoute', { activeElement, to, from});
         volatile.setRoute(card);
         //console.log(msg, 'after setRoute', document.activeElement);
         this.bindAudioSutta(to.href);

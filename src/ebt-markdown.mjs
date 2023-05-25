@@ -1,10 +1,12 @@
+import { default as EbtCard } from './ebt-card.mjs';
+
 export default class EbtMarkdown {
   constructor(opts={}) {
     const msg = 'EbtMarkdown.ctor() ';
 
     let { 
       basePath='/ebt-vue3/',
-      wikiPath="wiki",
+      wikiPath=EbtCard.CONTEXT_HOME,
       renderer,
       htmlHead='<article class="ebt-wiki">',
       htmlTail='</article>',
@@ -115,7 +117,7 @@ export default class EbtMarkdown {
     let iLast = pathParts.length-1;
     for (let i = 0; i < iLast; i++) {
       let part = pathParts[i];
-      let href = basePath + pathParts.slice(0, i+1).join('/');
+      let href = [`${basePath}#`, ...pathParts.slice(0, i+1), 'index'].join('/');
       breadcrumbs.push(`   <a href="${href}" >${part}</a>&nbsp;&gt;&nbsp;`);
     }
     breadcrumbs.push(`   ${pathParts[iLast]}`);

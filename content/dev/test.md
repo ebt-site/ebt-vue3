@@ -9,7 +9,7 @@ order: 2
 
 ### Test links
 
-* [#/wiki/home](#/wiki/home)
+* [#/home/welcome](#/home/welcome)
 * [#/bad/link](#/bad/link)
-* [#/wiki/bad/link](#/wiki/bad/link)
+* [#/home/bad/link](#/home/bad/link)
 

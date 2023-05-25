@@ -30,7 +30,7 @@
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
           <template v-if="volatile.config">
-            <home-view v-if="card.context===CONTEXT_WIKI" :card="card" />
+            <home-view v-if="card.context===CONTEXT_HOME" :card="card" />
           </template>
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
@@ -195,7 +195,7 @@
       },
       isClosable(ctx) {
         let { card } = ctx;
-        return card.context !== EbtCard.CONTEXT_WIKI;
+        return card.context !== EbtCard.CONTEXT_HOME;
       },
       showDev(ctx) {
         let logLevel = ctx.settings.logLevel;
@@ -217,14 +217,14 @@
         return link;
       },
       CONTEXT_DEBUG: (ctx)=>EbtCard.CONTEXT_DEBUG,
-      CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
+      CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
       CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
         let { $t } = ctx;
         return [{
           title: $t('ebt.context-home'),
-          value: EbtCard.CONTEXT_WIKI,
+          value: EbtCard.CONTEXT_HOME,
         },{
           title: $t('ebt.context-sutta'),
           value: EbtCard.CONTEXT_SUTTA,
