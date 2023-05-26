@@ -64,6 +64,11 @@ export default class EbtMarkdown {
           case 'description':
             metadata[key] = value;
             break;
+          case 'img-src':
+            value = value.replace("https: //", "https://");
+            metadata[key] = value;
+            console.log(msg, key, value);
+            break;
           default: 
             metadata[key] = value;
             break;
@@ -102,10 +107,11 @@ export default class EbtMarkdown {
       title="(no-title)", 
       img, 
       'img-alt':imgAlt,
+      'img-src':imgSrc,
     } = metadata;
     let imgHtml = [];
     if (img) {
-      imgHtml.push(' <a target="_blank">');
+      imgHtml.push(` <a href="${imgSrc}"target="_blank">`);
       let src = `${basePath}img/${img}`;
       imgHtml.push(`  <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
       imgHtml.push(' </a>');

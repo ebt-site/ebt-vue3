@@ -1,9 +1,6 @@
 <template>
   <v-sheet class="home">
-    <div>
-      <h3>HOME VIEW</h3>
-      <div v-html="volatile.homeHtml" />
-    </div>
+    <div v-html="volatile.homeHtml" />
   </v-sheet>
 </template>
 

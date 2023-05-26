@@ -1,11 +1,12 @@
 ---
-title: content/index.md
+title: Wiki contents
 description: Wiki contents
-img: pexels-philippe-donn-1133957.png
-img-alt: Hummingbird reaching to drink nectar from flowers
+img: lotus-flower-nymphaea-caerulea-215460.jpg
+img-alt: Lotus flower
+img-src: https://pixabay.com/photos/lotus-flower-nymphaea-caerulea-215460/
 category: 1. General
 order: 1
 ---
 
-### #bt-Vue3 index
+### Ebt-Vue3 contents
 
