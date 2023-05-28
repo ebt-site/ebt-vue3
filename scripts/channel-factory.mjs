@@ -35,7 +35,7 @@ export default class ChannelFactory {
       .replace(/\.html$/,'')
       .split('/')
       .slice(1);
-    let wikiPath = [ EbtCard.CONTEXT_HOME, ...location, ].join('/');
+    let wikiPath = [ EbtCard.CONTEXT_WIKI, ...location, ].join('/');
     console.log(msg, {srcDir, basePath, fnSrc, fnDst, wikiPath});
     let emd = new EbtMarkdown({
       config, basePath, wikiPath, renderer, htmlHead, htmlTail});
@@ -106,7 +106,7 @@ export default class ChannelFactory {
     let htmlKids = kids.reduce((a,kid,i)=>{
       let { title, img, description, category="" } = kid.metadata;
       let imgSrc = `${basePath}img/${img}`
-      let home = EbtCard.CONTEXT_HOME;
+      let home = EbtCard.CONTEXT_WIKI;
       let tocHref = name === 'main'
       ? `${basePath}#/${home}/${kid.name}`.replace('.md', '')
       : `${basePath}#/${home}/${name}/${kid.name}`.replace('.md', '');

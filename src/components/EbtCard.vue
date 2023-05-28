@@ -11,7 +11,9 @@
     <div :class="cardClass">
       <v-card :id="card.id" variant="flat" >
         <template v-slot:title>
-          <v-icon :icon="card.icon" class="card-icon"/>
+          <v-icon class="card-icon">
+            {{card.icon}}
+          </v-icon>
           <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
         </template>
         <template v-slot:append>
@@ -30,7 +32,7 @@
         <v-card-text>
           <debug-view :card="card" v-if="card.context===CONTEXT_DEBUG"/>
           <template v-if="volatile.config">
-            <home-view v-if="card.context===CONTEXT_HOME" :card="card" />
+            <home-view v-if="card.context===CONTEXT_WIKI" :card="card" />
           </template>
           <search-view :card="card" v-if="card.context===CONTEXT_SEARCH"/>
           <sutta-view v-if="card.context===CONTEXT_SUTTA && routeCard" 
@@ -195,7 +197,7 @@
       },
       isClosable(ctx) {
         let { card } = ctx;
-        return card.context !== EbtCard.CONTEXT_HOME;
+        return card.context !== EbtCard.CONTEXT_WIKI;
       },
       showDev(ctx) {
         let logLevel = ctx.settings.logLevel;
@@ -217,14 +219,14 @@
         return link;
       },
       CONTEXT_DEBUG: (ctx)=>EbtCard.CONTEXT_DEBUG,
-      CONTEXT_HOME: (ctx)=>EbtCard.CONTEXT_HOME,
+      CONTEXT_WIKI: (ctx)=>EbtCard.CONTEXT_WIKI,
       CONTEXT_SEARCH: (ctx)=>EbtCard.CONTEXT_SEARCH,
       CONTEXT_SUTTA: (ctx)=>EbtCard.CONTEXT_SUTTA,
       contexts: (ctx) => {
         let { $t } = ctx;
         return [{
           title: $t('ebt.context-home'),
-          value: EbtCard.CONTEXT_HOME,
+          value: EbtCard.CONTEXT_WIKI,
         },{
           title: $t('ebt.context-sutta'),
           value: EbtCard.CONTEXT_SUTTA,
@@ -255,6 +257,7 @@
   }
   .card-icon {
     opacity: 0.5;
+    margin-right: 0.2em;
   }
   .ebt-card {
     background: rgb(var(--v-theme-surface)) !important;

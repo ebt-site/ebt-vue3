@@ -7,7 +7,7 @@ export default class EbtMarkdown {
 
     let { 
       basePath='/ebt-vue3/',
-      wikiPath=EbtCard.CONTEXT_HOME,
+      wikiPath=EbtCard.CONTEXT_WIKI,
       renderer,
       config=EbtConfig,
       htmlHead='<article class="ebt-wiki">',

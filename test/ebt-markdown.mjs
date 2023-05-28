@@ -20,7 +20,7 @@ const renderer = new CmarkGfmRenderer();
     ].sort());
     should(emd).properties({
       basePath: '/ebt-vue3/',
-      wikiPath: 'home',
+      wikiPath: 'wiki',
       renderer: undefined,
     });
   });

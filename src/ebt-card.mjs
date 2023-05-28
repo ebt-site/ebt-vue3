@@ -2,16 +2,13 @@ import { logger } from 'log-instance';
 import { v4 as uuidv4 } from 'uuid';
 import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 
-const CONTEXT_HOME = "home";
+const CONTEXT_WIKI = "wiki";
 const CONTEXT_SEARCH = "search";
 const CONTEXT_SUTTA = "sutta";
 const CONTEXT_DEBUG = "debug";
 const CONTEXTS = {
-  [CONTEXT_HOME]: {
-    icon: "mdi-home",
-  },
-  [CONTEXT_HOME]: {
-    icon: "mdi-home",
+  [CONTEXT_WIKI]: {
+    icon: "mdi-wikipedia",
   },
   [CONTEXT_SEARCH]: {
     icon: "mdi-magnify",
@@ -37,11 +34,11 @@ export default class EbtCard {
     } = opts;
 
     if (context == null || context === '') {
-      context = CONTEXT_HOME;
+      context = CONTEXT_WIKI;
     }
     context = context.toLowerCase();
     if (id == null) {
-      id = context===CONTEXT_HOME 
+      id = context===CONTEXT_WIKI 
         ? 'home-card-id' 
         : uuidv4().split('-').pop();
     }
@@ -85,8 +82,8 @@ export default class EbtCard {
     logger.info(msg, `${context} ${id} ${location[0]}`);
   }
 
-  static get CONTEXT_HOME() { return CONTEXT_HOME; }
-  static get CONTEXT_HOME() { return CONTEXT_HOME; }
+  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
+  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }
@@ -120,7 +117,7 @@ export default class EbtCard {
       logger.debug(msg+`(EXISTING))`, {args,card});
     } 
 
-    if (card && card.context === CONTEXT_HOME) {
+    if (card && card.context === CONTEXT_WIKI) {
       let newLocation = path.split('/').slice(2);
       card.location = newLocation;
     }
@@ -267,10 +264,10 @@ export default class EbtCard {
     while (location.length && location[location.length-1] === '') {
       location.pop();
     }
-    context = context && context.toLowerCase() || CONTEXT_HOME;
-    if (context === this.context && context===CONTEXT_HOME) {
+    context = context && context.toLowerCase() || CONTEXT_WIKI;
+    if (context === this.context && context===CONTEXT_WIKI) {
       // all wiki locations are owned by home card singleton
-      dbg && console.log(msg, 'CONTEXT_HOME', strOrObj, this);
+      dbg && console.log(msg, 'CONTEXT_WIKI', strOrObj, this);
       return true;
     }
     location = location 

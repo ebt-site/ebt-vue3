@@ -14,8 +14,8 @@
         <template v-if="!collapsed">
           <v-app-bar-title @click="collapsed=true" > 
             <div class="ebt-title">
-              <img src="/img/jan-kopriva-7BootnN3-0I-unsplash.jpg"
-                class="ebt-nav-img"
+              <v-icon icon="mdi-home" class="home-icon" size="24px"
+                @click.stop="onHome"
               />
               <div>EBT-Vue3</div>
             </div>
@@ -316,6 +316,10 @@
   line-height: 1.2em;
   border-left: 1pt solid orange;
   padding-left: 1em;
+}
+.home-icon {
+  margin-bottom: 0.2em;
+  margin-right: 0.2em;
 }
 </style>
 

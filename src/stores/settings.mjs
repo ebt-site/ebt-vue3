@@ -125,7 +125,7 @@ export const useSettingsStore = defineStore('settings', {
         case EbtCard.CONTEXT_DEBUG:
         case EbtCard.CONTEXT_SEARCH:
         case EbtCard.CONTEXT_SUTTA:
-        case EbtCard.CONTEXT_HOME:
+        case EbtCard.CONTEXT_WIKI:
           logger.info("addCard", {context, location, langTrans});
           card = new EbtCard(Object.assign({langTrans}, opts));
           this.cards.push(card);

@@ -118,7 +118,7 @@
           defaultLang: settings.langTrans,
         });
         let { activeElement } = document;
-        console.trace(msg, 'before setRoute', { activeElement, to, from});
+        //console.log(msg, 'before setRoute', { activeElement, to, from});
         volatile.setRoute(card);
         //console.log(msg, 'after setRoute', document.activeElement);
         this.bindAudioSutta(to.href);
@@ -134,7 +134,7 @@
           card.isOpen = true;
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
-        if (card.context === EbtCard.CONTEXT_HOME) {
+        if (card.context === EbtCard.CONTEXT_WIKI) {
           let wikiPath = card.location.join('/');
           console.log(msg, {wikiPath});
           volatile.fetchHomeHtml(wikiPath);

@@ -1,6 +1,6 @@
 const EbtConfig = {
   "basePath": "/ebt-vue3/",
-  "homePath": "#/home/welcome",
+  "homePath": "#/wiki/welcome",
   "content": {
     "index": "toc",
   },
