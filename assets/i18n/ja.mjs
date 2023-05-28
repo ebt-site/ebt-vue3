@@ -208,6 +208,7 @@ export default {
     "bellTibetan": "チベットの鐘",
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "音声ファイルを作成中...",
+    "cannotLoadWikiHtml": "Cannot load wiki html",
     "clear": "Clear",
     "clearSettings": "Clear all settings and reset to defaults?",
     "clearSoundCache": "Clear sound cache",

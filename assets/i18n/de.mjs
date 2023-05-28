@@ -206,6 +206,7 @@ export default {
     "bellTibetan": "Tibetische Klangschale",
     "bellTibetanHint": "Horst: CC0",
     "buildingAudio": "Audiodatei wird erstellt...",
+    "cannotLoadWikiHtml": "Cannot load wiki html",
     "clear": "Leeren",
     "clearSettings": "Einstellungen zurücksetzen?",
     "clearSoundCache": "Audio-Cache leeren",
