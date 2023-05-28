@@ -1,4 +1,5 @@
 import { default as EbtCard } from './ebt-card.mjs';
+import { default as EbtConfig } from '../ebt-config.mjs';
 
 export default class EbtMarkdown {
   constructor(opts={}) {
@@ -8,11 +9,12 @@ export default class EbtMarkdown {
       basePath='/ebt-vue3/',
       wikiPath=EbtCard.CONTEXT_HOME,
       renderer,
+      config=EbtConfig,
       htmlHead='<article class="ebt-wiki">',
       htmlTail='</article>',
     } = opts;
     Object.assign(this, {  
-      basePath, wikiPath, renderer, htmlHead, htmlTail 
+      basePath, wikiPath, renderer, htmlHead, htmlTail, config,
     });
   }
 
@@ -64,7 +66,7 @@ export default class EbtMarkdown {
           case 'description':
             metadata[key] = value;
             break;
-          case 'img-src':
+          case 'link':
             value = value.replace("https: //", "https://");
             metadata[key] = value;
             console.log(msg, key, value);
@@ -93,7 +95,7 @@ export default class EbtMarkdown {
   }
 
   htmlHeading(metadata) {
-    let { basePath, wikiPath, } = this;
+    let { basePath, wikiPath, config} = this;
     if (metadata == null) {
       return '';
     }
@@ -107,23 +109,26 @@ export default class EbtMarkdown {
       title="(no-title)", 
       img, 
       'img-alt':imgAlt,
+      link,
       'img-src':imgSrc,
     } = metadata;
     let imgHtml = [];
     if (img) {
-      imgHtml.push(` <a href="${imgSrc}"target="_blank">`);
+      let imgHref = imgSrc || link;
+      imgHref && imgHtml.push(` <a href="${imgHref}" target="_blank">`);
       let src = `${basePath}img/${img}`;
       imgHtml.push(`  <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
-      imgHtml.push(' </a>');
+      imgHref && imgHtml.push(' </a>');
     }
 
     // breadcrumbs
     let breadcrumbs = [];
     breadcrumbs.push('  <div class="ebt-wiki-breadcrumbs">');
+    let index = config.content.index;
     let iLast = pathParts.length-1;
     for (let i = 0; i < iLast; i++) {
       let part = pathParts[i];
-      let href = [`${basePath}#`, ...pathParts.slice(0, i+1), 'index'].join('/');
+      let href = [`${basePath}#`, ...pathParts.slice(0, i+1), index].join('/');
       breadcrumbs.push(`   <a href="${href}" >${part}</a>&nbsp;&gt;&nbsp;`);
     }
     breadcrumbs.push(`   ${pathParts[iLast]}`);

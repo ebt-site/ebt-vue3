@@ -38,4 +38,4 @@ We're still working on the bugs, but (it's coming soon...)
 
 ### In progress
 
-[Test](#/home/dev/test)
+[Test](#/home/dev/toc)

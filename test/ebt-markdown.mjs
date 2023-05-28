@@ -79,11 +79,14 @@ const renderer = new CmarkGfmRenderer();
     ]);
   });
   it("TESTTESThtml heading", async ()=>{
+    let imgSrc = "test-img-src";
     let markdown = [
       '---',
       'title: test-title',
       'img: test-img',
       'img-alt: test-img-alt',
+      `img-src: ${imgSrc}`,
+      'link: test-img-link',
       'unknown-key: test-unknown',
       'description: test-description',
       'category: test-category',
@@ -111,7 +114,7 @@ const renderer = new CmarkGfmRenderer();
     should.deepEqual(htmlLines, [
       '<article class="ebt-wiki">',
       '<div class="ebt-wiki-heading">',
-      ' <a target="_blank">',
+      ` <a href="${imgSrc}" target="_blank">`,
       `  <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
       ' </a>',
       ' <div class="ebt-wiki-heading-text">',

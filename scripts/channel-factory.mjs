@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 import { default as CmarkGfmRenderer } from './cmark-gfm-renderer.mjs';
 import { default as EbtMarkdown } from '../src/ebt-markdown.mjs';
+import { default as EbtCard } from '../src/ebt-card.mjs';
 import { default as EbtConfig } from '../ebt-config.mjs';
 const SRCDIR = path.join(__dirname, '../content');
 const DSTDIR = path.join(__dirname, '../public/content');
@@ -21,14 +22,23 @@ export default class ChannelFactory {
     this.htmlTail = opts.htmlTail || '</article>';
     this.wikiPath = opts.wikiPath || EbtConfig.homePath;
     this.config = opts.config || EbtConfig;
+    this.basePath = opts.basePath || this.config.basePath;
   }
   
   async #convertMarkDownFile(fnSrc, fnDst, ) {
     const msg = 'ChannelFactory.convertMarkDownFile() ';
-    let { renderer, categories, srcDir, htmlHead, htmlTail, wikiPath } = this;
+    let { config, renderer, categories, srcDir, htmlHead, htmlTail, basePath } = this;
     let markdown = fs.readFileSync(fnSrc).toString();
-    let basePath = "/ebt-vue3/";
-    let emd = new EbtMarkdown({basePath, wikiPath, renderer, htmlHead, htmlTail});
+    let location = fnSrc
+      .replace(srcDir,'')
+      .replace(/\.md$/,'')
+      .replace(/\.html$/,'')
+      .split('/')
+      .slice(1);
+    let wikiPath = [ EbtCard.CONTEXT_HOME, ...location, ].join('/');
+    console.log(msg, {srcDir, basePath, fnSrc, fnDst, wikiPath});
+    let emd = new EbtMarkdown({
+      config, basePath, wikiPath, renderer, htmlHead, htmlTail});
     let { metadata, htmlLines }  = await emd.render(markdown);
 
     let html = htmlLines.join('\n');
@@ -77,11 +87,12 @@ export default class ChannelFactory {
   async #buildChannelIndex(channel) {
     const msg = 'ChannelFactory.buildChannelIndex() ';
     let { htmlHead, htmlTail, config } = this;
-    let { basePath } = config;
+    let { basePath, content } = config;
     let { name, kids, fnDst, fnSrc } = channel;
     kids.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
-    let indexDst = path.join(fnDst, 'index.html');
-    let indexSrc = path.join(fnSrc, 'index.md');
+    let index = content.index;
+    let indexDst = path.join(fnDst, `${index}.html`);
+    let indexSrc = path.join(fnSrc, `${index}.md`);
     let htmlBody;
     if (fs.existsSync(indexSrc)) {
       let htmlBuf = await fsp.readFile(indexDst);
@@ -89,13 +100,16 @@ export default class ChannelFactory {
       htmlHead && htmlBody.shift();
       htmlTail && htmlBody.pop();
     } else {
-      let emd = new EbtMarkdown({htmlHead, htmlTail});
+      let emd = new EbtMarkdown({config, htmlHead, htmlTail});
       htmlBody = [];
     }
     let htmlKids = kids.reduce((a,kid,i)=>{
       let { title, img, description, category="" } = kid.metadata;
       let imgSrc = `${basePath}img/${img}`
-      let tocHref = `${basePath}#/content/${name}/${kid.name}`.replace('.md', '.html');;
+      let home = EbtCard.CONTEXT_HOME;
+      let tocHref = name === 'main'
+      ? `${basePath}#/${home}/${kid.name}`.replace('.md', '')
+      : `${basePath}#/${home}/${name}/${kid.name}`.replace('.md', '');
       a.push(`  <div class="ebt-toc-item">`);
       a.push(`   <a href="${tocHref}">`);
       a.push(`    <div class="ebt-thumbnail"><img src="${imgSrc}" /></div>`);
