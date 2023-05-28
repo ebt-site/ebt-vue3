@@ -12,6 +12,7 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown();
     should.deepEqual(Object.keys(emd).sort(), [
       'wikiPath',
+      'config',
       'basePath',
       'renderer',
       'htmlHead',
@@ -119,8 +120,8 @@ const renderer = new CmarkGfmRenderer();
       ' </a>',
       ' <div class="ebt-wiki-heading-text">',
       '  <div class="ebt-wiki-breadcrumbs">',
-      `   <a href="${basePath}#/${wikiBase}/index" >test-wikiPath</a>${delimiter}`,
-      `   <a href="${basePath}#/${wikiBase}/a/index" >a</a>${delimiter}`,
+      `   <a href="${basePath}#/${wikiBase}/toc" >test-wikiPath</a>${delimiter}`,
+      `   <a href="${basePath}#/${wikiBase}/a/toc" >a</a>${delimiter}`,
       '   b',
       '  </div><!--ebt-wiki-breadcrumbs-->',
       '  <h1>test-title</h1>',
