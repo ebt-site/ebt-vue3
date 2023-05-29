@@ -12,6 +12,7 @@ echo -e "${SCRIPT}: updating dependencies..."
 npm install 
 
 npm run build:dist
+npm run build:html
 ./scripts/publish-npm
 
 npm run gh-pages
