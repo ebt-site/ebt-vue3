@@ -58,23 +58,26 @@ export default class EbtMarkdown {
           break;
         }
         let [key, ...valueParts] = line.split(/:[ \t]*/);
-        let value = valueParts.join(': ');
+        let oldValue = metadata[key];
+        let newValue = valueParts.join(': ');
         switch (key) {
+          case 'detail': // append details
+            newValue = oldValue 
+              ? [ ...oldValue, newValue ]
+              : [ newValue ];
+            console.log(msg, 'detail', newValue);
+            break;
+          case 'link':
+            newValue = newValue.replace("https: //", "https://");
+            break;
           case 'img':
           case 'img-alt':
           case 'title': 
           case 'description':
-            metadata[key] = value;
-            break;
-          case 'link':
-            value = value.replace("https: //", "https://");
-            metadata[key] = value;
-            console.log(msg, key, value);
-            break;
           default: 
-            metadata[key] = value;
             break;
         }
+        metadata[key] = newValue;
       }
     }
 
@@ -106,6 +109,7 @@ export default class EbtMarkdown {
     let spaces = '';
     let { 
       description,
+      detail,
       title="(no-title)", 
       img, 
       'img-alt':imgAlt,

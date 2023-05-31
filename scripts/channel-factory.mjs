@@ -104,7 +104,13 @@ export default class ChannelFactory {
       htmlBody = [];
     }
     let htmlKids = kids.reduce((a,kid,i)=>{
-      let { title, img, description, category="" } = kid.metadata;
+      let { 
+        title, 
+        img, 
+        detail=[], 
+        description, 
+        category="",
+      } = kid.metadata;
       let imgSrc = `${basePath}img/${img}`
       let home = EbtCard.CONTEXT_WIKI;
       let tocHref = name === 'main'
@@ -115,7 +121,18 @@ export default class ChannelFactory {
       a.push(`    <div class="ebt-thumbnail"><img src="${imgSrc}" /></div>`);
       a.push(`    <div class="ebt-toc-item-text">`);
       a.push(`     <div class="ebt-toc-item-title">${title}</div>`);
-      a.push(`     <div class="ebt-toc-item-subtitle">${description}</div>`);
+      if (detail.length) {
+        a.push(`     <details open>`);
+        a.push(`       <summary>${description}</summary>`);
+        a.push(`       <ul>`);
+        detail.forEach(detail=>{
+          a.push(`        <li>${detail}</li>`);
+        });
+        a.push(`       </ul>`);
+        a.push(`     </details>`);
+      } else {
+        a.push(`     <div class="ebt-toc-item-subtitle">${description}</div>`);
+      }
       a.push(`    </div>`);
       a.push(`   </a>`);
       a.push(`  </div><!--ebt-toc-item-->`);
