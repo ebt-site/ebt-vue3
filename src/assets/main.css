@@ -156,13 +156,20 @@ a:focus {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  margin-top: 0.4em;
+  margin-top: 0.6em;
+  border-top: 1pt solid gray;
+  border-top-left-radius: 0.5em;
 }
 .ebt-toc-item-text {
   margin-top: 0.3em;
   margin-left: 1em;
 }
-.ebt-toc-item-subtitle {
+.ebt-toc-item-description {
+  font-size: smaller;
+  font-weight: 400;
+}
+.ebt-toc-detail ul {
+  padding-left: 1em;
   font-size: smaller;
   font-weight: 400;
 }

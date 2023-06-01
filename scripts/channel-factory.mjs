@@ -111,19 +111,25 @@ export default class ChannelFactory {
         description, 
         category="",
       } = kid.metadata;
-      let imgSrc = `${basePath}img/${img}`
+      let imgSrc = img.startsWith('http') 
+        ? img.replace(' //', '//') 
+        : `${basePath}img/${img}`
       let home = EbtCard.CONTEXT_WIKI;
+      console.log(msg, imgSrc);
       let tocHref = name === 'main'
       ? `${basePath}#/${home}/${kid.name}`.replace('.md', '')
       : `${basePath}#/${home}/${name}/${kid.name}`.replace('.md', '');
       a.push(`  <div class="ebt-toc-item">`);
       a.push(`   <a href="${tocHref}">`);
       a.push(`    <div class="ebt-thumbnail"><img src="${imgSrc}" /></div>`);
-      a.push(`    <div class="ebt-toc-item-text">`);
-      a.push(`     <div class="ebt-toc-item-title">${title}</div>`);
+      a.push(`   </a>`);
+      a.push(`   <div class="ebt-toc-item-text">`);
+      a.push(`    <a href="${tocHref}">`);
+      a.push(`      <div class="ebt-toc-item-title">${title}</div>`);
+      a.push(`    </a>`);
       if (detail.length) {
-        a.push(`     <details open>`);
-        a.push(`       <summary>${description}</summary>`);
+        a.push(`     <details class="ebt-toc-detail" open>`);
+        a.push(`       <summary class="ebt-toc-item-description">${description}</summary>`);
         a.push(`       <ul>`);
         detail.forEach(detail=>{
           a.push(`        <li>${detail}</li>`);
@@ -131,10 +137,9 @@ export default class ChannelFactory {
         a.push(`       </ul>`);
         a.push(`     </details>`);
       } else {
-        a.push(`     <div class="ebt-toc-item-subtitle">${description}</div>`);
+        a.push(`     <div class="ebt-toc-item-description">${description}</div>`);
       }
       a.push(`    </div>`);
-      a.push(`   </a>`);
       a.push(`  </div><!--ebt-toc-item-->`);
       return a;
     }, []);
