@@ -54,36 +54,6 @@ export default class ChannelFactory {
     }
   }
 
-  async #buildChannelFiles(channel, srcDir) {
-    const msg = 'ChannelFactory.buildChannelFiles() ';
-    const entries = await fsp.readdir(srcDir, {
-      recursive: true,
-      withFileTypes: true,
-    });
-
-    for (let i = 0; i < entries.length; i++) {
-      let entry = entries[i];
-      let { name, } = entry;
-      let fnSrc = path.join(srcDir, name);
-      let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
-      if (entry.isFile()) {
-        if (name.endsWith('.md')) {
-          fnDst = fnDst.replace(/.md$/, '.html');
-          let { metadata }  = await this.#convertMarkDownFile(fnSrc, fnDst);
-          let kid = { name, fnSrc, fnDst, metadata };
-          channel.kids.push(kid);
-          logger.info(msg, `Channel ${channel.name}/${name}`);
-        } else {
-          logger.warn(msg, 'FILE ignored', {name, fnsSrc});
-        }
-      } else if (entry.isDirectory()) {
-        logger.info(msg, `skipping ${channel.name} sub-directory ${name}`);
-      } else {
-        logger.warn(msg, 'IGNORING CHANNEL ENTRY', {channel, name, fnSrc});
-      }
-    }
-  }
-
   async #buildChannelIndex(channel) {
     const msg = 'ChannelFactory.buildChannelIndex() ';
     let { htmlHead, htmlTail, config } = this;
@@ -156,19 +126,6 @@ export default class ChannelFactory {
     logger.info(msg, indexSrc, indexDst);
   }
 
-  async #buildChannel(name, fnSrc) {
-    const msg = 'ChannelFactory.buildChannel() ';
-    let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
-    let channel = {name, fnSrc, fnDst, kids:[]};
-
-    this.channels[name] = channel;
-    await fsp.mkdir(fnDst, {recursive: true});
-    await this.#buildChannelFiles(channel, fnSrc);
-    await this.#buildChannelIndex(channel, fnSrc);
-
-    return channel;
-  }
-
   async #buildChannels(srcDir) {
     const msg = 'ChannelFactory.buildChannels() ';
     const entries = await fsp.readdir(srcDir, {
@@ -188,9 +145,47 @@ export default class ChannelFactory {
     }
   }
 
-  async #buildWikiIndex(srcDir) {
-    const msg = 'ChannelFactory.buildWikiIndex() ';
-    console.log(msg);
+  async #buildChannelFiles(channel, srcDir) {
+    const msg = 'ChannelFactory.buildChannelFiles() ';
+    const entries = await fsp.readdir(srcDir, {
+      recursive: true,
+      withFileTypes: true,
+    });
+
+    for (let i = 0; i < entries.length; i++) {
+      let entry = entries[i];
+      let { name, } = entry;
+      let fnSrc = path.join(srcDir, name);
+      let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
+      if (entry.isFile()) {
+        if (name.endsWith('.md')) {
+          fnDst = fnDst.replace(/.md$/, '.html');
+          let { metadata }  = await this.#convertMarkDownFile(fnSrc, fnDst);
+          let kid = { name, fnSrc, fnDst, metadata };
+          channel.kids.push(kid);
+          logger.info(msg, `Channel ${channel.name}/${name}`);
+        } else {
+          logger.warn(msg, 'FILE ignored', {name, fnsSrc});
+        }
+      } else if (entry.isDirectory()) {
+        logger.info(msg, `skipping ${channel.name} sub-directory ${name}`);
+      } else {
+        logger.warn(msg, 'IGNORING CHANNEL ENTRY', {channel, name, fnSrc});
+      }
+    }
+  }
+
+  async #buildChannel(name, fnSrc) {
+    const msg = 'ChannelFactory.buildChannel() ';
+    let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
+    let channel = {name, fnSrc, fnDst, kids:[]};
+
+    this.channels[name] = channel;
+    await fsp.mkdir(fnDst, {recursive: true});
+    await this.#buildChannelFiles(channel, fnSrc);
+    await this.#buildChannelIndex(channel, fnSrc);
+
+    return channel;
   }
 
   async build() {
@@ -201,7 +196,6 @@ export default class ChannelFactory {
     this.channels = {};
     try {
       await this.#buildChannels(srcDir);
-      await this.#buildWikiIndex(srcDir);
       await this.#buildChannel('main', srcDir);
       console.log(msg, {srcDir});
       logger.debug(msg, "channels", this.channels);
