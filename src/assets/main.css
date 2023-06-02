@@ -51,6 +51,12 @@ a:hover {
   color: rgb(var(--v-theme-link));
   text-decoration: underline;
 }
+a > img:hover {
+  border: 2px solid rgb(var(--v-theme-link));
+}
+a .ebt-thumbnail:hover {
+  border: 2px solid rgb(var(--v-theme-link));
+}
 a:focus {
   color: rgb(var(--v-theme-link));
   outline: 2pt dashed rgba(var(--v-theme-link),0.5);

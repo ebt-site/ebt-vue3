@@ -62,7 +62,8 @@ export default class ChannelFactory {
     kids.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
     let index = content.index;
     let indexDst = path.join(fnDst, `${index}.html`);
-    let indexSrc = path.join(fnSrc, `${index}.md`);
+    let indexSrcFile = `${index}.md`;
+    let indexSrc = path.join(fnSrc, indexSrcFile);
     let htmlBody;
     if (fs.existsSync(indexSrc)) {
       let htmlBuf = await fsp.readFile(indexDst);
@@ -81,6 +82,9 @@ export default class ChannelFactory {
         description, 
         category="",
       } = kid.metadata;
+      if (kid.name === indexSrcFile) {
+        return a; // omit custom index file from index
+      }
       let imgSrc = img.startsWith('http') 
         ? img.replace(' //', '//') 
         : `${basePath}img/${img}`
