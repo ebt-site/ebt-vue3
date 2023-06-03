@@ -65,7 +65,7 @@ export default class EbtMarkdown {
             newValue = oldValue 
               ? [ ...oldValue, newValue ]
               : [ newValue ];
-            console.log(msg, 'detail', newValue);
+            //console.log(msg, 'detail', newValue);
             break;
           case 'link':
             newValue = newValue.replace("https: //", "https://");
@@ -120,7 +120,9 @@ export default class EbtMarkdown {
     if (img) {
       let imgHref = imgSrc || link;
       imgHref && imgHtml.push(` <a href="${imgHref}" target="_blank">`);
-      let src = `${basePath}img/${img}`;
+      let src = img.match(/^https?:/i)
+        ? img.replace(': /', ':/') 
+        : `${basePath}img/${img}`;
       imgHtml.push(`  <img src="${src}" alt="${imgAlt}" title="${imgAlt}"/>`);
       imgHref && imgHtml.push(' </a>');
     }

@@ -22,6 +22,7 @@ export default class ChannelFactory {
     this.htmlTail = opts.htmlTail || '</article>';
     this.wikiPath = opts.wikiPath || EbtConfig.homePath;
     this.config = opts.config || EbtConfig;
+    this.indexSrcFile = `${this.config?.content?.index}.md`;
     this.basePath = opts.basePath || this.config.basePath;
   }
   
@@ -36,7 +37,7 @@ export default class ChannelFactory {
       .split('/')
       .slice(1);
     let wikiPath = [ EbtCard.CONTEXT_WIKI, ...location, ].join('/');
-    console.log(msg, {srcDir, basePath, fnSrc, fnDst, wikiPath});
+    //console.log(msg, {srcDir, basePath, fnSrc, fnDst, wikiPath});
     let emd = new EbtMarkdown({
       config, basePath, wikiPath, renderer, htmlHead, htmlTail});
     let { metadata, htmlLines }  = await emd.render(markdown);
@@ -56,13 +57,13 @@ export default class ChannelFactory {
 
   async #buildChannelIndex(channel) {
     const msg = 'ChannelFactory.buildChannelIndex() ';
-    let { htmlHead, htmlTail, config } = this;
+    let { htmlHead, htmlTail, config, indexSrcFile } = this;
     let { basePath, content } = config;
     let { name, kids, fnDst, fnSrc } = channel;
     kids.sort((a,b)=>EbtMarkdown.compareMetadata(a.metadata, b.metadata));
     let index = content.index;
     let indexDst = path.join(fnDst, `${index}.html`);
-    let indexSrcFile = `${index}.md`;
+    //let indexSrcFile = `${index}.md`;
     let indexSrc = path.join(fnSrc, indexSrcFile);
     let htmlBody;
     if (fs.existsSync(indexSrc)) {
@@ -83,13 +84,14 @@ export default class ChannelFactory {
         category="",
       } = kid.metadata;
       if (kid.name === indexSrcFile) {
+        //console.log(msg, "skipping", kid);
         return a; // omit custom index file from index
       }
       let imgSrc = img.startsWith('http') 
         ? img.replace(' //', '//') 
         : `${basePath}img/${img}`
       let home = EbtCard.CONTEXT_WIKI;
-      console.log(msg, imgSrc);
+      //console.log(msg, imgSrc);
       let tocHref = name === 'main'
       ? `${basePath}#/${home}/${kid.name}`.replace('.md', '')
       : `${basePath}#/${home}/${name}/${kid.name}`.replace('.md', '');
@@ -119,38 +121,19 @@ export default class ChannelFactory {
     }, []);
     htmlKids.unshift(` <div class="ebt-toc"><!--ebt-toc/${name}-->`);
     htmlKids.push(` </div><!--ebt-toc/${name}-->`);
-    console.log(msg, 'kids', kids.length, htmlKids.length);
+    //console.log(msg, 'kids', kids.length, htmlKids.length);
     let html = [
       htmlHead,
       ...htmlBody,
-      ...htmlKids,
-      htmlTail,
+      ...htmlKids, htmlTail,
     ].join('\n');
     await fsp.writeFile(indexDst, html);
     logger.info(msg, indexSrc, indexDst);
   }
 
-  async #buildChannels(srcDir) {
-    const msg = 'ChannelFactory.buildChannels() ';
-    const entries = await fsp.readdir(srcDir, {
-      recursive: true,
-      withFileTypes: true,
-    });
-    for (let i = 0; i < entries.length; i++) {
-      let entry = entries[i];
-      let { name, } = entry;
-      let fnSrc = path.join(srcDir, name);
-      if (entry.isDirectory()) {
-        let channel = await this.#buildChannel(name, fnSrc);
-        //console.log(msg, JSON.stringify(channel, null, 2));
-      } else {
-        logger.warn(msg, 'IGNORING CONTENT ENTRY', fnSrc);
-      }
-    }
-  }
-
   async #buildChannelFiles(channel, srcDir) {
     const msg = 'ChannelFactory.buildChannelFiles() ';
+    let { indexSrcFile } = this;
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
       withFileTypes: true,
@@ -172,7 +155,17 @@ export default class ChannelFactory {
           logger.warn(msg, 'FILE ignored', {name, fnsSrc});
         }
       } else if (entry.isDirectory()) {
-        logger.info(msg, `skipping ${channel.name} sub-directory ${name}`);
+        let kid = { name, fnSrc, fnDst};
+        let kidChannel = await this.#buildChannel(name, fnSrc);
+        let kidIndex = kidChannel.kids.find(k => k.name === indexSrcFile);
+        if (kidIndex) {
+          kidIndex = Object.assign({}, kidIndex);
+          kidIndex.name = `${name}/${kidIndex.name}`;
+          channel.kids.push(kidIndex);
+          logger.info(msg, `built channel ${channel.name}/${name}`, );
+        } else {
+          logger.info(msg, `built hidden channel ${channel.name}/${name}`);
+        }
       } else {
         logger.warn(msg, 'IGNORING CHANNEL ENTRY', {channel, name, fnSrc});
       }
@@ -184,7 +177,6 @@ export default class ChannelFactory {
     let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
     let channel = {name, fnSrc, fnDst, kids:[]};
 
-    this.channels[name] = channel;
     await fsp.mkdir(fnDst, {recursive: true});
     await this.#buildChannelFiles(channel, fnSrc);
     await this.#buildChannelIndex(channel, fnSrc);
@@ -197,12 +189,8 @@ export default class ChannelFactory {
     let { srcDir, dstDir } = this;
     await fsp.mkdir(dstDir, {recursive:true});
     this.categories = {};
-    this.channels = {};
     try {
-      await this.#buildChannels(srcDir);
       await this.#buildChannel('main', srcDir);
-      console.log(msg, {srcDir});
-      logger.debug(msg, "channels", this.channels);
     } catch(e) {
       logger.warn(msg, e);
     }
