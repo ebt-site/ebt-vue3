@@ -13,7 +13,7 @@ import { default as EbtConfig } from '../ebt-config.mjs';
 const SRCDIR = path.join(__dirname, '../content');
 const DSTDIR = path.join(__dirname, '../public/content');
 
-export default class ChannelFactory {
+export default class Channel {
   constructor(opts={}) {
     this.renderer = opts.renderer || new CmarkGfmRenderer();
     this.srcDir = opts.srcDir || SRCDIR;
@@ -27,7 +27,7 @@ export default class ChannelFactory {
   }
   
   async #convertMarkDownFile(fnSrc, fnDst, ) {
-    const msg = 'ChannelFactory.convertMarkDownFile() ';
+    const msg = 'Channel.convertMarkDownFile() ';
     let { config, renderer, categories, srcDir, htmlHead, htmlTail, basePath } = this;
     let markdown = fs.readFileSync(fnSrc).toString();
     let location = fnSrc
@@ -56,7 +56,7 @@ export default class ChannelFactory {
   }
 
   async #buildChannelIndex(channel) {
-    const msg = 'ChannelFactory.buildChannelIndex() ';
+    const msg = 'Channel.buildChannelIndex() ';
     let { htmlHead, htmlTail, config, indexSrcFile } = this;
     let { basePath, content } = config;
     let { name, kids, fnDst, fnSrc } = channel;
@@ -132,7 +132,7 @@ export default class ChannelFactory {
   }
 
   async #buildChannelFiles(channel, srcDir) {
-    const msg = 'ChannelFactory.buildChannelFiles() ';
+    const msg = 'Channel.buildChannelFiles() ';
     let { indexSrcFile } = this;
     const entries = await fsp.readdir(srcDir, {
       recursive: true,
@@ -173,7 +173,7 @@ export default class ChannelFactory {
   }
 
   async #buildChannel(name, fnSrc) {
-    const msg = 'ChannelFactory.buildChannel() ';
+    const msg = 'Channel.buildChannel() ';
     let fnDst = fnSrc.replace(this.srcDir, this.dstDir);
     let channel = {name, fnSrc, fnDst, kids:[]};
 
@@ -185,7 +185,7 @@ export default class ChannelFactory {
   }
 
   async build() {
-    const msg = 'ChannelFactory.build() ';
+    const msg = 'Channel.build() ';
     let { srcDir, dstDir } = this;
     await fsp.mkdir(dstDir, {recursive:true});
     this.categories = {};

@@ -7,15 +7,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import { default as config } from '../ebt-config.mjs';
-import { default as ChannelFactory } from './channel-factory.mjs';
+import { default as Channel } from './channel.mjs';
 const srcDir = path.join(__dirname, '../content');
 const dstDir = path.join(__dirname, '../public/content');
 const wikiPath = config.homePath;
 
-let hf = new ChannelFactory({
+let channel = new Channel({
   srcDir, 
   dstDir,
   wikiPath,
   config,
 });
-hf.build();
+channel.build();
