@@ -195,4 +195,10 @@ export default class Channel {
       logger.warn(msg, e);
     }
   }
+
+  static async buildRoot(opts={}) {
+    let channel = new Channel(opts);
+    channel.build();
+  }
+
 }
