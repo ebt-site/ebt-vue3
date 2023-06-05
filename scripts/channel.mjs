@@ -15,15 +15,43 @@ const DSTDIR = path.join(__dirname, '../public/content');
 
 export default class Channel {
   constructor(opts={}) {
-    this.renderer = opts.renderer || new CmarkGfmRenderer();
-    this.srcDir = opts.srcDir || SRCDIR;
-    this.dstDir = opts.dstDir || DSTDIR;
-    this.htmlHead = opts.htmlHead || '<article class="ebt-wiki">';
-    this.htmlTail = opts.htmlTail || '</article>';
-    this.wikiPath = opts.wikiPath || EbtConfig.homePath;
-    this.config = opts.config || EbtConfig;
-    this.indexSrcFile = `${this.config?.content?.index}.md`;
-    this.basePath = opts.basePath || this.config.basePath;
+    const msg = 'Channel.ctor() ';
+
+    let { 
+      srcDir,
+      dstDir,
+      config,
+      htmlHead = '<article class="ebt-wiki">',
+      htmlTail = '</article>',
+      renderer = new CmarkGfmRenderer(),
+      wikiPath = EbtConfig.homePath,
+    } = opts;
+
+    // Required
+    if (!fs.existsSync(srcDir)) {
+      throw new Error(`${msg} srcDir not found: ${srcDir}`);
+    }
+    if (!fs.existsSync(dstDir)) {
+      throw new Error(`${msg} dstDir not found: ${dstDir}`);
+    }
+    if (!config) {
+      throw new Error(`${msg} config is required`);
+    }
+
+    let { content, basePath } = config;
+    let indexSrcFile = `${content?.index}.md`;
+
+    Object.assign(this, {
+      srcDir,
+      dstDir,
+      config,
+      renderer,
+      htmlHead,
+      htmlTail,
+      renderer,
+      indexSrcFile,
+      basePath,
+    });
   }
   
   async #convertMarkDownFile(fnSrc, fnDst, ) {
@@ -197,6 +225,8 @@ export default class Channel {
   }
 
   static async buildRoot(opts={}) {
+    const msg = 'Channel.buildRoot() ';
+    logger.info(msg, opts);
     let channel = new Channel(opts);
     channel.build();
   }
