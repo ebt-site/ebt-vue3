@@ -17,7 +17,7 @@
               <v-icon icon="mdi-home" class="home-icon" size="24px"
                 @click.stop="onHome"
               />
-              <div>EBT-Vue3</div>
+              <div>{{config.appName}}</div>
             </div>
           </v-app-bar-title>
           
