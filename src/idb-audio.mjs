@@ -1,4 +1,4 @@
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { useVolatileStore } from './stores/volatile.mjs';
 import { useAudioStore } from './stores/audio.mjs';
 

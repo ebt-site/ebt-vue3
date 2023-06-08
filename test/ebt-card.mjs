@@ -1,7 +1,7 @@
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { default as EbtCard } from "../src/ebt-card.mjs";
 import { default as EbtConfig } from "../ebt-config.mjs";
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 import should from "should";
 
 logger.logLevel = 'warn';

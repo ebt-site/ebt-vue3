@@ -1,7 +1,7 @@
 import { createApp, ref } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 logger.logLevel = 'warn';
 
 // Styles

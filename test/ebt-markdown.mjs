@@ -1,6 +1,6 @@
 import { default as EbtMarkdown } from '../src/ebt-markdown.mjs'
 import { default as CmarkGfmRenderer } from '../scripts/cmark-gfm-renderer.mjs';
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import should from "should";
 
 logger.logLevel = 'warn';

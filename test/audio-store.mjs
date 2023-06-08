@@ -2,7 +2,7 @@ import should from "should";
 import { setActivePinia, createPinia } from 'pinia';
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { default as EbtSettings } from '../src/ebt-settings.mjs';
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 import fetch from "node-fetch";
 logger.logLevel = 'warn';
 

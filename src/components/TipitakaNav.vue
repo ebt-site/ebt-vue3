@@ -24,7 +24,7 @@
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { useSuttasStore } from '../stores/suttas.mjs';
-  import { logger } from "log-instance";
+  import { logger } from "log-instance/index.mjs";
   import { Authors, Examples, Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
   import { default as IdbSutta } from '../idb-sutta.mjs';

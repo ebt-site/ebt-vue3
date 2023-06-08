@@ -24,7 +24,7 @@
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useAudioStore } from '../stores/audio.mjs';
-  import { logger } from "log-instance";
+  import { logger } from "log-instance/index.mjs";
 
   export default {
     setup() {

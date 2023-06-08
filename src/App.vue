@@ -106,7 +106,7 @@
   import { useSettingsStore } from './stores/settings.mjs';
   import { useVolatileStore } from './stores/volatile.mjs';
   import { useAudioStore } from './stores/audio.mjs';
-  import { logger } from "log-instance";
+  import { logger } from "log-instance/index.mjs";
   import { nextTick, ref } from "vue";
 
   export default {

@@ -1,4 +1,4 @@
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { default as EbtCard } from './ebt-card.mjs';
 import { default as VOICES } from './auto/voices.mjs';
 import { SuttaRef, Authors } from 'scv-esm/main.mjs';

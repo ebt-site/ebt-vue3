@@ -28,7 +28,7 @@
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { default as IdbAudio } from '../idb-audio.mjs';
   import { SuttaRef } from 'scv-esm';
-  import { logger } from 'log-instance';
+  import { logger } from 'log-instance/index.mjs';
   import { ref } from "vue";
 
   export default {

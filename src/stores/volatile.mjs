@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { SuttaRef } from "scv-esm/main.mjs";
 import { default as EbtCard } from "../ebt-card.mjs";
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 import { ref, nextTick } from "vue";
 import { useSettingsStore } from "./settings.mjs";
 import Utils from "../utils.mjs";

@@ -1,4 +1,4 @@
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 import should from "should";
 import "fake-indexeddb/auto";
 import { default as IdbSutta } from "../src/idb-sutta.mjs";

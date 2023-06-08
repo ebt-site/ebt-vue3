@@ -34,7 +34,7 @@
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from 'idb-keyval';
-  import { logger } from "log-instance";
+  import { logger } from "log-instance/index.mjs";
   import { Examples } from "scv-esm";
   import { ref, nextTick } from "vue";
 

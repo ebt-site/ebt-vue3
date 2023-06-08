@@ -7,7 +7,7 @@
 <script>
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
-  import { logger } from 'log-instance';
+  import { logger } from 'log-instance/index.mjs';
   import { ref } from "vue";
 
   export default {

@@ -253,7 +253,7 @@ import { useVolatileStore } from "../stores/volatile.mjs";
 import { useAudioStore } from "../stores/audio.mjs";
 import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as languages } from "../languages.mjs";
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 import * as VOICES from "../auto/voices.json";
 import Confirm from "./Confirm.vue";
 import Version from "./Version.vue";

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { SuttaRef, Authors } from 'scv-esm/main.mjs';
 import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';

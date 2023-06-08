@@ -1,6 +1,6 @@
 import should from "should";
 import fetch from "node-fetch";
-import { logger } from "log-instance";
+import { logger } from "log-instance/index.mjs";
 logger.logLevel = 'warn';
 
 import { 

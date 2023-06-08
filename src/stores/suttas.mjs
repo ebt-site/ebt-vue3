@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import Utils from "../utils.mjs";
 import { SuttaRef } from 'scv-esm/main.mjs';
 import { useSettingsStore } from './settings.mjs';

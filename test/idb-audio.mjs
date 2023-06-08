@@ -1,6 +1,6 @@
 import { default as IdbAudio } from "../src/idb-audio.mjs";
 import { useAudioStore } from '../src/stores/audio.mjs';
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import should from "should";
 import "fake-indexeddb/auto";
 import { setActivePinia, createPinia } from 'pinia';

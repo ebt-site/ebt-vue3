@@ -1,4 +1,4 @@
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { Authors, SuttaRef } from 'scv-esm/main.mjs';
 

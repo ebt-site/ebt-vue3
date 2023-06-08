@@ -1,4 +1,4 @@
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { useVolatileStore } from './stores/volatile.mjs';
 import { Examples, SuttaRef, SuttaCentralId } from 'scv-esm/main.mjs';
 import * as Idb from "idb-keyval";

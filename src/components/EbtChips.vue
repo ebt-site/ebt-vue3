@@ -34,7 +34,7 @@
   import { useSettingsStore } from '../stores/settings.mjs';
   import { useVolatileStore } from '../stores/volatile.mjs';
   import { ref, nextTick } from "vue";
-  import { logger } from "log-instance";
+  import { logger } from "log-instance/index.mjs";
 
   export default {
     inject: ['config'],

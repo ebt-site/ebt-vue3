@@ -1,7 +1,7 @@
 import fs from 'fs';
 const { promises: fsp } = fs;
 import path from 'path';
-import { logger } from 'log-instance';
+import { logger } from 'log-instance/index.mjs';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
