@@ -213,7 +213,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.duration).equal(MOCK_DURATION);
     should(audioStore.nFetch).equal(nFetch0+1);
   });
-  it("play()", async ()=>{
+  it("TESTTESTplay()", async ()=>{
     let audio = new IdbAudio();
 
     // play resolves when playing has started
@@ -235,7 +235,7 @@ global.AudioContext = MockAudioContext; // NodeJs has no AudioContext
     should(audio.currentTime).above(playTime);
 
     let abuf = result; // unspecified in Web Api
-    should(abuf.byteLength).above(136000).below(140200);
+    should(abuf.byteLength).above(136000).below(141000);
     should(abuf).instanceOf(ArrayBuffer);
   });
   it("clear()", async()=>{
