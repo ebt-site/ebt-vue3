@@ -13,7 +13,7 @@ npm install
 
 npm run build:dist
 npm run build:html
-./scripts/publish-npm
+./scripts/git-commit -npm
 
 npm run gh-pages
 
