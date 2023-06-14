@@ -92,7 +92,7 @@
           return;
         }
         try {
-          volatile.waitBegin($t('ebt.searching'));
+          volatile.waitBegin('ebt.searching');
           logger.info('SearchView.onSearch()', url);
           this.results = undefined;
           card.location[0] = search;
@@ -109,8 +109,7 @@
             try {
               let mlDoc = mlDocs[i];
               let { sutta_uid, lang, author_uid } = mlDoc;
-              volatile.waitBegin($t('ebt.processing') + ' ' + sutta_uid, 
-                volatile.ICON_PROCESSING);
+              volatile.waitBegin('ebt.processing', volatile.ICON_PROCESSING, sutta_uid);
 
               let idbKey = IdbSutta.idbKey({sutta_uid, lang, author:author_uid});
               let idbData = await Idb.get(idbKey);

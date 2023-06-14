@@ -6,6 +6,8 @@
     <v-card loading class="ebt-processing" >
       <v-card-title>
         {{volatile.waitingMsg}}
+        <v-spacer/>
+        {{volatile.waitingContext}}
       </v-card-title>
       <v-card-text>
         <div class="ebt-processing-status">

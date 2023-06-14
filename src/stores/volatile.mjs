@@ -146,10 +146,11 @@ export const useVolatileStore = defineStore('volatile', {
       this.alertHtml = alertHtml;
       this.showAlertMsg = !!msg;
     },
-    waitBegin(msg, icon=ICON_DOWNLOAD) {
+    waitBegin(msgKey, icon=ICON_DOWNLOAD, context='') {
       let { $t } = this;
-      msg && (this.waitingMsg = $t(msg));
+      msgKey && (this.waitingMsg = $t(msgKey));
       this.waitingIcon = icon;
+      this.waitingContext = context;
       if (this.waiting === 0) {
         setTimeout(()=>{
           if (this.waiting > 0) {
