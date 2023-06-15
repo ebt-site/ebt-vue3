@@ -4,11 +4,11 @@ SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 set -e
 
 if [ ! -e 'package.json' ]; then
-  echo -e "SCRIPT: this script must be run from application folder"
+  echo -e "$SCRIPT: this script must be run from application folder"
   exit 911
 fi
 
-echo -e $SCRIPT: BEGIN `date`
+echo -e "$SCRIPT: BEGIN `date`"
 
 VERSION=`node scripts/version.cjs`
 echo -e "$SCRIPT: version $VERSION"
@@ -20,5 +20,5 @@ echo $VERSION > dist/version
 cp package.json dist
 cp -r $DIR/../src/i18n dist/assets/
 
-echo -e $SCRIPT: END `date`
+echo -e "$SCRIPT: END `date`"
 
