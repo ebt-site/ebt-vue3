@@ -4,7 +4,7 @@ SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 set -e
 
 if [ ! -e 'package.json' ]; then
-  echo -e "$SCRIPT: this script must be run from application folder"
+  echo -e "$SCRIPT: package.json not found in current folder (ERROR)"
   exit 911
 fi
 

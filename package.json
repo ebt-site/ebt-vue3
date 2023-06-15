@@ -55,6 +55,7 @@
     "preview": "vite preview",
     "vite": "vite",
     "vite:build": "vite build",
+    "git-commit": "scripts/git-commit.sh",
     "gh-pages": "scripts/gh-pages.sh",
     "push-action": "scripts/push-action",
     "schedule-action": "scripts/schedule-action",

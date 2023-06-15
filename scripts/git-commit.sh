@@ -3,6 +3,11 @@ DIR=`dirname $0`
 pushd $DIR/..
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 
+if [ ! -e 'package.json' ]; then
+  echo -e "$SCRIPT: package.json not found in current folder (ERROR)"
+  exit 911
+fi
+
 git status | grep 'nothing to commit' > /dev/null; RC=$?
 if [ "$RC" == "0" ]; then
   echo "$SCRIPT: Nothing to commit"

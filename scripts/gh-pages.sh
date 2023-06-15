@@ -1,13 +1,14 @@
 #!/usr/bin/env sh
 DIR=`dirname $0`
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
-
-APP=$DIR/..
-
-git status | grep "up to date"; RC=$?
-
 SCRIPT=`basename $0`
+
 echo -e "$SCRIPT: BEGIN"
+
+if [ ! -e 'package.json' ]; then
+  echo -e "$SCRIPT: package.json not found in current folder (ERROR)"
+  exit 911
+fi
 
 git checkout main
 git status | grep "up to date"; RC=$?
