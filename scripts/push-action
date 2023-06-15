@@ -13,7 +13,7 @@ npm install
 
 npm run build:dist
 npm run build:html
-npm run git-commit.sh -npm
+npm run git:commit -npm
 npm run gh-pages
 
 echo -e "${SCRIPT}: END `date`"
