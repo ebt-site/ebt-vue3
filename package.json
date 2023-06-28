@@ -1,6 +1,6 @@
 {
   "name": "ebt-vue3",
-  "version": "1.245.0",
+  "version": "1.246.0",
   "description": "SuttaCentral Voice EBT-Vue3",
   "main": "src/index.mjs",
   "private": false,
@@ -15,13 +15,13 @@
     "merkle-json": "^2.6.0",
     "pinia": "^2.0.16",
     "roboto-fontface": "*",
-    "scv-esm": "^1.65.54",
+    "scv-esm": "^1.65.61",
     "serve-favicon": "^2.5.0",
     "uuid": "^9.0.0",
     "vue": "^3.3.4",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.5",
-    "vuetify": "^3.3.5",
+    "vuetify": "^3.3.6",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
