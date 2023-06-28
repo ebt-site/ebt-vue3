@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
-SCRIPT=`basename $0`
 
-echo -e "$SCRIPT: BEGIN"
+echo -e "$SCRIPT: BEGIN `date`"
 
 if [ ! -e 'package.json' ]; then
   echo -e "$SCRIPT: package.json not found in current folder (ERROR)"
@@ -13,6 +12,7 @@ git checkout main
 git status | grep "up to date"; RC=$?
 set -e # exit on error
 if [ "$RC" != "0" ]; then
+  git status
   echo "$SCRIPT: ERROR: local changes have not been pushed"
   exit 1
 fi
@@ -36,10 +36,13 @@ echo -e "$SCRIPT: copying new content"
 cp -r dist/* .
 ls -l
 
-echo -e "$SCRIPT: updating github"
+echo -e "$SCRIPT: git add"
 git add .
+echo -e "$SCRIPT: git commit"
 git commit -m "gh-pages"
+echo -e "$SCRIPT: git push"
 git push
+echo -e "$SCRIPT: github updated"
 git checkout main
 
-echo -e "$SCRIPT END"
+echo -e "$SCRIPT: END `date`"
