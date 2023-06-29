@@ -11,6 +11,7 @@ const renderer = new CmarkGfmRenderer();
   it("TESTTESTdefault ctor", ()=>{
     let emd = new EbtMarkdown();
     should.deepEqual(Object.keys(emd).sort(), [
+      'appName',
       'wikiPath',
       'config',
       'basePath',
@@ -24,13 +25,38 @@ const renderer = new CmarkGfmRenderer();
       renderer: undefined,
     });
   });
+  it("TESTTESTcustom ctor", ()=>{
+    const appName = 'test-appName';
+    const config = {
+      basePath: 'test-basepath',
+      appName,
+    };
+    let emd = new EbtMarkdown({config});
+    should(emd).properties({
+      basePath: config.basePath,
+      appName,
+      config,
+      wikiPath: 'wiki',
+      renderer: undefined,
+    });
+
+    let emd2 = new EbtMarkdown({config, appName:'test-appNameOverride'});
+    should(emd2).properties({
+      basePath: config.basePath,
+      appName: 'test-appNameOverride',
+      config,
+      wikiPath: 'wiki',
+      renderer: undefined,
+    });
+  });
   it("TESTTESTheading", async ()=>{
-    let markdown = '### Title\ntext';
-    let emd = new EbtMarkdown({renderer});
+    let markdown = '### Title ${appName}\ntext';
+    let appName = 'TEST-APPNAME';
+    let emd = new EbtMarkdown({renderer, appName});
     let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
       '<article class="ebt-wiki">',
-      '<h3>Title</h3>',
+      `<h3>Title ${appName}</h3>`,
       '<p>text</p>',
       '</article>',
     ]);
@@ -80,6 +106,7 @@ const renderer = new CmarkGfmRenderer();
     ]);
   });
   it("TESTTESThtml heading", async ()=>{
+    let appName = "TEST_APPNAME";
     let imgSrc = "test-img-src";
     let markdown = [
       '---',
@@ -89,7 +116,7 @@ const renderer = new CmarkGfmRenderer();
       `img-src: ${imgSrc}`,
       'link: test-img-link',
       'unknown-key: test-unknown',
-      'description: test-description',
+      'description: test-description ${appName}',
       'category: test-category',
       'order: 42',
       '---',
@@ -99,7 +126,7 @@ const renderer = new CmarkGfmRenderer();
     let basePath = '/test-basePath/';
     let wikiBase = 'test-wikiPath';
     let wikiPath = `${wikiBase}/a/b`;
-    let emd = new EbtMarkdown({basePath, wikiPath, renderer});
+    let emd = new EbtMarkdown({basePath, wikiPath, renderer, appName});
     let delimiter = '&nbsp;&gt;&nbsp;';
     let { metadata, htmlLines } = await emd.render(markdown);
     let heading = emd.htmlHeading(markdown);
@@ -125,7 +152,7 @@ const renderer = new CmarkGfmRenderer();
       '   b',
       '  </div><!--ebt-wiki-breadcrumbs-->',
       '  <h1>test-title</h1>',
-      '  <div class="ebt-wiki-description">test-description</div>',
+      `  <div class="ebt-wiki-description">test-description ${appName}</div>`,
       ' </div><!--ebt-wiki-heading-text-->',
       '</div><!--ebt-wiki-heading-->',
       '<p>test-body</p>',

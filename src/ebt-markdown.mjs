@@ -4,17 +4,18 @@ import { default as EbtConfig } from '../ebt-config.mjs';
 export default class EbtMarkdown {
   constructor(opts={}) {
     const msg = 'EbtMarkdown.ctor() ';
+    let { config=EbtConfig } = opts;
 
     let { 
-      basePath='/ebt-vue3/',
+      appName=config.appName,
+      basePath=config.basePath,
       wikiPath=EbtCard.CONTEXT_WIKI,
       renderer,
-      config=EbtConfig,
       htmlHead='<article class="ebt-wiki">',
       htmlTail='</article>',
     } = opts;
     Object.assign(this, {  
-      basePath, wikiPath, renderer, htmlHead, htmlTail, config,
+      appName, basePath, wikiPath, renderer, htmlHead, htmlTail, config,
     });
   }
 
@@ -37,13 +38,14 @@ export default class EbtMarkdown {
 
   async render(markdown, renderer=this.renderer) {
     const msg = 'EbtMarkdown.render() ';
-    let { htmlHead, htmlTail } = this;
+    let { htmlHead, htmlTail, appName } = this;
     if (!markdown) {
       throw new Error(`${msg} markdown is required`);
     }
     if (!renderer) {
       throw new Error(`${msg} renderer is required`);
     }
+    markdown = markdown.replaceAll('${appName}', appName);
     let lines = markdown.split('\n');
     let md = markdown;
     let metadata;
