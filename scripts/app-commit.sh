@@ -1,4 +1,5 @@
 #!/bin/bash
+DIR=`dirname $0`
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 
 echo -e "$SCRIPT: BEGIN `date`"
@@ -17,11 +18,11 @@ fi
 echo "$SCRIPT: committing changes to `pwd`"
 git commit -am "$SCRIPT"
 npm version patch
-VERSION=`node scripts/app-version.cjs`
+VERSION=`node $DIR/app-version.cjs`
 COMMIT_TAG="$SCRIPT: v$VERSION"
 git reset --soft HEAD~1
-git commit --amend -m COMMIT_TAG
-echo -e COMMIT_TAG
+git commit --amend -m "$COMMIT_TAG"
+echo -e "$COMMIT_TAG"
 git push
 
 if [ "$1" == "-npm" ]; then
