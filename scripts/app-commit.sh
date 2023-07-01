@@ -15,8 +15,11 @@ if [ "$RC" == "0" ]; then
   exit 0
 fi
 
+echo "$SCRIPT: adding changes to `pwd`"
+git add -A .
 echo "$SCRIPT: committing changes to `pwd`"
-git commit -am "$SCRIPT"
+git commit -m "$SCRIPT"
+echo "$SCRIPT: updating version number"
 npm version patch
 VERSION=`node $DIR/app-version.cjs`
 COMMIT_TAG="$SCRIPT: v$VERSION"
