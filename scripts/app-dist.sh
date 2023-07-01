@@ -10,7 +10,7 @@ if [ ! -e 'package.json' ]; then
   exit 911
 fi
 
-VERSION=`node scripts/app-version.cjs`
+VERSION=`node $DIR/app-version.cjs`
 echo -e "$SCRIPT: version $VERSION"
 
 echo "$SCRIPT: vite build"
