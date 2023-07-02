@@ -103,6 +103,7 @@ export default class Channel {
       let emd = new EbtMarkdown({config, htmlHead, htmlTail});
       htmlBody = [];
     }
+    let lastCategory = "lastCategory";
     let htmlKids = kids.reduce((a,kid,i)=>{
       let { 
         title, 
@@ -115,6 +116,7 @@ export default class Channel {
         //console.log(msg, "skipping", kid);
         return a; // omit custom index file from index
       }
+      console.log(msg, {name, category, }, kid.name);
       let imgSrc = img.startsWith('http') 
         ? img.replace(' //', '//') 
         : `${basePath}img/${img}`
@@ -123,6 +125,10 @@ export default class Channel {
       let tocHref = name === 'main'
       ? `${basePath}#/${home}/${kid.name}`.replace('.md', '')
       : `${basePath}#/${home}/${name}/${kid.name}`.replace('.md', '');
+      if (lastCategory !== category) {
+        a.push(`  <h3 class="ebt-toc-category">${category}</h3>`);
+        lastCategory = category;
+      }
       a.push(`  <div class="ebt-toc-item">`);
       a.push(`   <a href="${tocHref}">`);
       a.push(`    <div class="ebt-thumbnail"><img src="${imgSrc}" /></div>`);
@@ -133,7 +139,7 @@ export default class Channel {
       a.push(`    </a>`);
       if (detail.length) {
         a.push(`     <details class="ebt-toc-detail" open>`);
-        a.push(`       <summary class="ebt-toc-item-description">${description}</summary>`);
+        a.push(`       <summary>${description}</summary>`);
         a.push(`       <ul>`);
         detail.forEach(detail=>{
           a.push(`        <li>${detail}</li>`);
@@ -178,7 +184,7 @@ export default class Channel {
           let { metadata }  = await this.#convertMarkDownFile(fnSrc, fnDst);
           let kid = { name, fnSrc, fnDst, metadata };
           channel.kids.push(kid);
-          logger.info(msg, `Channel ${channel.name}/${name}`);
+          logger.debug(msg, `Channel ${channel.name}/${name}`);
         } else {
           logger.warn(msg, 'FILE ignored', {name, fnsSrc});
         }

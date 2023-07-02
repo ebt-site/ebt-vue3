@@ -4,6 +4,7 @@ description: A database devoted to the study of Buddhist texts
 link: https://buddhanexus.net/
 img:  buddhanexus.png
 img-alt: BuddhaNexus web page image
+category: 3. General
 order: 99
 ---
 ### Welcome to BuddhaNexus

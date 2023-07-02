@@ -4,6 +4,7 @@ description: Listen to Early Buddhist Texts (EBTs) and translations.
 link: https://voice.suttacentral.net
 img: voice.png
 img-alt: voice.suttacentral.net web page image
+category: 1. SuttaCentral
 order: 2
 ---
 ### Listen to the Early Buddhist Texts

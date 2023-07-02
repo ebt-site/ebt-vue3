@@ -4,6 +4,7 @@ description: Early Buddhist Texts (EBTs) and translations.
 link: https://suttacentral.net
 img: suttacentral.png
 img-alt: Suttacentral web page
+category: 1. SuttaCentral
 order: 1
 ---
 ### Early Buddhist Texts

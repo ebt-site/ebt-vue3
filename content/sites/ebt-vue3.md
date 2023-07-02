@@ -8,7 +8,8 @@ detail: Search for suttas by key phrases
 link: https://ebt-site.github.io/ebt-vue3
 img: https://ebt-site.github.io/ebt-vue3/img/amanda-flavell-9XSLoMlVhYU-unsplash.png
 img-alt: ebt-site image
-order: 3
+category: 2. EBT-Vue3
+order: 1
 ---
 
 ### EBT-Vue3
