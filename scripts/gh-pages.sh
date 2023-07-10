@@ -37,10 +37,16 @@ echo -e "$SCRIPT: copying new content"
 cp -r dist/* .
 ls -l
 
-echo -e "$SCRIPT: updating github"
-git add .
-git commit -m "gh-pages"
-git push
+git status | grep 'nothing to commit' > /dev/null; RC=$?
+if [ "$RC" == "0" ]; then
+  echo "$SCRIPT: Nothing to commit"
+else
+  echo -e "$SCRIPT: updating github"
+  git add .
+  git commit -m "gh-pages"
+  git push
+fi
+
 git checkout main
 
 echo -e "$SCRIPT END"
