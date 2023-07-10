@@ -38,11 +38,17 @@ ls -l
 
 echo -e "$SCRIPT: git add"
 git add .
-echo -e "$SCRIPT: git commit"
-git commit -m "gh-pages"
-echo -e "$SCRIPT: git push"
-git push
-echo -e "$SCRIPT: github updated"
-git checkout main
+
+git status | grep 'nothing to commit' > /dev/null; RC=$?
+if [ "$RC" != "0" ]; then
+  echo -e "$SCRIPT: git commit"
+  git commit -m "gh-pages"
+  echo -e "$SCRIPT: git push"
+  git push
+  echo -e "$SCRIPT: github updated"
+  git checkout main
+else
+  echo "$SCRIPT: Nothing to commit"
+fi
 
 echo -e "$SCRIPT: END `date`"
