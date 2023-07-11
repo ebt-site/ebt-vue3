@@ -12,7 +12,7 @@ fi
 
 git checkout main
 git status | grep "up to date"; RC=$?
-set -e # exit on error
+#set -e # exit on error
 if [ "$RC" != "0" ]; then
   echo "$SCRIPT: ERROR: local changes have not been pushed"
   exit 1
@@ -39,10 +39,10 @@ ls -l
 
 git status | grep 'nothing to commit' > /dev/null; RC=$?
 if [ "$RC" == "0" ]; then
-  echo "$SCRIPT: Nothing to commit"
+  echo -e "$SCRIPT: Nothing to commit"
 else
-  echo "$SCRIPT: adding any new content"
-  git add .
+  echo -e "$SCRIPT: adding any new content"
+  git add -A .
   echo -e "$SCRIPT: updating github"
   git commit -m "gh-pages"
   git push
