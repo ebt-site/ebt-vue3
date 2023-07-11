@@ -1,6 +1,17 @@
 import { default as EbtCard } from './ebt-card.mjs';
 import { default as EbtConfig } from '../ebt-config.mjs';
 
+const HTML_HEAD=[
+  'article class="ebt-wiki">',
+  '<script>',
+  '!function(){',
+  'for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++)',
+  'new URL(e[n].href).origin!==location.origin',
+  '&&',
+  'e[n].setAttribute("target","_blank")}();',
+  '</script>',
+].join(' ');
+
 export default class EbtMarkdown {
   constructor(opts={}) {
     const msg = 'EbtMarkdown.ctor() ';
@@ -11,13 +22,15 @@ export default class EbtMarkdown {
       basePath=config.basePath,
       wikiPath=EbtCard.CONTEXT_WIKI,
       renderer,
-      htmlHead='<article class="ebt-wiki">',
+      htmlHead=HTML_HEAD,
       htmlTail='</article>',
     } = opts;
     Object.assign(this, {  
       appName, basePath, wikiPath, renderer, htmlHead, htmlTail, config,
     });
   }
+
+  static get HTML_HEAD() { return HTML_HEAD; }
 
   static compareMetadata(a,b) {
     let acategory = a.category || '';

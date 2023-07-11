@@ -55,7 +55,7 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer, appName});
     let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
-      '<article class="ebt-wiki">',
+      EbtMarkdown.HTML_HEAD,
       `<h3>Title ${appName}</h3>`,
       '<p>text</p>',
       '</article>',
@@ -70,7 +70,7 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer});
     let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
-      '<article class="ebt-wiki">',
+      EbtMarkdown.HTML_HEAD,
       '<p>a <a href="https://x/y">link</a> b',
       '<a href="https://p/q">pq</a> c</p>',
       '</article>',
@@ -86,7 +86,7 @@ const renderer = new CmarkGfmRenderer();
     let emd = new EbtMarkdown({renderer});
     let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
-      '<article class="ebt-wiki">',
+      EbtMarkdown.HTML_HEAD,
       '<p>a table</p>',
       '<table>',
       '<thead>',
@@ -140,7 +140,7 @@ const renderer = new CmarkGfmRenderer();
     });
     let src = `${basePath}img/test-img`;
     should.deepEqual(htmlLines, [
-      '<article class="ebt-wiki">',
+      EbtMarkdown.HTML_HEAD,
       '<div class="ebt-wiki-heading">',
       ` <a href="${imgSrc}" target="_blank">`,
       `  <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
