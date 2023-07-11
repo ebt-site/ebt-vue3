@@ -3,7 +3,6 @@
   <v-sheet v-if="card.isOpen " :class="cardSheetClass"
     @focusin="onFocusIn"
     @click="onClickCard"
-    :title="`${card.id}`"
   >
     <div :id="`${card.topAnchor}`" class="card-top-anchor debug">
       {{card.topAnchor}}
@@ -11,7 +10,7 @@
     <div :class="cardClass">
       <v-card :id="card.id" variant="flat" >
         <template v-slot:title>
-          <v-icon class="card-icon">
+          <v-icon class="card-icon" :title="`${card.id}`">
             {{card.icon}}
           </v-icon>
           <span :id="card.titleAnchor">{{card.chipTitle($t)}}</span>
