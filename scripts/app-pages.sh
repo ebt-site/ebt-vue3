@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 
 echo -e "$SCRIPT: BEGIN `date`"

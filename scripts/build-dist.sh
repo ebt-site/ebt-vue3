@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 DIR=`dirname $0`
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 set -e
