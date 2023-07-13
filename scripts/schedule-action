@@ -32,6 +32,6 @@ git commit -am "$SCRIPT: updated package dependencies"
 VERSION=`npm version patch`
 echo -e "$SCRIPT: committing package version ${VERSION}"
 git push
-npu publish
+npm publish
 
 echo -e "${SCRIPT}: END `date`"
