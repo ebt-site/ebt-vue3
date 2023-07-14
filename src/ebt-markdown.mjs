@@ -12,7 +12,7 @@ const HTML_HEAD=[
   '</script>',
 ].join(' ');
 
-const HTML_TAIL = '</article>
+const HTML_TAIL = '</article>';
 
 export default class EbtMarkdown {
   constructor(opts={}) {
