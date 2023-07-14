@@ -2,7 +2,7 @@ import { default as EbtCard } from './ebt-card.mjs';
 import { default as EbtConfig } from '../ebt-config.mjs';
 
 const HTML_HEAD=[
-  'article class="ebt-wiki">',
+  '<article class="ebt-wiki">',
   '<script>',
   '!function(){',
   'for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++)',
@@ -11,6 +11,8 @@ const HTML_HEAD=[
   'e[n].setAttribute("target","_blank")}();',
   '</script>',
 ].join(' ');
+
+const HTML_TAIL = '</article>
 
 export default class EbtMarkdown {
   constructor(opts={}) {
@@ -23,7 +25,7 @@ export default class EbtMarkdown {
       wikiPath=EbtCard.CONTEXT_WIKI,
       renderer,
       htmlHead=HTML_HEAD,
-      htmlTail='</article>',
+      htmlTail=HTML_TAIL,
     } = opts;
     Object.assign(this, {  
       appName, basePath, wikiPath, renderer, htmlHead, htmlTail, config,
@@ -31,6 +33,7 @@ export default class EbtMarkdown {
   }
 
   static get HTML_HEAD() { return HTML_HEAD; }
+  static get HTML_TAIL() { return HTML_TAIL; }
 
   static compareMetadata(a,b) {
     let acategory = a.category || '';

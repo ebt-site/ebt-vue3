@@ -21,8 +21,8 @@ export default class Channel {
       srcDir,
       dstDir,
       config,
-      htmlHead = '<article class="ebt-wiki">',
-      htmlTail = '</article>',
+      htmlHead = EbtMarkdown.HTML_HEAD,
+      htmlTail = EbtMarkdown.HTML_TAIL,
       renderer = new CmarkGfmRenderer(),
       wikiPath = EbtConfig.homePath,
     } = opts;

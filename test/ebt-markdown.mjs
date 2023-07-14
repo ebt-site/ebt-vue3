@@ -156,7 +156,7 @@ const renderer = new CmarkGfmRenderer();
       ' </div><!--ebt-wiki-heading-text-->',
       '</div><!--ebt-wiki-heading-->',
       '<p>test-body</p>',
-      '</article>',
+      EbtMarkdown.HTMLTAIL,
     ]);
   });
   it("TESTTESTcompareMetadata()", ()=>{
