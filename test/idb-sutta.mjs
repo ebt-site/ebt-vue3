@@ -2,6 +2,7 @@ import { logger } from "log-instance/index.mjs";
 import should from "should";
 import "fake-indexeddb/auto";
 import { default as IdbSutta } from "../src/idb-sutta.mjs";
+import { SuttaRef } from "scv-esm/main.mjs";
 import * as Idb from "idb-keyval";
 
 logger.logLevel = 'warn';
@@ -142,13 +143,13 @@ const TESTMLDOC = {
     should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
   it("TESTTESTidbKey an1.2:1.1", ()=>{
-    let sutta = IdbSutta.create({
-      sutta_uid: 'an1.2',
-      lang: 'en',
-      author: 'sujato',
-      segments: [],
-    });
-    should(sutta.idbKey).equal('/sutta/and1.2.2/en/sujato');
+    let scid = 'an1.2:1.1'; // part of a ranged sutta document
+    let lang = 'en';
+    let author = 'sujato';
+    let sref = SuttaRef.create(`${scid}/${lang}/${author}`);
+    sref.segments = [];
+    let sutta = IdbSutta.create(sref);
+    should(sutta.idbKey).equal('/sutta/an1.1-10/en/sujato');
   });
   it("merge mlDoc lang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);

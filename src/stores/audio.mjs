@@ -133,7 +133,7 @@ export const useAudioStore = defineStore('audio', {
     },
     async playOne() {
       const msg = 'audio.playOne() ';
-      logger.debug(msg +'PLAY', this.audioScid);
+      logger.info(msg +'PLAY', this.audioScid);
       let completed = await this.playSegment();
       if (!completed) {
         // interrupted
@@ -416,16 +416,18 @@ export const useAudioStore = defineStore('audio', {
       return audioContext;
     },
     segAudioKey(idOrRef, settings=useSettingsStore()) {
+      const msg = "audio.segAudioKey() ";
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
-      let { sutta_uid, lang, author, segnum } = suttaRef;
+      let { sutta_uid, lang, author, segnum, scid } = suttaRef;
       author = author || Authors.langAuthor(lang);
       if (author == null) {
         let msg = `audio.segmentAudioUrl() author is required: ` +
           JSON.stringify(idOrRef);
         throw new Error(msg);
       }
-      let key = `${sutta_uid}:${segnum}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
+      let key = `${scid}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
+      console.log(msg, {key, idOrRef});
       return key;
     },
     async fetchSegmentAudio(idOrRef, settings=useSettingsStore()) {
@@ -516,8 +518,8 @@ export const useAudioStore = defineStore('audio', {
       try {
         let urlParts = url.split('/');
         let iKey = Math.max(0, urlParts.length-4);
-        let idbKey = urlParts.slice(iKey).join('/');
-        let abuf = await Idb.get(idbKey, SOUND_STORE());
+        let idbSegKey = urlParts.slice(iKey).join('/');
+        let abuf = await Idb.get(idbSegKey, SOUND_STORE());
         if (abuf) {
           logger.debug(msg, `=> cached`);
         } else {
@@ -525,7 +527,7 @@ export const useAudioStore = defineStore('audio', {
           let res = await fetch(url, { headers });
           logger.info(msg, `=> HTTP${res.status}`);
           abuf = await res.arrayBuffer();
-          await Idb.set(idbKey, abuf, SOUND_STORE());
+          await Idb.set(idbSegKey, abuf, SOUND_STORE());
         }
         logger.debug(`audio.fetchArrayBuffer() ${url}=> ${abuf.byteLength}B`);
         return abuf;
@@ -650,7 +652,8 @@ export const useAudioStore = defineStore('audio', {
       let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
       let [ scid, lang, author ] = routeCard?.location || {};
       let suttaRef = SuttaRef.create(scid, langTrans);
-      let { sutta_uid, segnum } = suttaRef;
+      let { sutta_uid, segnum, } = suttaRef;
+      console.log(msg, {sutta_uid, scid});
       try {
         volatile.waitBegin('ebt.loadingAudio');
 

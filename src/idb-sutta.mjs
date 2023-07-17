@@ -73,7 +73,7 @@ export default class IdbSutta {
       let e = new Error(msg);
       throw e;
     }
-    let { sutta_uid, lang, author} = sref;
+    let { sutta_uid, lang, author } = sref;
     return `/sutta/${sutta_uid}/${lang}/${author}`;
   }
 
