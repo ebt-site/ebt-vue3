@@ -141,6 +141,15 @@ const TESTMLDOC = {
     });
     should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
+  it("TESTTESTidbKey an1.2:1.1", ()=>{
+    let sutta = IdbSutta.create({
+      sutta_uid: 'an1.2',
+      lang: 'en',
+      author: 'sujato',
+      segments: [],
+    });
+    should(sutta.idbKey).equal('/sutta/and1.2.2/en/sujato');
+  });
   it("merge mlDoc lang", ()=>{
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
