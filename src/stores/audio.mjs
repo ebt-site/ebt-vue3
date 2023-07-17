@@ -427,7 +427,7 @@ export const useAudioStore = defineStore('audio', {
         throw new Error(msg);
       }
       let key = `${scid}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
-      console.log(msg, {key, idOrRef});
+      //console.log(msg, {key, idOrRef});
       return key;
     },
     async fetchSegmentAudio(idOrRef, settings=useSettingsStore()) {
@@ -465,7 +465,7 @@ export const useAudioStore = defineStore('audio', {
     segmentAudioUrl(idOrRef, settings=useSettingsStore()) {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
-      let { sutta_uid, lang, author, segnum } = suttaRef;
+      let { sutta_uid, lang, author, segnum, scid } = suttaRef;
       author = author || Authors.langAuthor(lang);
       if (author == null) {
         let msg = `segmentAudioUrl() author is required ${JSON.stringify(idOrRef)}`;
@@ -478,7 +478,7 @@ export const useAudioStore = defineStore('audio', {
         sutta_uid,
         lang,
         author,
-        `${sutta_uid}:${segnum}`,
+        scid,
         vnameTrans,
         vnameRoot,
       ].join('/'); 
@@ -549,6 +549,7 @@ export const useAudioStore = defineStore('audio', {
       }
       lang = lang.toLowerCase();
       let segRef = EbtSettings.segmentRef(idOrRef, settings);
+      //console.log(msg, {idOrRef, segRef});
       let suttaRef = SuttaRef.create(segRef, langTrans);
       let { author } = suttaRef;
       author = author || Authors.langAuthor(lang);

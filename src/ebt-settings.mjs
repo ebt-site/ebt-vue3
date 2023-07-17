@@ -290,12 +290,18 @@ export default class Settings {
   }
 
   static segmentRef(idOrRef, settings=Settings.INITIAL_STATE) {
-    let { sutta_uid, author, lang:langTrans, segnum='1.0' } = 
-      SuttaRef.create(idOrRef, settings.langTrans);
-    if (author == null) {
-      author = Authors.langAuthor(langTrans)
+    const msg = "EbtSettings.segmentRef() ";
+    let sref = SuttaRef.create(idOrRef, settings.langTrans);
+    let { lang } = sref;
+    if (!sref.segnum) {
+      sref.segnum = '1.0';
+      sref = SuttaRef.create(sref, lang);
     }
-    return SuttaRef.create({ sutta_uid, author, lang:langTrans, segnum });
+    if (!sref.author) {
+      sref.author = Authors.langAuthor(lang);
+      sref = SuttaRef.create(sref, lang);
+    }
+    return sref;
   }
 
 }

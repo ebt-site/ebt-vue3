@@ -142,7 +142,7 @@ const TESTMLDOC = {
     });
     should(sutta.idbKey).equal('/sutta/thig1.1/en/soma');
   });
-  it("TESTTESTidbKey an1.2:1.1", ()=>{
+  it("idbKey an1.2:1.1", ()=>{
     let scid = 'an1.2:1.1'; // part of a ranged sutta document
     let lang = 'en';
     let author = 'sujato';

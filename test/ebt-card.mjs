@@ -27,7 +27,7 @@ logger.logLevel = 'warn';
     should(card2.tab1Id).equal(card1.tab1Id);
     should(card2).properties(defaultProps);
   });
-  it("TESTTESTconstants", ()=>{
+  it("constants", ()=>{
     should(EbtCard.CONTEXT_DEBUG).equal('debug');
     should(EbtCard.CONTEXT_WIKI).equal('wiki');
     should(EbtCard.CONTEXT_SEARCH).equal('search');
@@ -56,7 +56,7 @@ logger.logLevel = 'warn';
     let card2 = new EbtCard(JSON.parse(json));
     should(card2).properties(card1);
   });
-  it("TESTTESTmatchPath() wiki context", async() => {
+  it("matchPath() wiki context", async() => {
     let context = EbtCard.CONTEXT_WIKI;
     let card0 = new EbtCard({ context: "" });
     let card1 = new EbtCard({ context, });
@@ -227,7 +227,7 @@ logger.logLevel = 'warn';
       should(cardSegB.matchPath(path)).equal(true);
     });
   });
-  it("TESTTESTpathToCard() content", ()=>{
+  it("pathToCard() content", ()=>{
     let cards = [];
     let { homePath } = EbtConfig;
     let nAdd = 0;

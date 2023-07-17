@@ -31,7 +31,7 @@ const MSDAY = 24*3600*MSSEC;
 const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
 
 
-(typeof describe === 'function') && describe("audio-store.mjs", function () {
+(typeof describe === 'function') && describe("stores/audio.mjs", function () {
   this.timeout(5*1000);
   beforeEach(() => {
     window.localStorage = global.localStorage
@@ -112,7 +112,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
     should(audio.nFetch).equal(nFetch0);
   });
-  it("langAudioUrl() pli", async()=>{
+  it("TESTTESTlangAudioUrl() pli", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;

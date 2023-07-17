@@ -129,7 +129,7 @@ import should from "should";
       'pt',
     ]);
   });
-  it("segmentRef()", ()=>{
+  it("TESTTESTsegmentRef()", ()=>{
     let langTrans = 'de';
     let author = 'sabbamitta';
     let settings = new Settings({langTrans});
