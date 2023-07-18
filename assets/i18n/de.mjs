@@ -282,7 +282,7 @@ export default {
     "speakSearchText": "Suchtext vorlesen",
     "speakTranslation": "Übersetzung sprechen",
     "storeSettingsInCookies": "Einstellungen erlauben (werden in Webbrowser-Cookies gespeichert)",
-    "swooshSound": "Rauschen",
+    "swooshSound": "wischendes Geräusch",
     "text": "Sutta-ID oder Suchtext eingeben",
     "textLayout": "Textgestaltung",
     "theme": "Hintergrundfarbe",
