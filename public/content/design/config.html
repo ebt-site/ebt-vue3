@@ -1,0 +1,64 @@
+<article class="ebt-wiki"> <script> !function(){ for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++) new URL(e[n].href).origin!==location.origin && e[n].setAttribute("target","_blank")}(); </script>
+<div class="ebt-wiki-heading">
+ <a href="https://unsplash.com/photos/PPeZwFWnWNE " target="_blank">
+  <img src="/ebt-vue3/img/faizan-saeed-PPeZwFWnWNE-unsplash.png" alt="Hummingbird reaching to drink nectar from flowers" title="Hummingbird reaching to drink nectar from flowers"/>
+ </a>
+ <div class="ebt-wiki-heading-text">
+  <div class="ebt-wiki-breadcrumbs">
+   <a href="/ebt-vue3/#/wiki/toc" >wiki</a>&nbsp;&gt;&nbsp;
+   <a href="/ebt-vue3/#/wiki/design/toc" >design</a>&nbsp;&gt;&nbsp;
+   config
+  </div><!--ebt-wiki-breadcrumbs-->
+  <h1>ebt-config</h1>
+  <div class="ebt-wiki-description">Configure EBT-Site for new repository</div>
+ </div><!--ebt-wiki-heading-text-->
+</div><!--ebt-wiki-heading-->
+<h3>Customize content</h3>
+<p>Before you can view your website, you'll need to configure it.
+Github allows you to change your website
+<a href="https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files">online</a>.
+Just open your browser and login to Github.</p>
+<p>To customize your website, you'll need to
+<a href="#/wiki/design/edit">edit</a>:</p>
+<p>Once you configure your website properly, you'll be able to view
+it and add your own wiki content.</p>
+<p>##E ebt-config.mjs</p>
+<p>The file '''ebt-config.mjs''' has several properties you will need to change.
+Be sure to use <a href="https://www.json.org/json-en.html">JSON syntax</a> properly!</p>
+<table>
+<thead>
+<tr>
+<th align="left">Property</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">appName</td>
+<td align="left">The site name (e.g., <code>EBT-Site</code>).</td>
+</tr>
+<tr>
+<td align="left">basePath</td>
+<td align="left">The URL base path for your site. Initially, this should be the Github repository name (e.g., &quot;/ebt-site3/&quot;). If you choose a custom Internet domain, change this to simply &quot;/&quot;.</td>
+</tr>
+<tr>
+<td align="left">github.account</td>
+<td align="left">The Github account name (e.g., &quot;sc-voice&quot;)</td>
+</tr>
+<tr>
+<td align="left">github.repository</td>
+<td align="left">The Github repository name (e.g., &quot;ebt-site3&quot;)</td>
+</tr>
+<tr>
+<td align="left">multilingual</td>
+<td align="left">(Optional) The two-letter language ISO code for your site. If specified, the users to your site will not have settings to change the web application language or the EBT translation language.</td>
+</tr>
+<tr>
+<td align="left">content.index</td>
+<td align="left">The file namve for customizing the file name used for category table of contents (e.g., &quot;toc&quot;)</td>
+</tr>
+</tbody>
+</table>
+<p>Commit your changes and verify them by viewing your website.</p>
+<p>Thu Jul 13 11:15:29 AM PDT 2023</p>
+</article>
