@@ -304,4 +304,57 @@ export default class Settings {
     return sref;
   }
 
+  static validate(state) {
+    const msg = "EbtSettings.validate() ";
+    let isValid = true;
+    let changed = null;
+    let error = null;
+    let {
+      langTrans,
+      showPali,
+      showReference,
+      showTrans,
+      speakPali,
+      speakTranslation,
+      vnameTrans,
+    } = state;
+
+    if (!speakPali && !speakTranslation) {
+      changed = Object.assign({speakPali:true}, changed);
+    }
+
+    if (!showReference && !showTrans && !showPali) {
+      changed = Object.assign({showPali:true}, changed);
+    }
+
+    vnameTrans = vnameTrans.toLowerCase();
+    let voiceTrans = VOICES.find(v=>v.name.toLowerCase() === vnameTrans);
+    if (voiceTrans.langTrans !== langTrans) {
+      voiceTrans = VOICES.find(v=>v.langTrans === langTrans);
+      vnameTrans = voiceTrans.name;
+      if (voiceTrans) {
+        changed = Object.assign({vnameTrans}, changed);
+      } else {
+        isValid = false;
+        error = new Error([
+          msg,
+          'No narrator for language:',
+          langTrans,
+          '. Using en/sujato.',
+        ].join(' '));
+        changed = Object.assign({voiceTrans:'sujato', langTrans:'en'}, changed);
+      }
+    }
+
+    if (changed) {
+      Object.assign(state, changed);
+    }
+
+    return {
+      isValid,
+      changed,
+      error,
+    }
+  }
+
 }

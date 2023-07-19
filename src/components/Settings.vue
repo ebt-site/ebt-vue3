@@ -44,7 +44,7 @@
           </v-expansion-panel-text>
         </v-expansion-panel><!--General-->
 
-        <v-expansion-panel><!--Languages-->
+        <v-expansion-panel v-if="!config.monolingual"><!--Languages-->
           <v-expansion-panel-title 
             expand-icon="mdi-dots-vertical" collapse-icon="mdi-dots-horizontal"
             >

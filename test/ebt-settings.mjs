@@ -1,13 +1,13 @@
-import { default as Settings } from "../src/ebt-settings.mjs";
+import { default as EbtSettings } from "../src/ebt-settings.mjs";
 import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
   it("default ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
-    var ebt = new Settings();
+    var ebt = new EbtSettings();
     should(ebt).properties({
-      audio: Settings.AUDIO.OGG,
+      audio: EbtSettings.AUDIO.OGG,
       clickVolume: 2,
       blockVolume: 2,
       swooshVolume: 2,
@@ -32,9 +32,9 @@ import should from "should";
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');
-      let ebt = new Settings();
+      let ebt = new EbtSettings();
       should(ebt).properties({
-        audio: Settings.AUDIO.OGG,
+        audio: EbtSettings.AUDIO.OGG,
         fullLine: false,
         ips: 6,
         langTrans: 'de',
@@ -52,7 +52,7 @@ import should from "should";
     }
   });
   it("INITIAL_STATE", async () => {
-    should(Settings.INITIAL_STATE).properties({
+    should(EbtSettings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
       clickVolume: 2,
@@ -83,7 +83,7 @@ import should from "should";
       vnameTrans: 'Amy',
 
     });
-    let cards = Settings.INITIAL_STATE.cards;
+    let cards = EbtSettings.INITIAL_STATE.cards;
     should(cards instanceof Array);
     should(cards.length).equal(0);
   });
@@ -98,7 +98,7 @@ import should from "should";
     let swooshVolume = 1;
     let showId = true;
     let showPali = false;
-    var ebt = new Settings({
+    var ebt = new EbtSettings({
       clickVolume,
       blockVolume,
       swooshVolume,
@@ -115,13 +115,13 @@ import should from "should";
     });
   });
   it("REF_LANGUAGES => reference languages", () => {
-    should.deepEqual(Settings.REF_LANGUAGES.map(tl => tl.code).sort(), [
+    should.deepEqual(EbtSettings.REF_LANGUAGES.map(tl => tl.code).sort(), [
       'de',
       'en',
     ]);
   });
   it("TRANS_LANGUAGES => translation languages", () => {
-    should.deepEqual(Settings.TRANS_LANGUAGES.map(tl => tl.code).sort(), [
+    should.deepEqual(EbtSettings.TRANS_LANGUAGES.map(tl => tl.code).sort(), [
       'cs',
       'de',
       'en',
@@ -132,31 +132,62 @@ import should from "should";
   it("TESTTESTsegmentRef()", ()=>{
     let langTrans = 'de';
     let author = 'sabbamitta';
-    let settings = new Settings({langTrans});
+    let settings = new EbtSettings({langTrans});
     let segnum = '1.0';
-    should(Settings.segmentRef("thig1.1", settings)).properties({
+    should(EbtSettings.segmentRef("thig1.1", settings)).properties({
       sutta_uid: 'thig1.1',
       lang: langTrans,
       author, 
       segnum,
     });
-    should(Settings.segmentRef("thig1.1:2.3/en/soma", settings)).properties({
+    should(EbtSettings.segmentRef("thig1.1:2.3/en/soma", settings)).properties({
       sutta_uid: 'thig1.1',
       lang: 'en',
       author: 'soma', 
       segnum: '2.3',
     });
-    should(Settings.segmentRef("thig1.1:2.3/en", settings)).properties({
+    should(EbtSettings.segmentRef("thig1.1:2.3/en", settings)).properties({
       sutta_uid: 'thig1.1',
       lang: 'en',
       author: 'sujato', 
       segnum: '2.3',
     });
-    should(Settings.segmentRef("thig1.1:2.3/pli", settings)).properties({
+    should(EbtSettings.segmentRef("thig1.1:2.3/pli", settings)).properties({
       sutta_uid: 'thig1.1',
       lang: 'pli',
       author: 'ms', 
       segnum: '2.3',
+    });
+  });
+  it("TESTTESTvalidate()", ()=>{
+    let state = {
+      langTrans: 'de',
+      vnameTrans: 'Amy',
+      speakPali: false,
+      speakTrans: false,
+      showPali: false,
+      showTranslation: false,
+      showReference: false,
+    }
+    let res = EbtSettings.validate(state);
+    should(res.isValid).equal(true);
+    should(!!res.error).equal(false);
+    should.deepEqual(res.changed, {
+      showPali:true, speakPali:true, vnameTrans:'Vicki'});
+    should.deepEqual(state, {
+      langTrans: 'de',
+      vnameTrans: 'Vicki',
+      speakPali: true,
+      speakTrans: false,
+      showPali: true,
+      showTranslation: false,
+      showReference: false,
+    });
+
+    should.deepEqual(EbtSettings.validate(state), {
+      isValid: true,
+      changed: null,
+      error: null,
     });
   });
 

@@ -171,7 +171,7 @@
       volatile.config = config;
 
       // wait for Settings to load
-      await settings.loadSettings();
+      await settings.loadSettings(config);
       nextTick(()=>{
         let { clickElt } = this;
         audio.clickElt = clickElt;

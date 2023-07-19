@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { logger } from 'log-instance/index.mjs';
 import Utils from "../utils.mjs";
 import { SuttaRef } from 'scv-esm/main.mjs';
-import { default as Settings } from "../ebt-settings.mjs";
+import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as EbtCard } from "../ebt-card.mjs";
 import * as Idb from "idb-keyval"; 
 
@@ -42,17 +42,22 @@ function elementInViewport(elt, root = document.documentElement) {
 export const useSettingsStore = defineStore('settings', {
   state: () => {
     const msg = 'settings.useSettingsStore() ';
-    let settings = Utils.assignTyped({loaded:false}, Settings.INITIAL_STATE);
+    let settings = Utils.assignTyped({loaded:false}, EbtSettings.INITIAL_STATE);
     return settings;
   },
   actions: {
-    async loadSettings() {
+    async loadSettings(config) {
       let msg = 'settings.loadSettings() ';
       if (this.loaded) {
         return this;
       }
-      let state = Utils.assignTyped({}, Settings.INITIAL_STATE);
+      let state = Utils.assignTyped({}, EbtSettings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
+      if (config.monolingual) {
+        savedState.langTrans = config.monolingual;
+        savedState.locale = config.monolingual;
+        EbtSettings.validate(savedState);
+      }
       if (savedState) {
         try {
           let { cards, logLevel } = savedState;
@@ -64,12 +69,12 @@ export const useSettingsStore = defineStore('settings', {
             cards[i] = new EbtCard(card);
           });
         } catch(e) {
-          logger.warn(`SettingsStore.loadSettings()`, savedState, e.message);
+          logger.warn(msg,  savedState, e.message);
           savedState = null;
         }
       }
       if (savedState) {
-        Utils.assignTyped(this, savedState, Settings.INITIAL_STATE);
+        Utils.assignTyped(this, savedState, EbtSettings.INITIAL_STATE);
       }
       logger.info(msg, 'loaded');
       this.loaded = true;
@@ -92,11 +97,20 @@ export const useSettingsStore = defineStore('settings', {
       return card;
     },
     saveSettings() {
-      let saved = Utils.assignTyped({}, this, Settings.INITIAL_STATE);
+      const msg = "settings.saveSettings() ";
+      let saved = Utils.assignTyped({}, this, EbtSettings.INITIAL_STATE);
       logger.logLevel = saved.logLevel;
+      let validRes = EbtSettings.validate(saved);
+      if (validRes.changed) {
+        logger.info(msg, "settings changed", validRes.changed);
+        Object.assign(this, validRes.changed);
+      }
+      if (validRes.error) {
+        logger.warn(msg, error);
+      }
       let json = JSON.stringify(saved);
       Idb.set(SETTINGS_KEY, JSON.parse(json));
-      logger.debug("SettingsStore.saveSettings()");
+      logger.debug(msg, saved);
     },
     removeCard(card, config) {
       const msg = "settings.removeCard() ";
@@ -177,10 +191,11 @@ export const useSettingsStore = defineStore('settings', {
       return true; // element originally not in viewport
     },
     clear() {
+      const msg = 'settings.clear() ';
       delete localStorage.settings; // legacy
-      Utils.assignTyped(this, Settings.INITIAL_STATE);
+      Utils.assignTyped(this, EbtSettings.INITIAL_STATE);
       this.saveSettings();
-      logger.debug(`SettingsStore.clear()`, this);
+      logger.debug(msg, this);
     },
     openCard(card) {
       if (card.IsOpen) {
@@ -233,7 +248,7 @@ export const useSettingsStore = defineStore('settings', {
     servers: (state)=>{ 
       let { window } = globalThis;
       let isDev = window && window.location.host.startsWith('localhost');
-      let servers = Settings.SERVERS.filter(svr => !svr.dev || isDev);
+      let servers = EbtSettings.SERVERS.filter(svr => !svr.dev || isDev);
       return servers;
     },
     server: (state)=>{
