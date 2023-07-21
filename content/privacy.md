@@ -2,7 +2,7 @@
 title: Privacy
 description: EBT-Sites privacy policy
 img: jason-dent-JFk0dVyvdvw-unsplash.png
-link: https://unsplash.com/photos/JFk0dVyvdvw`
+link: https://unsplash.com/photos/JFk0dVyvdvw
 img-alt: Privacy please
 category: 1. General
 order: 1
