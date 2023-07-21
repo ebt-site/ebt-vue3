@@ -15,6 +15,7 @@ if [ "$RC" == "0" ]; then
 fi
 
 echo "$SCRIPT: committing..."
+git add -A
 git commit -am "$SCRIPT"
 npm version patch
 VERSION=`$DIR/version`
