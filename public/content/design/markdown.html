@@ -1,0 +1,84 @@
+<article class="ebt-wiki"> <script> !function(){ for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++) new URL(e[n].href).origin!==location.origin && e[n].setAttribute("target","_blank")}(); </script>
+<div class="ebt-wiki-heading">
+ <a href="https://www.pexels.com/photo/black-pencils-and-design-word-6444/" target="_blank">
+  <img src="/ebt-vue3/img/pexels-kaboompics-com-6444.png" alt="undefined" title="undefined"/>
+ </a>
+ <div class="ebt-wiki-heading-text">
+  <div class="ebt-wiki-breadcrumbs">
+   <a href="/ebt-vue3/#/wiki/toc" >wiki</a>&nbsp;&gt;&nbsp;
+   <a href="/ebt-vue3/#/wiki/design/toc" >design</a>&nbsp;&gt;&nbsp;
+   markdown
+  </div><!--ebt-wiki-breadcrumbs-->
+  <h1>Designing with Markdown</h1>
+  <div class="ebt-wiki-description">Style your wiki using Markdown</div>
+ </div><!--ebt-wiki-heading-text-->
+</div><!--ebt-wiki-heading-->
+<h2>Markdown</h2>
+<p>EBT website wikis are written using
+<a href="https://www.markdownguide.org/basic-syntax">Github Markdown</a>.</p>
+<p>NOTE: The Markdown processor used by EBT websites
+has less features than Gihub Markdown but
+supports HTML5 elements.</p>
+<h3>Mardown metadata</h3>
+<p>At the top of each Markdown file is a <em>metadata</em> block which
+describes the page.</p>
+<table>
+<thead>
+<tr>
+<th align="left">property</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">title</td>
+<td align="left">wiki page title</td>
+</tr>
+<tr>
+<td align="left">description</td>
+<td align="left">short description shown under title</td>
+</tr>
+<tr>
+<td align="left">detail</td>
+<td align="left">(optional, multiple) detailed description items</td>
+</tr>
+<tr>
+<td align="left">img</td>
+<td align="left">file name of image</td>
+</tr>
+<tr>
+<td align="left">alt</td>
+<td align="left">image accessible title</td>
+</tr>
+<tr>
+<td align="left">link</td>
+<td align="left">image source and/or attribution</td>
+</tr>
+<tr>
+<td align="left">category</td>
+<td align="left">category title for grouping in wiki table of contents</td>
+</tr>
+<tr>
+<td align="left">order</td>
+<td align="left">order within category (alphabetical otherwise)</td>
+</tr>
+</tbody>
+</table>
+<h2>Images</h2>
+<p>Each wiki page has its own image.
+You can also add your own images.
+Add new images to the <kbd>public/img</kbd> folder.</p>
+<p>To preserve disk space and network performance, keep your images small.
+For example, each wiki page header image should be 250wx200h pixels, preferably in PNG format.</p>
+<h2>HTML5</h2>
+<p>You can include many HTML5 elements such as <code>&lt;audio&gt;</code> on your
+EBT site wiki pages</p>
+<pre><code>&lt;audio controls src=&quot;audio/simple-bell.ogg&quot;/&gt;
+</code></pre>
+<audio controls src="audio/simple-bell.ogg">
+</audio>
+<h2>Emojis</h2>
+<p>Copy emojis from <a href="https://emojipedia.org/red-heart/">emojipedia</a>.
+For example, here is a red heart:</p>
+<p>❤️</p>
+</article>

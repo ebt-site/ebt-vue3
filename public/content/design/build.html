@@ -16,7 +16,8 @@
   </ul>
  </div><!--ebt-wiki-heading-text-->
 </div><!--ebt-wiki-heading-->
-<p>Github automatically rebuilds your EBT-Site:</p>
+<p>Github automatically rebuilds your EBT-Site using
+<a href="https://github.com/features/actions">Github actions</a>:</p>
 <ul>
 <li><strong>push-action</strong>: invoked when content is added or changed.</li>
 <li><strong>scheduled-action</strong>: invoked at regular intervals during the day</li>
@@ -32,9 +33,13 @@ with new content. These are typically updates updates for:</p>
 <h3>Markdown files</h3>
 <p>The <em>push-action</em> automation generates HTML files for display on the web.
 For example, the markdown file</p>
-<p><code>content/welcome.md</code></p>
+<ul>
+<li><code>content/welcome.md</code></li>
+</ul>
 <p>will be processed into</p>
-<p><code>public/content/welcome.html</code></p>
+<ul>
+<li><code>public/content/welcome.html</code></li>
+</ul>
 <p>The HTML files will then be used to update your website.</p>
 <h3>Images and Audio</h3>
 <p>Each image and audio file will be given its own URL for the website.
