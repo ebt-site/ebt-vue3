@@ -138,6 +138,10 @@ a:focus {
   padding-top: 0.8em;
   padding-bottom: 0.4em;
 }
+.ebt-wiki td {
+  vertical-align: top;
+  padding-right: 0.2em;
+}
 .ebt-wiki-heading {
   display: flex;
   flex-flow: row wrap;
