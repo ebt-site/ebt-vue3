@@ -9,7 +9,8 @@ category: 1. General
 order: 2
 ---
 
-Github automatically rebuilds your EBT-Site:
+Github automatically rebuilds your EBT-Site using 
+[Github actions](https://github.com/features/actions):
 
 * **push-action**: invoked when content is added or changed.
 * **scheduled-action**: invoked at regular intervals during the day
