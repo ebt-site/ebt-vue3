@@ -25,8 +25,14 @@ with new content. These are typically updates updates for:
 
 ### Markdown files
 The *push-action* automation generates HTML files for display on the web.
-For example, the markdown file ```content/welcome.md``` will be
-processed into ```public/content/welcome.html```.
+For example, the markdown file 
+
+```content/welcome.md``` 
+
+will be processed into 
+
+```public/content/welcome.html```
+
 The HTML files will then be used to update your website.
 
 ### Images and Audio
@@ -48,6 +54,4 @@ URLs in your Markdown files.
 Schedule actions run periodically to:
 
 * Update EBT content from [SuttaCentral](https://suttacentral.net). This includes new translations as well as translation updates from Bilara
-* Update EBT-Site software with security fixes and feature updates
-
-EBT-Site version number is displayed in *Settings* on the *Advanced* section title.
+* Update EBT-Site software with security fixes and feature updates. NOTE: EBT-Site version number is displayed in *Settings* on the *Advanced* section title.
