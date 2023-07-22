@@ -1,0 +1,56 @@
+<article class="ebt-wiki"> <script> !function(){ for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++) new URL(e[n].href).origin!==location.origin && e[n].setAttribute("target","_blank")}(); </script>
+<div class="ebt-wiki-heading">
+ <a href="https://www.pexels.com/photo/black-and-white-building-city-commuter-417171/" target="_blank">
+  <img src="/ebt-vue3/img/pexels-pixabay-417171.png" alt="Train station" title="Train station"/>
+ </a>
+ <div class="ebt-wiki-heading-text">
+  <div class="ebt-wiki-breadcrumbs">
+   <a href="/ebt-vue3/#/wiki/toc" >wiki</a>&nbsp;&gt;&nbsp;
+   <a href="/ebt-vue3/#/wiki/design/toc" >design</a>&nbsp;&gt;&nbsp;
+   build
+  </div><!--ebt-wiki-breadcrumbs-->
+  <h1>Build process</h1>
+  <div class="ebt-wiki-description">Content build automation</div>
+  <ul>
+   <li>Sat Jul 22 09: 27: 46 AM PDT 2023</li>
+  </ul>
+ </div><!--ebt-wiki-heading-text-->
+</div><!--ebt-wiki-heading-->
+<p>Github automatically rebuilds your EBT-Site:</p>
+<ul>
+<li><strong>push-action</strong>: invoked when content is added or changed.</li>
+<li><strong>scheduled-action</strong>: invoked at regular intervals during the day</li>
+</ul>
+<h2>Push actions</h2>
+<p>The <em>push-action</em> automation is invoked whenever your Github repository is updated
+with new content. These are typically updates updates for:</p>
+<ul>
+<li>Markdown files (<code>content/...</code>)</li>
+<li>Images (<code>public/img/...</code>)</li>
+<li>Audio (<code>public/audio/...</code>)</li>
+</ul>
+<h3>Markdown files</h3>
+<p>The <em>push-action</em> automation generates HTML files for display on the web.
+For example, the markdown file <code>content/welcome.md</code> will be
+processed into <code>public/content/welcome.html</code>.
+The HTML files will then be used to update your website.</p>
+<h3>Images and Audio</h3>
+<p>Each image and audio file will be given its own URL for the website.
+Suppose you have the following EBT-Site:</p>
+<ul>
+<li>Github account &quot;sc-voice&quot;</li>
+<li>Github repository &quot;ebt-site3&quot;</li>
+</ul>
+<p>If you have an image at <code>public/img/wheel.png</code> in your repository, then
+the image URL will be <code>https://sc-voice.github.io/ebt-site3/img/wheel.png</code>.
+Like <a href="https://sc-voice.github.io/ebt-site3/img/wheel.png">this</a>.</p>
+<p>You can add images and audio to your EBT-Site simply by using the appropriate
+URLs in your Markdown files.</p>
+<h2>Scheduled actions</h2>
+<p>Schedule actions run periodically to:</p>
+<ul>
+<li>Update EBT content from <a href="https://suttacentral.net">SuttaCentral</a>. This includes new translations as well as translation updates from Bilara</li>
+<li>Update EBT-Site software with security fixes and feature updates</li>
+</ul>
+<p>EBT-Site version number is displayed in <em>Settings</em> on the <em>Advanced</em> section title.</p>
+</article>
