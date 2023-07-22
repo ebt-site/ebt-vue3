@@ -5,7 +5,7 @@ detail: Sat Jul 22 09:27:46 AM PDT 2023
 img: pexels-pixabay-417171.png
 img-alt: Train station
 link: https://www.pexels.com/photo/black-and-white-building-city-commuter-417171/
-category: 1. General
+category: 2. Advanced
 order: 2
 ---
 

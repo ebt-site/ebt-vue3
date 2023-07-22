@@ -4,7 +4,7 @@ description: Style your wiki using Markdown
 img: pexels-kaboompics-com-6444.png
 alt: Generic picture of design
 link: https://www.pexels.com/photo/black-pencils-and-design-word-6444/
-category: github
+category: 1. General
 order: 4
 ---
 
