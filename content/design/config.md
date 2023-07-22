@@ -1,6 +1,7 @@
 ---
 title: ebt-config
 description: Configure EBT-Site for new repository
+detail: Sat Jul 22 06:15:52 AM PDT 2023
 img: faizan-saeed-PPeZwFWnWNE-unsplash.png
 img-alt: Hummingbird reaching to drink nectar from flowers
 link: https://unsplash.com/photos/PPeZwFWnWNE 
@@ -32,9 +33,8 @@ Be sure to use [JSON syntax](https://www.json.org/json-en.html) properly!
 | basePath | The URL base path for your site. Initially, this should be the Github repository name (e.g., "/ebt-site3/"). If you choose a custom Internet domain, change this to simply "/".
 | github.account | The Github account name (e.g., "sc-voice") 
 | github.repository | The Github repository name (e.g., "ebt-site3") 
-| multilingual | (Optional) The two-letter language ISO code for your site. If specified, the users to your site will not have settings to change the web application language or the EBT translation language.
-| content.index | The file namve for customizing the file name used for category table of contents (e.g., "toc")
+| multilingual | (Optional) The default is ```false```, which allows language selection. If a two-letter language ISO code is specified (e.g., "de"), the users to your site will not have settings to change the web application language or the EBT translation language. The website will be rendered in the language specified.
+| content.index | (Optional) The file name for customizing the file name used for category table of contents. The default is "toc".
 
 Commit your changes and verify them by viewing your website.
 
-Thu Jul 13 11:15:29 AM PDT 2023

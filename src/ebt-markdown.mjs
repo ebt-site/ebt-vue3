@@ -127,7 +127,7 @@ export default class EbtMarkdown {
     let spaces = '';
     let { 
       description,
-      detail,
+      detail=[],
       title="(no-title)", 
       img, 
       'img-alt':imgAlt,
@@ -158,19 +158,28 @@ export default class EbtMarkdown {
     breadcrumbs.push(`   ${pathParts[iLast]}`);
     breadcrumbs.push('  </div><!--ebt-wiki-breadcrumbs-->');
 
+    let htmlDetail = detail.map(d=>`   <li>${d}</li>`);
     // text block
     let textHtml = [
-      ' <div class="ebt-wiki-heading-text">',
       ...breadcrumbs,
       `  <h1>${title}</h1>`,
       `  <div class="ebt-wiki-description">${description}</div>`,
-      ' </div><!--ebt-wiki-heading-text-->',
     ];
+    if (htmlDetail.length) {
+      textHtml = [
+        ...textHtml,
+        `  <ul>`,
+        ...htmlDetail,
+        `  </ul>`,
+      ];
+    }
 
     return [
       '<div class="ebt-wiki-heading">',
       ...imgHtml,
+      ' <div class="ebt-wiki-heading-text">',
       ...textHtml,
+      ' </div><!--ebt-wiki-heading-text-->',
       '</div><!--ebt-wiki-heading-->',
     ];
   }

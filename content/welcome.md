@@ -16,4 +16,6 @@ EBT-Vue3 is the development framework used for all EBT-Sites.
 
 [Sites](#/wiki/sites/toc)
 
+[Design](#/wiki/design/toc)
+
 Sat Jul 22 05:58:11 AM PDT 2023

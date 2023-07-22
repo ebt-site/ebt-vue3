@@ -105,7 +105,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("html heading", async ()=>{
+  it("TESTTESThtml heading", async ()=>{
     let appName = "TEST_APPNAME";
     let imgSrc = "test-img-src";
     let markdown = [
@@ -117,6 +117,60 @@ const renderer = new CmarkGfmRenderer();
       'link: test-img-link',
       'unknown-key: test-unknown',
       'description: test-description ${appName}',
+      'category: test-category',
+      '---',
+      'test-body',
+      '',
+    ].join('\n');
+    let basePath = '/test-basePath/';
+    let wikiBase = 'test-wikiPath';
+    let wikiPath = `${wikiBase}/a/b`;
+    let emd = new EbtMarkdown({basePath, wikiPath, renderer, appName});
+    let delimiter = '&nbsp;&gt;&nbsp;';
+    let { metadata, htmlLines } = await emd.render(markdown);
+    let heading = emd.htmlHeading(markdown);
+    should(metadata).properties({
+      title: 'test-title',
+      img: 'test-img',
+      'img-alt': 'test-img-alt',
+      'unknown-key': 'test-unknown',
+      category: 'test-category',
+    });
+    let src = `${basePath}img/test-img`;
+    should.deepEqual(htmlLines, [
+      EbtMarkdown.HTML_HEAD,
+      '<div class="ebt-wiki-heading">',
+      ` <a href="${imgSrc}" target="_blank">`,
+      `  <img src="${src}" alt="test-img-alt" title="test-img-alt"/>`,
+      ' </a>',
+      ' <div class="ebt-wiki-heading-text">',
+      '  <div class="ebt-wiki-breadcrumbs">',
+      `   <a href="${basePath}#/${wikiBase}/toc" >test-wikiPath</a>${delimiter}`,
+      `   <a href="${basePath}#/${wikiBase}/a/toc" >a</a>${delimiter}`,
+      '   b',
+      '  </div><!--ebt-wiki-breadcrumbs-->',
+      '  <h1>test-title</h1>',
+      `  <div class="ebt-wiki-description">test-description ${appName}</div>`,
+      ' </div><!--ebt-wiki-heading-text-->',
+      '</div><!--ebt-wiki-heading-->',
+      '<p>test-body</p>',
+      EbtMarkdown.HTML_TAIL,
+    ]);
+  });
+  it("TESTTESThtml heading optional", async ()=>{
+    let appName = "TEST_APPNAME";
+    let imgSrc = "test-img-src";
+    let markdown = [
+      '---',
+      'title: test-title',
+      'img: test-img',
+      'img-alt: test-img-alt',
+      `img-src: ${imgSrc}`,
+      'link: test-img-link',
+      'unknown-key: test-unknown',
+      'description: test-description ${appName}',
+      'detail: test-detail-1',
+      'detail: test-detail-2',
       'category: test-category',
       'order: 42',
       '---',
@@ -153,6 +207,10 @@ const renderer = new CmarkGfmRenderer();
       '  </div><!--ebt-wiki-breadcrumbs-->',
       '  <h1>test-title</h1>',
       `  <div class="ebt-wiki-description">test-description ${appName}</div>`,
+      `  <ul>`,
+      `   <li>test-detail-1</li>`,
+      `   <li>test-detail-2</li>`,
+      `  </ul>`,
       ' </div><!--ebt-wiki-heading-text-->',
       '</div><!--ebt-wiki-heading-->',
       '<p>test-body</p>',
