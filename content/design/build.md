@@ -28,11 +28,11 @@ with new content. These are typically updates updates for:
 The *push-action* automation generates HTML files for display on the web.
 For example, the markdown file 
 
-```content/welcome.md``` 
+* ```content/welcome.md``` 
 
 will be processed into 
 
-```public/content/welcome.html```
+* ```public/content/welcome.html```
 
 The HTML files will then be used to update your website.
 
