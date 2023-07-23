@@ -53,11 +53,6 @@ export const useSettingsStore = defineStore('settings', {
       }
       let state = Utils.assignTyped({}, EbtSettings.INITIAL_STATE);
       let savedState = await Idb.get(SETTINGS_KEY);
-      if (config.monolingual) {
-        savedState.langTrans = config.monolingual;
-        savedState.locale = config.monolingual;
-        EbtSettings.validate(savedState);
-      }
       if (savedState) {
         try {
           let { cards, logLevel } = savedState;
@@ -75,6 +70,11 @@ export const useSettingsStore = defineStore('settings', {
       }
       if (savedState) {
         Utils.assignTyped(this, savedState, EbtSettings.INITIAL_STATE);
+      }
+      if (config.monolingual) {
+        this.langTrans = config.monolingual;
+        this.locale = config.monolingual;
+        EbtSettings.validate(this);
       }
       logger.info(msg, 'loaded');
       this.loaded = true;
