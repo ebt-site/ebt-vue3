@@ -8,7 +8,10 @@ category: 1. General
 order: 1
 ---
 
-EBT-Vue3 is the development framework used for all EBT-Sites.
+EBT-Vue3 displayes Early Buddhists Texts from [SuttaCentral](https://suttacentral.net).
+However, EBT-Vue3 is the development framework used for all EBT-Sites.
+If you are looking for an EBT-Site, see 
+[site.sc-voice.net](https://site.sc-voice.net) instead.
 
 ### In progress
 

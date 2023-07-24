@@ -132,6 +132,7 @@ export const useVolatileStore = defineStore('volatile', {
           logger.error(msg, {wikiPath, href});
         }
       }
+
       this.homeHtml = html;
       return html;
     },

@@ -62,17 +62,21 @@ const renderer = new CmarkGfmRenderer();
     ]);
     should(emd.metadata).equal(undefined);
   });
-  it("link", async ()=>{
+  it("TESTTESTlink", async ()=>{
     let markdown = [
-      'a [link](https://x/y) b',
-      '<a href="https://p/q">pq</a> c',
+      'a [link](https://x/y) external',
+      '<a href="https://p/q">pq</a> external',
+      'a [link](/z1) internal',
+      '<a href="z2">pq</a> internal',
     ].join('\n');
     let emd = new EbtMarkdown({renderer});
     let { htmlLines } = await emd.render(markdown);
     should.deepEqual(htmlLines, [
       EbtMarkdown.HTML_HEAD,
-      '<p>a <a href="https://x/y">link</a> b',
-      '<a href="https://p/q">pq</a> c</p>',
+      '<p>a <a href="https://x/y" target="_blank">link</a> external',
+      '<a href="https://p/q" target="_blank">pq</a> external',
+      'a <a href="/z1">link</a> internal',
+      '<a href="z2">pq</a> internal</p>',
       '</article>',
     ]);
   });

@@ -49,7 +49,7 @@
     "dev": "vite",
     "serve": "vite preview",
     "build:dist": "scripts/build-dist.sh",
-    "build:html": "scripts/build-html.sh",
+    "build:html": "scripts/app-html.sh",
     "build:messages": "node scripts/build-messages.mjs > src/auto/messages.mjs",
     "build:docker": "scripts/build-docker.sh",
     "preview": "vite preview",

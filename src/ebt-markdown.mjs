@@ -100,6 +100,7 @@ export default class EbtMarkdown {
     }
 
     let html = await renderer.render(md);
+    html = this.processLinks(html);
     let htmlLines = html.trim().split('\n');
     
     let heading = this.htmlHeading(metadata);
@@ -113,6 +114,19 @@ export default class EbtMarkdown {
       metadata,
       htmlLines,
     }
+  }
+
+  processLinks(html) {
+    // open external links in separate tab
+    let links = html.split('<a href="').map(h=>{
+      if (h.match(/^https:\/\//)) {
+        return h.match(/target="_blank/) 
+          ? h
+          : h.replace(">", ' target="_blank">');
+      } 
+      return h;
+    });
+    return links.join('<a href="');
   }
 
   htmlHeading(metadata) {
