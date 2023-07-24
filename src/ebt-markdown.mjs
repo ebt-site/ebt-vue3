@@ -3,13 +3,6 @@ import { default as EbtConfig } from '../ebt-config.mjs';
 
 const HTML_HEAD=[
   '<article class="ebt-wiki">',
-  '<script>',
-  '!function(){',
-  'for(var e=document.body.getElementsByTagName("a"),t=e.length,n=0;n<t;n++)',
-  'new URL(e[n].href).origin!==location.origin',
-  '&&',
-  'e[n].setAttribute("target","_blank")}();',
-  '</script>',
 ].join(' ');
 
 const HTML_TAIL = '</article>';
