@@ -1,7 +1,5 @@
 #!/bin/bash
 DIR=`dirname $0`; 
-APPDIR="$DIR/.."
-pushd $APPDIR
 SCRIPT=`basename $0 | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 echo -e "${SCRIPT}: BEGIN `date`"
 
