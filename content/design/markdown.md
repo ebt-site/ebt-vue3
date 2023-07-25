@@ -35,20 +35,25 @@ describes the page.
 
 Each wiki page has its own image. 
 You can also add your own images.
-Add new images to the <kbd>public/img</kbd> folder.
+Add new images to the following folder:
+
+* <kbd>public/img</kbd> folder.
 
 To preserve disk space and network performance, keep your images small.
 For example, each wiki page header image should be 250wx200h pixels, preferably in PNG format.
 
 ## HTML5
 You can include many HTML5 elements such as `<audio>` on your
-EBT site wiki pages
+EBT site wiki pages. 
+For example, if you have an audio file at:
 
-```
+* ```public/audio```
+
+Then you can add the following HTML to any of your Markdown files:
+
+* ``` <audio controls src="audio/simple-bell.ogg"/> ```
+
 <audio controls src="audio/simple-bell.ogg"/>
-```
-<audio controls src="audio/simple-bell.ogg">
-</audio>
 
 ## Emojis
 Copy emojis from [emojipedia](https://emojipedia.org/red-heart/).

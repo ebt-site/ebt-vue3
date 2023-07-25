@@ -43,9 +43,16 @@ Suppose you have the following EBT-Site:
 * Github account "sc-voice"
 * Github repository "ebt-site3"
 
-If you have an image at ```public/img/wheel.png``` in your repository, then
-the image URL will be ```https://sc-voice.github.io/ebt-site3/img/wheel.png```.
-Like [this](https://sc-voice.github.io/ebt-site3/img/wheel.png).
+Suppose you have an image in your repository at:
+
+* ```public/img/wheel.png``` 
+
+Then the corresponding image URL will be 
+
+* ```https://sc-voice.github.io/ebt-site3/img/wheel.png```.
+
+And the resulting image will be like
+[this](https://sc-voice.github.io/ebt-site3/img/wheel.png).
 
 You can add images and audio to your EBT-Site simply by using the appropriate
 URLs in your Markdown files.
