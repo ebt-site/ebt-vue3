@@ -47,7 +47,7 @@ You can include many HTML5 elements such as `<audio>` on your
 EBT site wiki pages. 
 For example, if you have an audio file at:
 
-* ```public/audio```
+* ```public/audio/simple-bell.ogg```
 
 Then you can add the following HTML to any of your Markdown files:
 
