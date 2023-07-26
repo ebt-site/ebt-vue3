@@ -127,9 +127,16 @@ export const useVolatileStore = defineStore('volatile', {
           html = await res.text();
           logger.info(msg, {wikiPath, href, res});
         } else {
-          alertHtml[1] += `<b>${href}</b>`;
-          this.alert(msg, alertMsg, alertHtml.join('\n'));
-          logger.error(msg, {wikiPath, href});
+          let altUrl = config.homePath.replace(/^\/?#?/, '');
+          logger.warn(msg, `Could not fetch:`, href);
+          let resAlt = await fetch(altUrl);
+          if (res.ok) {
+            logger.info(msg, "Using alternate url", altUrl);
+          } else {
+            alertHtml[1] += `<b>${altUrl}</b>`;
+            this.alert(msg, alertMsg, alertHtml.join('\n'));
+            logger.warn(msg, {wikiPath, href, altUrl});
+          }
         }
       }
 
