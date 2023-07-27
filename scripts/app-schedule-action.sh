@@ -23,4 +23,6 @@ VERSION=`npm version patch`
 echo -e "$SCRIPT: committing package version ${VERSION}"
 git push
 
+$DIR/app-push-action.sh
+
 echo -e "${SCRIPT}: END `date`"
