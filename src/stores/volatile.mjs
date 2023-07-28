@@ -127,15 +127,18 @@ export const useVolatileStore = defineStore('volatile', {
           html = await res.text();
           logger.info(msg, {wikiPath, href, res});
         } else {
-          let altUrl = config.homePath.replace(/^\/?#?/, '');
-          logger.warn(msg, `Could not fetch:`, href);
-          let resAlt = await fetch(altUrl);
-          if (res.ok) {
-            logger.info(msg, "Using alternate url", altUrl);
+          logger.warn(msg, `Could not fetch HTML for wikiPath:`, {wikiPath,href});
+          let altWikiPath = config.homePath.replace(/\/?#?\/?wiki\//, '');
+          let defaultUrl = `${config.basePath}content/${altWikiPath}.html`
+          let resDefault = await fetch(defaultUrl);
+          if (resDefault.ok) {
+            logger.info(msg, "Using default url", defaultUrl);
+            html = await resDefault.text();
           } else {
-            alertHtml[1] += `<b>${altUrl}</b>`;
+            alertHtml[1] += `<b>${defaultUrl}</b>`;
             this.alert(msg, alertMsg, alertHtml.join('\n'));
-            logger.warn(msg, {wikiPath, href, altUrl});
+            logger.warn(msg, 'default homePath failed', 
+              {wikiPath, defaultUrl, resDefault});
           }
         }
       }
