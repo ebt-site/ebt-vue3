@@ -109,6 +109,7 @@ export default {
     "password": "Passwort",
     "passwordSet": "Passwort gesetzt",
     "personalAccessToken": "Persönliches Zugangstoken",
+    "privacyLink": "#/wiki/impressum",
     "reader": "Sprecher*in",
     "region": "Region",
     "releaseIsCurrent": "Jetzige Version ist die letzte. Keine Aktualisierung",
