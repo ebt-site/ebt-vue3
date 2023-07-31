@@ -222,6 +222,14 @@
 .seg-lang-1col-sm {
   width: 310px;
 }
+.seg-lang-1col-sm.seg-root {
+}
+.seg-lang-1col-sm.seg-trans {
+  border-right: 1pt dashed grey;
+  padding-right: 1pt;
+}
+.seg-lang-1col-sm.seg-ref {
+}
 .seg-lang-1col-lg {
   width: 310px;
 }

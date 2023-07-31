@@ -70,7 +70,7 @@
 
       <v-sheet class="gdrp" v-if="settings.showGdpr">
         {{$t('ebt.allowSettings')}}
-        <a href="#/wiki/privacy">{{$t('ebt.allowSettingsLink')}}</a>
+        <a :href="privacyLink">{{$t('ebt.allowSettingsLink')}}</a>
         <v-icon icon="mdi-close-circle" 
           class="ml-2"
           @click="onClickGdrp"/>
@@ -212,6 +212,10 @@
       logger.info(msg, {activeElement});
     },
     computed: {
+      privacyLink(ctx) {
+        let { config } = ctx;
+        return config.privacyLink || "#/wiki/privacy";
+      },
       alertHtml(ctx) {
         return ctx.volatile.alertHtml;
       },

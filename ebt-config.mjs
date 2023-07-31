@@ -3,6 +3,7 @@ const EbtConfig = {
   "basePath": "/ebt-vue3/",
   "homePath": "#/wiki/welcome",
   "monolingual": false,
+  "privacyLink": "#/wiki/privacy",
   "content": {
     "index": "toc",
   },
