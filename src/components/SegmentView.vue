@@ -183,7 +183,7 @@
   border-left: 2pt solid rgba(0,0,0,0);
 }
 .seg-matched {
-  border-left-color: rgb(var(--v-theme-matched));
+  border-left-color: rgba(var(--v-theme-matched), 0.5);
 }
 .seg-id-col {
   flex-flow: column;
@@ -225,8 +225,12 @@
 .seg-lang-1col-sm.seg-root {
 }
 .seg-lang-1col-sm.seg-trans {
-  border-right: 1pt dashed grey;
-  padding-right: 1pt;
+  margin-left: 0px;
+  padding-left: 10px;
+  background: linear-gradient(90deg,
+    rgba(var(--v-theme-on-surface),0.15),
+    rgba(0,0,0,0) 9px
+    );
 }
 .seg-lang-1col-sm.seg-ref {
 }
