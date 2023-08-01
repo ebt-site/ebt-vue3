@@ -31,8 +31,8 @@ Many sounds have been modified for purpose.
 * click0.mp3...click5.mp3
 * [indian-bell-flemur-sampling-plus-1.0.mp3](https://freesound.org/people/nezuai/sounds/577049/)
 * [jetrye-bell-meditation-cleaned-CC0.mp3](https://freesound.org/people/JetRye/sounds/140128/)
-* no_audio.mp3
-* simple-bell.mp3
-* STE-004-Coemgenu.mp3
+* no_audio.mp3 (karl lew)
+* [simple-bell.mp3](https://freesound.org/people/Erratic/sounds/221/)
+* [STE-004-Coemgenu.mp3](https://discourse.suttacentral.net/t/suttacentral-voice-v1-0-0-released/11844/227)
 * [swoosh1.mp3...swoosh5.mp3](https://freesound.org/people/nezuai/sounds/577049/)
 * [tibetan-singing-bowl-horst-cc0.mp3](https://freesound.org/people/the_very_Real_Horst/packs/12242/)
