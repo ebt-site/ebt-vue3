@@ -194,6 +194,7 @@
 .seg-id {
   font-size: x-small;
   margin-left: 10px;
+  color: rgba(var(--v-theme-on-surface), 0.6);
 }
 .seg-id-col .seg-id {
   margin-left: 5px;
@@ -224,12 +225,13 @@
 }
 .seg-lang-1col-sm.seg-root {
 }
+.seg-lang-1col-lg.seg-trans,
 .seg-lang-1col-sm.seg-trans {
   margin-left: 0px;
   padding-left: 10px;
   background: linear-gradient(90deg,
-    rgba(var(--v-theme-on-surface),0.15),
-    rgba(0,0,0,0) 9px
+    rgba(var(--v-theme-matched),0.4),
+    rgba(0,0,0,0) 8px
     );
 }
 .seg-lang-1col-sm.seg-ref {
