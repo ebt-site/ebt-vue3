@@ -80,6 +80,7 @@ export default class EbtMarkdown {
             break;
           case 'link':
             newValue = newValue.replace("https: //", "https://");
+            newValue = newValue.replace("http: //", "http://");
             break;
           case 'img':
           case 'img-alt':
@@ -112,7 +113,7 @@ export default class EbtMarkdown {
   processLinks(html) {
     // open external links in separate tab
     let links = html.split('<a href="').map(h=>{
-      if (h.match(/^https:\/\//)) {
+      if (h.match(/^https?:\/\//)) {
         return h.match(/target="_blank/) 
           ? h
           : h.replace(">", ' target="_blank">');
