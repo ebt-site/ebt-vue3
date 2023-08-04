@@ -15,17 +15,12 @@ If you are looking for an EBT-Site, see
 
 ### In progress
 
-[Test](#/wiki/dev/toc)
+> [Test](#/wiki/dev/toc)
 
-[Sites](#/wiki/sites/toc)
+> [Sites](#/wiki/sites/toc)
 
-[Design](#/wiki/design/toc)
+> [Design](#/wiki/design/toc)
 
 Sat Jul 22 05:58:11 AM PDT 2023
 
-This is a test of quote:
-
-> this is a quote
-
-That's it folks
 
