@@ -219,6 +219,8 @@
 }
 .seg-ref {
   font-family: var(--ebt-sc-serif-font);
+  font-size: 16px;
+  background-color: #333333;
 }
 .seg-lang-1col-sm {
   width: 310px;

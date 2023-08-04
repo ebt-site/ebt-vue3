@@ -204,3 +204,7 @@ a:focus {
   height: 4.5em;
 }
 
+blockquote {
+  border-left: 3px solid grey;
+  padding-left: 0.5em;
+}
