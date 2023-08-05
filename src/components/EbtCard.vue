@@ -42,7 +42,7 @@
         <div class="last-tab" tabindex=0 
           @click='onClickLastTab'
           @focus='onFocusLastTab'>
-          <v-icon icon='mdi-home' />
+          <v-icon icon='mdi-keyboard-tab' />
         </div>
       </v-card>
     </div>
@@ -297,7 +297,7 @@
   }
   .last-tab {
     display: flex;
-    opacity: 0.1;
+    opacity: 0.0;
     justify-content: center;
     cursor: pointer;
   }
