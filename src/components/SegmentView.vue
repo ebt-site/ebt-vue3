@@ -11,7 +11,7 @@
     <div class="seg-id" v-if="settings.showId"> 
       {{segment.scid}} 
     </div>
-    <div class="seg-text" >
+    <div :class="textClass()" >
       <div :class="langClass('root')" 
         v-if="settings.showPali"
         v-html="segment.pli" />
@@ -99,6 +99,17 @@
             break;
         }
         return `seg-lang seg-${langType} seg-lang-${nCols}col-${colw}`;
+      },
+      textClass() {
+        let { displayBox, volatile, nCols } = this;
+        switch (nCols) {
+          case 1:
+            return "seg-text seg-text-1col";
+            break;
+          default:
+            return "seg-text";
+            break;
+        }
       },
       segMatchedClass(seg) {
         let { displayBox, card, currentScid, audio, routeCard } = this;
@@ -205,6 +216,10 @@
   justify-content: flex-start;
   opacity: 0.85;
   line-height: 1.5;
+}
+.seg-text-1col {
+  flex-flow: column;
+  max-width: 400px;
 }
 .seg-lang {
   margin-bottom: 0.8em;
