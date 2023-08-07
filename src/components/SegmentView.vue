@@ -190,7 +190,6 @@
 <style >
 .seg-match {
   display: flex;
-  justify-content: space-between;
   border-left: 2pt solid rgba(0,0,0,0);
 }
 .seg-matched {
