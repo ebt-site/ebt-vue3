@@ -14,7 +14,7 @@ order: 2
 | UP | Select previous segment in sutta
 | DOWN | Select next segment in sutta
 | CTRL-UP | Select first segment in sutta
-| CTRL-DOWN | Select first segment in sutta
+| CTRL-DOWN | Select last segment in sutta
 | SHIFT-UP | Select first segment in group or prior group
 | SHIFT-DOWN | Select first segment in next group
 | HOME | Select card tab
