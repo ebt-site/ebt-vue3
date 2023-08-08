@@ -244,16 +244,16 @@
 }
 .seg-lang-1col-lg.seg-trans,
 .seg-lang-1col-sm.seg-trans {
-  padding-left: 0px;
-}
-.seg-lang-1col-lg.seg-ref,
-.seg-lang-1col-sm.seg-ref {
   padding-left: 1.2em;
-  font-size: 107%;
   background: linear-gradient(90deg,
     rgba(var(--v-theme-on-surface),0.1),
     rgba(0,0,0,0) 40% 
     );
+}
+.seg-lang-1col-lg.seg-ref,
+.seg-lang-1col-sm.seg-ref {
+  padding-left: 0px;
+  font-size: 107%;
 }
 .seg-lang-1col-lg {
   max-width: 400px;
