@@ -107,40 +107,57 @@ export const useVolatileStore = defineStore('volatile', {
       this.routeCard = card;
       return card;
     },
-    async fetchHomeHtml(wikiPath) {
-      const msg = 'volatile.fetchHomeHtml() ';
+    async fetchText(href) {
+      const msg = "volatile.fetchText() ";
+      let res = await fetch(href);
+      let text;
+      if (res.ok) {
+        text = await res.text();
+        //console.trace(msg, 'ok', {href});
+        logger.info(msg, `${href} => OK`);
+      } else {
+        //console.trace(msg, 'error', {href, res});
+        logger.warn(msg, `Could not fetch URL`, href);
+      }
+      return text;
+    },
+    contentPath(wikiPath) {
+      let { config={} } = this;
+      wikiPath = wikiPath.replace(/\/?#?\/?wiki\//, '');
+      return `${config.basePath}content/${wikiPath}.html`;
+    },
+    async fetchWikiHtml(location) {
+      const msg = 'volatile.fetchWikiHtml() ';
       let { config } = this;
-      let configJson = JSON.stringify(config, null, 2);
-      let alertMsg = 'ebt.cannotLoadWikiHtml';
-      let alertHtml = [
-        '<pre>',
-        'href:',
-        `config: ${configJson}`,
-        '</pre>',
-      ];
-      let html = "loading...";
-      if (config) {
-        let href = `${config.basePath}content/${wikiPath}.html`
-        let res;
-        res = await fetch(href);
-        if (res.ok) {
-          html = await res.text();
-          logger.info(msg, {wikiPath, href, res});
-        } else {
-          logger.warn(msg, `Could not fetch HTML for wikiPath:`, {wikiPath,href});
-          let altWikiPath = config.homePath.replace(/\/?#?\/?wiki\//, '');
-          let defaultUrl = `${config.basePath}content/${altWikiPath}.html`
-          let resDefault = await fetch(defaultUrl);
-          if (resDefault.ok) {
-            logger.info(msg, "Using default url", defaultUrl);
-            html = await resDefault.text();
-          } else {
-            alertHtml[1] += `<b>${defaultUrl}</b>`;
-            this.alert(msg, alertMsg, alertHtml.join('\n'));
-            logger.warn(msg, 'default homePath failed', 
-              {wikiPath, defaultUrl, resDefault});
-          }
-        }
+      let { homePath } = config;
+      let hashPath = window?.location?.hash || 'homePath';
+      let locationPath = location.join('/');
+
+      let html = '';
+      let paths = [
+        hashPath, 
+        locationPath, 
+      ].filter(p=>!!p);
+      let hrefs = paths.map(p => this.contentPath(p));
+      let hrefMap = hrefs.reduce((a,hr,i) => { a[hr] = i; return a; }, {});
+      hrefs = Object.keys(hrefMap); // unique hrefs
+      //console.log(msg, hrefs);
+
+      for (let i=0; !html && i < hrefs.length; i++) {
+        let href = hrefs[i];
+        html = await this.fetchText(href);
+      }
+
+      if (!html) {
+        let { $t } = this;
+        let alertMsg = $t('ebt.cannotLoadWikiHtml');
+        logger.warn(msg, alertMsg, hrefs);
+        html = [
+          `<h2>${alertMsg}</h2>`,
+          '<pre>',
+          ...hrefs,
+          '</pre>',
+        ].join('\n');
       }
 
       this.homeHtml = html;

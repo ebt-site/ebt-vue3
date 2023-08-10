@@ -30,7 +30,7 @@
       let { card, volatile } = this;
       let { location } = card;
       logger.info(msg, {location});
-      await volatile.fetchHomeHtml(location.join('/'));
+      await volatile.fetchWikiHtml(location);
     },
     computed: {
     },
