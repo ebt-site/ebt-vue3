@@ -347,11 +347,12 @@ export default {
       this.onClose();
     },
     resetDefaults() {
+      const msg = "Settings.resetDefaults() ";
       let { settings, volatile } = this;
       settings.clear();
       volatile.showSettings = false;
       logger.warn("Settings.resetDefaults()", Object.assign({}, settings));
-      volatile.setRoute();
+      volatile.setRoute(undefined, undefined, msg);
       nextTick(()=>window.location.reload());
     },
     langVoices(lang, vnameKey) {

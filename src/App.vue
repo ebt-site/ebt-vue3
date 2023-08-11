@@ -170,6 +170,8 @@
       volatile.$t = $t;
       volatile.config = config;
 
+      let { hash } = window.location;
+
       // wait for Settings to load
       await settings.loadSettings(config);
       nextTick(()=>{
@@ -178,9 +180,12 @@
         let { audioVolume } = settings;
         clickElt.volume = audioVolume;
       });
-      let { homePath } = config;
-      let homeCard = settings.pathToCard(homePath);
-      logger.info(msg, {homeCard, homePath});
+
+      let wikiHash = hash.startsWith("#/wiki") ? hash : null;
+      let wikiCard = wikiHash
+        ? settings.pathToCard(wikiHash)
+        : settings.pathToCard(config.homePath);
+      logger.info(msg, {wikiCard});
 
       $vuetify.theme.global.name = settings.theme === 'dark' ? 'dark' : 'light';;
       $i18n.locale = settings.locale;

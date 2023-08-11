@@ -83,7 +83,6 @@ export default class EbtCard {
   }
 
   static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
-  static get CONTEXT_WIKI() { return CONTEXT_WIKI; }
   static get CONTEXT_SEARCH() { return CONTEXT_SEARCH; }
   static get CONTEXT_SUTTA() { return CONTEXT_SUTTA; }
   static get CONTEXT_DEBUG() { return CONTEXT_DEBUG; }

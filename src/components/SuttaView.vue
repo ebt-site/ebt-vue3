@@ -77,7 +77,7 @@
       if (suttaRef == null) {
         volatile.alert(`Invalid SuttaRef ${JSON.stringify(ref)}`);
         settings.removeCard(card, config);
-        volatile.setRoute(config.homePath);
+        volatile.setRoute(config.homePath, undefined, msg);
         return;
       }
       let { sutta_uid, lang, author, segnum } = suttaRef;
@@ -93,7 +93,7 @@
           settings.scrollToElementId(segmentElementId);
           let routeHash = card.routeHash();
           if (window.location.hash !== routeHash) {
-            volatile.setRoute(routeHash);
+            volatile.setRoute(routeHash, undefined, msg);
           }
           logger.debug(msg+'matchPath', {suttaRef, activeElement});
         });

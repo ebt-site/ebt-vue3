@@ -85,6 +85,7 @@
         search && this.onSearch();
       },
       async onSearch() {
+        const msg = "SearchView.onSearch() ";
         let { settings, $t, volatile, url, search, card, suttas, } = this;
         let { highlightExamples } = settings;
         let res;
@@ -101,7 +102,7 @@
             ? await res.json()
             : res;
 
-          volatile.setRoute(card.routeHash());
+          volatile.setRoute(card.routeHash(), undefined, msg);
           let { mlDocs=[] } = this.results;
           card.data = this.results.results;
           mlDocs.forEach(mlDoc=>volatile.addMlDoc(mlDoc));

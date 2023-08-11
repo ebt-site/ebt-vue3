@@ -119,18 +119,20 @@
         audio.playBlock();
       },
       onClickCard(evt) {
+        const msg = "EbtCard.onClickCard() ";
         let { volatile, card } = this;
-        volatile.setRoute(card);
+        volatile.setRoute(card, undefined, msg);
       },
       onBackTabOut(evt) {
         let { volatile } = this;
         volatile.ebtChips && volatile.ebtChips.focus();
       },
       onFocusIn(evt) {
+        const msg = "EbtCard.onFocusIn() ";
         let { volatile, card } = this;
         let { location, id, context } = card;
         let chipTitle = card.chipTitle();
-        volatile.setRoute(card);
+        volatile.setRoute(card, undefined, msg);
       },
       clickDelete() {
         let { card, settings, config } = this;

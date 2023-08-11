@@ -31,6 +31,7 @@ const INITIAL_STATE = {
   routeCard: ref(undefined),
   ebtChips: ref(undefined),
   homeHtml: ref('loading...'),
+  debugText: ref('debugText:'),
 };
 
 export const useVolatileStore = defineStore('volatile', {
@@ -73,9 +74,9 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
-    setRoute(cardOrRoute, keepFocus) {
+    setRoute(cardOrRoute, keepFocus, caller) {
       const msg = 'volatile.setRoute() ';
-      let { config } = this;
+      let { config, } = this;
       let settings = useSettingsStore();
       cardOrRoute = cardOrRoute || config?.homePath;
       if (!cardOrRoute) {
@@ -92,6 +93,8 @@ export const useVolatileStore = defineStore('volatile', {
       } else if (window.location.hash !== route) {
         let { document } = globalThis;
         let activeElement = document?.activeElement;
+        this.debugText += `${msg}-${caller}-${route}`;
+        //console.trace(msg, cardOrRoute);
         window.location.hash = route;
         let expected = activeElement;
         let actual = document?.activeElement;
@@ -126,7 +129,7 @@ export const useVolatileStore = defineStore('volatile', {
       wikiPath = wikiPath.replace(/\/?#?\/?wiki\//, '');
       return `${config.basePath}content/${wikiPath}.html`;
     },
-    async fetchWikiHtml(location) {
+    async fetchWikiHtml(location, caller) {
       const msg = 'volatile.fetchWikiHtml() ';
       let { config } = this;
       let { homePath } = config;
@@ -146,6 +149,7 @@ export const useVolatileStore = defineStore('volatile', {
       for (let i=0; !html && i < hrefs.length; i++) {
         let href = hrefs[i];
         html = await this.fetchText(href);
+        //console.trace(msg, caller, href, !!html);
       }
 
       if (!html) {

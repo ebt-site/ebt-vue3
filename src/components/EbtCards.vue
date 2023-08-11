@@ -52,7 +52,7 @@
         logger.warn(msg+"UNEXPECTED", {$route, path});
       } else {
         let { activeElement } = document;
-        volatile.setRoute(card, true);
+        volatile.setRoute(card, true, msg);
         nextTick(() => {
           volatile.setRoute(card, true);
           settings.scrollToCard(card);
@@ -63,6 +63,7 @@
     },
     methods: {
       onFocusIn(card) {
+        const msg = "EbtCards.onFocusIn() ";
         let { volatile, settings } = this;
         let { cards } = settings;
         let { context, location } = card;
@@ -74,7 +75,7 @@
           defaultLang: settings.langTrans,
         });
         if (routeCard !== card) {
-          volatile.setRoute(card.routeHash(), true);
+          volatile.setRoute(card.routeHash(), true, msg);
         }
       },
       async bindAudioSutta(route) {
@@ -119,11 +120,11 @@
         });
         let { activeElement } = document;
         //console.log(msg, 'before setRoute', { activeElement, to, from});
-        volatile.setRoute(card);
+        volatile.setRoute(card, undefined, msg);
         //console.log(msg, 'after setRoute', document.activeElement);
         this.bindAudioSutta(to.href);
         if (card == null) {
-          volatile.setRoute('');
+          volatile.setRoute('', undefined, msg);
           logger.warn(`${msg} => non-card route`, {$route, to, from});
           return;
         }
@@ -135,7 +136,7 @@
           logger.info(`${msg} => opened card`, {$route, to, from, card});
         }
         if (card.context === EbtCard.CONTEXT_WIKI) {
-          volatile.fetchWikiHtml(card.location);
+          volatile.fetchWikiHtml(card.location, msg);
         }
         nextTick(() => { 
           settings.scrollToCard(card); 
