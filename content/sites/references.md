@@ -17,7 +17,7 @@ Unless otherwise specified, all image sources are linked from the individual ima
 EBT Audio is purchased from Amazon Web Services Polly service and
 is shared without restriction.
 
-Where possible, we have include human audio. In particular, many thanks to Bhante Sujato and @MichaelH of SuttaCentral for recording segmented speech given by Bhante himself.
+Where possible, we have included human audio. In particular, many thanks to Bhante Sujato and @MichaelH of SuttaCentral for recording segmented speech given by Bhante himself.
 
 ### Application Sounds
 
