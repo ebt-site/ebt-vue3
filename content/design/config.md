@@ -16,9 +16,8 @@ Github allows you to change your website
 [online](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files).
 Just open your browser and login to Github.
 
-To customize your website, you'll need to 
-[edit](#/wiki/design/edit):
-
+To customize your website, you'll need to edit the ```ebt-config.mjs``` 
+file in your repository.
 Once you configure your website properly, you'll be able to view 
 it and add your own wiki content.
 
