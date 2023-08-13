@@ -42,6 +42,10 @@ Add new images to the following folder:
 To preserve disk space and network performance, keep your images small.
 For example, each wiki page header image should be 250wx200h pixels, preferably in PNG format.
 
+## Footnotes
+
+Markdown footnotes[^this is a footnote] are written using ```[^footnote-text]```.
+
 ## HTML5
 You can include many HTML5 elements such as `<audio>` on your
 EBT site wiki pages. 
