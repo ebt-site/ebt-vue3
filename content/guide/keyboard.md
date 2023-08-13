@@ -42,4 +42,6 @@ Each card has a **tab** that can be clicked to scroll to the associated card.
 | sutta | SHIFT-DOWN | Select first segment in next group
 | sutta | SPACE | Play current segment or stop existing playback
 | sutta | ENTER | Play from current segment to end of sutta 
+| tabs | LEFT-ARROW | Select previous tab 
+| tabs | RIGHT-ARROW | Select next tab
 
