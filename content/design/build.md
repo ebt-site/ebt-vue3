@@ -18,7 +18,7 @@ Github automatically rebuilds your EBT-Site using
 ## Push actions
 
 The *push-action* automation is invoked whenever your Github repository is updated
-with new content. These are typically updates updates for:
+with new content. These are typically updates for:
 
 * Markdown files (```content/...```)
 * Images (```public/img/...```)
