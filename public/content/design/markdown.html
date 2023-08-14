@@ -25,42 +25,42 @@ describes the page.</p>
 <table>
 <thead>
 <tr>
-<th align="left">property</th>
-<th align="left">description</th>
+<th style="text-align:left">property</th>
+<th style="text-align:left">description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">title</td>
-<td align="left">wiki page title</td>
+<td style="text-align:left">title</td>
+<td style="text-align:left">wiki page title</td>
 </tr>
 <tr>
-<td align="left">description</td>
-<td align="left">short description shown under title</td>
+<td style="text-align:left">description</td>
+<td style="text-align:left">short description shown under title</td>
 </tr>
 <tr>
-<td align="left">detail</td>
-<td align="left">(optional, multiple) detailed description items</td>
+<td style="text-align:left">detail</td>
+<td style="text-align:left">(optional, multiple) detailed description items</td>
 </tr>
 <tr>
-<td align="left">img</td>
-<td align="left">file name of image</td>
+<td style="text-align:left">img</td>
+<td style="text-align:left">file name of image</td>
 </tr>
 <tr>
-<td align="left">alt</td>
-<td align="left">image accessible title</td>
+<td style="text-align:left">alt</td>
+<td style="text-align:left">image accessible title</td>
 </tr>
 <tr>
-<td align="left">link</td>
-<td align="left">image source and/or attribution</td>
+<td style="text-align:left">link</td>
+<td style="text-align:left">image source and/or attribution</td>
 </tr>
 <tr>
-<td align="left">category</td>
-<td align="left">category title for grouping in wiki table of contents</td>
+<td style="text-align:left">category</td>
+<td style="text-align:left">category title for grouping in wiki table of contents</td>
 </tr>
 <tr>
-<td align="left">order</td>
-<td align="left">order within category (alphabetical otherwise)</td>
+<td style="text-align:left">order</td>
+<td style="text-align:left">order within category (alphabetical otherwise)</td>
 </tr>
 </tbody>
 </table>
@@ -74,7 +74,11 @@ Add new images to the following folder:</p>
 <p>To preserve disk space and network performance, keep your images small.
 For example, each wiki page header image should be 250wx200h pixels, preferably in PNG format.</p>
 <h2>Footnotes</h2>
-<p>Markdown footnotes[^this is a footnote] are written using <code>[^footnote-text]</code>.</p>
+<p>Markdown footnotes are written using the following syntax<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[1]</a></sup>:</p>
+<blockquote>
+<p><code>...the following syntax^[footnote-text]</code>.</p>
+</blockquote>
+<p>For more documentation, see this <a href="https://github.com/markdown-it/markdown-it-footnote" target="_blank">link</a></p>
 <h2>HTML5</h2>
 <p>You can include many HTML5 elements such as <code>&lt;audio&gt;</code> on your
 EBT site wiki pages.
@@ -84,11 +88,17 @@ For example, if you have an audio file at:</p>
 </ul>
 <p>Then you can add the following HTML to any of your Markdown files:</p>
 <ul>
-<li><code>&lt;audio controls src=&quot;audio/simple-bell.ogg&quot;/&gt;</code></li>
+<li><code>&lt;audio controls src=&quot;audio/simple-bell.ogg&quot;&gt;simple-bell&lt;/audio&gt;</code></li>
 </ul>
-<audio controls src="audio/simple-bell.ogg"/>
+<p><audio controls src="audio/simple-bell.ogg">simple-bell</audio></p>
 <h2>Emojis</h2>
 <p>Copy emojis from <a href="https://emojipedia.org/red-heart/" target="_blank">emojipedia</a>.
 For example, here is a red heart:</p>
 <p>❤️</p>
+<section class="footnotes">
+<div id="/wiki/design/markdown/-footnotes" class="footnotes-link">&nbsp;</div>
+<ol class="footnotes-list"><li class="footnote-item"><p>this is a footnote <!--a href="#/wiki/design/markdown/-fn1" class="footnote-backref">↩︎</a--></p>
+</li>
+</ol>
+</section>
 </article>

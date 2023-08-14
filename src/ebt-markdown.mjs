@@ -47,7 +47,7 @@ export default class EbtMarkdown {
 
   async render(markdown, renderer=this.renderer) {
     const msg = 'EbtMarkdown.render() ';
-    let { htmlHead, htmlTail, appName } = this;
+    let { htmlHead, htmlTail, appName, wikiPath } = this;
     if (!markdown) {
       throw new Error(`${msg} markdown is required`);
     }
@@ -93,7 +93,7 @@ export default class EbtMarkdown {
       }
     }
 
-    let html = await renderer.render(md);
+    let html = await renderer.render(md, {wikiPath});
     html = this.processLinks(html);
     let htmlLines = html.trim().split('\n');
     

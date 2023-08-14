@@ -44,7 +44,11 @@ For example, each wiki page header image should be 250wx200h pixels, preferably 
 
 ## Footnotes
 
-Markdown footnotes[^this is a footnote] are written using ```[^footnote-text]```.
+Markdown footnotes are written using the following syntax^[this is a footnote]:
+
+> ```...the following syntax^[footnote-text]```.
+
+For more documentation, see this [link](https://github.com/markdown-it/markdown-it-footnote)
 
 ## HTML5
 You can include many HTML5 elements such as `<audio>` on your
@@ -55,9 +59,9 @@ For example, if you have an audio file at:
 
 Then you can add the following HTML to any of your Markdown files:
 
-* ``` <audio controls src="audio/simple-bell.ogg"/> ```
+* ``` <audio controls src="audio/simple-bell.ogg">simple-bell</audio> ```
 
-<audio controls src="audio/simple-bell.ogg"/>
+<audio controls src="audio/simple-bell.ogg">simple-bell</audio>
 
 ## Emojis
 Copy emojis from [emojipedia](https://emojipedia.org/red-heart/).

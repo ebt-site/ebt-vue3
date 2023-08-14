@@ -1,11 +1,13 @@
 import { default as EbtMarkdown } from '../src/ebt-markdown.mjs'
-import { default as CmarkGfmRenderer } from '../scripts/cmark-gfm-renderer.mjs';
+//import { default as CmarkGfmRenderer } from '../scripts/cmark-gfm-renderer.mjs';
+import { default as MarkdownItRenderer } from '../scripts/markdown-it-renderer.mjs';
 import { logger } from 'log-instance/index.mjs';
 import should from "should";
 
 logger.logLevel = 'warn';
 
-const renderer = new CmarkGfmRenderer();
+//const renderer = new CmarkGfmRenderer();
+const renderer = new MarkdownItRenderer();
 
 (typeof describe === 'function') && describe("ebt-markdown.mjs", function () {
   it("default ctor", ()=>{
@@ -62,7 +64,7 @@ const renderer = new CmarkGfmRenderer();
     ]);
     should(emd.metadata).equal(undefined);
   });
-  it("TESTTESTlink", async ()=>{
+  it("link", async ()=>{
     let markdown = [
       'a [link](https://x/y) external',
       '<a href="https://p/q">pq</a> external',
@@ -109,7 +111,7 @@ const renderer = new CmarkGfmRenderer();
       '</article>',
     ]);
   });
-  it("TESTTESThtml heading", async ()=>{
+  it("html heading", async ()=>{
     let appName = "TEST_APPNAME";
     let imgSrc = "test-img-src";
     let markdown = [
@@ -161,7 +163,7 @@ const renderer = new CmarkGfmRenderer();
       EbtMarkdown.HTML_TAIL,
     ]);
   });
-  it("TESTTESThtml heading optional", async ()=>{
+  it("html heading optional", async ()=>{
     let appName = "TEST_APPNAME";
     let imgSrc = "test-img-src";
     let markdown = [
@@ -251,5 +253,30 @@ const renderer = new CmarkGfmRenderer();
     should(EbtMarkdown.compareMetadata(c1t1, c1t2)).below(0);
     should(EbtMarkdown.compareMetadata(c2t1, c1t2)).above(0);
     should(EbtMarkdown.compareMetadata(c2t1, c1t1)).above(0);
+  });
+  it("TESTTESTfootnote", async ()=>{
+    let markdown = [
+      'This is a footnote^[test-footnote]',
+      'in a sentence.',
+    ].join('\n');;
+    let appName = 'TEST-APPNAME';
+    let wikiPath = 'wiki/testpath';
+    let emd = new EbtMarkdown({renderer, appName, wikiPath});
+    let { htmlLines } = await emd.render(markdown);
+    let footnotesId = `/${wikiPath}/-footnotes`;
+    should.deepEqual(htmlLines, [
+      EbtMarkdown.HTML_HEAD,
+      `<p>This is a footnote<sup class="footnote-ref"><a href="#${footnotesId}">[1]</a></sup>`,   
+      'in a sentence.</p>',
+      '<section class="footnotes">',
+      `<div id="${footnotesId}" class="footnotes-link">&nbsp;</div>`,
+      '<ol class="footnotes-list">',
+      '<li class="footnote-item"><p>test-footnote</p>',
+      '</li>',
+      '</ol>',
+      '</section>',
+      EbtMarkdown.HTML_TAIL,
+    ]);
+    should(emd.metadata).equal(undefined);
   });
 });

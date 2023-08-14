@@ -208,3 +208,11 @@ blockquote {
   border-left: 3px solid grey;
   padding-left: 0.5em;
 }
+.footnotes-link {
+  position: relative;
+  top: -8em;
+}
+.footnotes {
+  border-top: 1pt solid rgba(var(--v-theme-on-surface), 0.2);
+  margin-top: 3em;
+}

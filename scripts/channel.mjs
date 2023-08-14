@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { default as CmarkGfmRenderer } from './cmark-gfm-renderer.mjs';
+//import { default as CmarkGfmRenderer } from './cmark-gfm-renderer.mjs';
+import { default as MarkdownItRenderer } from './markdown-it-renderer.mjs';
 import { default as EbtMarkdown } from '../src/ebt-markdown.mjs';
 import { default as EbtCard } from '../src/ebt-card.mjs';
 import { default as EbtConfig } from '../ebt-config.mjs';
@@ -23,7 +24,8 @@ export default class Channel {
       config,
       htmlHead = EbtMarkdown.HTML_HEAD,
       htmlTail = EbtMarkdown.HTML_TAIL,
-      renderer = new CmarkGfmRenderer(),
+      //renderer = new CmarkGfmRenderer(), // no footnotes
+      renderer = new MarkdownItRenderer(),
       wikiPath = EbtConfig.homePath,
     } = opts;
 

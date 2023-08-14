@@ -161,6 +161,7 @@ export const useSettingsStore = defineStore('settings', {
       const msg = 'settings.scrollToElementId() ';
       let eltShow = document.getElementById(idShow);
       let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
+      console.trace(msg, {idShow, idScroll});
       let dbg = 0;
       if (eltShow == null) {
         dbg && console.log(msg, `DBG1 (${idShow}) no element`);

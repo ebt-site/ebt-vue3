@@ -139,7 +139,7 @@
           volatile.fetchWikiHtml(card.location, msg);
         }
         nextTick(() => { 
-          settings.scrollToCard(card); 
+      //TODO    settings.scrollToCard(card); 
           logger.debug(msg, document.activeElement, volatile.routeCard);
         })
       }

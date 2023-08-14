@@ -127,6 +127,7 @@ export const useVolatileStore = defineStore('volatile', {
     contentPath(wikiPath) {
       let { config={} } = this;
       wikiPath = wikiPath.replace(/\/?#?\/?wiki\//, '');
+      wikiPath = wikiPath.replace(/\/-.*/, '');
       return `${config.basePath}content/${wikiPath}.html`;
     },
     async fetchWikiHtml(location, caller) {
