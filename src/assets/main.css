@@ -216,3 +216,6 @@ blockquote {
   border-top: 1pt solid rgba(var(--v-theme-on-surface), 0.2);
   margin-top: 3em;
 }
+code {
+  background-color: rgba(var(--v-theme-on-surface), 0.2);
+}

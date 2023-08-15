@@ -44,14 +44,17 @@ For example, each wiki page header image should be 250wx200h pixels, preferably 
 
 ## Footnotes
 
-Markdown footnotes are written using the following syntax^[this is a footnote]:
+### Inline footnotes
+Markdown footnotes are written using the following syntax for 
+inline footnotes^[this is an inline footnote]:
 
 > ```...the following syntax^[footnote-text]```.
 
+### Normal footnotes
 Alternatively, you can use a different syntax with:
 
-* Inline footnote reference[^a] ```...reference[^a]```.
-* Appended footnote text. ```[^a]: this is a normal footnote```
+* Inline footnote reference[^a]. E.g., ```...reference[^a]```.
+* Appended footnote text. E.g., ```[^a]: this is a normal footnote```
 
 For more documentation, see this [link](https://github.com/markdown-it/markdown-it-footnote)
 
