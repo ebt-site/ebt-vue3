@@ -14,12 +14,13 @@ const renderer = new MarkdownItRenderer();
     let emd = new EbtMarkdown();
     should.deepEqual(Object.keys(emd).sort(), [
       'appName',
-      'wikiPath',
-      'config',
       'basePath',
-      'renderer',
+      'config',
+      'footnotes',
       'htmlHead',
       'htmlTail',
+      'renderer',
+      'wikiPath',
     ].sort());
     should(emd).properties({
       basePath: '/ebt-vue3/',
@@ -270,8 +271,8 @@ const renderer = new MarkdownItRenderer();
       `<p>This is a footnote<sup class="footnote-ref"><a href="#${footnotesId}">[1]</a></sup>`,   
       'in a sentence.</p>',
       '<section class="footnotes">',
-      '<div class="footnotes-title">test-footnotes</div>',
       `<div id="${footnotesId}" class="footnotes-link">&nbsp;</div>`,
+      '<div class="footnotes-title">test-footnotes</div>',
       '<ol class="footnotes-list">',
       '<li class="footnote-item"><p>test-footnote</p>',
       '</li>',
@@ -297,8 +298,8 @@ const renderer = new MarkdownItRenderer();
       `<p>This is a footnote<sup class="footnote-ref"><a href="#${footnotesId}">[1]</a></sup>`,   
       'in a sentence.</p>',
       '<section class="footnotes footnotes-line">',
-      '',
       `<div id="${footnotesId}" class="footnotes-link">&nbsp;</div>`,
+      '',
       '<ol class="footnotes-list">',
       '<li class="footnote-item"><p>test-footnote</p>',
       '</li>',
