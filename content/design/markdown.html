@@ -78,6 +78,11 @@ For example, each wiki page header image should be 250wx200h pixels, preferably 
 <blockquote>
 <p><code>...the following syntax^[footnote-text]</code>.</p>
 </blockquote>
+<p>Alternatively, you can use a different syntax with:</p>
+<ul>
+<li>Inline footnote reference<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[2]</a></sup> <code>...reference[^a]</code>.</li>
+<li>Appended footnote text. <code>[^a]: this is a normal footnote</code></li>
+</ul>
 <p>For more documentation, see this <a href="https://github.com/markdown-it/markdown-it-footnote" target="_blank">link</a></p>
 <h2>HTML5</h2>
 <p>You can include many HTML5 elements such as <code>&lt;audio&gt;</code> on your
@@ -99,6 +104,8 @@ For example, here is a red heart:</p>
 <div id="/wiki/design/markdown/-footnotes" class="footnotes-link">&nbsp;</div>
 <ol class="footnotes-list">
 <li class="footnote-item"><p>this is a footnote</p>
+</li>
+<li class="footnote-item"><p>this is a normal footnote</p>
 </li>
 </ol>
 </section>
