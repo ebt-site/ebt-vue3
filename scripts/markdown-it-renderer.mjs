@@ -2,7 +2,7 @@ import { default as MarkdownIt} from 'markdown-it';
 import { default as MarkdownItFootnote } from 'markdown-it-footnote';
 
 export default class MarkdownItRenderer {
-  constructor() {
+  constructor(opts={}) {
     this.md = MarkdownIt({
       html: true,               // Enable HTML tags in source
       xhtmlOut: false,          // Use '/' to close single tags (<br />).
@@ -28,10 +28,13 @@ export default class MarkdownItRenderer {
 
     rules.footnote_block_open = (tokens, idx, options, env) => {
       const msg = "MarkdownItRenderer.footnote_block_open() ";
+      let { footnotes } = this;
       let id = this.footnoteId();
+      let sectionClass = footnotes ? "footnotes" : "footnotes footnotes-line";
       let html =  [
-        '<section class="footnotes">',
+        `<section class="${sectionClass}">`,
         `<div id="${id}" class="footnotes-link">&nbsp;</div>`,
+        footnotes ? `<div class="footnotes-title">${footnotes}</div>` : '',
         '<ol class="footnotes-list">',
         '',
       ].join('\n');
@@ -90,8 +93,10 @@ export default class MarkdownItRenderer {
 
   async render(markdown, opts={}) {
     let { md } = this;
+    let { footnotes } = opts;
     this.wikiPath = opts.wikiPath;
-    let html =  md.render(markdown, opts);
+    this.footnotes = footnotes;
+    let html =  md.render(markdown, {});
     return html;
   }
 }

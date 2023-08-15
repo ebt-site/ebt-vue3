@@ -19,9 +19,10 @@ export default class EbtMarkdown {
       renderer,
       htmlHead=HTML_HEAD,
       htmlTail=HTML_TAIL,
+      footnotes=config.footnotes,
     } = opts;
     Object.assign(this, {  
-      appName, basePath, wikiPath, renderer, htmlHead, htmlTail, config,
+      appName, basePath, wikiPath, renderer, htmlHead, htmlTail, config, footnotes,
     });
   }
 
@@ -47,7 +48,7 @@ export default class EbtMarkdown {
 
   async render(markdown, renderer=this.renderer) {
     const msg = 'EbtMarkdown.render() ';
-    let { htmlHead, htmlTail, appName, wikiPath } = this;
+    let { htmlHead, htmlTail, appName, wikiPath, footnotes } = this;
     if (!markdown) {
       throw new Error(`${msg} markdown is required`);
     }
@@ -93,7 +94,7 @@ export default class EbtMarkdown {
       }
     }
 
-    let html = await renderer.render(md, {wikiPath});
+    let html = await renderer.render(md, {wikiPath, footnotes});
     html = this.processLinks(html);
     let htmlLines = html.trim().split('\n');
     

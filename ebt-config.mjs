@@ -4,6 +4,7 @@ const EbtConfig = {
   "homePath": "#/wiki/welcome",
   "monolingual": false,
   "privacyLink": "#/wiki/privacy",
+  "footnotes": "Footnotes",
   "content": {
     "index": "toc",
   },

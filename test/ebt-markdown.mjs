@@ -254,14 +254,15 @@ const renderer = new MarkdownItRenderer();
     should(EbtMarkdown.compareMetadata(c2t1, c1t2)).above(0);
     should(EbtMarkdown.compareMetadata(c2t1, c1t1)).above(0);
   });
-  it("TESTTESTfootnote", async ()=>{
+  it("TESTTESTfootnote title", async ()=>{
     let markdown = [
       'This is a footnote^[test-footnote]',
       'in a sentence.',
     ].join('\n');;
     let appName = 'TEST-APPNAME';
     let wikiPath = 'wiki/testpath';
-    let emd = new EbtMarkdown({renderer, appName, wikiPath});
+    let footnotes = 'test-footnotes';
+    let emd = new EbtMarkdown({renderer, appName, wikiPath, footnotes});
     let { htmlLines } = await emd.render(markdown);
     let footnotesId = `/${wikiPath}/-footnotes`;
     should.deepEqual(htmlLines, [
@@ -269,6 +270,34 @@ const renderer = new MarkdownItRenderer();
       `<p>This is a footnote<sup class="footnote-ref"><a href="#${footnotesId}">[1]</a></sup>`,   
       'in a sentence.</p>',
       '<section class="footnotes">',
+      '<div class="footnotes-title">test-footnotes</div>',
+      `<div id="${footnotesId}" class="footnotes-link">&nbsp;</div>`,
+      '<ol class="footnotes-list">',
+      '<li class="footnote-item"><p>test-footnote</p>',
+      '</li>',
+      '</ol>',
+      '</section>',
+      EbtMarkdown.HTML_TAIL,
+    ]);
+    should(emd.metadata).equal(undefined);
+  });
+  it("TESTTESTfootnote no title", async ()=>{
+    let markdown = [
+      'This is a footnote^[test-footnote]',
+      'in a sentence.',
+    ].join('\n');;
+    let appName = 'TEST-APPNAME';
+    let wikiPath = 'wiki/testpath';
+    let footnotes = '';
+    let emd = new EbtMarkdown({renderer, appName, wikiPath, footnotes});
+    let { htmlLines } = await emd.render(markdown);
+    let footnotesId = `/${wikiPath}/-footnotes`;
+    should.deepEqual(htmlLines, [
+      EbtMarkdown.HTML_HEAD,
+      `<p>This is a footnote<sup class="footnote-ref"><a href="#${footnotesId}">[1]</a></sup>`,   
+      'in a sentence.</p>',
+      '<section class="footnotes footnotes-line">',
+      '',
       `<div id="${footnotesId}" class="footnotes-link">&nbsp;</div>`,
       '<ol class="footnotes-list">',
       '<li class="footnote-item"><p>test-footnote</p>',

@@ -30,11 +30,12 @@ Be sure to use [JSON syntax](https://www.json.org/json-en.html) properly!
 | :---- | :---- |
 | appName | The site name (e.g., ```EBT-Site```). |
 | basePath | The URL base path for your site. Initially, this should be the Github repository name (e.g., "/ebt-site3/"). If you choose a custom Internet domain, change this to simply "/".
-| privacyPath | URL for privacy page (default is "#/wiki/privacy")
+| content.index | (Optional) The file name for customizing the file name used for category table of contents. The default is "toc".
+} footnotes | Title of footnote block or blank
 | github.account | The Github account name (e.g., "sc-voice") 
 | github.repository | The Github repository name (e.g., "ebt-site3") 
 | multilingual | (Optional) The default is ```false```, which allows language selection. If a two-letter language ISO code is specified (e.g., "de"), the users to your site will not have settings to change the web application language or the EBT translation language. The website will be rendered in the language specified.
-| content.index | (Optional) The file name for customizing the file name used for category table of contents. The default is "toc".
+| privacyPath | URL for privacy page (default is "#/wiki/privacy")
 
 Commit your changes and verify them by viewing your website.
 

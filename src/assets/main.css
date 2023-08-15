@@ -213,8 +213,14 @@ blockquote {
   top: -8em;
 }
 .footnotes {
-  border-top: 1pt solid rgba(var(--v-theme-on-surface), 0.2);
   margin-top: 3em;
+}
+.footnotes-line {
+  border-top: 1pt solid rgba(var(--v-theme-on-surface), 0.2);
+}
+.footnotes-title {
+  border-top: 1pt solid rgba(var(--v-theme-on-surface), 0.2);
+  opacity: 0.5;
 }
 code {
   background-color: rgba(var(--v-theme-on-surface), 0.2);
