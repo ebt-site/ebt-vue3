@@ -74,14 +74,17 @@ Add new images to the following folder:</p>
 <p>To preserve disk space and network performance, keep your images small.
 For example, each wiki page header image should be 250wx200h pixels, preferably in PNG format.</p>
 <h2>Footnotes</h2>
-<p>Markdown footnotes are written using the following syntax<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[1]</a></sup>:</p>
+<h3>Inline footnotes</h3>
+<p>Markdown footnotes are written using the following syntax for
+inline footnotes<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[1]</a></sup>:</p>
 <blockquote>
 <p><code>...the following syntax^[footnote-text]</code>.</p>
 </blockquote>
+<h3>Normal footnotes</h3>
 <p>Alternatively, you can use a different syntax with:</p>
 <ul>
-<li>Inline footnote reference<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[2]</a></sup> <code>...reference[^a]</code>.</li>
-<li>Appended footnote text. <code>[^a]: this is a normal footnote</code></li>
+<li>Inline footnote reference<sup class="footnote-ref"><a href="#/wiki/design/markdown/-footnotes">[2]</a></sup>. E.g., <code>...reference[^a]</code>.</li>
+<li>Appended footnote text. E.g., <code>[^a]: this is a normal footnote</code></li>
 </ul>
 <p>For more documentation, see this <a href="https://github.com/markdown-it/markdown-it-footnote" target="_blank">link</a></p>
 <h2>HTML5</h2>
@@ -103,7 +106,7 @@ For example, here is a red heart:</p>
 <section class="footnotes">
 <div id="/wiki/design/markdown/-footnotes" class="footnotes-link">&nbsp;</div>
 <ol class="footnotes-list">
-<li class="footnote-item"><p>this is a footnote</p>
+<li class="footnote-item"><p>this is an inline footnote</p>
 </li>
 <li class="footnote-item"><p>this is a normal footnote</p>
 </li>
