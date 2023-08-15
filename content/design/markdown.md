@@ -48,6 +48,11 @@ Markdown footnotes are written using the following syntax^[this is a footnote]:
 
 > ```...the following syntax^[footnote-text]```.
 
+Alternatively, you can use a different syntax with:
+
+* Inline footnote reference[^a] ```...reference[^a]```.
+* Appended footnote text. ```[^a]: this is a normal footnote```
+
 For more documentation, see this [link](https://github.com/markdown-it/markdown-it-footnote)
 
 ## HTML5
@@ -69,3 +74,4 @@ For example, here is a red heart:
 
 ❤️
 
+[^a]: this is a normal footnote
