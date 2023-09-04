@@ -396,10 +396,7 @@ export default {
     selectIcon: ctx=>"mdi-menu-open",
     servers: ctx=>{
       let { settings, host } = ctx;
-      logger.debug("Settings.servers", settings, host);
-      return settings.servers.filter(s => {
-        return host.startsWith("localhost") || !/localhost/.test(s);
-      });
+      return settings.servers;
     },
     serverHint: ctx=>{
       let { settings } = ctx;

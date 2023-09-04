@@ -248,7 +248,10 @@ export const useSettingsStore = defineStore('settings', {
     },
     servers: (state)=>{ 
       let { window } = globalThis;
-      let isDev = window && window.location.host.startsWith('localhost');
+      let host = window && window.location.host;
+      let isDev = host && (
+        host.startsWith('localhost:') || host.startsWith('127.0.0.1:')
+      );
       let servers = EbtSettings.SERVERS.filter(svr => !svr.dev || isDev);
       return servers;
     },
