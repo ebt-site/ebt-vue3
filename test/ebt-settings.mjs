@@ -14,8 +14,10 @@ import should from "should";
       fullLine: false,
       ips: 6,
       langTrans: 'en',
+      docAuthor: 'sujato',
       maxResults: 5,
       refLang: 'en',
+      refAuthor: 'sujato',
       showId: false,
       showPali: true,
       speakPali: true,
@@ -28,7 +30,7 @@ import should from "should";
     let keys = Object.keys(ebt);
     should(keys.indexOf('loaded')).equal(-1);
   });
-  it("default ctor de-de", async () => {
+  it("TESTTESTdefault ctor de-de", async () => {
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');
@@ -38,8 +40,10 @@ import should from "should";
         fullLine: false,
         ips: 6,
         langTrans: 'de',
+        docAuthor: 'sabbamitta',
         maxResults: 5,
-        refLang: 'de',
+        refLang: 'en',
+        refAuthor: 'sujato',
         showId: false,
         showPali: true,
         showReference: false,
@@ -129,7 +133,7 @@ import should from "should";
       'pt',
     ]);
   });
-  it("TESTTESTsegmentRef()", ()=>{
+  it("segmentRef()", ()=>{
     let langTrans = 'de';
     let author = 'sabbamitta';
     let settings = new EbtSettings({langTrans});
@@ -159,7 +163,7 @@ import should from "should";
       segnum: '2.3',
     });
   });
-  it("TESTTESTvalidate()", ()=>{
+  it("validate()", ()=>{
     let state = {
       langTrans: 'de',
       vnameTrans: 'Amy',
@@ -173,9 +177,15 @@ import should from "should";
     should(res.isValid).equal(true);
     should(!!res.error).equal(false);
     should.deepEqual(res.changed, {
+      docAuthor: 'sabbamitta',
+      refAuthor: 'sujato',
+      refLang: 'en',
       showPali:true, speakPali:true, vnameTrans:'Vicki'});
     should.deepEqual(state, {
       langTrans: 'de',
+      docAuthor: 'sabbamitta',
+      refAuthor: 'sujato',
+      refLang: 'en',
       vnameTrans: 'Vicki',
       speakPali: true,
       speakTrans: false,

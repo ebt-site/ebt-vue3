@@ -255,7 +255,7 @@ const renderer = new MarkdownItRenderer();
     should(EbtMarkdown.compareMetadata(c2t1, c1t2)).above(0);
     should(EbtMarkdown.compareMetadata(c2t1, c1t1)).above(0);
   });
-  it("TESTTESTfootnote title", async ()=>{
+  it("footnote title", async ()=>{
     let markdown = [
       'This is a footnote^[test-footnote]',
       'in a sentence.',
@@ -282,7 +282,7 @@ const renderer = new MarkdownItRenderer();
     ]);
     should(emd.metadata).equal(undefined);
   });
-  it("TESTTESTfootnote no title", async ()=>{
+  it("footnote no title", async ()=>{
     let markdown = [
       'This is a footnote^[test-footnote]',
       'in a sentence.',

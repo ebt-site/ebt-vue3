@@ -112,7 +112,7 @@ const SERVER_ROOT = 'https://s1.sc-voice.net/scv';
     ].join('/'));
     should(audio.nFetch).equal(nFetch0);
   });
-  it("TESTTESTlangAudioUrl() pli", async()=>{
+  it("langAudioUrl() pli", async()=>{
     let audio = useAudioStore();
     let sutta_uid = "thig1.1";
     let scid = `${sutta_uid}:0.1`;

@@ -1,7 +1,7 @@
 import { logger } from 'log-instance/index.mjs';
 import { default as EbtCard } from './ebt-card.mjs';
 import { default as VOICES } from './auto/voices.mjs';
-import { SuttaRef, Authors } from 'scv-esm/main.mjs';
+import { SuttaRef, AuthorsV2 } from 'scv-esm/main.mjs';
 
 const AUDIO = { MP3: 'mp3', OGG: 'ogg', OPUS: 'opus', };
 
@@ -26,6 +26,7 @@ const SERVERS = [{
 
 export default class Settings {
   constructor(opts = {}) {
+    const msg = 'ebt-settings.ctor() ';
     let {
       audio,
       clickVolume,
@@ -34,10 +35,12 @@ export default class Settings {
       fullLine,
       highightExamples,
       ips,
-      langTrans,
       locale,
       maxResults,
+      langTrans,  /* docLang */
+      docAuthor, 
       refLang,
+      refAuthor,
       serverUrl,
       showId,
       alwaysShowLatestText,
@@ -61,11 +64,13 @@ export default class Settings {
     this.langTrans = Settings.TRANS_LANGUAGES.reduce((a, l) => {
       return l.code === langTrans ? langTrans : a;
     }, 'en');
+    this.docAuthor = docAuthor;
     this.locale = Settings.WEB_LANGUAGES.reduce((a, l) => {
       return l.code === locale ? locale : a;
     }, 'en');
     this.maxResults = maxResults;
     this.refLang = refLang;
+    this.refAuthor = refAuthor;
     this.serverUrl = serverUrl,
     this.showId = showId;
     this.alwaysShowLatestText = alwaysShowLatestText;
@@ -76,6 +81,8 @@ export default class Settings {
     this.showTrans = showTrans;
     this.vnameRoot = vnameRoot;
     this.vnameTrans = vnameTrans;
+
+    Settings.validate(this);
   }
 
   static get SERVERS() {
@@ -86,47 +93,46 @@ export default class Settings {
     let NAV_LANG = typeof navigator === 'undefined'
       ? 'en'
       : navigator.languages[0].split('-')[0];
+    let REF_LANG = 'en';
     let vnameTrans = VOICES.reduce((a,v)=>{
       return !a && v.langTrans === NAV_LANG ? v.name : a;
     }, undefined) || 'Amy';
 
     return {
-      // from scv-server
+      alwaysShowLatestText: true,
+      audio: AUDIO.OGG,
       audioSuffix: 'mp3',
-      clickVolume: 2,
       blockVolume: 2,
-      swooshVolume: 2,
+      cards: [],
+      clickVolume: 2,
+      fullLine: false,
       highlightExamples: false,
       id: 1,
-      showGdpr: true,
+      ips: 6,
       langRoot: 'pli',
       langs: `pli+${NAV_LANG}`,
       langTrans: NAV_LANG,
+      locale: NAV_LANG,
       logLevel: 'warn',
       maxDuration: 3*60*60,
+      maxResults: 5,
+      refLang: REF_LANG,
       scid: undefined,
       serverUrl: SERVERS[0].value,
-      sutta_uid: undefined,
-      theme: 'dark',
-      translator: 'sujato',
-
-      // from ebt-vue
-      audio: AUDIO.OGG,
-      fullLine: false,
-      ips: 6,
-      locale: NAV_LANG,
-      maxResults: 5,
-      refLang: NAV_LANG,
+      showGdpr: true,
       showId: false,
-      alwaysShowLatestText: true,
       showPali: true,
-      speakPali: true,
-      speakTranslation: true,
       showReference: false,
       showTrans: true,
+      speakPali: true,
+      speakTranslation: true,
+      sutta_uid: undefined,
+      swooshVolume: 2,
+      theme: 'dark',
+      translator: 'sujato',
       vnameRoot: 'Aditi',
       vnameTrans,
-      cards: [],
+
     }
   }
 
@@ -298,7 +304,7 @@ export default class Settings {
       sref = SuttaRef.create(sref, lang);
     }
     if (!sref.author) {
-      sref.author = Authors.langAuthor(lang);
+      sref.author = AuthorsV2.langAuthor(lang);
       sref = SuttaRef.create(sref, lang);
     }
     return sref;
@@ -310,13 +316,17 @@ export default class Settings {
     let changed = null;
     let error = null;
     let {
+      docAuthor,
       langTrans,
+      refAuthor,
+      refLang,
       showPali,
       showReference,
       showTrans,
       speakPali,
       speakTranslation,
       vnameTrans,
+
     } = state;
 
     if (!speakPali && !speakTranslation) {
@@ -325,6 +335,34 @@ export default class Settings {
 
     if (!showReference && !showTrans && !showPali) {
       changed = Object.assign({showPali:true}, changed);
+    }
+
+    if (!refLang) {
+      refLang = 'en';
+      changed = Object.assign({refLang}, changed);
+    }
+    if (!refAuthor) {
+      refAuthor = AuthorsV2.langAuthor(refLang);
+      changed = Object.assign({refAuthor}, changed);
+    }
+    let refInfo = AuthorsV2.authorInfo(refAuthor, refLang);
+    if (refInfo && refInfo.lang !== refLang) {
+      refLang = refInfo.lang;
+      changed = Object.assign({refLang}, changed);
+    }
+
+    if (!langTrans) {
+      langTrans = 'en';
+      changed = Object.assign({langTrans}, changed);
+    }
+    if (!docAuthor) {
+      docAuthor = AuthorsV2.langAuthor(langTrans);
+      changed = Object.assign({docAuthor}, changed);
+    }
+    let docInfo = AuthorsV2.authorInfo(docAuthor, langTrans);
+    if (docInfo && docInfo.lang !== langTrans) {
+      langTrans = docInfo.lang;
+      changed = Object.assign({langTrans}, changed);
     }
 
     vnameTrans = vnameTrans.toLowerCase();
