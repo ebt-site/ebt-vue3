@@ -2,7 +2,7 @@ import { nextTick } from "vue";
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance/index.mjs';
 import Utils from "../utils.mjs";
-import { SuttaRef } from 'scv-esm/main.mjs';
+import { SuttaRef, AuthorsV2 } from 'scv-esm/main.mjs';
 import { default as EbtSettings } from "../ebt-settings.mjs";
 import { default as EbtCard } from "../ebt-card.mjs";
 import * as Idb from "idb-keyval"; 
@@ -46,6 +46,19 @@ export const useSettingsStore = defineStore('settings', {
     return settings;
   },
   actions: {
+    docAuthors() {
+      const MAXNAMES = 3;
+      let { docLang, showSutta, showVinaya } = this;
+      let authors = AuthorsV2.find({
+        lang: docLang,
+        sutta: showSutta,
+        vinaya: showVinaya,
+      }).map(info=>({
+        value: info.author,
+        title: info.name.join(', '),
+      }));
+      return authors;
+    },
     async loadSettings(config) {
       let msg = 'settings.loadSettings() ';
       if (this.loaded) {
@@ -112,6 +125,10 @@ export const useSettingsStore = defineStore('settings', {
       Idb.set(SETTINGS_KEY, JSON.parse(json));
       logger.debug(msg, saved);
     },
+    validate() {
+      const msg = "settings.validate() ";
+      return EbtSettings.validate(this);
+    },
     removeCard(card, config) {
       const msg = "settings.removeCard() ";
       const { window } = globalThis;
@@ -161,7 +178,6 @@ export const useSettingsStore = defineStore('settings', {
       const msg = 'settings.scrollToElementId() ';
       let eltShow = document.getElementById(idShow);
       let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
-      console.trace(msg, {idShow, idScroll});
       let dbg = 0;
       if (eltShow == null) {
         dbg && console.log(msg, `DBG1 (${idShow}) no element`);

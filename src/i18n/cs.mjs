@@ -221,6 +221,7 @@ export default {
     "dedicated": "Temné náklonnosti k světlu",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Stahování dokončeno:",
     "downloadPlaylist": "Stáhni seznam zvukových záznamů",
     "downloadTimeout": "Přerušení stahování:",

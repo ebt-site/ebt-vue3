@@ -223,6 +223,7 @@ export default {
     "dedicated": "Do ciemności zmierzającej ku światłu",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Pobieranie zakończone:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Pozostało czasu do pobrania:",

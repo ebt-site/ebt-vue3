@@ -60,9 +60,16 @@
               :menu-icon="selectIcon"
               :label="$t('ebt.uiLanguage')"
             />
-            <v-select v-model="settings.langTrans" :items="languages.VOICE_LANGS" 
+            <v-select v-model="settings.langTrans" 
+              :items="languages.VOICE_LANGS" 
               :menu-icon="selectIcon"
               :label="$t('ebt.transLanguage')"
+              :changed="settings.validate()"
+            />
+            <v-select v-model="settings.docAuthor"
+              :items="settings.docAuthors()"
+              :menu-icon="selectIcon"
+              :label="$t('ebt.docAuthor')"
             />
           </v-expansion-panel-text>
         </v-expansion-panel><!--Languages-->
@@ -313,6 +320,11 @@ export default {
     logger.debug("Settings.mounted()", this.host);
   },
   methods: {
+    validate() {
+      const msg = "Settings.validate() ";
+      let { settings } = this;
+      this.settings.validate();
+    },
     onClose() {
       let { volatile } = this;
       let btn = document.getElementById('btn-settings');

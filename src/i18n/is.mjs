@@ -223,6 +223,7 @@ export default {
     "dedicated": "Tileinkað þeim í myrkri, sem stefna á ljósið",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Niðurhal lokið:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Tímamörk niðurhals:",

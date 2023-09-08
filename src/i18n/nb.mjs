@@ -220,6 +220,7 @@ export default {
     "days": "A_DAYS days",
     "dedicated": "Dedikert til mørket på vei mot lyset",
     "dedicatedSearch": "the dark bound for light",
+    "docAuthor": "Translator",
     "downloadComplete": "Nedlasting ferdig:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Nedlasting tidsavbrudd:",

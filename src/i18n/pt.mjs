@@ -223,6 +223,7 @@ export default {
     "dedicated": "Para aqueles na escuridão e tendo a luz como destino",
     "dedicatedSearch": "aqueles na escuridão e tendo a luz como destino",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Downloaded",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Tempo limite para download:",

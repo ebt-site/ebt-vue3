@@ -221,6 +221,7 @@ export default {
     "dedicated": "Pentru cei din întuneric, ce se îndreaptă spre lumină",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Descărcare completă:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Descărcare întreruptă:",

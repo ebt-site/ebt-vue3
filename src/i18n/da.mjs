@@ -221,6 +221,7 @@ export default {
     "dedicated": "Til dem som lever i mørket, men er på vej mod lyset",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "Overførslen fuldført:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Overførsel mislykkedes:",

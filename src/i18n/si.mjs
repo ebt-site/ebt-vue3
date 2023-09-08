@@ -220,6 +220,7 @@ export default {
     "dedicated": "අඳුරෙන් ආලෝකය කරා පිවිසුමට",
     "dedicatedSearch": "අඳුරෙන් ආලෝකය කරා",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "බාගත කිරීම අවසන්:",
     "downloadPlaylist": "වාදන ලැයිස්තුව බාගන්න",
     "downloadTimeout": "බාගතකරනය කල් ඉකුත් වීම:",

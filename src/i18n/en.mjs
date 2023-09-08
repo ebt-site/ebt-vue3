@@ -223,6 +223,7 @@ export default {
     "days": "A_DAYS days",
     "dedicated": "To the dark bound for light",
     "dedicatedSearch": "the dark bound for light",
+    "docAuthor": "Translator",
     "downloadComplete": "Downloaded",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Download timeout:",

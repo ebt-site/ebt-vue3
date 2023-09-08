@@ -28,27 +28,30 @@ export default class Settings {
   constructor(opts = {}) {
     const msg = 'ebt-settings.ctor() ';
     let {
+      alwaysShowLatestText,
       audio,
-      clickVolume,
       blockVolume,
-      swooshVolume,
+      clickVolume,
+      docAuthor, 
+      docLang, // bilara translation document language (e.g., 'jpn')
       fullLine,
       highightExamples,
       ips,
+      langTrans, // UI translation language (e.g., 'ja') 
       locale,
       maxResults,
-      langTrans,  /* docLang */
-      docAuthor, 
-      refLang,
       refAuthor,
+      refLang,
       serverUrl,
       showId,
-      alwaysShowLatestText,
       showPali,
+      showReference,
+      showSutta,
+      showTrans,
+      showVinaya,
       speakPali,
       speakTranslation,
-      showTrans,
-      showReference,
+      swooshVolume,
       vnameRoot,
       vnameTrans,
 
@@ -71,7 +74,8 @@ export default class Settings {
     this.maxResults = maxResults;
     this.refLang = refLang;
     this.refAuthor = refAuthor;
-    this.serverUrl = serverUrl,
+    this.docLang = docLang;
+    this.serverUrl = serverUrl;
     this.showId = showId;
     this.alwaysShowLatestText = alwaysShowLatestText;
     this.showPali = showPali;
@@ -79,6 +83,8 @@ export default class Settings {
     this.speakTranslation = speakTranslation;
     this.showReference = showReference;
     this.showTrans = showTrans;
+    this.showSutta = showSutta;
+    this.showVinaya = showVinaya;
     this.vnameRoot = vnameRoot;
     this.vnameTrans = vnameTrans;
 
@@ -105,6 +111,8 @@ export default class Settings {
       blockVolume: 2,
       cards: [],
       clickVolume: 2,
+      docAuthor: AuthorsV2.langAuthor(NAV_LANG),
+      docLang: NAV_LANG,
       fullLine: false,
       highlightExamples: false,
       id: 1,
@@ -116,6 +124,7 @@ export default class Settings {
       logLevel: 'warn',
       maxDuration: 3*60*60,
       maxResults: 5,
+      refAuthor: AuthorsV2.langAuthor(REF_LANG),
       refLang: REF_LANG,
       scid: undefined,
       serverUrl: SERVERS[0].value,
@@ -317,12 +326,15 @@ export default class Settings {
     let error = null;
     let {
       docAuthor,
+      docLang,
       langTrans,
       refAuthor,
       refLang,
       showPali,
       showReference,
+      showSutta,
       showTrans,
+      showVinaya,
       speakPali,
       speakTranslation,
       vnameTrans,
@@ -347,22 +359,35 @@ export default class Settings {
     }
     let refInfo = AuthorsV2.authorInfo(refAuthor, refLang);
     if (refInfo && refInfo.lang !== refLang) {
-      refLang = refInfo.lang;
-      changed = Object.assign({refLang}, changed);
+      refAuthor = AuthorsV2.langAuthor(refLang);
+      changed = Object.assign({refAuthor}, changed);
     }
 
     if (!langTrans) {
       langTrans = 'en';
       changed = Object.assign({langTrans}, changed);
     }
-    if (!docAuthor) {
-      docAuthor = AuthorsV2.langAuthor(langTrans);
+
+    switch (langTrans) {
+      case 'ja':
+        docLang = 'jpn';
+        break;
+      default:
+        docLang = langTrans;
+    }
+    if (docLang !== state.docLang) {
+      changed = Object.assign({docLang}, changed);
+      docAuthor = AuthorsV2.langAuthor(docLang);
       changed = Object.assign({docAuthor}, changed);
     }
-    let docInfo = AuthorsV2.authorInfo(docAuthor, langTrans);
-    if (docInfo && docInfo.lang !== langTrans) {
-      langTrans = docInfo.lang;
-      changed = Object.assign({langTrans}, changed);
+    if (!docAuthor) {
+      docAuthor = AuthorsV2.langAuthor(docLang);
+      changed = Object.assign({docAuthor}, changed);
+    }
+    let docInfo = AuthorsV2.authorInfo(docAuthor, docLang);
+    if (docInfo && docInfo.lang !== docLang) {
+      docLang = docInfo.lang;
+      changed = Object.assign({docLang}, changed);
     }
 
     vnameTrans = vnameTrans.toLowerCase();
@@ -382,6 +407,15 @@ export default class Settings {
         ].join(' '));
         changed = Object.assign({voiceTrans:'sujato', langTrans:'en'}, changed);
       }
+    }
+
+    if (showVinaya == null) {
+      showVinaya = false;
+      changed = Object.assign({showVinaya}, changed);
+    }
+    if (!showVinaya && !showSutta) {
+      showSutta = true;
+      changed = Object.assign({showSutta}, changed);
     }
 
     if (changed) {

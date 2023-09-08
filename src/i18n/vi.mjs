@@ -223,6 +223,7 @@ export default {
     "days": "A_DAYS days",
     "dedicated": "Sống trong bóng tối, hướng đến ánh sáng",
     "dedicatedSearch": "the dark bound for light",
+    "docAuthor": "Translator",
     "downloadComplete": "Download xong:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Thời gian chờ download:",

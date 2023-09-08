@@ -221,6 +221,7 @@ export default {
     "dedicated": "उजाले के लिए अँधेरी सीमा की ओर",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "डाउनलोड पूर्ण हुआ:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "डाउनलोड मध्यांतर:",

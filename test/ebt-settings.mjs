@@ -3,7 +3,7 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("default ctor en", async () => {
+  it("TESTTESTdefault ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
     var ebt = new EbtSettings();
     should(ebt).properties({
@@ -14,6 +14,7 @@ import should from "should";
       fullLine: false,
       ips: 6,
       langTrans: 'en',
+      docLang: 'en',
       docAuthor: 'sujato',
       maxResults: 5,
       refLang: 'en',
@@ -22,7 +23,9 @@ import should from "should";
       showPali: true,
       speakPali: true,
       showReference: false,
+      showSutta: true,
       showTrans: true,
+      showVinaya: false,
       vnameRoot: 'Aditi',
       vnameTrans: 'Amy',
 
@@ -47,7 +50,9 @@ import should from "should";
         showId: false,
         showPali: true,
         showReference: false,
+        showSutta: true,
         showTrans: true,
+        showVinaya: false,
         vnameRoot: 'Aditi',
         vnameTrans: 'Vicki',
       });
@@ -55,32 +60,35 @@ import should from "should";
       global.navigator = { languages: ['en-us'] };
     }
   });
-  it("INITIAL_STATE", async () => {
+  it("TESTTESTINITIAL_STATE", async () => {
     should(EbtSettings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
-      clickVolume: 2,
       blockVolume: 2,
-      swooshVolume: 2,
+      clickVolume: 2,
+      docLang: 'en',
+      docAuthor: 'sujato',
       fullLine: false,
       id: 1,
       ips: 6,
-      showGdpr: true,
-      langTrans: 'en',
       langRoot: 'pli',
       langs: 'pli+en',
+      langTrans: 'en',
       langTrans: 'en',
       locale: 'en',
       maxDuration: 3*60*60,
       maxResults: 5,
       refLang: 'en',
+      refAuthor: 'sujato',
+      scid: undefined,
+      serverUrl: 'https://s1.sc-voice.net/scv',
+      showGdpr: true,
       showId: false,
       showPali: true,
       showReference: false,
       showTrans: true,
-      scid: undefined,
-      serverUrl: 'https://s1.sc-voice.net/scv',
       sutta_uid: undefined,
+      swooshVolume: 2,
       theme: 'dark',
       translator: 'sujato',
       vnameRoot: 'Aditi',
@@ -163,10 +171,14 @@ import should from "should";
       segnum: '2.3',
     });
   });
-  it("validate()", ()=>{
+  it("TESTTESTvalidate() de", ()=>{
     let state = {
       langTrans: 'de',
+      docLang: 'en',
+      docAuthor: 'sujato',
       vnameTrans: 'Amy',
+      refAuthor: 'sujato',
+      refLang: 'pt',
       speakPali: false,
       speakTrans: false,
       showPali: false,
@@ -178,20 +190,56 @@ import should from "should";
     should(!!res.error).equal(false);
     should.deepEqual(res.changed, {
       docAuthor: 'sabbamitta',
-      refAuthor: 'sujato',
-      refLang: 'en',
-      showPali:true, speakPali:true, vnameTrans:'Vicki'});
-    should.deepEqual(state, {
-      langTrans: 'de',
-      docAuthor: 'sabbamitta',
-      refAuthor: 'sujato',
-      refLang: 'en',
-      vnameTrans: 'Vicki',
-      speakPali: true,
+      docLang: 'de',
+      refAuthor: 'laera-quaresma',
+      showPali:true, 
+      showSutta: true,
+      showVinaya: false,
+      speakPali:true, 
+      vnameTrans:'Vicki',
+
+    });
+  });
+  it("TESTTESTvalidate() ja", ()=>{
+    let state = {
+      langTrans: 'ja',
+      vnameTrans: 'Amy',
+      speakPali: false,
       speakTrans: false,
-      showPali: true,
+      showPali: false,
       showTranslation: false,
       showReference: false,
+    }
+    let res = EbtSettings.validate(state);
+    should(res.isValid).equal(true);
+    should(!!res.error).equal(false);
+    should.deepEqual(res.changed, {
+      docAuthor: 'kaz',
+      docLang: 'jpn',
+      refAuthor: 'sujato',
+      refLang: 'en',
+      showPali:true, 
+      showSutta: true,
+      showVinaya: false,
+      speakPali:true, 
+      vnameTrans:'Takumi',
+
+    });
+    should.deepEqual(state, {
+      docAuthor: 'kaz',
+      docLang: 'jpn',
+      langTrans: 'ja',
+      refAuthor: 'sujato',
+      refLang: 'en',
+      showPali: true,
+      showReference: false,
+      showSutta: true,
+      showTranslation: false,
+      showVinaya: false,
+      speakPali: true,
+      speakTrans: false,
+      vnameTrans:'Takumi',
+
     });
 
     should.deepEqual(EbtSettings.validate(state), {

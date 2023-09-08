@@ -223,6 +223,7 @@ export default {
     "days": "A_DAYS days",
     "dedicated": "Aan hen in donkerte op weg naar licht",
     "dedicatedSearch": "the dark bound for light",
+    "docAuthor": "Translator",
     "downloadComplete": "Download voltooid:",
     "downloadPlaylist": "Download playlist",
     "downloadTimeout": "Download time-out:",

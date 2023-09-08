@@ -223,6 +223,7 @@ export default {
     "dedicated": "暗闇から光へ向かう人達に",
     "dedicatedSearch": "the dark bound for light",
     "discardCard": "Discard",
+    "docAuthor": "Translator",
     "downloadComplete": "ダウンロード完了:",
     "downloadPlaylist": "再生リストをダウンロード",
     "downloadTimeout": "ダウンロード　タイムアウト:",
