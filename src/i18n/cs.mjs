@@ -256,6 +256,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Volné Dílo",
     "reader": "Vypravěč",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

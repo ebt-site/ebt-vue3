@@ -257,6 +257,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Publiek domein",
     "reader": "Stem",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

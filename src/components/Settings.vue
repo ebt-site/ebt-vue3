@@ -52,7 +52,8 @@
             <v-spacer/>
             <div class="settings-summary">
               {{settings.locale.toUpperCase()}}
-              {{settings.langTrans.toUpperCase()}}
+              {{settings.docLang.toUpperCase()}}
+              {{settings.refLang.toUpperCase()}}
             </div>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -67,9 +68,20 @@
               :changed="settings.validate()"
             />
             <v-select v-model="settings.docAuthor"
-              :items="settings.docAuthors()"
+              :items="settings.authors(settings.docLang)"
               :menu-icon="selectIcon"
               :label="$t('ebt.docAuthor')"
+            />
+            <v-select v-model="settings.refLang" 
+              :items="languages.VOICE_LANGS" 
+              :menu-icon="selectIcon"
+              :label="$t('ebt.refLang')"
+              :changed="settings.validate()"
+            />
+            <v-select v-model="settings.refAuthor"
+              :items="settings.authors(settings.refLang)"
+              :menu-icon="selectIcon"
+              :label="$t('ebt.refAuthor')"
             />
           </v-expansion-panel-text>
         </v-expansion-panel><!--Languages-->

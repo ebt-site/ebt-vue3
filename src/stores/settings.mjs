@@ -46,11 +46,11 @@ export const useSettingsStore = defineStore('settings', {
     return settings;
   },
   actions: {
-    docAuthors() {
+    authors(lang) {
       const MAXNAMES = 3;
       let { docLang, showSutta, showVinaya } = this;
       let authors = AuthorsV2.find({
-        lang: docLang,
+        lang,
         sutta: showSutta,
         vinaya: showVinaya,
       }).map(info=>({
@@ -177,7 +177,9 @@ export const useSettingsStore = defineStore('settings', {
     async scrollToElementId(idShow, idScroll) {
       const msg = 'settings.scrollToElementId() ';
       let eltShow = document.getElementById(idShow);
-      let eltScroll = idScroll ? document.getElementById(idScroll) : eltShow;
+      let eltScroll = idScroll 
+        ? document.getElementById(idScroll) 
+        : eltShow;
       let dbg = 0;
       if (eltShow == null) {
         dbg && console.log(msg, `DBG1 (${idShow}) no element`);

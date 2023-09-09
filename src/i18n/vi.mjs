@@ -256,6 +256,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Phạm vi công cộng",
     "reader": "Speaker",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

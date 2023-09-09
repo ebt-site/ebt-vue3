@@ -254,6 +254,8 @@ export default {
     "point": "Punkt",
     "publicDomain": "Public Domain",
     "reader": "විස්තර කරන්නා",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",
