@@ -3,7 +3,7 @@ import { default as EbtCard } from "../src/ebt-card.mjs";
 import should from "should";
 
 (typeof describe === 'function') && describe("ebt-settings.mjs", function () {
-  it("TESTTESTdefault ctor en", async () => {
+  it("default ctor en", async () => {
     global.navigator = { languages: ['en-US'] };
     var ebt = new EbtSettings();
     should(ebt).properties({
@@ -33,7 +33,7 @@ import should from "should";
     let keys = Object.keys(ebt);
     should(keys.indexOf('loaded')).equal(-1);
   });
-  it("TESTTESTdefault ctor de-de", async () => {
+  it("default ctor de-de", async () => {
     try {
       global.navigator = { languages: ['de-de'] };
       should(global.navigator.languages[0]).equal('de-de');
@@ -60,7 +60,7 @@ import should from "should";
       global.navigator = { languages: ['en-us'] };
     }
   });
-  it("TESTTESTINITIAL_STATE", async () => {
+  it("INITIAL_STATE", async () => {
     should(EbtSettings.INITIAL_STATE).properties({
       audio: 'ogg',
       audioSuffix: 'mp3',
@@ -171,7 +171,7 @@ import should from "should";
       segnum: '2.3',
     });
   });
-  it("TESTTESTvalidate() de", ()=>{
+  it("validate() de", ()=>{
     let state = {
       langTrans: 'de',
       docLang: 'en',
@@ -200,7 +200,7 @@ import should from "should";
 
     });
   });
-  it("TESTTESTvalidate() ja", ()=>{
+  it("validate() ja", ()=>{
     let state = {
       langTrans: 'ja',
       vnameTrans: 'Amy',

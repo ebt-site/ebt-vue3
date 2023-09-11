@@ -1,40 +1,59 @@
 import { logger } from "log-instance/index.mjs";
 import should from "should";
+import { setActivePinia, createPinia } from 'pinia';
 import "fake-indexeddb/auto";
-import { default as IdbSutta } from "../src/idb-sutta.mjs";
 import { SuttaRef } from "scv-esm/main.mjs";
+import { default as IdbSutta } from "../src/idb-sutta.mjs";
 import * as Idb from "idb-keyval";
 
 logger.logLevel = 'warn';
 
+const TESTLANG = 'testlang';
+
 const TESTSEG1_0 = {
   scid: "testsuid:1.0",
-  testlang: "testsuid:1.0-testlang",
-  en: "testsuid:1.0-en",
+  [TESTLANG]: `testsuid:1.0-${TESTLANG}`,
+  ref: "testsuid:1.0-ref",
+  pli: "testsuid:1.0-pli",
 };
 const TESTSEG1_1 = {
   scid: "testsuid:1.1",
-  testlang: "testsuid:1.1-testlang",
-  en: "testsuid:1.1-en root of suffering en-end",
+  [TESTLANG]: "testsuid:1.1-testlang apex.",
+  ref: "testsuid:1.1-ref apex.",
+  pli: "testsuid:1.1-ref pali",
+};
+const TESTSEG1_1_EN = {
+  scid: "testsuid:1.1",
+  en: "testsuid:1.1-en apex.",
+  ref: "testsuid:1.1-ref apex.",
+  pli: "testsuid:1.1-ref pali",
 };
 const TESTSEG1_2 = {
   scid: "testsuid:1.2",
-  testlang: "testsuid:1.2-testlang",
-  en: "testsuid:1.2-en",
+  [TESTLANG]: "testsuid:1.2-testlang",
+  ref: "testsuid:1.2-ref",
+  pli: "testsuid:1.2-pli",
 };
 const TESTSEG1_2A = {
   scid: "testsuid:1.2",
-  testlang: "testsuid:1.2-testlangtA",
-  en: "testsuid:1.2-en",
+  [TESTLANG]: "testsuid:1.2-testlangtA",
+  ref: "testsuid:1.2-ref",
+  pli: "testsuid:1.2-pli",
 };
 const TESTSEG1_3 = {
   scid: "testsuid:1.3",
-  testlang: "testsuid:1.3-text",
-  en: "testsuid:1.3-en",
+  [TESTLANG]: "testsuid:1.3-text",
+  ref: "testsuid:1.3-ref",
+  pli: "testsuid:1.3-pli",
 };
 const TESTMAP = {
   [TESTSEG1_0.scid]: TESTSEG1_0,
   [TESTSEG1_1.scid]: TESTSEG1_1,
+  [TESTSEG1_2.scid]: TESTSEG1_2,
+};
+const TESTMAP_EN = {
+  [TESTSEG1_0.scid]: TESTSEG1_0,
+  [TESTSEG1_1.scid]: TESTSEG1_1_EN,
   [TESTSEG1_2.scid]: TESTSEG1_2,
 };
 const TESTSEGS = [
@@ -44,15 +63,24 @@ const TESTSEGS = [
 ];
 const TESTMLDOC = {
   sutta_uid: 'testsuid',
-  lang: 'testlang',
+  lang: TESTLANG,
   author_uid: 'test-author',
   segMap: TESTMAP,
 };
+const TESTMLDOC_EN = {
+  sutta_uid: 'testsuid',
+  lang: 'en',
+  author_uid: 'test-author',
+  segMap: TESTMAP_EN,
+};
 
-(typeof describe === 'function') && describe("idb-sutta.mjs", function () {
+(typeof describe === 'function') && describe("idb-sutta.mjs", ()=>{
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
   it("private ctor", async () => {
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let segMap = TESTMAP;
     let mlDoc = { sutta_uid, lang, author_uid:author, segMap, }
@@ -65,7 +93,7 @@ const TESTMLDOC = {
   });
   it("create(mlDoc)", ()=>{
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let segMap = TESTMAP;
     let title = 'test-title';
@@ -81,7 +109,7 @@ const TESTMLDOC = {
   });
   it("create(mlDoc) segment order", ()=>{
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let segMap = {};
     // This test checks that segments are ordered correctly 
@@ -100,7 +128,7 @@ const TESTMLDOC = {
   });
   it("create(mlDocProxy)", ()=>{
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let title = 'test-title';
     let segMap = TESTMAP;
@@ -111,7 +139,7 @@ const TESTMLDOC = {
   });
   it("create(idbSutta)", ()=>{
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let title = 'test-title';
     let segMap = TESTMAP;
@@ -124,7 +152,7 @@ const TESTMLDOC = {
   });
   it("serialize", ()=>{
     let sutta_uid = "testsuid";
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author = 'test-author';
     let title = 'test-title';
     let segments = TESTMAP;
@@ -155,7 +183,7 @@ const TESTMLDOC = {
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let title = 'test-title';
     let author_uid = 'test-author';
     let updatedSeg1_1 = Object.assign({}, TESTSEG1_1, {
@@ -183,7 +211,7 @@ const TESTMLDOC = {
     let sutta = IdbSutta.create(TESTMLDOC);
     let dstSutta = IdbSutta.create(TESTMLDOC);
     let sutta_uid = 'testsuid';
-    let lang = 'testlang';
+    let lang = TESTLANG;
     let author_uid = 'test-author';
 
     // Mark all dstSutta segments as matched:true
@@ -254,14 +282,17 @@ const TESTMLDOC = {
     );
     should(dstSutta.segments.length).equal(4);
   });
-  it("highlightExamples()", ()=>{
-    let suttaBefore = IdbSutta.create(TESTMLDOC);
-    let suttaAfter = IdbSutta.create(TESTMLDOC);
-    suttaAfter.highlightExamples({lang:'en'});
-    should.deepEqual(suttaAfter.segments[0], suttaBefore.segments[0]);
-    should.deepEqual(suttaAfter.segments[1].testLang, suttaBefore.segments[1].testLang); 
-    should.deepEqual(suttaAfter.segments[1].en, 
-      'testsuid:1.1-en <span class="ebt-example">root of suffering</span> en-end');
-    should.deepEqual(suttaAfter.segments[2], suttaBefore.segments[2]);
+  it("TESTTESThighlightExamples()", async ()=>{
+    let suttaBefore = IdbSutta.create(TESTMLDOC_EN);
+    let suttaAfter = IdbSutta.create(TESTMLDOC_EN);
+    let lang = 'en';
+    await suttaAfter.highlightExamples({lang});
+    let [ before0, before1, before2 ] = suttaBefore.segments;
+    let [ after0, after1, after2 ] = suttaAfter.segments;
+    should.deepEqual(after0, before0);
+    should.deepEqual(after1.ref, before1.ref); 
+    should.deepEqual(after1[lang], 
+      'testsuid:1.1-en <span class="ebt-example">apex</span>.');
+    should.deepEqual(after2, before2);
   });
 });
