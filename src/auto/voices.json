@@ -96,6 +96,15 @@
     "service": "aws-polly"
   },
   {
+    "name": "Ines",
+    "label": "🤖 Ricardo",
+    "langTrans": "pt",
+    "gender": "male",
+    "iVoice": 10,
+    "locale": "pt-PT",
+    "service": "aws-polly"
+  },
+  {
     "name": "Celine",
     "label": "🤖 Celine",
     "langTrans": "fr",
