@@ -96,6 +96,24 @@
     "service": "aws-polly"
   },
   {
+    "name": "Celine",
+    "label": "🤖 Celine",
+    "langTrans": "fr",
+    "gender": "female",
+    "iVoice": 10,
+    "locale": "fr-FR",
+    "service": "aws-polly"
+  },
+  {
+    "name": "Mathieu",
+    "label": "🤖 Mathieu",
+    "langTrans": "fr",
+    "gender": "female",
+    "iVoice": 10,
+    "locale": "fr-FR",
+    "service": "aws-polly"
+  },
+  {
     "name": "Takumi",
     "label": "🤖 Takumi",
     "langTrans": "ja",
