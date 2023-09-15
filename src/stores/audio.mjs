@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { logger } from 'log-instance/index.mjs';
-import { SuttaRef, Authors } from 'scv-esm/main.mjs';
+import { SuttaRef, AuthorsV2, } from 'scv-esm/main.mjs';
 import { useSettingsStore } from './settings.mjs';
 import { useVolatileStore } from './volatile.mjs';
 import { default as EbtSettings } from '../ebt-settings.mjs';
@@ -420,7 +420,7 @@ export const useAudioStore = defineStore('audio', {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum, scid } = suttaRef;
-      author = author || Authors.langAuthor(lang);
+      author = author || AuthorsV2.langAuthor(lang);
       if (author == null) {
         let msg = `audio.segmentAudioUrl() author is required: ` +
           JSON.stringify(idOrRef);
@@ -466,7 +466,7 @@ export const useAudioStore = defineStore('audio', {
       let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum, scid } = suttaRef;
-      author = author || Authors.langAuthor(lang);
+      author = author || AuthorsV2.langAuthor(lang);
       if (author == null) {
         let msg = `segmentAudioUrl() author is required ${JSON.stringify(idOrRef)}`;
         throw new Error(msg);
@@ -552,7 +552,7 @@ export const useAudioStore = defineStore('audio', {
       //console.log(msg, {idOrRef, segRef});
       let suttaRef = SuttaRef.create(segRef, langTrans);
       let { author } = suttaRef;
-      author = author || Authors.langAuthor(lang);
+      author = author || AuthorsV2.langAuthor(lang);
       segAudio = segAudio || await this.getSegmentAudio(segRef, settings);
       let { sutta_uid, translator, segment, vnameRoot, vnameTrans } = segAudio;
       let { audio } = segment;

@@ -37,7 +37,7 @@
   import { useSuttasStore } from '../stores/suttas.mjs';
   import { useAudioStore } from '../stores/audio.mjs';
   import { logger } from "log-instance/index.mjs";
-  import { Authors, Examples, Tipitaka, SuttaRef } from "scv-esm";
+  import { AuthorsV2, Examples, Tipitaka, SuttaRef } from "scv-esm";
   import { nextTick, ref } from "vue";
   import { default as IdbSutta } from '../idb-sutta.mjs';
   import * as Idb from "idb-keyval";
@@ -211,14 +211,14 @@
         let { $t, idbSuttaRef, settings } = ctx;
         let { refLang, showReference } = settings;
         let { author, lang  } = idbSuttaRef;
-        let info = Authors.authorInfo(author);
-        let refAuthor = Authors.langAuthor(refLang);
-        let refInfo = Authors.authorInfo(refAuthor);
+        let info = AuthorsV2.authorInfo(author);
+        let refAuthor = AuthorsV2.langAuthor(refLang);
+        let refInfo = AuthorsV2.authorInfo(refAuthor);
         return {
           scid: $t('ebt.author'),
           pli: 'Mahāsaṅgīti',
-          [lang]: info?.name,
-          [refLang]:  refInfo?.name,
+          [lang]: info?.name.join(', '),
+          [refLang]:  refInfo?.name.join(', '),
         }
       },
     },

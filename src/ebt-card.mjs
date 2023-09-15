@@ -1,6 +1,6 @@
 import { logger } from 'log-instance/index.mjs';
 import { v4 as uuidv4 } from 'uuid';
-import { Authors, SuttaRef } from 'scv-esm/main.mjs';
+import { AuthorsV2, SuttaRef } from 'scv-esm/main.mjs';
 
 const CONTEXT_WIKI = "wiki";
 const CONTEXT_SEARCH = "search";
@@ -65,7 +65,8 @@ export default class EbtCard {
         break;
       case CONTEXT_SUTTA:
         location[1] == null && (location[1] = langTrans);
-        location[2] == null && (location[2] = Authors.langAuthor(langTrans));
+        location[2] == null && 
+          (location[2] = AuthorsV2.langAuthor(langTrans));
         break;
     }
 
