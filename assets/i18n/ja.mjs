@@ -256,6 +256,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "パブリックドメイン",
     "reader": "語り手",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

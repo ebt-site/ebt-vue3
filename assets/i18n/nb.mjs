@@ -253,6 +253,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Åpen lisens",
     "reader": "Tale",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

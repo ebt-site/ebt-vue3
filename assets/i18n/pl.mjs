@@ -256,6 +256,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Domena Publiczna",
     "reader": "Głos",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

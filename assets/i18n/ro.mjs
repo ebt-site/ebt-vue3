@@ -253,6 +253,8 @@ export default {
     "point": "Punct",
     "publicDomain": "Domeniu Public",
     "reader": "Voce",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

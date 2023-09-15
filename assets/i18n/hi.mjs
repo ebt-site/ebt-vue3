@@ -253,6 +253,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "पब्लिक डोमेन",
     "reader": "आवाज़",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",

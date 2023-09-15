@@ -254,6 +254,8 @@ export default {
     "processing": "Processing...",
     "publicDomain": "Offentligt Domæne",
     "reader": "Stemme",
+    "refAuthor": "Reference translator",
+    "refLang": "Reference Language",
     "refLanguage": "Reference language",
     "referenceBy": "Reference by A_AUTHOR",
     "refreshPage": "Refresh Page",
