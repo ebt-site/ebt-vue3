@@ -97,10 +97,10 @@ const VOICES= [
   },
   {
     "name": "Ines",
-    "label": "🤖 Ricardo",
+    "label": "🤖 Inés",
     "langTrans": "pt",
-    "gender": "male",
-    "iVoice": 10,
+    "gender": "female",
+    "iVoice": 11,
     "locale": "pt-PT",
     "service": "aws-polly"
   },
