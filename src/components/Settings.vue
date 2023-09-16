@@ -53,7 +53,6 @@
             <div class="settings-summary">
               {{settings.locale.toUpperCase()}}
               {{settings.docLang.toUpperCase()}}
-              {{settings.refLang.toUpperCase()}}
             </div>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -71,17 +70,6 @@
               :items="settings.authors(settings.docLang)"
               :menu-icon="selectIcon"
               :label="$t('ebt.docAuthor')"
-            />
-            <v-select v-model="settings.refLang" 
-              :items="languages.VOICE_LANGS" 
-              :menu-icon="selectIcon"
-              :label="$t('ebt.refLang')"
-              :changed="settings.validate()"
-            />
-            <v-select v-model="settings.refAuthor"
-              :items="settings.authors(settings.refLang)"
-              :menu-icon="selectIcon"
-              :label="$t('ebt.refAuthor')"
             />
           </v-expansion-panel-text>
         </v-expansion-panel><!--Languages-->
@@ -117,6 +105,11 @@
               <v-select v-model="settings.refLang" :items="languages.REF_LANGS" 
                 :menu-icon="selectIcon"
                 :label="$t('ebt.refLanguage')"
+              />
+              <v-select v-model="settings.refAuthor"
+                :items="settings.authors(settings.refLang)"
+                :menu-icon="selectIcon"
+                :label="$t('ebt.refAuthor')"
               />
             </div>
             <v-divider class="mt-2 mb-2"/>
