@@ -209,10 +209,14 @@
       },
       headerSeg(ctx) {
         let { $t, idbSuttaRef, settings } = ctx;
-        let { refLang, showReference } = settings;
-        let { author, lang  } = idbSuttaRef;
+        let { showReference } = settings;
+        let { 
+          author, lang,
+          docLang, docAuthor, refAuthor, refLang, trilingual,
+        } = idbSuttaRef;
+        refLang = refLang || settings.refLang;
         let info = AuthorsV2.authorInfo(author);
-        let refAuthor = AuthorsV2.langAuthor(refLang);
+        refAuthor = refAuthor || AuthorsV2.langAuthor(refLang);
         let refInfo = AuthorsV2.authorInfo(refAuthor);
         return {
           scid: $t('ebt.author'),

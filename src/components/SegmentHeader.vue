@@ -12,7 +12,7 @@
         v-html="langText" />
       <div :class="langClass('ref')" 
         v-if="settings.showReference"
-        v-html="segment[settings.refLang]" />
+        v-html="segment.ref || segment[settings.refLang]" />
     </div>
   </div>
 </template>
