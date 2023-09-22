@@ -37,6 +37,11 @@ export default class IdbSutta {
       lang, 
       author = opts.author_uid,
       title,
+      docLang,
+      docAuthor,
+      refLang,
+      refAuthor,
+      trilingual,
       segments,
     } = opts;
 
@@ -44,7 +49,11 @@ export default class IdbSutta {
       IdbSutta.#privateCtor = true;
 
       if (segments) { // opts is IdbSutta-like
-        let idbSutta = {sutta_uid, lang, author, title, segments};
+        let idbSutta = {
+          sutta_uid, lang, author, title, 
+          docLang, docAuthor, refLang, refAuthor, trilingual,
+          segments,
+        };
         IdbSutta.#copyOptional(opts, idbSutta);
         return new IdbSutta(idbSutta);
       } 
@@ -56,9 +65,14 @@ export default class IdbSutta {
         throw new Error(msg);
       }
       let idbSutta = new IdbSutta({
-        sutta_uid, lang, author, title, segments:[],
+        sutta_uid, lang, author, title, 
+        docLang, docAuthor, refLang, refAuthor, trilingual,
+        segments:[],
       });
-      let mlDoc = {sutta_uid, lang, author_uid:author, title, segMap};
+      let mlDoc = {
+        sutta_uid, lang, author_uid:author, title, segMap,
+        docLang, docAuthor, refLang, refAuthor, trilingual,
+      };
       idbSutta.merge({mlDoc});
       return idbSutta;
     } finally {
@@ -83,7 +97,7 @@ export default class IdbSutta {
   }
 
   merge(opts={}) {
-    let { mlDoc, refLang, highlightExamples=false } = opts;
+    let { mlDoc, refLang:refLangOpts, highlightExamples=false } = opts;
     if (mlDoc == null) {
       throw new Error(`IdbSutta.merge({mlDoc?}) mlDoc is required`);
     }
@@ -92,17 +106,30 @@ export default class IdbSutta {
       a[seg.scid] = seg;
       return a;
     }, {});
-    let { lang, author_uid, title, segMap:srcSegMap } = mlDoc;
+    let { 
+      lang, author_uid, title, segMap:srcSegMap,
+      refLang, refAuthor, docLang, docAuthor, trilingual,
+    } = mlDoc;
     if (srcSegMap == null) {
       throw new Error(`IdbSutta.merge({mlDoc.segMap?}) invalid mlDoc`);
     }
-    if (refLang) {
-      this.refAuthor = author_uid;
+    this.trilingual = trilingual;
+    if (trilingual) {
+      this.author = docAuthor;
+      this.lang = docLang;
+      this.docAuthor = docAuthor;
+      this.docLang = docLang;
       this.refLang = refLang;
+      this.refAuthor = refAuthor;
     } else {
-      this.author = author_uid;
-      this.lang = lang;
-      this.title = title;
+      if (refLangOpts) {
+        this.refAuthor = author_uid;
+        this.refLang = refLangOpts;
+      } else {
+        this.author = author_uid;
+        this.lang = lang;
+        this.title = title;
+      }
     }
     Object.keys(srcSegMap).forEach(scid=>{
       let srcSeg = srcSegMap[scid];
@@ -111,13 +138,13 @@ export default class IdbSutta {
         dstSeg = {scid:srcSeg.scid};
         dstSegMap[scid] = dstSeg;
       }
-      if (refLang) {
-        dstSeg.ref = srcSeg[refLang];
-      } else {
+      if (trilingual || !refLangOpts) {
         if (!srcSeg.matched) {
           delete dstSeg.matched;
         }
         Object.assign(dstSeg, srcSeg);
+      } else {
+        dstSeg.ref = srcSeg[refLangOpts];
       }
     });
     this.segments = Object.keys(dstSegMap)

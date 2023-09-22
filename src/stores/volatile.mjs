@@ -32,6 +32,7 @@ const INITIAL_STATE = {
   ebtChips: ref(undefined),
   homeHtml: ref('loading...'),
   debugText: ref('debugText:'),
+  trilingual: ref(true),
 };
 
 export const useVolatileStore = defineStore('volatile', {

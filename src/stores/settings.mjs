@@ -95,6 +95,7 @@ export const useSettingsStore = defineStore('settings', {
     },
     pathToCard(fullPath) {
       const msg = `settings.pathToCard(${fullPath}) `;
+      console.log(msg);
       let { cards } = this;
       let card = EbtCard.pathToCard({
         path:fullPath, 
@@ -211,10 +212,16 @@ export const useSettingsStore = defineStore('settings', {
     },
     clear() {
       const msg = 'settings.clear() ';
-      delete localStorage.settings; // legacy
+      // remove legacy ebt-site settings
+      delete localStorage.settings; 
+
+      // clear out sutta cache and settings
+      Idb.clear(); 
+
+      // Save new settings
       Utils.assignTyped(this, EbtSettings.INITIAL_STATE);
       this.saveSettings();
-      logger.debug(msg, this);
+      console.log(msg, this);
     },
     openCard(card) {
       if (card.IsOpen) {

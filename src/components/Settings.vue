@@ -102,7 +102,8 @@
               :label="$t('ebt.showReference')"
             />
             <div v-if="settings.showReference">
-              <v-select v-model="settings.refLang" :items="languages.REF_LANGS" 
+              <v-select v-model="settings.refLang" 
+                :items="languages.VOICE_LANGS" 
                 :menu-icon="selectIcon"
                 :label="$t('ebt.refLanguage')"
               />

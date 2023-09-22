@@ -10,10 +10,6 @@ import {
 
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
   it("TESTTESTi18n", ()=>{
-    should.deepEqual(Languages.REF_LANGS, [
-      { value: 'de', title: 'Sabbamitta / DE', voice: true },
-      { value: 'en', title: 'Sujato / EN', voice: true },
-    ]);
     should.deepEqual(Languages.VOICE_LANGS, [
       { value: 'de', title: 'Deutsch / DE', voice: true },
       { value: 'en', title: 'English / EN', voice: true },

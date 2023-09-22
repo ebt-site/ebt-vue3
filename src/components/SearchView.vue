@@ -38,8 +38,6 @@
   import { Examples } from "scv-esm";
   import { ref, nextTick } from "vue";
 
-  const TRILINGUAL=false;
-
   export default {
     props: {
       card: {
@@ -207,12 +205,12 @@
         return examples.slice(0,MAX_CHOICES);
       },
       url: (ctx) => {
-        let { search, settings, card } = ctx;
+        let { volatile, search, settings, card } = ctx;
         let { 
           langTrans, maxResults, refAuthor, refLang, docAuthor, docLang, 
         } = settings;
         let pattern = search && search.toLowerCase().trim();
-        if (TRILINGUAL) {
+        if (volatile.trilingual) {
           pattern = [
             pattern,
             `-dl ${docLang}`,
@@ -221,6 +219,11 @@
             `-ra ${refAuthor}`,
           ].join(' ');
         }
+        /*
+        https://s1.sc-voice.net/scv/search/sn3.3%2Ffr
+        -dl en -da sujato -rl en -ra sujato/fr 
+        -dl en -da sujato -rl en -ra sujato?maxResults=5
+        */
         let url = [
           settings.serverUrl,
           'search',
@@ -229,10 +232,7 @@
         let query=[
           `maxResults=${maxResults}`,
         ].join('&');
-        let lang = pattern.split('/')[1];
-        return lang == null 
-          ? `${url}/${langTrans}?${query}`
-          : `${url}/${lang}?${query}`;
+        return `${url}/${langTrans}?${query}`
       },
       displayBox(ctx) {
         let { volatile } = ctx;

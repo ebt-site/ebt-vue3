@@ -34,20 +34,10 @@ let voices = require('../src/auto/voices.json')
 // GENERATED CODE (DO NOT EDIT)
 const VOICE_LANGS = ${JSON.stringify(voiceLangs, null, 2)};
 const UI_LANGS = ${JSON.stringify(langs, null, 2)};
-const REF_LANGS = [{
-    value: 'de',
-    title: 'Sabbamitta / DE',
-    voice: true,
-}, {
-    value: 'en',
-    title: 'Sujato / EN',
-    voice: true,
-}];
 
 export default class Languages {
   static get VOICE_LANGS() { return VOICE_LANGS };
   static get UI_LANGS() { return UI_LANGS };
-  static get REF_LANGS() { return REF_LANGS };
 }
 `);
 
