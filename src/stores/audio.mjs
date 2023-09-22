@@ -6,6 +6,7 @@ import { useVolatileStore } from './volatile.mjs';
 import { default as EbtSettings } from '../ebt-settings.mjs';
 import { default as IdbSutta } from '../idb-sutta.mjs';
 import { default as IdbAudio } from '../idb-audio.mjs';
+import * as VOICES from "../auto/voices.mjs";
 import { ref, nextTick } from 'vue';
 import * as Idb from 'idb-keyval';
 
@@ -270,7 +271,6 @@ export const useAudioStore = defineStore('audio', {
         }
 
         if (audio.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
-          let lang = settings.langTrans;
           let src = await audio.transAudioUrl;
           idbAudio.src = src;
           logger.debug(`${msg} transUrl:`, src);
@@ -415,9 +415,18 @@ export const useAudioStore = defineStore('audio', {
       audioContext.resume(); // required for iOS
       return audioContext;
     },
+    transVoiceName(suttaRef, settings=useSettingsStore()) {
+      let vTrans = settings.vnameTrans;
+      let { sutta_uid, lang, author, segnum, scid } = suttaRef;
+      if (lang !== settings.langTrans) {
+        let langVoice = VOICES.default.filter(v=>v.langTrans===lang)[0];
+        vTrans = langVoice.name || vTrans;
+      }
+      return vTrans;
+    },
     segAudioKey(idOrRef, settings=useSettingsStore()) {
       const msg = "audio.segAudioKey() ";
-      let { langTrans, serverUrl, vnameTrans, vnameRoot } = settings;
+      let { langTrans, serverUrl, vnameRoot } = settings;
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum, scid } = suttaRef;
       author = author || AuthorsV2.langAuthor(lang);
@@ -426,7 +435,8 @@ export const useAudioStore = defineStore('audio', {
           JSON.stringify(idOrRef);
         throw new Error(msg);
       }
-      let key = `${scid}/${lang}/${author}/${vnameTrans}/${vnameRoot}`;
+      let vTrans = this.transVoiceName(suttaRef, settings);
+      let key = `${scid}/${lang}/${author}/${vTrans}/${vnameRoot}`;
       //console.log(msg, {key, idOrRef});
       return key;
     },
@@ -467,6 +477,7 @@ export const useAudioStore = defineStore('audio', {
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum, scid } = suttaRef;
       author = author || AuthorsV2.langAuthor(lang);
+      let vTrans = this.transVoiceName(suttaRef, settings);
       if (author == null) {
         let msg = `segmentAudioUrl() author is required ${JSON.stringify(idOrRef)}`;
         throw new Error(msg);
@@ -479,14 +490,16 @@ export const useAudioStore = defineStore('audio', {
         lang,
         author,
         scid,
-        vnameTrans,
+        vTrans,
         vnameRoot,
       ].join('/'); 
       return url;
     },
     playUrl(url, opts={}) {
+      const msg = "audio.playUrl() ";
       let { audioContext } = opts;
-      let tempContext = audioContext == null ? this.getAudioContext() : null;
+      let tempContext = audioContext == null 
+        ? this.getAudioContext() : null;
       audioContext = audioContext || tempContext;
 
       let promise = this.playUrlAsync(url, {audioContext});
@@ -554,7 +567,9 @@ export const useAudioStore = defineStore('audio', {
       let { author } = suttaRef;
       author = author || AuthorsV2.langAuthor(lang);
       segAudio = segAudio || await this.getSegmentAudio(segRef, settings);
-      let { sutta_uid, translator, segment, vnameRoot, vnameTrans } = segAudio;
+      let { 
+        sutta_uid, translator, segment, vnameRoot, vnameTrans 
+      } = segAudio;
       let { audio } = segment;
       let guid = segment.audio[lang];
       let text = segment[lang];
@@ -650,14 +665,17 @@ export const useAudioStore = defineStore('audio', {
         return null;
       }
       let result;
-      let { langTrans, vnameTrans, vnameRoot, serverUrl } = settings;
-      let [ scid, lang, author ] = routeCard?.location || {};
-      let suttaRef = SuttaRef.create(scid, langTrans);
+      let { langTrans, vnameRoot, serverUrl } = settings;
+      let [ scid, lang=langTrans, author ] = routeCard?.location || {};
+      let srefStr = routeCard.location.join('/');
+      console.log(msg, {lang, routeCard});
+      let suttaRef = SuttaRef.create(srefStr, langTrans);
       let { sutta_uid, segnum, } = suttaRef;
       console.log(msg, {sutta_uid, scid});
       try {
         volatile.waitBegin('ebt.loadingAudio');
 
+        console.log(msg, suttaRef.toString());
         let segAudio = await this.getSegmentAudio(suttaRef);
         let { segment } = segAudio;
 
@@ -679,6 +697,7 @@ export const useAudioStore = defineStore('audio', {
         if (settings.speakTranslation) {
           let langText = segment[lang];
           if (langText) {
+            let vnameTrans = this.transVoiceName(suttaRef, settings);
             this.transAudioUrl = [
               serverUrl,
               'audio',
