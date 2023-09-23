@@ -217,6 +217,7 @@
             `-da ${docAuthor}`,
             `-rl ${refLang}`,
             `-ra ${refAuthor}`,
+            `-ml1`,
           ].join(' ');
         }
         /*

@@ -26,10 +26,10 @@
         <v-expansion-panel-text>
           <div>
             <a :href="`#/sutta/${href(card.data[i])}`" class="scv-matched">
-              {{result.suttaplex.acronym}}
+              {{result.suttaplex?.acronym}}
             </a>
             <span class="result-blurb pl-2">
-              {{result.blurb || result.suttaplex.blurb}}
+              {{result.blurb || result.suttaplex?.blurb}}
             </span>
           </div>
           <table>
