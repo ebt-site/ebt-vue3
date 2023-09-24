@@ -214,16 +214,24 @@
           author, lang,
           docLang, docAuthor, refAuthor, refLang, trilingual,
         } = idbSuttaRef;
+
+        docLang = docLang || lang;
+        docAuthor = docAuthor || author;
+        let docInfo = AuthorsV2.authorInfo(docAuthor);
+        let docText = docInfo && docInfo.name.join(', ') || "docAuthor?";
+
         refLang = refLang || settings.refLang;
-        let info = AuthorsV2.authorInfo(author);
         refAuthor = refAuthor || AuthorsV2.langAuthor(refLang);
         let refInfo = AuthorsV2.authorInfo(refAuthor);
-        return {
+        let refText = refInfo?.name.join(', ');
+        let refKey = trilingual ? "ref" : refLang;
+        let seg =  Object.assign({}, {
           scid: $t('ebt.author'),
           pli: 'Mahāsaṅgīti',
-          [lang]: info?.name.join(', '),
-          [refLang]:  refInfo?.name.join(', '),
-        }
+          [docLang]: docText,
+          [refKey]: refText,
+        });
+        return seg;
       },
     },
   }
