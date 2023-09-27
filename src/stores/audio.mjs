@@ -270,9 +270,9 @@ export const useAudioStore = defineStore('audio', {
           await idbAudio.play();
         }
 
-        if (audio.segmentPlaying && settings.speakTranslation && 
-          seg[langTrans]) 
-        {
+        let speakTrans = settings.speakTranslation && 
+          settings.showTrans && seg[langTrans];
+        if (audio.segmentPlaying && speakTrans) {
           let src = await audio.transAudioUrl;
           idbAudio.src = src;
           logger.debug(`${msg} transUrl:`, src);
