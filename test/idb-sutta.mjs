@@ -282,7 +282,7 @@ const TESTMLDOC_EN = {
     );
     should(dstSutta.segments.length).equal(4);
   });
-  it("TESTTESThighlightExamples()", async ()=>{
+  it("highlightExamples()", async ()=>{
     let suttaBefore = IdbSutta.create(TESTMLDOC_EN);
     let suttaAfter = IdbSutta.create(TESTMLDOC_EN);
     let lang = 'en';

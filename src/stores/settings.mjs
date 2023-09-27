@@ -95,7 +95,7 @@ export const useSettingsStore = defineStore('settings', {
     },
     pathToCard(fullPath) {
       const msg = `settings.pathToCard(${fullPath}) `;
-      console.log(msg);
+      //console.log(msg);
       let { cards } = this;
       let card = EbtCard.pathToCard({
         path:fullPath, 
@@ -221,7 +221,7 @@ export const useSettingsStore = defineStore('settings', {
       // Save new settings
       Utils.assignTyped(this, EbtSettings.INITIAL_STATE);
       this.saveSettings();
-      console.log(msg, this);
+      //console.log(msg, this);
     },
     openCard(card) {
       if (card.IsOpen) {

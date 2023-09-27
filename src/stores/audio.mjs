@@ -41,7 +41,7 @@ function deleteDatabase(name) {
   };
 
   DBDeleteRequest.onsuccess = (event) => {
-    console.log(msg + `Database ${name} deleted successfully`);
+    //console.log(msg + `Database ${name} deleted successfully`);
     console.log(msg, event.result); // should be undefined
   };
 
@@ -270,7 +270,9 @@ export const useAudioStore = defineStore('audio', {
           await idbAudio.play();
         }
 
-        if (audio.segmentPlaying && settings.speakTranslation && seg[langTrans]) {
+        if (audio.segmentPlaying && settings.speakTranslation && 
+          seg[langTrans]) 
+        {
           let src = await audio.transAudioUrl;
           idbAudio.src = src;
           logger.debug(`${msg} transUrl:`, src);
@@ -675,7 +677,6 @@ export const useAudioStore = defineStore('audio', {
       try {
         volatile.waitBegin('ebt.loadingAudio');
 
-        console.log(msg, suttaRef.toString());
         let segAudio = await this.getSegmentAudio(suttaRef);
         let { segment } = segAudio;
 
@@ -694,7 +695,8 @@ export const useAudioStore = defineStore('audio', {
             this.pliAudioUrl = URL_NOAUDIO;
           }
         }
-        if (settings.speakTranslation) {
+        console.log(msg, {segAudio, lang, segment});
+        if (segment && settings.speakTranslation) {
           let langText = segment[lang];
           if (langText) {
             let vnameTrans = this.transVoiceName(suttaRef, settings);

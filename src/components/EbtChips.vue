@@ -54,11 +54,11 @@
     methods: {
       onSpace(evt) {
         const msg = 'App.onSpace() ';
-        console.log(msg);
+        //console.log(msg);
       },
       onEnter(evt) {
         const msg = 'App.onEnter() ';
-        console.log(msg);
+        //console.log(msg);
       },
       onNextChip(delta) {
         let msg = `EbtChips.onNextChip(${delta})`;

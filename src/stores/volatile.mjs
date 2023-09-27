@@ -75,6 +75,38 @@ export const useVolatileStore = defineStore('volatile', {
     },
   },
   actions: {
+    trilingualPattern(search) {
+      const msg = 'volatile.trilingualPattern() ';
+      let settings = useSettingsStore();
+      let { trilingual } = this;
+      let { refAuthor, refLang, docAuthor, docLang, } = settings;
+      let pattern = search && search.toLowerCase().trim();
+      if (trilingual) {
+        pattern = [
+          pattern,
+          `-dl ${docLang}`,
+          `-da ${docAuthor}`,
+          `-rl ${refLang}`,
+          `-ra ${refAuthor}`,
+          `-ml1`,
+        ].join(' ');
+      }
+      return pattern;
+    },
+    searchUrl(search) {
+      let settings = useSettingsStore();
+      let pattern = this.trilingualPattern(search);
+      let { langTrans, maxResults, } = settings;
+      let searchPath = [
+        settings.serverUrl,
+        'search',
+        encodeURIComponent(pattern),
+      ].join('/');
+      let query=[
+        `maxResults=${maxResults}`,
+      ].join('&');
+      return `${searchPath}/${langTrans}?${query}`
+    },
     setRoute(cardOrRoute, keepFocus, caller) {
       const msg = 'volatile.setRoute() ';
       let { config, } = this;

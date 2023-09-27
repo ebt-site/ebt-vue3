@@ -205,35 +205,8 @@
         return examples.slice(0,MAX_CHOICES);
       },
       url: (ctx) => {
-        let { volatile, search, settings, card } = ctx;
-        let { 
-          langTrans, maxResults, refAuthor, refLang, docAuthor, docLang, 
-        } = settings;
-        let pattern = search && search.toLowerCase().trim();
-        if (volatile.trilingual) {
-          pattern = [
-            pattern,
-            `-dl ${docLang}`,
-            `-da ${docAuthor}`,
-            `-rl ${refLang}`,
-            `-ra ${refAuthor}`,
-            `-ml1`,
-          ].join(' ');
-        }
-        /*
-        https://s1.sc-voice.net/scv/search/sn3.3%2Ffr
-        -dl en -da sujato -rl en -ra sujato/fr 
-        -dl en -da sujato -rl en -ra sujato?maxResults=5
-        */
-        let url = [
-          settings.serverUrl,
-          'search',
-          encodeURIComponent(pattern),
-        ].join('/');
-        let query=[
-          `maxResults=${maxResults}`,
-        ].join('&');
-        return `${url}/${langTrans}?${query}`
+        let { volatile, search, } = ctx;
+        return volatile.searchUrl(search);
       },
       displayBox(ctx) {
         let { volatile } = ctx;

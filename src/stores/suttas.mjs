@@ -23,17 +23,15 @@ export const useSuttasStore = defineStore('suttas', {
   actions: {
     suttaUrl(idOrRef) {
       let settings = useSettingsStore();
-      let { langTrans, serverUrl } = settings;
+      let { 
+        langTrans, serverUrl, docLang, docAuthor, 
+      } = settings;
+      let volatile = useVolatileStore();
       let suttaRef = SuttaRef.create(idOrRef, langTrans);
       let { sutta_uid, lang, author, segnum } = suttaRef;
       let search = `${sutta_uid}/${lang}`;
       author && (search += `/${author}`);
-      let url =  [ 
-        serverUrl, 
-        'search', 
-        encodeURIComponent(search), 
-        lang === 'pli' ? langTrans : lang,
-      ].join('/'); 
+      let url = volatile.searchUrl(search);
       return url;
     },
     async loadIdbSutta(suttaRef, opts={}) { // low-level API
@@ -47,9 +45,11 @@ export const useSuttasStore = defineStore('suttas', {
       let idbSutta;
 
       if (refresh || !idbData || maxAge < age) {
+        //console.log(msg, {refresh, maxAge, age});
         let volatile = useVolatileStore();
         let url = this.suttaUrl(suttaRef);
         let json = await volatile.fetchJson(url);
+        //console.log(msg, url, json);
         this.nFetch++;
         let { mlDocs, results } = json;
         if (mlDocs.length < 1) {
@@ -95,6 +95,7 @@ export const useSuttasStore = defineStore('suttas', {
         let vueRef = VUEREFS.get(idbKey);
         let idbSutta = vueRef?.value;
 
+
         if (idbSutta == null) {
           if (!opts.refresh) {
             return null;
@@ -103,7 +104,8 @@ export const useSuttasStore = defineStore('suttas', {
           vueRef = ref(promise);
           VUEREFS.set(idbKey, vueRef);
 
-          idbSutta = await this.loadIdbSutta(suttaRef);
+          idbSutta = await promise;
+          //console.log(msg, {idbKey}, idbSutta);
           vueRef.value = idbSutta;
           VUEREFS.set(idbKey, vueRef);
         } else {

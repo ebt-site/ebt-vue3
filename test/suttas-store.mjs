@@ -40,7 +40,7 @@ const MSDAY = 24*3600*MSSEC;
       maxAge: MSDAY,
     });
   });
-  it("suttaUrl", async () => {
+  it("TESTTESTsuttaUrl", async () => {
     let settings = useSettingsStore();
     should(settings.langTrans).equal('en');
     let langTrans = 'zz';
@@ -49,11 +49,13 @@ const MSDAY = 24*3600*MSSEC;
     let suttas = useSuttasStore();
     let server = 'https://s1.sc-voice.net/scv';
     let suttaRef = SuttaRef.create(THIG1_1_SOMA);
+    let docRef = '-dl en -da sujato -rl en -ra sujato -ml1';
+    let pattern = encodeURIComponent(`thig1.1/en/soma ${docRef}`);
     should(suttas.suttaUrl(suttaRef)).equal([
       server,
       'search',
-      'thig1.1%2Fen%2Fsoma',
-      'en', // not zz!
+      pattern,
+      'zz?maxResults=5', 
     ].join('/'));
   });
   it("loadIdbSutta", async () => {
@@ -223,9 +225,13 @@ const MSDAY = 24*3600*MSSEC;
 
     // return shallowRef() of volatile idbSutta, fetching if needed
     let idbSuttaRef = await suttas.getIdbSuttaRef(suttaRef);
-    should(idbSuttaRef.value).properties({sutta_uid, lang, author});
+    should(idbSuttaRef.value.sutta_uid).equal(sutta_uid);
+    should(idbSuttaRef.value.lang).equal(lang);
+    should(idbSuttaRef.value.author).equal(author);
     let idbSuttaRef2 = await suttas.getIdbSuttaRef(suttaRef);
-    should(idbSuttaRef2.value).properties({sutta_uid, lang, author});
+    should(idbSuttaRef2.value.sutta_uid).equal(sutta_uid);
+    should(idbSuttaRef2.value.lang).equal(lang);
+    should(idbSuttaRef2.value.author).equal(author);
     should(idbSuttaRef2).equal(idbSuttaRef);
 
     // refresh is true by default

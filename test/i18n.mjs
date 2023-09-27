@@ -9,7 +9,7 @@ import {
 } from '../src/index.mjs';
 
 (typeof describe === 'function') && describe("audio-store.mjs", function () {
-  it("TESTTESTi18n", ()=>{
+  it("i18n", ()=>{
     should.deepEqual(Languages.VOICE_LANGS, [
       { value: 'de', title: 'Deutsch / DE', voice: true },
       { value: 'en', title: 'English / EN', voice: true },

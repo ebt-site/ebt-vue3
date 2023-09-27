@@ -108,13 +108,13 @@
     methods: {
       onClickLastTab(evt) {
         const msg = 'EbtCard.onClickLastTab() ';
-        console.log(msg);
+        //console.log(msg);
       },
       onFocusLastTab(evt) {
         const msg = 'EbtCard.onFocusLastTab() ';
         let { volatile, audio } = this;
         let { ebtChips } = volatile;
-        console.log(msg, ebtChips);
+        //console.log(msg, ebtChips);
         ebtChips && ebtChips.focus();
         audio.playBlock();
       },
